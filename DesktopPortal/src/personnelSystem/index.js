@@ -85,7 +85,7 @@ const homeStyle = {
         //let className = isShowHeader ? 'content' : '';
         return(
             <Layout className = "page">
-                <Sider>
+                <Sider
                     collapsible
                     collapsed={this.state.collapsed}
                     onCollapse={this.toggle}>
