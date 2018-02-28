@@ -1,0 +1,84 @@
+@APP_BAR_HEIGHT: 3.5rem;
+@APPBAR_TITLE_FONTSIZE: 1.5rem;
+
+.appbar{
+    height: @APP_BAR_HEIGHT;
+    line-height: @APP_BAR_HEIGHT;
+    background-color: rgba(24, 24, 24, 0.6);
+    color:white;
+    padding-left: 1rem;
+    padding-right: 1rem;
+
+    .logo{
+        font-size:1.5rem;
+    }
+
+    .title{
+        font-size: @APPBAR_TITLE_FONTSIZE;
+        flex: 1;
+        padding-left: 1rem;
+    }
+
+    .right-bar{
+        display: flex;
+        position: relative;
+        align-items: center;
+        height: @APP_BAR_HEIGHT;
+    }
+    .message-badge{
+        margin-right: 1rem;
+    }
+    .windows-icon{
+        line-height: @APP_BAR_HEIGHT;
+        margin-right: 2rem;
+        font-size: 1.6rem;
+        cursor: pointer;
+        color:#ff00de;
+    }
+
+    .message-icon{
+        font-size: 1.6rem;
+    }
+    .user-panel{
+        cursor: pointer;
+        margin-left: 1rem;
+        margin-right: 1rem;
+    }
+    .user-icon{
+        background-color: #5d5d5d;
+        top: 0.75rem;
+    }
+    .user-name{
+        line-height: 3.5rem;
+        display: inline-block;
+        padding-right: 1rem;
+        padding-left: 0.5rem;
+        font-size: 1.1rem;
+    }
+
+    .time {
+        display: block;
+        text-align: center;
+        padding: 0;
+        line-height: 1.5rem;
+        font-size: 1.3rem;
+    }
+    .date {
+        display: block;
+        text-align: center;
+        line-height: 1.5rem;
+        font-size: 1rem;
+    }
+
+}
+
+.windows-menu{
+    min-width:10rem;
+
+    .close-icon{
+        display: inline-block;
+        position: absolute;
+        top: 7px;
+        right: 7px;
+    }
+}

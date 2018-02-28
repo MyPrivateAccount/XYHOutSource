@@ -1,0 +1,19 @@
+{
+    "adx": {
+        "rules": [
+            "AdxVerificationCompositeRule"
+        ],
+        "packages": {
+            "Microsoft.EntityFrameworkCore.Tools.DotNet": {
+                "packageTypes": [
+                    "DotnetCliTool"
+                ]
+            }
+        }
+    },
+    "Default": {
+        "rules": [
+            "DefaultCompositeRule"
+        ]
+    }
+}

@@ -1,0 +1,13 @@
+E:\work\XYH\xinyaohang\DesktopPortal\bin\Release\netcoreapp2.0\win10-x64\appsettings.json
+E:\work\XYH\xinyaohang\DesktopPortal\bin\Release\netcoreapp2.0\win10-x64\hostpolicy.dll
+E:\work\XYH\xinyaohang\DesktopPortal\bin\Release\netcoreapp2.0\win10-x64\hostfxr.dll
+E:\work\XYH\xinyaohang\DesktopPortal\bin\Release\netcoreapp2.0\win10-x64\DesktopPortal.exe
+E:\work\XYH\xinyaohang\DesktopPortal\bin\Release\netcoreapp2.0\win10-x64\DesktopPortal.deps.json
+E:\work\XYH\xinyaohang\DesktopPortal\bin\Release\netcoreapp2.0\win10-x64\DesktopPortal.runtimeconfig.json
+E:\work\XYH\xinyaohang\DesktopPortal\bin\Release\netcoreapp2.0\win10-x64\DesktopPortal.runtimeconfig.dev.json
+E:\work\XYH\xinyaohang\DesktopPortal\bin\Release\netcoreapp2.0\win10-x64\DesktopPortal.dll
+E:\work\XYH\xinyaohang\DesktopPortal\obj\Release\netcoreapp2.0\win10-x64\DesktopPortal.csprojResolveAssemblyReference.cache
+E:\work\XYH\xinyaohang\DesktopPortal\obj\Release\netcoreapp2.0\win10-x64\DesktopPortal.csproj.CoreCompileInputs.cache
+E:\work\XYH\xinyaohang\DesktopPortal\obj\Release\netcoreapp2.0\win10-x64\DesktopPortal.AssemblyInfoInputs.cache
+E:\work\XYH\xinyaohang\DesktopPortal\obj\Release\netcoreapp2.0\win10-x64\DesktopPortal.AssemblyInfo.cs
+E:\work\XYH\xinyaohang\DesktopPortal\obj\Release\netcoreapp2.0\win10-x64\DesktopPortal.dll

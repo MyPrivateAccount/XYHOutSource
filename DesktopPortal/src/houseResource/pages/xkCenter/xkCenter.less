@@ -1,0 +1,111 @@
+
+.xkCenterPage{
+  .ant-menu-horizontal {
+    border-bottom: none;
+  }
+  .xkList{
+    .ant-checkbox + span {
+       padding-left: 0; 
+      padding-right: 0; 
+    }
+    .customerDealContent{
+      p{
+        padding: 5px;
+      }
+    }
+    .redText{
+      font-weight: bold;
+      color: red;
+    }
+    .itemStyle{
+      display: flex;
+      margin-bottom: 10px;
+      .borderDiv{
+        border: 1px solid #e0e0e0;
+        .listText{
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          height: 8rem;
+          padding: 15px 5px;
+          p {
+            padding: 5px;
+          }
+        }
+        .listLeft{
+          display: flex;
+          justify-content: flex-start;
+          align-items: center;
+          .imgDiv{
+              width: 10rem;
+              height: 8rem;
+              position: relative;
+              overflow: hidden;
+              img{
+                position: absolute;
+                right: 0;
+                left: 0;
+                width: 100%;
+            }
+          }
+        }
+        .priceDiv{
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          height: 8rem;
+          .btnGroup{
+            margin-top: 10px;
+          }
+        }
+      }
+    }
+    .allDiv{
+      margin: 20px 0;
+      background-color: #e0e0e0;
+      // padding: 10px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+  }
+  .kanbanStyle{
+    margin-bottom: 25px;
+    .kanbanItem{
+      // margin-bottom: 15px;
+      padding: 10px;
+      // border: 1px dashed #dcdcdc;
+      .itemContent{
+        width: 100%;
+        margin-top: 10px;
+        display: flex;
+        flex-wrap: wrap;
+        .itemDiv{
+          // background-color: #e0e0e0;
+          width: 9.5rem;
+          height: 9.5rem;
+          display: flex;
+          margin: 0 5px 5px 0;
+          padding: 10px 5px;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          p{
+            padding: 5px;
+            font-weight: bold;
+          }
+        }
+      }
+      .lookMore{
+        font-weight: bold;
+        padding: 5px 0;
+        width: 100%;
+        text-align: center;
+        p{
+          cursor: pointer;
+        }
+      }
+    }
+    }
+}

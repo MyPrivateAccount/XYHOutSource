@@ -1,0 +1,75 @@
+//action路由
+export const ACTION_ROUTE = 'PrivilegeManagerIndex';
+//区域字典
+export const DIC_GET_AREA = 'DIC_GET_AREA';//获取片区信息
+export const DIC_GET_AREA_COMPLETE = 'DIC_GET_AREA_COMPLETE';
+
+//组织结构
+export const ORG_DATA_GET = 'ORG_DATA_GET';
+export const ORG_DATA_UPDATE = 'ORG_DATA_UPDATE';
+export const ORG_DATA_SAVE = 'ORG_DATA_SAVE';
+export const ORG_DATA_DELETE = 'ORG_DATA_DELETE';
+export const ORG_NODE_ADD = 'ORG_NODE_ADD';
+export const ORG_NODE_EDIT = 'ORG_NODE_EDIT';
+export const ORG_DIALOG_CLOSE = 'ORG_DIALOG_CLOSE';
+export const ORG_NODE_SELECTED = 'ORG_NODE_SELECTED';
+export const ORG_GET_PERMISSION_TREE = 'ORG_GET_PERMISSION_TREE';//获取有权限的部门树
+export const ORG_GET_PERMISSION_TREE_UPDATE = 'ORG_GET_PERMISSION_TREE_UPDATE';
+
+//员工操作
+export const EMP_ADD = 'EMP_ADD';
+export const EMP_EDIT = 'EMP_EDIT';
+export const EMP_SAVE = 'EMP_SAVE';
+export const EMP_DIALOG_CLOSE = 'EMP_DIALOG_CLOSE';
+export const EMP_GET_LIST = 'EMP_GET_LIST';
+export const EMP_LIST_UPDATE = 'EMP_GET_LIST_UPDATE';
+export const EMP_DELETE = 'EMP_DELETE';
+export const EMP_GET_PRIV_LIST = 'EMP_GET_PRIV_LIST';
+export const EMP_PRIV_LIST_UPDATE = 'EMP_PRIV_LIST_UPDATE';
+export const EMP_ROLE_EDIT = 'EMP_ROLE_EDIT';
+export const EMP_ROLE_SAVE = 'EMP_ROLE_SAVE';
+export const EMP_RESET_PWD = "EMP_RESET_PWD";//重置密码
+export const EMP_SEARCH = 'EMP_SEARCH';//员工搜索
+export const EMP_SERACH_COMPLETE = 'EMP_SERACH_COMPLETE';//
+//角色相关
+export const ROLE_ADD = 'ROLE_ADD';
+export const ROLE_EDIT = 'ROLE_EDIT';
+export const ROLE_SAVE = 'ROLE_SAVE';
+export const ROLE_DELETE = 'ROLE_DELETE';
+export const ROLE_DIALOG_CLOSE = 'ROLE_DIALOG_CLOSE';
+export const ROLE_SELECTED = 'ROLE_SELECTED';
+export const ROLE_GET_LIST = 'ROLE_GET_LIST';
+export const ROLE_LIST_UPDATE = 'ROLE_LIST_UPDATE';
+export const ROLE_TOOL_PRIVILEGE_ITEM_GET = 'ROLE_TOOL_PRIVILEGE_ITEM_GET';//获取所有权限项
+export const ROLE_TOOL_PRIVILEGE_ITEM_UPDATE = 'ROLE_TOOL_PRIVILEGE_UPDATE';//工具权限列表更新
+export const ROLE_TOOL_PRIVILEGE_ITEM_SELECTED = 'ROLE_TOOL_PRIVILEGE_ITEM_SELECTED';//权限项选择
+export const ROLE_PRIVILEGE_SAVE = 'PRIVILEGE_ROLE_PRIVILEGE_SAVE';//角色权限保存
+export const ROLE_PRIVILEGE_GET = 'PRIVILEGE_ROLE_PRIVILEGE_GET';//角色权限获取
+export const ROLE_PRIVILEGE_UPDATE = 'PRIVILEGE_ROLE_PRIVILEGE_UPDATE';//角色权限更新
+export const ROLE_PRIVILEGE_EDIT = 'ROLE_PRIVILEGE_EDIT';//角色权限界面编辑
+export const ROLE_APPLICATION_SAVE = 'ROLE_APPLICATION_SAVE';//角色应用保存
+
+//应用相关
+export const APP_ADD = 'APP_ADD';
+export const APP_EDIT = 'APP_EDIT';
+export const APP_DELETE = 'APP_DELETE';
+export const APP_DATA_SAVE = 'APP_DATA_SAVE';
+export const APP_DELETE_COMPLETE = 'APP_DELETE_COMPLETE';
+export const APP_DIALOG_CLOSE = 'APP_DIALOG_CLOSE';
+export const APP_LIST_GET = 'APP_LIST_GET';
+export const APP_LIST_UPDATE = 'APP_LIST_UPDATE';
+export const APP_PRIVILEGE_GET = 'APP_PRIVILEGE_GET';
+export const APP_PRIVILEGE_UPDATE = 'APP_PRIVILEGE_UPDATE';
+export const APP_EXPAND_CHANGE = 'APP_EXPAND_CHANGE';
+
+//权限相关
+export const PRIVILEGE_ADD = 'PRIVILEGE_ADD';
+export const PRIVILEGE_EDIT = 'PRIVILEGE_EDIT';
+export const PRIVILEGE_SAVE = 'PRIVILEGE_SAVE';
+export const PRIVILEGE_DELETE = 'PRIVILEGE_DELETE';
+export const PRIVILEGE_GET_LIST = 'PRIVILEGE_GET_LIST';
+export const PRIVILEGE_LIST_UPDATE = 'PRIVILEGE_LIST_UPDATE';
+export const PRIVILEGE_DIALOG_CLOSE = 'PRIVILEGE_DIALOG_CLOSE';
+//遮罩层
+export const SET_SEARCH_LOADING = 'SET_SEARCH_LOADING';
+

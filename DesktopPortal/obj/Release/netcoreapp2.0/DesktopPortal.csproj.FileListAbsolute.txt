@@ -1,0 +1,12 @@
+E:\work\XYH\xinyaohang\DesktopPortal\bin\Release\netcoreapp2.0\appsettings.json
+E:\work\XYH\xinyaohang\DesktopPortal\bin\Release\netcoreapp2.0\DesktopPortal.deps.json
+E:\work\XYH\xinyaohang\DesktopPortal\bin\Release\netcoreapp2.0\DesktopPortal.runtimeconfig.json
+E:\work\XYH\xinyaohang\DesktopPortal\bin\Release\netcoreapp2.0\DesktopPortal.runtimeconfig.dev.json
+E:\work\XYH\xinyaohang\DesktopPortal\bin\Release\netcoreapp2.0\DesktopPortal.dll
+E:\work\XYH\xinyaohang\DesktopPortal\bin\Release\netcoreapp2.0\DesktopPortal.pdb
+E:\work\XYH\xinyaohang\DesktopPortal\obj\Release\netcoreapp2.0\DesktopPortal.csproj.CoreCompileInputs.cache
+E:\work\XYH\xinyaohang\DesktopPortal\obj\Release\netcoreapp2.0\DesktopPortal.AssemblyInfoInputs.cache
+E:\work\XYH\xinyaohang\DesktopPortal\obj\Release\netcoreapp2.0\DesktopPortal.AssemblyInfo.cs
+E:\work\XYH\xinyaohang\DesktopPortal\obj\Release\netcoreapp2.0\DesktopPortal.dll
+E:\work\XYH\xinyaohang\DesktopPortal\obj\Release\netcoreapp2.0\DesktopPortal.pdb
+E:\work\XYH\xinyaohang\DesktopPortal\obj\Release\netcoreapp2.0\DesktopPortal.csprojResolveAssemblyReference.cache

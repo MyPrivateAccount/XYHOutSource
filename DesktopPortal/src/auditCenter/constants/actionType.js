@@ -1,0 +1,26 @@
+export const ACTION_ROUTE = "AuditIndex";
+
+//遮罩层
+export const SET_SEARCH_LOADING = 'SET_SEARCH_LOADING';//获取待审核列表
+//审核处理
+export const GET_AUDIT_LIST = 'GET_AUDIT_LIST';//获取待审核列表
+export const GET_AUDIT_LIST_COMPLETE = 'GET_AUDIT_LIST_COMPLETE';
+export const OPEN_AUDIT_DETAIL = 'OPEN_AUDIT_DETAIL';//打开审核详细
+export const CLOSE_AUDIT_DETAIL = 'CLOSE_AUDIT_DETAIL';//关闭审核详细
+export const GET_AUDIT_DETAIL = 'GET_AUDIT_DETAIL'//获取审核详细数据
+export const GET_AUDIT_DETAIL_COMPLETE = 'GET_AUDIT_DETAIL_COMPLETE'//获取审核详细数据
+export const SAVE_AUDIT = 'SAVE_AUDIT';//审核结果保存
+export const SAVE_CONDITION = 'SAVE_CONDITION';//保存查询条件
+export const GET_AUDIT_HISTORY = 'GET_AUDIT_HISTORY';//获取当前记录的审核历史
+export const GET_AUDIT_HISTORY_COMPLETE = 'GET_AUDIT_HISTORY_COMPLETE';//获取当前记录的审核历史
+export const GET_NO_READ_COUNT = "GET_NO_READ_COUNT";//获取知会未读总数
+export const GET_NO_READ_COUNT_COMPLETE = "GET_NO_READ_COUNT_COMPLETE";
+//页面切换处理
+export const CHANGE_MENU = 'CHANGE_MENU';//菜单切换
+//房源动态处理
+export const GET_UPDATE_RECORD_DETAIL = 'GET_UPDATE_RECORD_DETAIL';//获取动态详细
+export const GET_UPDATE_RECORD_DETAIL_COMPLETE = 'GET_UPDATE_RECORD_DETAIL_COMPLETE';//
+export const GET_BUILDING_DETAIL = 'XYH_GET_BUILDING_DETAIL';//楼盘详细
+export const GET_BUILDING_DETAIL_COMPLETE = 'XYH_GET_BUILDING_COMPLETE';
+export const GET_BUILDING_SHOPS = 'GET_BUILDING_SHOPS';//获取楼盘商铺列表
+export const GET_BUILDING_SHOPS_COMPLETE = 'GET_BUILDING_SHOPS_COMPLETE';//获取楼盘商铺详细
