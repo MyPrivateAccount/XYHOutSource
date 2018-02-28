@@ -68,11 +68,12 @@ const homeStyle = {
             }
             return hasPermission;
         }
+        //当前页面区域替换
         getContentPage() {
             let navigator = this.props.navigator;
             if (navigator.length > 0) {
                 if (navigator[navigator.length - 1].type === "customerDetail") {
-                    //return <CustomerDetail />;
+                    //return <CustomerDetail />; 
                 }
             }
            // return <ContentPage curMenuID={this.state.activeMenu.menuID} />
