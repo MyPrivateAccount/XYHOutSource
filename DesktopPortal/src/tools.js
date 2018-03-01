@@ -75,6 +75,13 @@ const tools = [
         component: ()=>createLoadableComponent(import('./personnelSystem')),//() => createLoadableComponent(import('./personnelSystem')),
         cache: null,
         icon: <Icon type="user" className="icon"/>
+    },
+    {
+        id:'contractManagement',//人事系统
+        mutipleInstance:false,
+        component: ()=>createLoadableComponent(import('./contractManagement')),//() => createLoadableComponent(import('./personnelSystem')),
+        cache: null,
+        icon: <Icon type="book" className="icon"/>
     }
 ]
 

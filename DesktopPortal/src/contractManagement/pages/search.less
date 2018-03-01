@@ -1,0 +1,131 @@
+@searchBoxHeight: 2.5rem;
+@borderColor: #e0e0e0;
+
+.searchBox {
+    .ant-select-selection-selected-value {
+        font-size: 1rem;
+    }
+
+    input[type=text] {
+        height: @searchBoxHeight;
+    }
+
+    .searchButton {
+        height: @searchBoxHeight;
+        vertical-align: top;
+    }
+
+    p {
+        margin: 15px 0;
+        margin-left:-5px;
+        color: #999999;
+    }
+
+    padding: 5px;
+}
+
+.searchCondition {
+    border: 1px solid @borderColor;
+    padding: 5px 0;
+    min-height: 50px;
+    font-size: 12px;
+
+    .ant-tag {
+        color: red;
+    }
+
+    .ant-checkbox-group {
+        display: inline-block;
+        vertical-align: middle;
+
+        .ant-checkbox-wrapper {
+            width: 100px;
+            margin-left: 0;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+    }
+
+    .importantInfo {
+        color: red;
+    }
+
+    .normalInfo {
+        border-bottom: 1px dashed #999;
+        margin: 10px;
+        padding: 0px 12px 10px 0;
+
+        .levelBtnActive {
+            margin-bottom: 10px;
+            margin-right: 10px;
+            border: 0;
+        }
+
+        .levelBtnDefault {
+            margin-bottom: 10px;
+            margin-right: 10px;
+            border:0;
+            //background-color: #64bce3;
+            opacity: 0.5;
+        }
+
+        .ant-select {
+            margin-right: 10px;
+            width: 100px;
+        }
+        label{
+            margin:0 10px;
+            font-size: 12px;
+        }
+        .ant-calendar-picker{
+            width:130px;
+        }
+        .ant-radio-button-wrapper{
+            margin:0
+        }
+    }
+}
+
+#searchResult{
+    margin-top:20px;
+    #adjustCustomer{
+        background-color: #d7d7d7;
+        width: 100%;
+        margin-top: -40px;
+        float: left;
+    }
+}
+
+#customerInfo{
+    .ant-row{
+        margin:5px 4px;
+        padding:5px 10px;
+        h3{
+            margin-left:-10px;
+            padding:0;
+        }
+    }
+    .followUpInfo{
+        border-radius: 5px;
+        border:1px solid #ccc;
+        margin-bottom:5px;
+        .ant-row{
+            padding:0;
+            margin:5px;
+        }
+    }
+    .ant-btn{margin:3px;}
+}
+.adjustCustomer{
+    .ant-row{
+        padding:0;
+        margin:10px;
+    }
+    .ant-form-item{
+        margin:0;
+    }
+}
+.ant-select-selection-selected-value{
+    color:#222;
+}
