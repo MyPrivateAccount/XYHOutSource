@@ -188,4 +188,4 @@ function mapStateToProps(state, props) {
         oidc: state.oidc,
     }
 }
-export default withReducer(reducers, 'ContractManagementIndex', {mapExtraState: (state, rootState) => ({oidc: rootState.oidc})})(connect(mapStateToProps)(ContractManagementIndex));
+export default withReducer(reducers, 'ContractManagementIndex', {mapExtraState: (state, rootState) => ({oidc: rootState.oidc,judgePermissions: rootState.app.judgePermissions})})(connect(mapStateToProps)(ContractManagementIndex));

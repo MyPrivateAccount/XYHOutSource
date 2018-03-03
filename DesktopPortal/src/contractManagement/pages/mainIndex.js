@@ -21,6 +21,8 @@ class MainIndex extends Component {
 
        //是否有权限
     hasPermission(buttonInfo) {
+        console.log('buttonInfo:', buttonInfo);
+        console.log('judgePermissions:', this.props.judgePermissions);
         let hasPermission = false;
         if (this.props.judgePermissions && buttonInfo.requirePermission) {
             for (let i = 0; i < buttonInfo.requirePermission.length; i++) {
