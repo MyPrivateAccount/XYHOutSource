@@ -8,8 +8,8 @@ import SearchResult from './searchResult';
 
 const buttonDef = [
     { buttonID:"record", buttonName:"录入", icon:'', type:'primary', size:'small', requirePermission:['RECORD_FUC']},
-    { buttonID:"outport", buttonName:"导出", icon:'', type:'primary', size:'small', requirePermission:['RECORD_FUC']},
-    { buttonID:"uploadFile", buttonName:"附件上传", icon:'', type:'primary', size:'small',requirePermission:['RECORD_FUC']},
+    { buttonID:"export", buttonName:"导出", icon:'', type:'primary', size:'small', requirePermission:['EXPORT_CONTRACT']},
+    { buttonID:"uploadFile", buttonName:"附件上传", icon:'', type:'primary', size:'small',requirePermission:['UPLOAD_FILE']},
 ];
 class MainIndex extends Component {
     state = {
@@ -39,7 +39,7 @@ class MainIndex extends Component {
         console.log('录入');
     }
     //导出
-    onClickOutPort = (e) =>{
+    onClickExPort = (e) =>{
         
     }
     //文件上传
@@ -50,8 +50,8 @@ class MainIndex extends Component {
         switch(buttonID){
             case 'record':
                 return this.onClickRecord;
-            case 'outport':
-                return this.onClickOutPort;
+            case 'export':
+                return this.onClickExPort;
             case 'uploadFile':
                 return this.onClickUploadFile;
             default:
