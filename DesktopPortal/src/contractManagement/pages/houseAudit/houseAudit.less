@@ -1,0 +1,47 @@
+.houseAudit{
+  .itemStyle{
+    display: flex;
+    margin-bottom: 10px;
+    .borderDiv{
+      border: 1px solid #e0e0e0;
+      .listText{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        height: 8rem;
+        padding: 15px 5px;
+        p {
+          padding: 0 10px;
+        }
+      }
+      .listLeft{
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        .imgDiv{
+            width: 10rem;
+            height: 8rem;
+            position: relative;
+            overflow: hidden;
+            img{
+              position: absolute;
+              right: 0;
+              left: 0;
+              width: 100%;
+          }
+        }
+      }
+      .priceDiv{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 8rem;
+        .text{
+          padding: 10px;
+          font-weight: bold;
+        }
+      }
+    }
+  }
+}
