@@ -24,6 +24,14 @@ const ToolMenuPermissionDefine = [
         permissions: [
             { id: 'RECOMMEND_REGION', name: '大区推荐' },
             { id: 'RECOMMEND_FILIALE', name: '公司推荐' }]
+    },
+    {//合同管理
+        id:'contractManagement',
+        permissions:[
+            {id:'RECORD_FUC', name:'录入'},
+            {id:'UPLOAD_FILE', name:'上传附件'},
+            {id:'OUTPORT_CONTRACT', name:'导出'}
+        ]
     }
 ]
 

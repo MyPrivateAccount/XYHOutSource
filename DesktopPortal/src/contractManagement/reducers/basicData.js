@@ -122,10 +122,10 @@ reducerMap[actionTypes.DIC_GET_ORG_LIST_COMPLETE] = function (state, action) {
             org.label = org.organizationName;
             org.value = org.id;
         });
-        // console.log(action.payload.extension, "???/s")
+        console.log(action.payload.extension, "???/s")
         orgInfo = formatOrgData(action.payload.extension, action.payload.parentId, 0);
     }
-    // console.log("格式化后的部门:", orgInfo.orgList);
+    console.log("格式化后的部门:", orgInfo.orgList);
     return Object.assign({}, state, {orgInfo: {orgList: orgInfo.orgList || [], levelCount: orgInfo.levelCount || 0}});
 }
 //部门用户获取完成

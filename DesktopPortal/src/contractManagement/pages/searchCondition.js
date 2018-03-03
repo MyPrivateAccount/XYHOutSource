@@ -319,7 +319,7 @@ class SearchCondition extends Component {
                 <div className='searchCondition'>
                     <Row>
                         <Col span={12}>
-                            <span>所有客户></span>
+                            <span>所有合同></span>
                             <span> {this.state.filterTags.map((tag, i) => <Tag closable onClose={e => this.handleTagClose(tag, i)} key={tag.label + i}>{tag.label}</Tag>)}</span>
                         </Col>
                         <Col span={4}>
@@ -327,146 +327,23 @@ class SearchCondition extends Component {
                         </Col>
                     </Row>
                     <div style={{display: expandSearchCondition ? "block" : "none"}}>
-                        {/**
-                            * 本业注释内容为租壹屋字段
-                            */}
-                        {/*<Row className='normalInfo importantInfo'>
-                                <Col span={24}>
-                                    <b>业态规划：</b>
-                                    <Checkbox.Group onChange={(e) => this.handleCheckChange(e, 'tradePlannings')} value={this.state.condition.tradePlannings}>
-                                        {
-                                            tradePlannings.map((tp, i) => <Checkbox key={tp.key} value={tp.value}>{tp.key}</Checkbox>)
-                                        }
-                                    </Checkbox.Group>
-                                </Col>
-                            </Row>
-                            <Row className='normalInfo importantInfo'>
-                                <Col span={24}>
-                                    <b>经营类型：</b>
-                                    <Checkbox.Group onChange={(e) => this.handleCheckChange(e, 'businessTypes')} value={this.state.condition.businessTypes}>
-                                        {
-                                            businessTypes.map(tp => <Checkbox key={tp.key} value={tp.value}>{tp.key}</Checkbox>)
-                                        }
-                                    </Checkbox.Group>
-                                </Col>
-                            </Row>
-                            <Row className='normalInfo importantInfo'>
-                                <Col span={24}>
-                                    <b>战略合作：</b>
-                                    <RadioGroup onChange={this.handleCooperateChange} value={this.state.condition.isCooperate}>
-                                        <Radio value={true}>是</Radio>
-                                        <Radio value={false}>否</Radio>
-                                    </RadioGroup>
-                                </Col>
-                            </Row> */}
-                        <Row className="normalInfo">
-                            <Col span={24}>
-                                <label>客户等级：</label>
-                                <Button key="-1" size='small' type="primary" className={this.state.condition.customerLevel === null ? 'levelBtnActive' : 'levelBtnDefault'} onClick={(e) => this.handleCustomerLevelChange({value: ""}, 'customerLevel')}>不限</Button>
-                                {
-                                    customerLevels.map(level =>
-                                        <Button key={level.key} size='small' type="primary" className={this.state.condition.customerLevel === level.value ? 'levelBtnActive' : 'levelBtnDefault'}
-                                            onClick={(e) => this.handleCustomerLevelChange(level, 'customerLevel')}>
-                                            {level.key}</Button>)
-                                }
-                                {
-                                    this.state.condition.customerLevel === "1" ? <label>需求等级：</label>
-                                        : null
-                                }
-                                {
-                                    this.state.condition.customerLevel === "1" ? requirementLevels.map((level, i) =>
-                                        <Button key={level.key + i} size='small' type="primary" className={this.state.condition.requirementLevel === level.value ? 'levelBtnActive' : 'levelBtnDefault'} onClick={(e) => this.handleCustomerLevelChange(level, 'requirementLevel')}>
-                                            {level.key}</Button>) : null
-                                }
-                            </Col>
-                        </Row>
-                        {
-                            activeMenu !== "menu_have_deal" && activeMenu !== "menu_invalid" ? <Row className="normalInfo">
-                                <Col span={24}>
-                                    <label>商机阶段：</label>
-                                    <Checkbox.Group onChange={(e) => this.handleCheckChange(e, 'businessChance')} value={this.state.condition.businessChance}>
-                                        {
-                                            businessChanceDefine.map(b =>
-                                                <Checkbox key={b.key} value={b.value}>{b.key}</Checkbox>
-                                            )
-                                        }
-                                    </Checkbox.Group>
-                                </Col>
-                            </Row> : null
-                        }
-                        {
-                            activeMenu === "menu_invalid" ? <Row className="normalInfo">
-                                <Col span={24}>
-                                    <label>无效类型：</label>
-                                    <Checkbox.Group onChange={(e) => this.handleCheckChange(e, 'invalidTypes')} value={this.state.condition.invalidTypes}>
-                                        {
-                                            invalidResions.map(b =>
-                                                <Checkbox key={b.key} value={b.value}>{b.key}</Checkbox>
-                                            )
-                                        }
-                                    </Checkbox.Group>
-                                </Col>
-                            </Row> : null
-                        }
-                        <Row className="normalInfo">
-                            <Col span={24}>
-                                <label>客户来源：</label>
-                                {
-                                    <Checkbox.Group onChange={(e) => this.handleCheckChange(e, 'customerSource')} value={this.state.condition.customerSource}>
-                                        {
-                                            customerSource.map(tp => <Checkbox key={tp.key} value={tp.value}>{tp.key}</Checkbox>)
-                                        }
-                                    </Checkbox.Group>
-                                }
-                            </Col>
-                        </Row>
-                        <Row className="normalInfo">
-                            <Col span={24}>
-                                <label>意向区域： </label>
-                                <Select value={this.state.condition.firstAreaKey} onChange={(value) => this.handleAreaChange(value, '1')}>
-                                    <Option key="0">不限</Option>
-                                    {
-                                        this.state.firstAreaOption.map(city => <Option key={city.value}>{city.label}</Option>)
-                                    }
-                                </Select>
-                                <Select value={this.state.condition.secondAreaKey} onChange={(value) => this.handleAreaChange(value, '2')}>
-                                    <Option key="0">不限</Option>
-                                    {
-                                        this.state.secondAreaOption.map((item) => <Option key={item.value}>{item.label}</Option>)
-                                    }
-                                </Select>
-                                <Select value={this.state.condition.thirdAreaKey} onChange={(value) => this.handleAreaChange(value, '3')}>
-                                    <Option key="0">不限</Option>
-                                    {
-                                        this.state.thirdAreaOption.map((item) => <Option key={item.value}>{item.label}</Option>)
-                                    }
-                                </Select>
-
-                            </Col>
-                        </Row>
-                        <Row className="normalInfo">
-                            <Col>
-                                <label>意向价格：</label><InputNumber min={0} max={100} formatter={value => `¥${value}`} value={this.state.condition.priceStart} onChange={(e) => this.handleNumberChange(e, 'priceStart')} />-<InputNumber min={0} max={100} formatter={value => `¥${value}`} value={this.state.condition.priceEnd} onChange={(e) => this.handleNumberChange(e, 'priceEnd')} />
-                                <label>意向面积：</label><InputNumber min={0} max={100} formatter={value => `${value}㎡`} value={this.state.condition.acreageStart} onChange={(e) => this.handleNumberChange(e, 'acreageStart')} />-<InputNumber min={0} max={100} formatter={value => `${value}㎡`} value={this.state.condition.acreageEnd} onChange={(e) => this.handleNumberChange(e, 'acreageEnd')} />
-                                {activeMenu !== "menu_invalid" ?
-                                    <label><span style={{marginRight: '10px'}}>跟进日期：</span>
-                                        <DatePicker disabledDate={this.disabledDate} value={followUpStart} onChange={(e, dateString) => this.handleCreateTime(dateString, 'followUpStart')} />- <DatePicker disabledDate={this.disabledDate} value={followUpEnd} onChange={(e, dateString) => this.handleCreateTime(dateString, 'followUpEnd')} />
-                                    </label> : null}
-                            </Col>
-                        </Row>
-                        <Row className="normalInfo">
-                            <Col>
-                                {(activeMenu === "menu_index" || activeMenu === "menu_invalid") ? <label><span style={{marginRight: '10px'}}>录入时间：</span><DatePicker disabledDate={this.disabledDate} value={createDateStart} onChange={(e, dateString) => this.handleCreateTime(dateString, 'createDateStart')} />- <DatePicker disabledDate={this.disabledDate} value={createDateEnd} onChange={(e, dateString) => this.handleCreateTime(dateString, 'createDateEnd')} /></label> : null}
-                                {activeMenu !== "menu_invalid" ?
-                                    <label><span style={{marginRight: '10px'}}>未跟天数进排序：</span>
-                                        <Radio.Group onChange={this.handleOrderChange} defaultValue={false} value={this.state.condition.orderRule}>
-                                            <Radio.Button value={true}><Icon type="arrow-up" />由少至多</Radio.Button>
-                                            <Radio.Button value={false}><Icon type="arrow-down" />由多至少</Radio.Button>
-                                        </Radio.Group>
-                                    </label> : null}
-                            </Col>
-                        </Row>
                     </div>
+                        {/*这个条件后续可能会要
+                            <Row className="normalInfo">
+                                <Col>
+                                    {(activeMenu === "menu_index" || activeMenu === "menu_invalid") ? <label><span style={{marginRight: '10px'}}>录入时间：</span><DatePicker disabledDate={this.disabledDate} value={createDateStart} onChange={(e, dateString) => this.handleCreateTime(dateString, 'createDateStart')} />- <DatePicker disabledDate={this.disabledDate} value={createDateEnd} onChange={(e, dateString) => this.handleCreateTime(dateString, 'createDateEnd')} /></label> : null}
+                                    {activeMenu !== "menu_invalid" ?
+                                        <label><span style={{marginRight: '10px'}}>未跟天数进排序：</span>
+                                            <Radio.Group onChange={this.handleOrderChange} defaultValue={false} value={this.state.condition.orderRule}>
+                                                <Radio.Button value={true}><Icon type="arrow-up" />由少至多</Radio.Button>
+                                                <Radio.Button value={false}><Icon type="arrow-down" />由多至少</Radio.Button>
+                                            </Radio.Group>
+                                        </label> : null}
+                                </Col>
+                            </Row>
+                        </div>
+                        */
+                        }
                 </div>
                 {activeMenu === "menu_index" ? <p style={{marginBottom: '10px'}}>目前已为你筛选出<b>{dataSourceTotal}</b>条客户信息（已为你去掉重客）<Checkbox onChange={this.handleViewRepeatChange}><b>查看重客</b></Checkbox></p> : null}
             </div>

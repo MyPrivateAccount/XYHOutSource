@@ -34,7 +34,7 @@ class ContractManagementIndex extends Component {
         activeMenu: menuDefine[0],
     }
     componentWillMount() {
-        // console.log("当前用户所在部门:", this.props.oidc);
+        console.log("当前用户所在部门:", this.props.oidc);
         let userInfo = this.props.oidc.user.profile;
         this.props.dispatch(getOrgList(userInfo.Organization));
         if (userInfo.Organization !== '0') {
@@ -73,17 +73,63 @@ class ContractManagementIndex extends Component {
     getContentPage() {
         let navigator = this.props.navigator;
         if (navigator.length > 0) {
+            //这个地方添加各个分页的导航信息，录入，以及上传附件
             if (navigator[navigator.length - 1].type === "customerDetail") {
                 return <CustomerDetail />;
             }
         }
         return <ContentPage curMenuID={this.state.activeMenu.menuID} />
     }
+    //获取当前选中部门的完整层级路径
+    getActiveOrgFullPath() {
+        let activeOrg = this.props.activeOrg || {};
+        let orgList = (this.props.orgInfo || {}).orgList || [];
+        let fullPath = activeOrg.organizationName;
+        if (activeOrg.id !== '0' && activeOrg.parentId) {
+            let parentOrg = this.getParentOrg(orgList, activeOrg.parentId);
+            console.log("parentOrgName::", parentOrg);
+            if (parentOrg) {
+                fullPath = parentOrg.organizationName + ">" + fullPath;
+            }
+            while (parentOrg != null) {
+                parentOrg = this.getParentOrg(orgList, parentOrg.parentId);
+                if (parentOrg) {
+                    fullPath = parentOrg.organizationName + ">" + fullPath;
+                }
+                else {
+                    break;
+                }
+            }
+
+        }
+        return fullPath;
+    }
+
+    getParentOrg(orgList, orgId) {
+        let org = null;
+        if (orgList && orgList.length > 0) {
+            for (let i = 0; i < orgList.length; i++) {
+                if (orgList[i].id === orgId) {
+                    org = orgList[i];
+                    break;
+                } else {
+                    if (orgList[i].children && orgList[i].children.length > 0) {
+                        let result = this.getParentOrg(orgList[i].children, orgId);
+                        if (result) {
+                            org = result;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        return org;
+    }
 
     render() {
         let navigator = this.props.navigator;
         let activeOrg = this.props.activeOrg;
-        // console.log(this.props.activeOrg, '我属于的部门')
+        console.log('我属于的部门:',this.props.activeOrg);
         return (
             <Layout className="page">
                 <Sider
@@ -97,7 +143,9 @@ class ContractManagementIndex extends Component {
                         inlineCollapsed={this.state.collapsed}
                         selectedKeys={[this.state.activeMenu.menuID]}
                         defaultSelectedKeys={["menu_index"]}>
-      
+                        <Menu.Item key='menu_org_select' style={{borderBottom: '1px solid #fff'}}>
+                            <span style={homeStyle.activeOrg}>当前部门：{this.getActiveOrgFullPath()}></span>
+                        </Menu.Item>
                         {menuDefine.map((menu, i) =>
 
                             <Menu.Item key={menu.menuID} style={{borderBottom: menu.menuID === "menu_invalid" ? '1px solid #fff' : 'none'}}>

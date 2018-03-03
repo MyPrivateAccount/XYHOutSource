@@ -1,4 +1,4 @@
-export const ACTION_ROUTE = "CustomerIndex";
+export const ACTION_ROUTE = "ContractManagementIndex";
 
 //字典项获取
 export const DIC_GET_PARLIST = 'DIC_GET_PARLIST';
