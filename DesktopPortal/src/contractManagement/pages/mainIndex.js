@@ -1,10 +1,11 @@
 import { connect } from 'react-redux';
-import { setLoadingVisible, saveSearchCondition, searchCustomer } from '../actions/actionCreator';
+import { setLoadingVisible, openAttachMent, openContractRecord, saveSearchCondition, searchCustomer } from '../actions/actionCreator';
 import React, { Component } from 'react';
 import { Input, Menu, Icon, Row, Col, Spin, Checkbox, Button } from 'antd';
+import {LoadAttatchMentPage} from './contentPage';
 import SearchCondition from './searchCondition';
 import SearchResult from './searchResult';
-
+import AttachMent from './mainIndex';
 
 const buttonDef = [
     { buttonID:"record", buttonName:"录入", icon:'', type:'primary', size:'small', requirePermission:['RECORD_FUC']},
@@ -21,8 +22,6 @@ class MainIndex extends Component {
 
        //是否有权限
     hasPermission(buttonInfo) {
-        console.log('buttonInfo:', buttonInfo);
-        console.log('judgePermissions:', this.props.judgePermissions);
         let hasPermission = false;
         if (this.props.judgePermissions && buttonInfo.requirePermission) {
             for (let i = 0; i < buttonInfo.requirePermission.length; i++) {
@@ -39,6 +38,7 @@ class MainIndex extends Component {
     //录入
     onClickRecord = (e) =>{
         console.log('录入');
+        this.props.dispatch(openContractRecord(0));
     }
     //导出
     onClickExPort = (e) =>{
@@ -46,7 +46,7 @@ class MainIndex extends Component {
     }
     //文件上传
     onClickUploadFile = (e)=>{
-
+        this.props.dispatch(openAttachMent(1));
     }
     handleClickFucButton = (buttonID) =>{
         switch(buttonID){

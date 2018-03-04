@@ -6,9 +6,11 @@ import reducers from './reducers';
 import ContentPage from './pages/contentPage';
 import {sagaMiddleware} from '../';
 import rootSaga from './saga/rootSaga';
-import {closeCustomerDetail, getOrgList, getOrgDetail, openOrgSelect, changeCustomerMenu} from './actions/actionCreator';
+import {closeAttachMent, closeContractReord, getOrgList, getOrgDetail, openOrgSelect,closeOrgSelect, changeCustomerMenu} from './actions/actionCreator';
 import OrgSelect from './pages/orgSelect/orgSelect';
 import CustomerDetail from './pages/customerDetail';
+import AttchMent from './pages/attachMent';
+import ContractRecord from './pages/contractRecord';
 sagaMiddleware.run(rootSaga);
 
 const {Header, Sider, Content} = Layout;
@@ -24,7 +26,13 @@ const homeStyle = {
     },
     activeOrg: {
         float: 'right',
-        marginRight: '10px'
+        marginRight: '10px',
+
+    },
+    curOrgStype:{
+        marginLeft: '10px',
+        overflow: 'hidden', 
+        textOverflow: 'ellipsis'
     }
 }
 
@@ -40,6 +48,7 @@ class ContractManagementIndex extends Component {
         if (userInfo.Organization !== '0') {
             this.props.dispatch(getOrgDetail(userInfo.Organization));
         }
+        this.props.dispatch(closeOrgSelect());
     }
     toggle = () => {
         this.setState({
@@ -67,16 +76,23 @@ class ContractManagementIndex extends Component {
     //面包屑导航处理
     handleNavClick = (e) => {
         // console.log("导航处理:", e);
-        this.props.dispatch(closeCustomerDetail());
+        let navigator = this.props.navigator;
+        if(navigator.length > 0){
+            if(navigator[navigator.length -1].type === 'record'){
+                this.props.dispatch(closeContractReord());
+            }else if(navigator[navigator.length -1].type === 'attachMent')
+                this.props.dispatch(closeAttachMent());
+        }
+
     }
 
     getContentPage() {
         let navigator = this.props.navigator;
-        if (navigator.length > 0) {
-            //这个地方添加各个分页的导航信息，录入，以及上传附件
-            if (navigator[navigator.length - 1].type === "customerDetail") {
-                return <CustomerDetail />;
-            }
+        if(navigator.length > 0){
+            if(navigator[navigator.length -1].type === 'record'){
+                return <ContentPage curMenuID='menu_record'/>;
+            }else if(navigator[navigator.length -1].type === 'attachMent')
+            return <ContentPage curMenuID='menu_attachMent'/>;
         }
         return <ContentPage curMenuID={this.state.activeMenu.menuID} />
     }
@@ -130,6 +146,7 @@ class ContractManagementIndex extends Component {
         let navigator = this.props.navigator;
         let activeOrg = this.props.activeOrg;
         console.log('我属于的部门:',this.props.activeOrg);
+        let fullPath = this.getActiveOrgFullPath();
         return (
             <Layout className="page">
                 <Sider
@@ -144,7 +161,7 @@ class ContractManagementIndex extends Component {
                         selectedKeys={[this.state.activeMenu.menuID]}
                         defaultSelectedKeys={["menu_index"]}>
                         <Menu.Item key='menu_org_select' style={{borderBottom: '1px solid #fff'}}>
-                            <span style={homeStyle.activeOrg}>当前部门：{this.getActiveOrgFullPath()}></span>
+                            <span style={homeStyle.curOrgStype} title={fullPath}>当前部门：{fullPath}></span>
                         </Menu.Item>
                         {menuDefine.map((menu, i) =>
 
@@ -163,7 +180,7 @@ class ContractManagementIndex extends Component {
                                 <Breadcrumb separator=">" style={{fontSize: '1.2rem'}}>
                                     <Breadcrumb.Item onClick={this.handleNavClick} key='home' style={homeStyle.navigator}>{this.state.activeMenu.displayName}</Breadcrumb.Item>
                                     {
-                                        navigator.map(nav => <Breadcrumb.Item key={nav.id}>{nav.name}</Breadcrumb.Item>)
+                                        navigator.map((nav,i)=> <Breadcrumb.Item key={i}>{nav.name}</Breadcrumb.Item>)
                                     }
                                 </Breadcrumb>
                             </Header>
@@ -185,6 +202,7 @@ function mapStateToProps(state, props) {
         navigator: state.search.navigator,
         activeOrg: state.search.activeOrg,
         showOrgSelect: state.search.showOrgSelect,
+        orgInfo: state.basicData.orgInfo,
         oidc: state.oidc,
     }
 }
