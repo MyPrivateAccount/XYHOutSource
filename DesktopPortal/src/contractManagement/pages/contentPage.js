@@ -14,7 +14,7 @@ const LoadAttatchMentPage = Loadable({
 });
 
 const LoadContractRecordPage = Loadable({
-    loader: () => null,//import('./attachMent'),
+    loader: () => import('./contractRecord'),
     loading: () => <LoadableLoading />
 });
 
@@ -46,7 +46,7 @@ function ContentPage(props) {
         return <LoadableIndexPage />;
     }
     else if (curMenuID === "menu_record") {
-        return <LoadableSelectOrgPage />;
+        return <LoadContractRecordPage />; 
     }
     else if (curMenuID === "menu_attachMent") {
         return <LoadAttatchMentPage />;
