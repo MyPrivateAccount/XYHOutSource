@@ -29,6 +29,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XYHShopsInterfacePlugin", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XYHShopsPlugin", "XYHShopsPlugin\XYHShopsPlugin.csproj", "{F1725F98-B564-4CA4-A397-62B0BA7E6F48}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XYHContractPlugin", "XYHContractPlugin\XYHContractPlugin.csproj", "{4C77BC3B-2CB2-4F1D-9C93-E4B89B179F99}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -71,6 +73,10 @@ Global
 		{F1725F98-B564-4CA4-A397-62B0BA7E6F48}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F1725F98-B564-4CA4-A397-62B0BA7E6F48}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F1725F98-B564-4CA4-A397-62B0BA7E6F48}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4C77BC3B-2CB2-4F1D-9C93-E4B89B179F99}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4C77BC3B-2CB2-4F1D-9C93-E4B89B179F99}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4C77BC3B-2CB2-4F1D-9C93-E4B89B179F99}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4C77BC3B-2CB2-4F1D-9C93-E4B89B179F99}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -82,6 +88,7 @@ Global
 		{DFE2AC48-1930-49A5-ABC3-0F8C651DFB72} = {AA8E828A-2B34-44D9-A4FD-4F934989907D}
 		{55B7D90D-2922-4E44-B844-4CB2356092AB} = {AA8E828A-2B34-44D9-A4FD-4F934989907D}
 		{F1725F98-B564-4CA4-A397-62B0BA7E6F48} = {AA8E828A-2B34-44D9-A4FD-4F934989907D}
+		{4C77BC3B-2CB2-4F1D-9C93-E4B89B179F99} = {AA8E828A-2B34-44D9-A4FD-4F934989907D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C8E1D167-07F5-47F3-A887-AC90612B85F9}
