@@ -33,10 +33,12 @@ class OrgSelect extends Component {
     getChildOrg(orgInfo) {
         if (orgInfo) {
             if (orgInfo.children.length === 0) {
+                console.log('length===0:', orgInfo.organizationName);
                 return (<Menu.Item key={orgInfo.id}>
                     <Checkbox onChange={(e) => this.handleOrgChecked(orgInfo, e.target.checked)}>{orgInfo.organizationName}</Checkbox>
                 </Menu.Item>)
             } else {
+                console.log('length !==0:', orgInfo.organizationName);
                 return (<SubMenu key={orgInfo.id} title={<span><Checkbox onChange={(e) => this.handleOrgChecked(orgInfo, e.target.checked)}></Checkbox> {orgInfo.organizationName}</span>}>
                     {
                         orgInfo.children.map(org => this.getChildOrg(org))
@@ -50,7 +52,7 @@ class OrgSelect extends Component {
         const orgList = this.props.orgInfo.orgList;
         const levelsCount = this.props.orgInfo.levelCount;
         let span = Math.round(24 / levelsCount);
-        // console.log("部门选择:", orgList, span);
+        //console.log("部门选择:", orgList, span);
         return (
             <div style={itemStyle.itemBorder}>
                 <Row style={itemStyle.autoHeight}>

@@ -77,7 +77,7 @@ const tools = [
         icon: <Icon type="user" className="icon"/>
     },
     {
-        id:'contractManagement',//人事系统
+        id:'contractManagement',//合同管理
         mutipleInstance:false,
         component: ()=>createLoadableComponent(import('./contractManagement')),//() => createLoadableComponent(import('./personnelSystem')),
         cache: null,

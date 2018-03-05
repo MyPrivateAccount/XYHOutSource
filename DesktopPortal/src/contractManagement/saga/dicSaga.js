@@ -58,9 +58,10 @@ export function* getAllChildOrgsAsync(state) {
     // let result = { isOk: false, extension: [], msg: '部门数据获取失败！' };
     let result = {}
     let url = WebApiConfig.dic.OrgList + state.payload;
+    console.log('getAllChildOrgsAsync,url:', url);
     try {
         const orgResult = yield call(ApiClient.get, url);
-        // console.log(orgResult, '获取所有子部门', state.payload)
+        console.log(orgResult, '获取所有子部门', state.payload)
         getApiResult(orgResult, result);
         if (result.isOk) {
             yield put({ 
@@ -83,7 +84,7 @@ export function* getUserOrgAsync(state) {
     // let result = { isOk: false, extension: {}, msg: '部门详细数据获取失败！' };
     let result = {}
     let url = WebApiConfig.dic.OrgDetail + state.payload;
-    // console.log('部门详细数据url', url);
+    console.log('部门详细数据url', url);
     try {
         const orgResult = yield call(ApiClient.get, url);
         // console.log(orgResult, '部门详细数据')

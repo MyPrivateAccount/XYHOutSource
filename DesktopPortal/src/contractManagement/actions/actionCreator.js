@@ -34,3 +34,20 @@ export const searchCustomer = createAction(actionTypes.SEARCH_CUSTOMER);
 export const saveSearchCondition = createAction(actionTypes.SAVE_SEARCH_CONDITION);
 export const getRepeatJudgeInfo = createAction(actionTypes.GET_REPEAT_JUDGE_INFO);
 export const removeAdjustItem = createAction(actionTypes.REMOVE_ADJUST_REQUEST_ITEM);
+
+
+//文件上传
+export const openAttachMent = createAction(actionTypes.OPEN_ATTACHMENT);
+export const closeAttachMent = createAction(actionTypes.CLOSE_ATTACHMENT);
+export const uploadAttachMentList = createAction(actionTypes.UPLOAD_ATTCHMENT_LIST);
+export const uploadAttachMentListComplete = createAction(actionTypes.UPLOAD_ATTCHMENT_LIST_COMPLETE);
+
+//合同录入
+export const openContractRecord = createAction(actionTypes.OPEN_RECORD);
+export const closeContractReord = createAction(actionTypes.CLOSE_RECORD);
+export const subMitContractInfo = createAction(actionTypes.SUBMIT_CONTRACT_INFO);
+export const clearContractInfo = createAction(actionTypes.CLEAR_CONTRACT_INFO);
+
+//导出
+export const exportContract = createAction(actionTypes.EXPORT_CONTRACT);
+export const exportMultiContract = createAction(actionTypes.EXPORT_MULTI_CONTRACT);

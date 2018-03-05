@@ -6,9 +6,11 @@ import reducers from './reducers';
 import ContentPage from './pages/contentPage';
 import {sagaMiddleware} from '../';
 import rootSaga from './saga/rootSaga';
-import {closeCustomerDetail, getOrgList, getOrgDetail, openOrgSelect, changeCustomerMenu} from './actions/actionCreator';
+import {closeAttachMent, closeContractReord, getOrgList, getOrgDetail, openOrgSelect,closeOrgSelect, changeCustomerMenu} from './actions/actionCreator';
 import OrgSelect from './pages/orgSelect/orgSelect';
 import CustomerDetail from './pages/customerDetail';
+import AttchMent from './pages/attachMent';
+import ContractRecord from './pages/contractRecord';
 sagaMiddleware.run(rootSaga);
 
 const {Header, Sider, Content} = Layout;
@@ -24,7 +26,13 @@ const homeStyle = {
     },
     activeOrg: {
         float: 'right',
-        marginRight: '10px'
+        marginRight: '10px',
+
+    },
+    curOrgStype:{
+        marginLeft: '10px',
+        overflow: 'hidden', 
+        textOverflow: 'ellipsis'
     }
 }
 
@@ -34,12 +42,13 @@ class ContractManagementIndex extends Component {
         activeMenu: menuDefine[0],
     }
     componentWillMount() {
-        // console.log("当前用户所在部门:", this.props.oidc);
+        console.log("当前用户所在部门:", this.props.oidc);
         let userInfo = this.props.oidc.user.profile;
         this.props.dispatch(getOrgList(userInfo.Organization));
         if (userInfo.Organization !== '0') {
             this.props.dispatch(getOrgDetail(userInfo.Organization));
         }
+        this.props.dispatch(closeOrgSelect());
     }
     toggle = () => {
         this.setState({
@@ -67,23 +76,77 @@ class ContractManagementIndex extends Component {
     //面包屑导航处理
     handleNavClick = (e) => {
         // console.log("导航处理:", e);
-        this.props.dispatch(closeCustomerDetail());
+        let navigator = this.props.navigator;
+        if(navigator.length > 0){
+            if(navigator[navigator.length -1].type === 'record'){
+                this.props.dispatch(closeContractReord());
+            }else if(navigator[navigator.length -1].type === 'attachMent')
+                this.props.dispatch(closeAttachMent());
+        }
+
     }
 
     getContentPage() {
         let navigator = this.props.navigator;
-        if (navigator.length > 0) {
-            if (navigator[navigator.length - 1].type === "customerDetail") {
-                return <CustomerDetail />;
-            }
+        if(navigator.length > 0){
+            if(navigator[navigator.length -1].type === 'record'){
+                return <ContentPage curMenuID='menu_record'/>;
+            }else if(navigator[navigator.length -1].type === 'attachMent')
+            return <ContentPage curMenuID='menu_attachMent'/>;
         }
         return <ContentPage curMenuID={this.state.activeMenu.menuID} />
+    }
+    //获取当前选中部门的完整层级路径
+    getActiveOrgFullPath() {
+        let activeOrg = this.props.activeOrg || {};
+        let orgList = (this.props.orgInfo || {}).orgList || [];
+        let fullPath = activeOrg.organizationName;
+        if (activeOrg.id !== '0' && activeOrg.parentId) {
+            let parentOrg = this.getParentOrg(orgList, activeOrg.parentId);
+            console.log("parentOrgName::", parentOrg);
+            if (parentOrg) {
+                fullPath = parentOrg.organizationName + ">" + fullPath;
+            }
+            while (parentOrg != null) {
+                parentOrg = this.getParentOrg(orgList, parentOrg.parentId);
+                if (parentOrg) {
+                    fullPath = parentOrg.organizationName + ">" + fullPath;
+                }
+                else {
+                    break;
+                }
+            }
+
+        }
+        return fullPath;
+    }
+
+    getParentOrg(orgList, orgId) {
+        let org = null;
+        if (orgList && orgList.length > 0) {
+            for (let i = 0; i < orgList.length; i++) {
+                if (orgList[i].id === orgId) {
+                    org = orgList[i];
+                    break;
+                } else {
+                    if (orgList[i].children && orgList[i].children.length > 0) {
+                        let result = this.getParentOrg(orgList[i].children, orgId);
+                        if (result) {
+                            org = result;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        return org;
     }
 
     render() {
         let navigator = this.props.navigator;
         let activeOrg = this.props.activeOrg;
-        // console.log(this.props.activeOrg, '我属于的部门')
+        console.log('我属于的部门:',this.props.activeOrg);
+        let fullPath = this.getActiveOrgFullPath();
         return (
             <Layout className="page">
                 <Sider
@@ -97,7 +160,9 @@ class ContractManagementIndex extends Component {
                         inlineCollapsed={this.state.collapsed}
                         selectedKeys={[this.state.activeMenu.menuID]}
                         defaultSelectedKeys={["menu_index"]}>
-      
+                        <Menu.Item key='menu_org_select' style={{borderBottom: '1px solid #fff'}}>
+                            <span style={homeStyle.curOrgStype} title={fullPath}>当前部门：{fullPath}></span>
+                        </Menu.Item>
                         {menuDefine.map((menu, i) =>
 
                             <Menu.Item key={menu.menuID} style={{borderBottom: menu.menuID === "menu_invalid" ? '1px solid #fff' : 'none'}}>
@@ -115,7 +180,7 @@ class ContractManagementIndex extends Component {
                                 <Breadcrumb separator=">" style={{fontSize: '1.2rem'}}>
                                     <Breadcrumb.Item onClick={this.handleNavClick} key='home' style={homeStyle.navigator}>{this.state.activeMenu.displayName}</Breadcrumb.Item>
                                     {
-                                        navigator.map(nav => <Breadcrumb.Item key={nav.id}>{nav.name}</Breadcrumb.Item>)
+                                        navigator.map((nav,i)=> <Breadcrumb.Item key={i}>{nav.name}</Breadcrumb.Item>)
                                     }
                                 </Breadcrumb>
                             </Header>
@@ -137,7 +202,8 @@ function mapStateToProps(state, props) {
         navigator: state.search.navigator,
         activeOrg: state.search.activeOrg,
         showOrgSelect: state.search.showOrgSelect,
+        orgInfo: state.basicData.orgInfo,
         oidc: state.oidc,
     }
 }
-export default withReducer(reducers, 'ContractManagementIndex', {mapExtraState: (state, rootState) => ({oidc: rootState.oidc})})(connect(mapStateToProps)(ContractManagementIndex));
+export default withReducer(reducers, 'ContractManagementIndex', {mapExtraState: (state, rootState) => ({oidc: rootState.oidc,judgePermissions: rootState.app.judgePermissions})})(connect(mapStateToProps)(ContractManagementIndex));
