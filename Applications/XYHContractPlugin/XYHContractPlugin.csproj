@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ApplicationCore\ApplicationCore.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Reference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore">
       <HintPath>..\..\..\OutSource\Applications\dll\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll</HintPath>
     </Reference>
@@ -14,6 +18,12 @@
     <Reference Include="XYH.Core">
       <HintPath>..\..\..\OutSource\Applications\dll\XYH.Core.dll</HintPath>
     </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Dto\Response\" />
+    <Folder Include="Models\" />
+    <Folder Include="Stores\" />
   </ItemGroup>
 
 </Project>
