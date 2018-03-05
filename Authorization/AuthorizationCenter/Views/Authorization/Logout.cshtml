@@ -1,0 +1,17 @@
+﻿@model LogoutViewModel
+@{
+    Layout = "../Shared/_LoginLayout.cshtml";
+}
+<div class="jumbotron" style="visibility:hidden">
+    <h1>Log out</h1>
+    <p class="lead text-left">Are you sure you want to sign out?</p>
+
+    <form asp-controller="Authorization" asp-action="Logout" method="post">
+        <input type="hidden" name="request_id" value="@Model.RequestId" />
+
+        <input id="btnLogout" class="btn btn-lg btn-success" name="Confirm" type="submit" value="Yes" />
+    </form>
+</div>
+<script type="text/javascript">
+    document.getElementById('btnLogout').click();
+</script>

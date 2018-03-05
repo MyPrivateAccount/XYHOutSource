@@ -1,0 +1,43 @@
+﻿@using System.Collections.Generic
+@using Microsoft.AspNetCore.Http
+@using Microsoft.AspNetCore.Http.Authentication
+@{
+    Layout = "../Shared/_LoginLayout.cshtml";
+}
+@model LoginViewModel
+@inject SignInManager<Users> SignInManager
+<div class="row">
+
+    <section>
+        <form asp-controller="Account" asp-action="Login" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="form-horizontal" role="form">
+            <div class="logo">
+                <img class="logo-img" src="~/images/x.png" alt="" />
+            </div>
+            <div class="form-group">
+                <label class="control-label"></label>
+                <div class="input-box">
+                    <input asp-for="Email" class="form-control" placeholder="请输入用户名" />
+                </div>
+            </div>
+            <span asp-validation-for="Email" class="text-danger"></span>
+            <div class="form-group">
+                <label class="control-label control-label1"></label>
+                <div class="input-box">
+                    <input asp-for="Password" class="form-control" placeholder="请输入密码" />
+                </div>
+            </div>
+            <span asp-validation-for="Password" class="text-danger"></span>
+
+            <div class="form-group">
+                <div class="">
+                    <button type="submit" class="btn">登录</button>
+                </div>
+            </div>
+            <span class="text-danger">@Html.ValidationMessage("loginResult")</span>
+        </form>
+    </section>
+    <img class="background-img" src="~/images/img.jpg" />
+</div>
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}

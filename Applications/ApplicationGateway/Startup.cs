@@ -150,12 +150,14 @@ namespace ApplicationGateway
                 var xmlPath4 = Path.Combine(basePath, "Plugin", "ExamineCenterPlugin.xml");
                 var xmlPath5 = Path.Combine(basePath, "Plugin", "MessageServerPlugin.xml");
                 var xmlPath6 = Path.Combine(basePath, "Plugin", "XYHStatisticalPlugin.xml");
+                var xmlPath7 = Path.Combine(basePath, "Plugin", "XYHHumanPlugin.xml");
                 c.IncludeXmlComments(xmlPath);
                 c.IncludeXmlComments(xmlPath2);
                 c.IncludeXmlComments(xmlPath3);
                 c.IncludeXmlComments(xmlPath4);
                 c.IncludeXmlComments(xmlPath5);
                 c.IncludeXmlComments(xmlPath6);
+                c.IncludeXmlComments(xmlPath7);
                 c.OperationFilter<HttpHeaderOperation>(); // 添加httpHeader参数
             });
             services.ConfigureSwaggerGen(options =>

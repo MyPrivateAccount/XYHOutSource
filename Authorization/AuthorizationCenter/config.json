@@ -1,0 +1,22 @@
+{
+  "Data": {
+    "DefaultConnection": {
+      "ConnectionString": "Server=120.77.152.254;database=xyhdb;uid=root;pwd=root;",
+      "OAConnectionString": "Server=server-p01;database=td_oa;uid=root;pwd=root;"
+    }
+  },
+  "Port": 5000,
+  "Log": {
+    "Level": "Trace",
+    "MaxFileSize": "10MB",
+    "SaveDays": 7
+  },
+  "Redis": {
+    "InstanceName": "AC",
+    "Configuration": "127.0.0.1:6379"
+  },
+  "TokenExpiresIn": 7200,
+  "CertPassword": "xYh@2017",
+  "ValidIssuers": [ "http://localhost:5000/", "http://auth.xinyaohangdc.com:5000/" ],
+  "ServiceApi": "http://localhost:5010"
+}

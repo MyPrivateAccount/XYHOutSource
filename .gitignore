@@ -8,7 +8,23 @@ Applications/GatewayInterface/bin/
 Applications/GatewayInterface/obj/
 Applications/XYHBaseDataPlugin/bin/
 Applications/XYHBaseDataPlugin/obj/
+Applications/ExamineCenterInterfacePlugin/bin/
+Applications/ExamineCenterInterfacePlugin/obj/
+Applications/ExamineCenterPlugin/bin/
+Applications/ExamineCenterPlugin/obj/
+Applications/XYHHumanPlugin/bin/
+Applications/XYHHumanPlugin/obj/
+Applications/XYHShopsInterfacePlugin/bin/
+Applications/XYHShopsInterfacePlugin/obj/
+Applications/XYHShopsPlugin/bin/
+Applications/XYHShopsPlugin/obj/
+
 DesktopPortal/bin/
+
+Authorization/AuthorizationCenter/obj/
+Authorization/AuthorizationCenter/bin/
+Authorization/AuthorizationTest/obj/
+Authorization/AuthorizationTest/bin/
 
 # dependencies
 */node_modules/
