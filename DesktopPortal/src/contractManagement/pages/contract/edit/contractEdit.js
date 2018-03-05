@@ -3,6 +3,7 @@ import {connect} from 'react-redux';
 import {contractInfoGroup} from '../../../constants/commonDefine';
 import { Layout, Table, Button, Checkbox, Radio, Row, Col, Icon, Anchor, BackTop, Modal, notification } from 'antd'
 import './contract.less'
+import BasicEdit from '../../../../contractManagement/pages/contract/edit/basicEdit';
 
 const { Header, Sider, Content } = Layout;
 class ContractEdit extends Component{
@@ -46,6 +47,7 @@ class ContractEdit extends Component{
                             <Col span={24}>{operInfo.basicOperType === 'view' ? <BasicInfo /> : <BasicEdit />}</Col>
 
                             */}
+                            <Col span={24}>{<BasicEdit/>}</Col>
                         </Row>
 
                     </Content>

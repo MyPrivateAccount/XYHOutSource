@@ -3,6 +3,8 @@ import * as actionTypes from '../constants/actionType';
 import appAction from '../../utils/appUtils';
 
 const initState = {
+    contractAttachTypes:[],
+    contractCategories:[],
     saleStatus: [],
     saleModel: [],
     shopsTypes: [],
@@ -24,12 +26,25 @@ const initState = {
 let reducerMap = {};
 //字典数据
 reducerMap[actionTypes.DIC_GET_PARLIST_COMPLETE] = function (state, action) {
+    let contractAttachTypes = [...state.contractAttachTypes];
+    let contractCategories = [...state.contractCategories];
     let saleStatus = [...state.saleStatus], saleModel = [...state.saleModel], shopsTypes = [...state.shopsTypes], tradePlannings = [...state.tradePlannings];
     let customerSource = [...state.customerSource], businessTypes = [...state.businessTypes], customerLevels = [...state.customerLevels];
     let requirementLevels = [...state.requirementLevels], requirementType = [...state.requirementType];
     let invalidResions = [...state.invalidResions], followUpTypes = [...state.followUpTypes], rateProgress = [...state.rateProgress];
+    console.log('字典数据：', action.payload);
     action.payload.map((group) => {
-        if (group.groupId === "CUSTOMER_SOURCE") {
+        if(group.groupId === 'CONTRACT_ATTACHMENT_CATEGORIES'){
+            group.dictionaryDefines = group.dictionaryDefines.sort((aItem, bItem) => aItem.order - bItem.order);
+            contractAttachTypes = group.dictionaryDefines;
+     
+        }
+        else if(group.groupId === 'CONTRACT_CATEGORIES'){
+            group.dictionaryDefines = group.dictionaryDefines.sort((aItem, bItem) => aItem.order - bItem.order);
+            contractCategories = group.dictionaryDefines;
+
+        }
+        else if (group.groupId === "CUSTOMER_SOURCE") {
             group.dictionaryDefines = group.dictionaryDefines.sort((aItem, bItem) => aItem.order - bItem.order);
             customerSource = group.dictionaryDefines;
         }
@@ -79,6 +94,9 @@ reducerMap[actionTypes.DIC_GET_PARLIST_COMPLETE] = function (state, action) {
         }
     });
     return Object.assign({}, state, {
+        contractAttachTypes:contractAttachTypes,
+        contractCategories:contractCategories,
+
         customerSource: customerSource,
         businessTypes: businessTypes,
         customerLevels: customerLevels,
