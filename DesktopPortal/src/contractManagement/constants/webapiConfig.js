@@ -1,4 +1,4 @@
-import { BaseApiUrl, basicDataBaseApiUrl } from '../../constants/baseConfig';
+import { BaseApiUrl, basicDataBaseApiUrl,UploadUrl } from '../../constants/baseConfig';
 
 const WebApiConfig = {
     dic: {
@@ -22,6 +22,9 @@ const WebApiConfig = {
         getRepeatJudgeInfo: basicDataBaseApiUrl + 'customerInfo/customerheavy/',//获取重客判断信息
         getCustomerByUserID: basicDataBaseApiUrl + 'customerInfo/salesmancustomer/',//根据用户ID获取客户列表
         getAuditHistory: basicDataBaseApiUrl + "examines/",//获取审核历史详细
-    }
+    },
+    attach: {
+        uploadUrl: `${UploadUrl}/file/upload/`
+    },
 }
 export default WebApiConfig;

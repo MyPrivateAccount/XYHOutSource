@@ -7,6 +7,18 @@ const LoadableIndexPage = Loadable({
     loader: () => import('./mainIndex'),
     loading: () => null//<LoadableLoading />,
 });
+
+const LoadAttatchMentPage = Loadable({
+    loader: () => import('./attachMent'),
+    loading: () => null//<LoadableLoading />
+});
+
+const LoadContractRecordPage = Loadable({
+    loader: () => import('./contractRecord'),
+    loading: () => <LoadableLoading />
+});
+
+
 const LoadableAdjustPage = Loadable({
     loader: () => import('./adjustCustomerAudit'),
     loading: () => <LoadableLoading />,
@@ -29,17 +41,15 @@ function ContentPage(props) {
     if (curMenuID == "menu_index") {
         return <LoadableIndexPage />;
     }
-    else if (curMenuID == "menu_audit") {
-        return <LoadableAdjustPage />;
+    else if (curMenuID == "menu_renew") {
+        //return <LoadableAdjustPage />;
+        return <LoadableIndexPage />;
     }
-    else if (curMenuID === "menu_org_select") {
-        return <LoadableSelectOrgPage />;
+    else if (curMenuID === "menu_record") {
+        return <LoadContractRecordPage />; 
     }
-    else if (curMenuID === "menu_analysis") {
-        return <LoadableAnalysisPage />;
-    }
-    else if (curMenuID === "menu_repeatCustomer") {
-        return <LoadableRepeatCustomerPage />;
+    else if (curMenuID === "menu_attachMent") {
+        return <LoadAttatchMentPage />;
     }
     else {
         return <LoadableIndexPage />;

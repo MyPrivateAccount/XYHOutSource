@@ -30,7 +30,7 @@ const ToolMenuPermissionDefine = [
         permissions:[
             {id:'RECORD_FUC', name:'录入'},
             {id:'UPLOAD_FILE', name:'上传附件'},
-            {id:'OUTPORT_CONTRACT', name:'导出'}
+            {id:'EXPORT_CONTRACT', name:'导出'}
         ]
     }
 ]

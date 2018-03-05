@@ -1,15 +1,16 @@
 import { connect } from 'react-redux';
-import { setLoadingVisible, saveSearchCondition, searchCustomer } from '../actions/actionCreator';
+import { setLoadingVisible, openAttachMent, openContractRecord, saveSearchCondition, searchCustomer } from '../actions/actionCreator';
 import React, { Component } from 'react';
 import { Input, Menu, Icon, Row, Col, Spin, Checkbox, Button } from 'antd';
+import {LoadAttatchMentPage} from './contentPage';
 import SearchCondition from './searchCondition';
 import SearchResult from './searchResult';
-
+import AttachMent from './mainIndex';
 
 const buttonDef = [
     { buttonID:"record", buttonName:"录入", icon:'', type:'primary', size:'small', requirePermission:['RECORD_FUC']},
-    { buttonID:"outport", buttonName:"导出", icon:'', type:'primary', size:'small', requirePermission:['RECORD_FUC']},
-    { buttonID:"uploadFile", buttonName:"附件上传", icon:'', type:'primary', size:'small',requirePermission:['RECORD_FUC']},
+    { buttonID:"export", buttonName:"导出", icon:'', type:'primary', size:'small', requirePermission:['EXPORT_CONTRACT']},
+    { buttonID:"uploadFile", buttonName:"附件上传", icon:'', type:'primary', size:'small',requirePermission:['UPLOAD_FILE']},
 ];
 class MainIndex extends Component {
     state = {
@@ -37,21 +38,22 @@ class MainIndex extends Component {
     //录入
     onClickRecord = (e) =>{
         console.log('录入');
+        this.props.dispatch(openContractRecord(0));
     }
     //导出
-    onClickOutPort = (e) =>{
+    onClickExPort = (e) =>{
         
     }
     //文件上传
     onClickUploadFile = (e)=>{
-
+        this.props.dispatch(openAttachMent(1));
     }
     handleClickFucButton = (buttonID) =>{
         switch(buttonID){
             case 'record':
                 return this.onClickRecord;
-            case 'outport':
-                return this.onClickOutPort;
+            case 'export':
+                return this.onClickExPort;
             case 'uploadFile':
                 return this.onClickUploadFile;
             default:
