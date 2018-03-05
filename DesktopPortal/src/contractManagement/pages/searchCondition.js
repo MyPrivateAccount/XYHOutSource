@@ -327,6 +327,11 @@ class SearchCondition extends Component {
                         </Col>
                     </Row>
                     <div style={{display: expandSearchCondition ? "block" : "none"}}>
+                        <Row className="normalInfo">
+                            <Col span={24}>
+                                <label>所属部门:</label>
+                            </Col>
+                        </Row>
                     </div>
                         {/*这个条件后续可能会要
                             <Row className="normalInfo">
