@@ -18,6 +18,7 @@ class BasicInfo extends Component {
 
     render(){
         const basicInfo = this.props.contractInfo.contractBasicInfo;
+        const contractId = basicInfo.id;
         return (
             <div style={{ marginTop: '25px', backgroundColor: "#ECECEC" }}>
                 <Form layout="horizontal">
@@ -33,7 +34,13 @@ class BasicInfo extends Component {
                         </Col>
                     </Row>
                     <Row className='viewRow'>
-                        <Col span={12}>{basicInfo.id} | {basicInfo.areaFullName}</Col>
+                        <Col span={12}>申请时间:{contractId}</Col>
+                    </Row>
+                    <Row className='viewRow'>
+                        <Col span={12}>合同编号:{contractId}</Col>
+                    </Row>
+                    <Row className='viewRow'>
+                        <Col span={12}>合同编号:{contractId}</Col>
                     </Row>
                 </Form>
             </div>
