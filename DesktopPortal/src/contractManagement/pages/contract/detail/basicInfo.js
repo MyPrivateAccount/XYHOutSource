@@ -17,15 +17,33 @@ class BasicInfo extends Component {
     }
 
     render(){
+        const basicInfo = this.props.contractInfo.contractBasicInfo;
         return (
-
+            <div style={{ marginTop: '25px', backgroundColor: "#ECECEC" }}>
+                <Form layout="horizontal">
+                    <Row type="flex" style={{ padding: '1rem 0' }}>
+                        <Col span={20}>
+                            <Icon type="tags-o" className='content-icon' /><span className='content-title'>基础信息</span>
+                        </Col>
+                        <Col span={4}>
+                            {
+                                //[1, 8].includes(this.props.buildInfo.examineStatus) ? null : <Button type="primary" shape="circle" icon="edit" onClick={this.handleEdit} />
+                                <Button type="primary" shape="circle" icon="edit" onClick={this.handleEdit} />
+                            }
+                        </Col>
+                    </Row>
+                    <Row className='viewRow'>
+                        <Col span={12}>{basicInfo.id} | {basicInfo.areaFullName}</Col>
+                    </Row>
+                </Form>
+            </div>
         )
     }
 }
 
 function mapStateToProps(state) {
     return {
-        buildInfo: state.building.buildInfo,
+        contractInfo: state.contractBasicData.contractInfo,
         basicData: state.basicData,
     }
 }
