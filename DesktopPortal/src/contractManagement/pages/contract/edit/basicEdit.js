@@ -49,7 +49,7 @@ class BasicEdit extends Component {
                 </Col>
                 <Col span={12}>
                     <FormItem {...formItemLayout} label={<span>合同类型</span>}>
-                      {getFieldDecorator('cntractCategory', {
+                      {getFieldDecorator('contractCategory', {
                                 //initialValue: contractTypes,
                                 rules: [{ required: true, message: '请选择合同类型!' }],
                             })(
@@ -67,7 +67,11 @@ class BasicEdit extends Component {
             <Row type="flex" style={{marginTop: "25px"}}>
               <Col span={12}>
                  <FormItem {...formItemLayout} label={<span>项目名称</span>}>
-                    
+                    {getFieldDecorator('projectName', {
+                      rules:[{required:true, message:'请输入项目名称!'}]
+                    })
+                      
+                    }
                  </FormItem>
               </Col>
               <Col span={12}>
