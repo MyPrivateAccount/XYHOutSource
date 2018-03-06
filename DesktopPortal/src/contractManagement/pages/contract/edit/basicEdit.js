@@ -43,7 +43,7 @@ class BasicEdit extends Component {
             <Row type="flex" style={{marginTop: "25px"}}>
               <Col span={12}>
                         <FormItem {...formItemLayout} label={<span>合同类型</span>}>
-                        {getFieldDecorator('contractCategory', {
+                        {getFieldDecorator('contractType', {
                                     initialValue: basicInfo.contractType,
                                     rules: [{ required: true, message: '请选择合同类型!' }],
                                 })(
@@ -75,7 +75,7 @@ class BasicEdit extends Component {
                 <Col span={12}>
                     <FormItem {...formItemLayout} label={<span>项目类型</span>}>
                     {getFieldDecorator('projectType', {
-                            initialValue: basicInfo.projectName,
+                            initialValue: basicInfo.projectType,
                             rules:[{required:true, message:'请选择项目类型!'}]
                             })(
                                 <Select>
@@ -219,7 +219,7 @@ class BasicEdit extends Component {
             <Row type="flex" style={{marginTop:"25px"}}>
                 <Col span={12}>
                      <FormItem {...formItemLayout} label={<span>佣金方式</span>}>
-                        {getFieldDecorator('applyPeopleName', {
+                        {getFieldDecorator('commissionType', {
                                     initialValue: basicInfo.commissionType,
                                     rules:[{required:true, message:'请选择佣金方式'}]
                                     })(
@@ -237,8 +237,8 @@ class BasicEdit extends Component {
                 </Col>
                 <Col span={12}>
                     <FormItem {...formItemLayout} label={<span>续签合同</span>}>
-                        {getFieldDecorator('applyPeopleName', {
-                                    initialValue: basicInfo.commissionType,
+                        {getFieldDecorator('basicInfo.renewContract', {
+                                    initialValue: basicInfo.renewContract,
                                     //rules:[{required:true, message:'续签合同'}]
                                     })(
                                         <span>无</span>

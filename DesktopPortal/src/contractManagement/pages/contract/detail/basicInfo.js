@@ -18,6 +18,9 @@ class BasicInfo extends Component {
 
     render(){
         const basicInfo = this.props.contractInfo.contractBasicInfo;
+        if (basicInfo.landExpireDate && basicInfo.landExpireDate !== "") {
+            basicInfo.landExpireDate = moment(basicInfo.landExpireDate).format("YYYY-MM-DD");
+        }
         const contractId = basicInfo.id;
         return (
             <div style={{ marginTop: '25px', backgroundColor: "#ECECEC" }}>
@@ -34,13 +37,42 @@ class BasicInfo extends Component {
                         </Col>
                     </Row>
                     <Row className='viewRow'>
-                        <Col span={12}>申请时间:{contractId}</Col>
-                    </Row>
-                    <Row className='viewRow'>
                         <Col span={12}>合同编号:{contractId}</Col>
                     </Row>
                     <Row className='viewRow'>
-                        <Col span={12}>合同编号:{contractId}</Col>
+                        <Col span={12}>申请时间:{basicInfo.applyTime}</Col>
+                        <Col span={12}>申请部门:{basicInfo.oorganizationName}</Col>
+                    </Row>
+                    <Row className='viewRow'>
+                        <Col span={12}>合同类型:{basicInfo.contractType}</Col>
+                        <Col span={12}>项目名称:{basicInfo.projectName}</Col>
+                    </Row>
+                    <Row className='viewRow'>
+                        <Col span={12}>项目类型:{basicInfo.projectType}</Col>
+                        <Col span={12}>项目负责人:{basicInfo.projectPeopleName}</Col>
+                    </Row>
+                    <Row className='viewRow'>
+                        <Col span={12}>甲方类型:{basicInfo.firstPartyType}</Col>
+                        <Col span={12}>甲方公司全称:{basicInfo.firstPartyFirmName}</Col>
+                    </Row>
+                    <Row className='viewRow'>
+                        <Col span={12}>甲方负责人:{basicInfo.firstMainPeople}</Col>
+                        <Col span={12}>乙方负责人:{basicInfo.secondMainPeople}</Col>
+                    </Row>
+                    <Row className='viewRow'>
+                        <Col span={12}>合同开始时间:{basicInfo.beginTime}</Col>
+                        <Col span={12}>合同结束时间:{basicInfo.endTime}</Col>
+                    </Row>
+                    <Row className='viewRow'>
+                        <Col span={12}>份数:{basicInfo.contractNumber}</Col>
+                        <Col span={12}>返回原件:{basicInfo.returnOrigin}</Col>
+                    </Row>
+                    <Row className='viewRow'>
+                        <Col span={12}>佣金方式:{basicInfo.commissionType}</Col>
+                        <Col span={12}>续签合同:{basicInfo.renewContract}</Col>
+                    </Row>
+                    <Row className='viewRow'>
+                        
                     </Row>
                 </Form>
             </div>

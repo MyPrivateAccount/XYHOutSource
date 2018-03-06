@@ -168,7 +168,6 @@ class AttachEdit extends Component {
   render(){
 
     const {previewVisible, previewImage, fileList} = this.state;
-    console.log('this.props.basicData.contractAttachTypes:', this.props.basicData);
     const uploadButton = (
       <div>
         <Icon type="plus" />
