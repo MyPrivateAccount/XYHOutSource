@@ -70,4 +70,5 @@ export const saveSearchCondition = createAction(actionTypes.SAVE_SEARCH_CONDITIO
 export const getRepeatJudgeInfo = createAction(actionTypes.GET_REPEAT_JUDGE_INFO);
 export const removeAdjustItem = createAction(actionTypes.REMOVE_ADJUST_REQUEST_ITEM);
 
-
+export const basicLoadingStart = createAction(actionTypes.LOADING_START_BASIC);
+export const basicLoadingEnd = createAction(actionTypes.LOADING_END_BASIC);

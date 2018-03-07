@@ -9,6 +9,8 @@ const initState = {
         id: NewGuid(),
         contractBasicInfo:{},
         contractAttachInfo:{},
+        additionalInfo:{},
+        modifyRecord:{},
 
     },
     operInfo: {
@@ -20,12 +22,14 @@ const initState = {
     basicloading: false,
     supportloading: false,
     attachloading: false,
+    previewVisible: false,
+
 }
 
-let reduceMap = {};
+let reducerMap = {};
 
 
-reduceMap[actionTypes.OPEN_RECORD] = function(state, action){
+reducerMap[actionTypes.OPEN_RECORD] = function(state, action){
     let contractInfo={//合同信息
         id: NewGuid(),
         contractBasicInfo:{
@@ -41,7 +45,33 @@ reduceMap[actionTypes.OPEN_RECORD] = function(state, action){
     let newState = Object.assign({}, state, { contractInfo: contractInfo, operInfo: operInfo, contractDisplay: 'block' });
     return newState; 
 }
-export default handleActions(reduceMap, initState);
+
+// 保存各个模板的loading
+reducerMap[actionTypes.LOADING_START_BASIC] = function (state, action) {
+    return Object.assign({}, state, { basicloading: true });
+}
+reducerMap[actionTypes.LOADING_END_BASIC] = function (state, action) {
+    return Object.assign({}, state, { basicloading: false });
+}
+
+
+// 基本信息编辑
+reducerMap[actionTypes.CONTRACT_BASIC_EDIT] = (state, action) => {
+    let contractInfo = { ...state.contractInfo };
+    let operInfo = Object.assign({}, state.operInfo, { basicOperType: 'edit' });
+    let newState = Object.assign({}, state, { operInfo: operInfo, contractInfo: contractInfo });
+    return newState;
+  }
+  // 基本信息查看
+reducerMap[actionTypes.CONTRACT_BASIC_VIEW] = (state, action) => {
+    let contractInfo = { ...state.shopsInfo };
+  
+    let operInfo = Object.assign({}, state.operInfo, { basicOperType: 'view' });
+    let newState = Object.assign({}, state, { operInfo: operInfo, contractInfo: contractInfo });
+    return newState;
+  }
+  
+export default handleActions(reducerMap, initState);
 
 
 

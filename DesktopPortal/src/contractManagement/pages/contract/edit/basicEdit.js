@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { getDicParList, saveBuildingBasic, viewBuildingBasic,basicLoadingStart } from '../../../actions/actionCreator';
+import { getDicParList, saveContractBasic, viewBuildingBasic,basicLoadingStart } from '../../../actions/actionCreator';
 import React, { Component } from 'react';
 import { Icon, Input, InputNumber, Button, Checkbox, Row, Col, Form, DatePicker, Select, Cascader,Radio } from 'antd';
 import moment from 'moment';
@@ -8,12 +8,39 @@ const FormItem = Form.Item;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
 const { RangePicker } = DatePicker;
-
+const { TextArea } = Input;
 class BasicEdit extends Component {
 
+    handleCancel = () => this.setState({ previewVisible: false })
     handleChangeTime = (value, dateString)=>{
         console.log('curstatrEndTime:', value);
         console.log('format curstatrEndTime:', dateString);
+    }
+    handleSave = (e) => {
+        e.preventDefault();
+        let { basicOperType } = this.props.operInfo;
+        this.props.form.validateFields((err, values) => {
+            if (!err) {
+                // this.setState({ loadingState: true });
+                console.log('values:', values);
+                this.props.dispatch(basicLoadingStart())
+                let newBasicInfo = values;
+                newBasicInfo.id = this.props.contractInfo.id;
+                if (basicOperType != 'add') {
+                    newBasicInfo = Object.assign({}, this.props.contractBasicInfo, values);
+                }
+                // newBasicInfo.city = values.location[0];
+                // newBasicInfo.district = values.location[1];
+                // newBasicInfo.area = values.location[2];
+                // newBasicInfo.areaFullName = this.state.areaFullName
+                let method = (basicOperType === 'add' ? 'POST' : "PUT");
+                this.props.dispatch(saveContractBasic({ 
+                    method: method, 
+                    entity: newBasicInfo, 
+                    //ownCity: this.props.user.City 
+                }));
+            }
+        });
     }
     render(){
         const { getFieldDecorator, getFieldsError, getFieldError, isFieldTouched } = this.props.form;
@@ -68,8 +95,8 @@ class BasicEdit extends Component {
                 <Col span={12}>
                     
                     <FormItem {...formItemLayout} label={<span>项目名称</span>}>
-                        {getFieldDecorator('projectName', {
-                        initialValue: basicInfo.projectName,
+                        {getFieldDecorator('ProjectName', {
+                        initialValue: basicInfo.ProjectName,
                         rules:[{required:true, message:'请输入项目名称!'}]
                         })(
                             <Input placeholder="项目名称" />
@@ -80,8 +107,8 @@ class BasicEdit extends Component {
                 </Col>
                 <Col span={12}>
                     <FormItem {...formItemLayout} label={<span>项目类型</span>}>
-                    {getFieldDecorator('projectType', {
-                            initialValue: basicInfo.projectType,
+                    {getFieldDecorator('ProjectName', {
+                            initialValue: basicInfo.ProjectType,
                             rules:[{required:true, message:'请选择项目类型!'}]
                             })(
                                 <Select>
@@ -102,8 +129,8 @@ class BasicEdit extends Component {
             <Row type="flex" style={{marginTop: "25px"}}>
                 <Col span={12}>
                     <FormItem {...formItemLayout} label={<span>甲方类型</span>}>
-                    {getFieldDecorator('firstPartyType', {
-                                    initialValue: basicInfo.firstPartyType,
+                    {getFieldDecorator('CompanyAType', {
+                                    initialValue: basicInfo.CompanyAType,
                                     rules: [{ required: true, message: '请选择甲方类型!' }],
                                 })(
                                     <Select>
@@ -118,8 +145,8 @@ class BasicEdit extends Component {
                 </Col>
                 <Col span={12}>
                     <FormItem {...formItemLayout} label={<span>甲方公司全称</span>}>
-                    {getFieldDecorator('firstPartyFirmName', {
-                            initialValue: basicInfo.firstPartyFirmName,
+                    {getFieldDecorator('CompanyA', {
+                            initialValue: basicInfo.CompanyA,
                             rules:[{required:true, message:'请输入甲方公司全称!'}]
                             })(
                                 <Input placeholder="甲方公司全称" />
@@ -134,8 +161,8 @@ class BasicEdit extends Component {
             <Row type="flex" style={{marginTop: "25px"}}>
                 <Col span={12}>
                         <FormItem {...formItemLayout} label={<span>甲方负责人</span>}>
-                        {getFieldDecorator('firstMainPeople', {
-                                    initialValue: basicInfo.firstMainPeople,
+                        {getFieldDecorator('PrincipalpepoleA', {
+                                    initialValue: basicInfo.PrincipalpepoleA,
                                     rules:[{required:true, message:'请输入甲方负责人!'}]
                                     })(
                                         <Input placeholder="甲方负责人" />
@@ -146,8 +173,8 @@ class BasicEdit extends Component {
                     </Col>
                 <Col span={12}>
                     <FormItem {...formItemLayout} label={<span>乙方负责人</span>}>
-                    {getFieldDecorator('secondMainPeople', {
-                                initialValue: basicInfo.secondMainPeople,
+                    {getFieldDecorator('PrincipalpepoleB', {
+                                initialValue: basicInfo.PrincipalpepoleB,
                                 rules:[{required:true, message:'请输入乙方负责人!'}]
                                 })(
                                     <Input placeholder="乙方负责人" />
@@ -175,8 +202,8 @@ class BasicEdit extends Component {
               <Col span={12}>
                     <FormItem {...formItemLayout} label={<span>合同起始时间</span>}>
                         {getFieldDecorator('startAndEndTime', {
-                                        initialValue: [basicInfo.startTime ? moment(basicInfo.startTime, 'YYYY-MM-DD') : null, 
-                                        basicInfo.endTime ? moment(basicInfo.endTime, 'YYYY-MM-DD') : null],
+                                        initialValue: [basicInfo.StartTime ? moment(basicInfo.StartTime, 'YYYY-MM-DD') : null, 
+                                        basicInfo.EndTime ? moment(basicInfo.EndTime, 'YYYY-MM-DD') : null],
                                         rules:[{required:true, message:'请选择起始时间!'}]
                                         })(
                                             <RangePicker
@@ -195,8 +222,8 @@ class BasicEdit extends Component {
             <Row type="flex" style={{marginTop: "25px"}}>
               <Col span={12}>
                  <FormItem {...formItemLayout} label={<span>份数</span>}>
-                  {getFieldDecorator('contractNumber', {
-                                  initialValue: basicInfo.contractNumber,
+                  {getFieldDecorator('Count', {
+                                  initialValue: basicInfo.Count,
                                   rules:[{required:true, message:'请输入份数!'}]
                                   })(
                                       <InputNumber min={0}  />
@@ -207,8 +234,8 @@ class BasicEdit extends Component {
               </Col>
               <Col span={12}>
                  <FormItem {...formItemLayout} label={<span>返回原件</span>}>
-                  {getFieldDecorator('returnOrigin', {
-                                  initialValue: basicInfo.returnOrigin == null ? (basicInfo.returnOrigin === 1 ? '是' :'否') : null ,
+                  {getFieldDecorator('ReturnOrigin', {
+                                  initialValue: basicInfo.ReturnOrigin == null ? (basicInfo.returnOrigin === 1 ? '是' :'否') : null ,
                                   rules:[{required:true, message:'请选择是否返还原件!'}]
                                   })(
                                     <RadioGroup >
@@ -224,8 +251,8 @@ class BasicEdit extends Component {
             <Row type="flex" style={{marginTop:"25px"}}>
                 <Col span={12}>
                      <FormItem {...formItemLayout} label={<span>佣金方式</span>}>
-                        {getFieldDecorator('commissionType', {
-                                    initialValue: basicInfo.commissionType,
+                        {getFieldDecorator('CommisionType', {
+                                    initialValue: basicInfo.CommisionType,
                                     rules:[{required:true, message:'请选择佣金方式'}]
                                     })(
                                         <Select>
@@ -242,8 +269,8 @@ class BasicEdit extends Component {
                 </Col>
                 <Col span={12}>
                     <FormItem {...formItemLayout} label={<span>续签合同</span>}>
-                        {getFieldDecorator('basicInfo.renewContract', {
-                                    initialValue: basicInfo.renewContract,
+                        {getFieldDecorator('basicInfo.Follow', {
+                                    initialValue: basicInfo.Follow,
                                     //rules:[{required:true, message:'续签合同'}]
                                     })(
                                         <span>无</span>
@@ -254,12 +281,56 @@ class BasicEdit extends Component {
                 </Col>
 
             </Row>
+            <Row type="flex" style={{marginTop:"25px"}}>
+                <Col span={12}>
+                    <FormItem {...formItemLayout} label={<span>是否作废</span>}>
+                    {getFieldDecorator('IsCancel', {
+                                    initialValue: basicInfo.IsCancel == null ? (basicInfo.IsCancel === 1 ? '是' :'否') : null ,
+                                    rules:[{required:true, message:'请选择是否作废!'}]
+                                    })(
+                                        <RadioGroup >
+                                            <Radio value={1}>是</Radio>
+                                            <Radio value={2}>否</Radio>
+                                        </RadioGroup>
+                                    )
+                                    
+                    }
+                    </FormItem>
+                </Col>
+                <Col span={12}>
+                    <FormItem {...formItemLayout} label={<span>备注</span>}>
+                        {getFieldDecorator('basicInfo.Remark', {
+                                    initialValue: basicInfo.Remark,
+                                    //rules:[{required:true, message:'续签合同'}]
+                                    })(
+                                        <span>{basicInfo.Remark ? basicInfo.Remark : '无'}</span>
+                                    )
+                                    
+                            }
+                    </FormItem>
+                </Col>
 
+            </Row>
+            <Row type="flex" style={{marginTop:"25px"}}>
+                <Col span={12}>
+                    <FormItem {...formItemLayout} label={<span>备注</span>}>
+                            {getFieldDecorator('basicInfo.Remark', {
+                                        initialValue: basicInfo.Remark,
+                                        //rules:[{required:true, message:'续签合同'}]
+                                        })(
+                                            <TextArea  autosize>{basicInfo.Remark ? basicInfo.Remark : '无'}</TextArea>
+                                        )
+                                        
+                                }
+                        </FormItem>
+                </Col>
+
+            </Row>
 
             <Row>
                     <Col span={24} style={{ textAlign: 'center' }} className='BtnTop'>
                         <Button type="primary" htmlType="submit" loading={this.props.loadingState} style={{width: "8rem"}} onClick={this.handleSave}>保存</Button>
-                        {basicOperType !== "add" ? <Button className="login-form-button" className='formBtn' onClick={this.handleCancel}>取消</Button> : null}
+                        {basicOperType !== "add" ? <Button className="oprationBtn" onClick={this.handleCancel}>取消</Button> : null}
                     </Col>
                 </Row>
           </Form>
@@ -274,8 +345,8 @@ function mapStateToProps(state) {
     //   buildingList: state.shop.buildingList,
     //   operInfo: state.shop.operInfo,
     //   shopsInfo: state.shop.shopsInfo,
-         basicData: state.basicData,
-    //   loading: state.shop.basicloading
+        basicData: state.basicData,
+        loading: state.contractData.basicloading,
         contractInfo: state.contractData.contractInfo,
         contractBasicInfo: state.contractData.contractInfo.contractBasicInfo,
         operInfo:state.contractData.operInfo,
