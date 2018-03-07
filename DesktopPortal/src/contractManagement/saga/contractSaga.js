@@ -14,6 +14,7 @@ import {
 const actionUtils = appAction(actionTypes.ACTION_ROUTE);
 //合同基础信息保存
 export function* saveContractBasicAsync(state) {
+    console.log('state.payload.entity:', state.payload.entity);
     let result = { isOk: false, msg: '合同基础信息保存失败！' };
     let url = WebApiConfig.buildingBasic.Base + "/" + state.payload.entity.id;
     let body = state.payload.entity;
@@ -26,7 +27,7 @@ export function* saveContractBasicAsync(state) {
         // console.log("保存结果", saveResult);
         if (result.isOk) {
             result.msg = "合同基础信息保存成功";
-            yield put({ type: actionUtils.getActionType(actionTypes.BUILDING_BASIC_VIEW), payload: result.extension || body });
+            yield put({ type: actionUtils.getActionType(actionTypes.CONTRACT_BASIC_VIEW), payload: result.extension || body });
             //yield put({ type: actionUtils.getActionType(actionTypes.GET_ADD_BUILDING), payload: city  });
         }
         yield put(actionUtils.action(basicLoadingEnd))
@@ -41,7 +42,7 @@ export function* saveContractBasicAsync(state) {
 }
 
 
-export function* watchBuildingAllAsync() {
+export function* watchContractAllAsync() {
     yield takeLatest(actionUtils.getActionType(actionTypes.CONTRACT_BASIC_SAVE), saveContractBasicAsync);
     // yield takeLatest(actionUtils.getActionType(actionTypes.BUILDING_SUPPORT_SAVE), saveSupportInfoAsync);
     // yield takeLatest(actionUtils.getActionType(actionTypes.BUILDING_RELSHOP_SAVE), saveRelshopsAsync);

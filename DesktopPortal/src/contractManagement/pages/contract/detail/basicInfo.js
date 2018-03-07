@@ -72,6 +72,14 @@ class BasicInfo extends Component {
                         <Col span={12}>佣金方式:{basicInfo.commissionType}</Col>
                         <Col span={12}>续签合同:{basicInfo.renewContract}</Col>
                     </Row>
+                    <Row className='viewRow'>
+                        <Col span={12}>审核人:{basicInfo.commissionType}</Col>
+                        <Col span={12}>审核状态:{basicInfo.renewContract}</Col>
+                    </Row>
+                    <Row className='viewRow'>
+                        <Col span={12}>是否作废:{basicInfo.commissionType}</Col>
+                        <Col span={12}>备注:{basicInfo.renewContract}</Col>
+                    </Row>
 
                 </Form>
             </div>

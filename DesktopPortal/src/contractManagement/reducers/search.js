@@ -7,6 +7,7 @@ const initState = {
     showContractRecord: false,//合同录入
     showAttachMent: false,//附件上传
     navigator: [],//导航记录
+
     activeOrg: {id: '0', organizationName: '不限'},//当前部门
     activeMenu: 'menu_index',//当前菜单
     activeCustomers: [],//选中客户信息
@@ -46,7 +47,7 @@ reducerMap[actionTypes.OPEN_RECORD] = function (state, action) {
     return Object.assign({}, state, {navigator: [{id: action.payload.id, name: '录入', type: 'record'}], showContractRecord: true});
 }
 //关闭合同录入完成页面
-reducerMap[actionTypes.SUBMIT_CONTRACT_INFO_COMPLETE] = function (state, action) {
+reducerMap[actionTypes.CLOSE_RECORD] = function (state, action) {
     return Object.assign({}, state, {navigator: [], showContractRecord: false});
 }
 

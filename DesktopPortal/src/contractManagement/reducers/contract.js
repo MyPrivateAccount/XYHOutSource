@@ -42,7 +42,8 @@ reducerMap[actionTypes.OPEN_RECORD] = function(state, action){
         basicOperType: 'add',
         //attachPicOperType: 'add',
     }
-    let newState = Object.assign({}, state, { contractInfo: contractInfo, operInfo: operInfo, contractDisplay: 'block' });
+
+    let newState = Object.assign({}, state, { contractInfo: contractInfo, basicloading: false,operInfo: operInfo, contractDisplay: 'block' });
     return newState; 
 }
 
@@ -71,6 +72,19 @@ reducerMap[actionTypes.CONTRACT_BASIC_VIEW] = (state, action) => {
     return newState;
   }
   
+// 点击提交按钮
+reducerMap[actionTypes.CONTRACT_INFO_SUBMIT_START] = function (state, action) {
+    let newState = Object.assign({}, state, { submitLoading: true });
+    return newState;
+}
+reducerMap[actionTypes.CONTRACT_INFO_SUBMIT_FINISH] = function (state, action) {
+    let operInfo = {
+        basicOperType: 'view',
+
+    }
+    let newState = Object.assign({}, state, { submitLoading: false, operInfo: operInfo, buildDisplay: 'none' });
+    return newState;
+}
 export default handleActions(reducerMap, initState);
 
 

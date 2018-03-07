@@ -47,7 +47,7 @@ class BasicEdit extends Component {
         //let contractTypes = '1';
         let basicOperType = this.props.basicOperType;
         let basicInfo = this.props.contractBasicInfo;
-
+  
         const formItemLayout = {
           labelCol: { span: 6 },
           wrapperCol: { span: 14 },
@@ -233,23 +233,6 @@ class BasicEdit extends Component {
                  </FormItem>
               </Col>
               <Col span={12}>
-                 <FormItem {...formItemLayout} label={<span>返回原件</span>}>
-                  {getFieldDecorator('ReturnOrigin', {
-                                  initialValue: basicInfo.ReturnOrigin == null ? (basicInfo.returnOrigin === 1 ? '是' :'否') : null ,
-                                  rules:[{required:true, message:'请选择是否返还原件!'}]
-                                  })(
-                                    <RadioGroup >
-                                        <Radio value={1}>是</Radio>
-                                        <Radio value={2}>否</Radio>
-                                    </RadioGroup>
-                                  )
-                                  
-                  }
-                 </FormItem>
-              </Col>
-            </Row>
-            <Row type="flex" style={{marginTop:"25px"}}>
-                <Col span={12}>
                      <FormItem {...formItemLayout} label={<span>佣金方式</span>}>
                         {getFieldDecorator('CommisionType', {
                                     initialValue: basicInfo.CommisionType,
@@ -267,13 +250,31 @@ class BasicEdit extends Component {
                             }
                     </FormItem>
                 </Col>
+
+            </Row>
+            <Row type="flex" style={{marginTop:"25px"}}>
+            <Col span={12}>
+                 <FormItem {...formItemLayout} label={<span>返回原件</span>}>
+                  {getFieldDecorator('ReturnOrigin', {
+                                  initialValue: basicInfo.ReturnOrigin == null ? (basicInfo.returnOrigin === 1 ? '是' :'否') : null ,
+                                  rules:[{required:true, message:'请选择是否返还原件!'}]
+                                  })(
+                                    <RadioGroup >
+                                        <Radio value={1}>是</Radio>
+                                        <Radio value={2}>否</Radio>
+                                    </RadioGroup>
+                                  )
+                                  
+                  }
+                 </FormItem>
+              </Col>
                 <Col span={12}>
                     <FormItem {...formItemLayout} label={<span>续签合同</span>}>
                         {getFieldDecorator('basicInfo.Follow', {
                                     initialValue: basicInfo.Follow,
                                     //rules:[{required:true, message:'续签合同'}]
                                     })(
-                                        <span>无</span>
+                                        <span title="点击选择">无</span>
                                     )
                                     
                             }
@@ -282,21 +283,25 @@ class BasicEdit extends Component {
 
             </Row>
             <Row type="flex" style={{marginTop:"25px"}}>
-                <Col span={12}>
-                    <FormItem {...formItemLayout} label={<span>是否作废</span>}>
-                    {getFieldDecorator('IsCancel', {
-                                    initialValue: basicInfo.IsCancel == null ? (basicInfo.IsCancel === 1 ? '是' :'否') : null ,
-                                    rules:[{required:true, message:'请选择是否作废!'}]
-                                    })(
-                                        <RadioGroup >
-                                            <Radio value={1}>是</Radio>
-                                            <Radio value={2}>否</Radio>
-                                        </RadioGroup>
-                                    )
-                                    
-                    }
-                    </FormItem>
-                </Col>
+                {
+                    basicOperType === 'edit' ? 
+                    <Col span={12}>
+                        <FormItem {...formItemLayout} label={<span>是否作废</span>}>
+                        {getFieldDecorator('IsCancel', {
+                                        initialValue: basicInfo.IsCancel == null ? (basicInfo.IsCancel === 1 ? '是' :'否') : null ,
+                                        rules:[{required:true, message:'请选择是否作废!'}]
+                                        })(
+                                            <RadioGroup >
+                                                <Radio value={1}>是</Radio>
+                                                <Radio value={2}>否</Radio>
+                                            </RadioGroup>
+                                        )
+                                        
+                        }
+                        </FormItem>
+                    </Col>
+                    : null
+                }
                 <Col span={12}>
                     <FormItem {...formItemLayout} label={<span>备注</span>}>
                         {getFieldDecorator('basicInfo.Remark', {
@@ -311,21 +316,7 @@ class BasicEdit extends Component {
                 </Col>
 
             </Row>
-            <Row type="flex" style={{marginTop:"25px"}}>
-                <Col span={12}>
-                    <FormItem {...formItemLayout} label={<span>备注</span>}>
-                            {getFieldDecorator('basicInfo.Remark', {
-                                        initialValue: basicInfo.Remark,
-                                        //rules:[{required:true, message:'续签合同'}]
-                                        })(
-                                            <TextArea  autosize>{basicInfo.Remark ? basicInfo.Remark : '无'}</TextArea>
-                                        )
-                                        
-                                }
-                        </FormItem>
-                </Col>
 
-            </Row>
 
             <Row>
                     <Col span={24} style={{ textAlign: 'center' }} className='BtnTop'>
@@ -346,7 +337,7 @@ function mapStateToProps(state) {
     //   operInfo: state.shop.operInfo,
     //   shopsInfo: state.shop.shopsInfo,
         basicData: state.basicData,
-        loading: state.contractData.basicloading,
+        loadingState: state.contractData.basicloading,
         contractInfo: state.contractData.contractInfo,
         contractBasicInfo: state.contractData.contractInfo.contractBasicInfo,
         operInfo:state.contractData.operInfo,

@@ -2,12 +2,14 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {contractInfoGroup} from '../constants/commonDefine';
 import { Layout, Table, Button, Checkbox, Radio, Row, Col, Icon, Anchor, BackTop, Modal, notification } from 'antd'
-import { getDicParList, openContractRecord } from '../actions/actionCreator';
+import { getDicParList, openContractRecord,submitContractInfo } from '../actions/actionCreator';
+import { isEmptyObject } from '../../utils/utils'
 import './contract/edit/contract.less';
 import BasicEdit from './contract/edit/basicEdit';
 import BasicInfo from './contract/detail/basicInfo';
 import AttachEdit from './contract/edit/attachEdit';
 import AttachInfo from './contract/detail/attachInfo';
+
 const { Header, Sider, Content } = Layout;
 class ContractRecord extends Component{
     componentWillMount(){
@@ -20,6 +22,20 @@ class ContractRecord extends Component{
 
     handleAnchorChange = (e) =>{
         window.location.href = '#' + e.target.value;
+    }
+    handleSubmit = (e) => {
+        const contractBasicInfo = this.props.contractInfo.contractBasicInfo||{};
+        const hasBasicInfo = !isEmptyObject(contractBasicInfo); 
+        console.log(hasBasicInfo)
+
+        if(!hasBasicInfo){
+            notification.warning({
+                message: '请先完善楼盘信息，再提交',
+                duration: 3
+            })
+            return;
+        }
+        this.props.dispatch(submitContractInfo({ entity: { id: this.props.contractInfo.id } }))
     }
     render(){
         let basicOperType = this.props.operInfo.basicOperType;
@@ -69,6 +85,19 @@ class ContractRecord extends Component{
                             }
 
                         </Row>
+                        <div>
+                            <BackTop visibilityHeight={400} />
+                        </div>
+                        <Row type="flex" justify="space-between">
+                            <Col span={24} style={{ display: 'flex', justifyContent: 'flex-end',margin: '5px  0 25px 0' }}>
+                                {
+                                    //[8, 1].includes(this.props.buildInfo.examineStatus)  ? null :
+                                    <Button type="primary" size='large'
+                                        style={{ width: "10rem", display: this.props.contractDisplay }}
+                                        onClick={this.handleOk} loading={this.props.submitLoading}>提交</Button>
+                                }
+                            </Col>
+                        </Row>
                     </Content>
                 </Layout>
             </div>
@@ -80,6 +109,9 @@ function mapStateToProps(state){
     return{
         basicData: state.basicData,
         operInfo:state.contractData.operInfo,
+        contractInfo: state.contractData.contractInfo,
+        submitLoading: state.contractData.contractInfo.submitLoading,
+        contractDisplay:state.contractData.contractInfo.contractDisplay,
     }
     
 }

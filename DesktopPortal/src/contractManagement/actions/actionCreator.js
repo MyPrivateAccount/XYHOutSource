@@ -13,6 +13,11 @@ export const saveContractBasic = createAction(actionTypes.CONTRACT_BASIC_SAVE);
 export const editContractBasic = createAction(actionTypes.CONTRACT_BASIC_EDIT);
 export const viewContractBasic = createAction(actionTypes.CONTRACT_BASIC_VIEW);
 
+// 提交合同信息
+export const submitContractInfo = createAction(actionTypes.CONTRACT_INFO_SUBMIT);
+export const submitContractStart = createAction(actionTypes.CONTRACT_INFO_SUBMIT_START);
+export const submitContractFinish = createAction(actionTypes.CONTRACT_INFO_SUBMIT_FINISH);
+
 // 上传图片
 // export const savePictureAsync = createAction(actionTypes.SAVE_PICTURE_ASYNC);
 // export const uploadPicFinish = createAction(actionTypes.UPLOAD_PIC_FINISH);
@@ -35,8 +40,9 @@ export const uploadAttachMentListComplete = createAction(actionTypes.UPLOAD_ATTC
 //合同录入
 export const openContractRecord = createAction(actionTypes.OPEN_RECORD);
 export const closeContractReord = createAction(actionTypes.CLOSE_RECORD);
-export const subMitContractInfo = createAction(actionTypes.SUBMIT_CONTRACT_INFO);
-export const clearContractInfo = createAction(actionTypes.CLEAR_CONTRACT_INFO);
+
+//export const subMitContractInfo = createAction(actionTypes.SUBMIT_CONTRACT_INFO);
+//export const clearContractInfo = createAction(actionTypes.CLEAR_CONTRACT_INFO);
 
 //导出
 export const exportContract = createAction(actionTypes.EXPORT_CONTRACT);
