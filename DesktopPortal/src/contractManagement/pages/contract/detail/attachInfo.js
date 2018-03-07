@@ -20,53 +20,25 @@ class AttachInfo extends Component {
     }
     componentDidMount() {
         let fileList = [];
-        if (this.props.parentPage === 'building') {
-            if (this.props.buildingAttachInfo.fileList) {
-                this.getGroup(this.props.buildingAttachInfo.fileList)
-            }
-            this.setState({ fileList: fileList });
-        } else {
-            if (this.props.shopAttachInfo.fileList) {
-                this.props.shopAttachInfo.fileList.map(file => {
-                    fileList.push({
-                        uid: file.fileGuid,
-                        name: file.name || '',
-                        status: 'done',
-                        url: file.icon || file.localUrl
-                    });
-                });
-            }
-            this.setState({ fileList: fileList });
+    
+        if (this.props.contractAttachInfo.fileList) {
+            this.getGroup(this.props.contractAttachInfo.fileList)
         }
+        this.setState({ fileList: fileList });
+        
         
     }
 
     componentWillReceiveProps(newProps) {
         let fileList = [];
-        if (this.props.parentPage === 'building') {
-            if (newProps.buildingAttachInfo.fileList) {
-                this.getGroup(newProps.buildingAttachInfo.fileList)
-            }
-        } else {
-            console.log(newProps.shopAttachInfo.fileList, '图片详情INfolist')
-            if (newProps.shopAttachInfo.fileList.length) {
-                newProps.shopAttachInfo.fileList.map(file => {
-                    fileList.push({
-                        uid: file.fileGuid,
-                        name: file.name || '',
-                        status: 'done',
-                        url: file.icon || file.localUrl
-                    });
-                });
-                 this.setState({ fileList: fileList });
-            }
-           
-        }
+        if (newProps.contractAttachInfo.fileList) {
+            this.getGroup(newProps.contractAttachInfo.fileList)
+        }    
     }
 
 
     handleEdit = (e) => {
-        this.props.parentPage === "building" ? this.props.dispatch(buildingPicEdit()) : this.props.dispatch(shopPicEdit())
+        // this.props.dispatch(buildingPicEdit());//这里后续添加contractPicEdit()
     }
     handleCancel = () => this.setState({ previewVisible: false })
 
@@ -105,8 +77,7 @@ class AttachInfo extends Component {
         });
     }
     render() {
-        let { shopAttachInfo, buildingAttachInfo } = this.props;
-        let shopfileList, buildingfileList;
+        let { contractAttachInfo } = this.props;
         let { previewVisible, previewImage, fileList, group } = this.state;
         let propsPic = {
             multiple: true,
@@ -119,9 +90,7 @@ class AttachInfo extends Component {
                 });
             }
         }
-        shopfileList = shopAttachInfo.fileList || [];
-        buildingfileList = buildingAttachInfo.fileList || [];
-        console.log(shopfileList, '商铺列表')
+        let contractFileList = contractAttachInfo.fileList || [];
         return (
             <div className="">
                 <Layout>
@@ -145,10 +114,8 @@ class AttachInfo extends Component {
                                     <Button type="primary" shape="circle" icon="edit" onClick={this.handleEdit} /> 
                                     :
                                     // 下面的判断是因为在新增房源那里，1和8状态的楼盘都不可修改
-                                    (this.props.parentPage === "building" ?
                                     [1, 8].includes(this.props.buildInfo.examineStatus) ? null : <Button type="primary" shape="circle" icon="edit" onClick={this.handleEdit} />
-                                    :
-                                    [1, 8].includes(this.props.shopInfo.examineStatus) ? null : <Button type="primary" shape="circle" icon="edit" onClick={this.handleEdit} />)
+                            
                                 }
                             </Col>
                         </Row>
@@ -156,63 +123,45 @@ class AttachInfo extends Component {
                         <Row type="flex" justify="space-between">
 
                             {
-                                this.props.parentPage === "building" ?
-                                    <Col span={24}>
-                                        {buildingfileList.length !== 0 ?
-                                            <div>
-                                                <div className='picture'>图片</div>
+                                <Col span={24}>
+                                    {contractFileList.length !== 0 ?
+                                        <div>
+                                            <div className='picture'>图片</div>
 
-                                                <Tabs defaultActiveKey="1" className='picBox'>
-                                                    {
-                                                        this.props.basicData.contractAttachTypes.map((item, i) => {
-                                                           return (
-                                                             <TabPane tab={item.key} key={item.value}>
+                                            <Tabs defaultActiveKey="1" className='picBox'>
+                                                {
+                                                    this.props.basicData.contractAttachTypes.map((item, i) => {
+                                                        return (
+                                                            <TabPane tab={item.key} key={item.value}>
+                                                        
+                                                                <div className='picBox'>
+                                                                {
+                                                                this.state.imgFiles[item.value] ? 
+                                                                <div className="clearfix">
+                                                                    <Upload  multiple= {true}
+                                                                            listType="picture-card"
+                                                                            fileList= {this.state.imgFiles[item.value]}
+                                                                            onPreview={this.handlePreview}>
+                                                                    </Upload>
+                                                                    <Modal visible={previewVisible} footer={null} onCancel={this.handleCancel}>
+                                                                        <img alt="example" style={{ width: '100%' }} src={previewImage} />
+                                                                    </Modal>
+                                                                </div> :
+                                                                <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>暂无数据</div>
+                                                            }
+                                                            </div> 
+
                                                             
-                                                                 <div className='picBox'>
-                                                                 {
-                                                                 this.state.imgFiles[item.value] ? 
-                                                                    <div className="clearfix">
-                                                                        <Upload  multiple= {true}
-                                                                                listType="picture-card"
-                                                                                fileList= {this.state.imgFiles[item.value]}
-                                                                                onPreview={this.handlePreview}>
-                                                                        </Upload>
-                                                                        <Modal visible={previewVisible} footer={null} onCancel={this.handleCancel}>
-                                                                            <img alt="example" style={{ width: '100%' }} src={previewImage} />
-                                                                        </Modal>
-                                                                    </div> :
-                                                                    <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>暂无数据</div>
-                                                                }
-                                                                </div> 
-
-                                                             
-                                                                
-                                                            </TabPane>  
-                                                           )
-                                                        })
-                                                    }
-                                                </Tabs>
-                                            </div>
-                                            : <div style={{ marginLeft: '50px' }}>无图片</div>
-                                        }
-                                    </Col> :
-                                    <Col span={24}>
-                                        { shopfileList.length !== 0 ?
-                                            <div>
-                                                <div className='picture'>图片</div>
-
-                                                <div className='picBox'>
-                                                    <div className="clearfix">
-                                                        <Upload  {...propsPic} ></Upload>
-                                                        <Modal visible={previewVisible} footer={null} onCancel={this.handleCancel}>
-                                                            <img alt="example" style={{ width: '100%' }} src={previewImage} />
-                                                        </Modal>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            : <div style={{ marginLeft: '50px' }}>无图片</div>
-                                        }
-                                    </Col>
+                                                            
+                                                        </TabPane>  
+                                                        )
+                                                    })
+                                                }
+                                            </Tabs>
+                                        </div>
+                                        : <div style={{ marginLeft: '50px' }}>无图片</div>
+                                    }
+                                </Col>
                             }
 
                         </Row>
@@ -226,16 +175,7 @@ class AttachInfo extends Component {
 function mapStateToProps(state) {
     // console.log(state.shop.shopsInfo.attachInfo, state.building.buildInfo.attachInfo, '图片展示列表' )
     return {
-        shopAttachInfo: state.shop.shopsInfo.attachInfo,
-        buildingAttachInfo: state.building.buildInfo.attachInfo,
-        buildInfo: state.building.buildInfo,
-        shopInfo: state.shop.shopsInfo,
-        statusArr: state.active.statusArr,
-        dynamicShopAttachInfo: state.shop.dynamicShopsInfo.attachInfo,
-        dynamicBuildingAttachInfo: state.building.dynamicBuildInfo.attachInfo,
-        projectId: state.active.projectId,
-        shopId: state.active.shopId,
-        dynamicStatusArr: state.active.dynamicStatusArr,
+        contractAttachInfo: state.contractData.contractAttachInfo,
         basicData: state.basicData
     }
 }

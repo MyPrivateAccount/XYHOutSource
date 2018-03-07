@@ -8,6 +8,41 @@ export const getOrgDetail = createAction(actionTypes.DIC_GET_ORG_DETAIL);
 export const getUserByOrg = createAction(actionTypes.GET_ORG_USERLIST);
 //设置遮罩层
 export const setLoadingVisible = createAction(actionTypes.SET_SEARCH_LOADING);
+//合同的录入
+export const saveContractBasic = createAction(actionTypes.CONTRACT_BASIC_SAVE);
+export const editContractBasic = createAction(actionTypes.CONTRACT_BASIC_EDIT);
+export const viewContractBasic = createAction(actionTypes.CONTRACT_BASIC_VIEW);
+
+// 上传图片
+// export const savePictureAsync = createAction(actionTypes.SAVE_PICTURE_ASYNC);
+// export const uploadPicFinish = createAction(actionTypes.UPLOAD_PIC_FINISH);
+
+// export const buildingPicView = createAction(actionTypes.BUILDING_PIC_VIEW);
+// export const buildingPicEdit = createAction(actionTypes.BUILDING_PIC_EDIT);
+// export const deletePicAsync = createAction(actionTypes.DELETE_PICTURE_ASYNC);
+// export const saveCompleteFileList = createAction(actionTypes.SAVE_COMPLETE_FILE_LIST);
+// export const saveDeletePicList = createAction(actionTypes.SAVE_DELETE_PIC_LIST);
+
+
+
+//文件上传
+export const openAttachMent = createAction(actionTypes.OPEN_ATTACHMENT);
+export const closeAttachMent = createAction(actionTypes.CLOSE_ATTACHMENT);
+export const uploadAttachMentList = createAction(actionTypes.UPLOAD_ATTCHMENT_LIST);
+export const uploadAttachMentListComplete = createAction(actionTypes.UPLOAD_ATTCHMENT_LIST_COMPLETE);
+
+
+//合同录入
+export const openContractRecord = createAction(actionTypes.OPEN_RECORD);
+export const closeContractReord = createAction(actionTypes.CLOSE_RECORD);
+export const subMitContractInfo = createAction(actionTypes.SUBMIT_CONTRACT_INFO);
+export const clearContractInfo = createAction(actionTypes.CLEAR_CONTRACT_INFO);
+
+//导出
+export const exportContract = createAction(actionTypes.EXPORT_CONTRACT);
+export const exportMultiContract = createAction(actionTypes.EXPORT_MULTI_CONTRACT);
+
+
 //客户详情处理
 export const openCustomerDetail = createAction(actionTypes.OPEN_CUSTOMER_DETAIL);
 export const closeCustomerDetail = createAction(actionTypes.CLOSE_CUSTOMER_DETAIL);
@@ -36,18 +71,3 @@ export const getRepeatJudgeInfo = createAction(actionTypes.GET_REPEAT_JUDGE_INFO
 export const removeAdjustItem = createAction(actionTypes.REMOVE_ADJUST_REQUEST_ITEM);
 
 
-//文件上传
-export const openAttachMent = createAction(actionTypes.OPEN_ATTACHMENT);
-export const closeAttachMent = createAction(actionTypes.CLOSE_ATTACHMENT);
-export const uploadAttachMentList = createAction(actionTypes.UPLOAD_ATTCHMENT_LIST);
-export const uploadAttachMentListComplete = createAction(actionTypes.UPLOAD_ATTCHMENT_LIST_COMPLETE);
-
-//合同录入
-export const openContractRecord = createAction(actionTypes.OPEN_RECORD);
-export const closeContractReord = createAction(actionTypes.CLOSE_RECORD);
-export const subMitContractInfo = createAction(actionTypes.SUBMIT_CONTRACT_INFO);
-export const clearContractInfo = createAction(actionTypes.CLEAR_CONTRACT_INFO);
-
-//导出
-export const exportContract = createAction(actionTypes.EXPORT_CONTRACT);
-export const exportMultiContract = createAction(actionTypes.EXPORT_MULTI_CONTRACT);

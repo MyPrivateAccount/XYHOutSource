@@ -6,5 +6,5 @@ import contractReducer from './contract';
 export default combineReducers({
     search: searchReducer,
     basicData: basicDataReducer,
-    contractBasicData: contractReducer,
+    contractData: contractReducer,
 });

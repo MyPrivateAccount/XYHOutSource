@@ -4,6 +4,7 @@ import {contractInfoGroup} from '../../../constants/commonDefine';
 import { Layout, Table, Button, Checkbox, Radio, Row, Col, Icon, Anchor, BackTop, Modal, notification } from 'antd'
 import './contract.less'
 import BasicEdit from '../../../../contractManagement/pages/contract/edit/basicEdit';
+import BasicInfo from '../../../../contractManagement/pages/contract/detail/basicInfo';
 
 const { Header, Sider, Content } = Layout;
 class ContractEdit extends Component{

@@ -38,7 +38,7 @@ class MainIndex extends Component {
     //录入
     onClickRecord = (e) =>{
         console.log('录入');
-        this.props.dispatch(openContractRecord(0));
+        this.props.dispatch(openContractRecord({id:0}));
     }
     //导出
     onClickExPort = (e) =>{
@@ -46,7 +46,7 @@ class MainIndex extends Component {
     }
     //文件上传
     onClickUploadFile = (e)=>{
-        this.props.dispatch(openAttachMent(1));
+        this.props.dispatch(openAttachMent({id:1}));
     }
     handleClickFucButton = (buttonID) =>{
         switch(buttonID){

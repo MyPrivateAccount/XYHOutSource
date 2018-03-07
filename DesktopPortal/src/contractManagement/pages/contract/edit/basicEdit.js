@@ -7,28 +7,20 @@ import moment from 'moment';
 const FormItem = Form.Item;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
-/*guid生成*/
-function S4() {
-  return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
-}
-function NewGuid() {
-  return 'XYH' + (S4() + S4() + S4() + S4() + S4()  + S4() + S4() + S4());
-}
-const yesOrNo = [
-  {key:'0', value:'是'},
-  {key:'1', value:'否'}
-];
+const { RangePicker } = DatePicker;
 
 class BasicEdit extends Component {
-    contractNumber = NewGuid();
-    
+
+    handleChangeTime = (value, dateString)=>{
+        console.log('curstatrEndTime:', value);
+        console.log('format curstatrEndTime:', dateString);
+    }
     render(){
         const { getFieldDecorator, getFieldsError, getFieldError, isFieldTouched } = this.props.form;
         //let contractTypes = '1';
         let basicOperType = this.props.basicOperType;
-        let contractId  = this.props.contractInfo.id
         let basicInfo = this.props.contractBasicInfo;
-        let curDate = Date.now();
+
         const formItemLayout = {
           labelCol: { span: 6 },
           wrapperCol: { span: 14 },
@@ -57,21 +49,35 @@ class BasicEdit extends Component {
                         )}
                         </FormItem>
                     </Col>
-              <Col span={12}>
-                 
-                 <FormItem {...formItemLayout} label={<span>项目名称</span>}>
-                    {getFieldDecorator('projectName', {
-                      initialValue: basicInfo.projectName,
-                      rules:[{required:true, message:'请输入项目名称!'}]
-                      })(
-                          <Input placeholder="项目名称" />
-                      )
-                      
-                    }
-                 </FormItem>
-              </Col>
+                <Col span={12}>
+                    
+                    <FormItem {...formItemLayout} label={<span>合同名称</span>}>
+                        {getFieldDecorator('contractName', {
+                        initialValue: basicInfo.contractName,
+                        rules:[{required:true, message:'请输入合同名称!'}]
+                        })(
+                            <Input placeholder="合同名称" />
+                        )
+                        
+                        }
+                    </FormItem>
+                </Col>
+
             </Row>
             <Row type="flex" style={{marginTop: "25px"}}>
+                <Col span={12}>
+                    
+                    <FormItem {...formItemLayout} label={<span>项目名称</span>}>
+                        {getFieldDecorator('projectName', {
+                        initialValue: basicInfo.projectName,
+                        rules:[{required:true, message:'请输入项目名称!'}]
+                        })(
+                            <Input placeholder="项目名称" />
+                        )
+                        
+                        }
+                    </FormItem>
+                </Col>
                 <Col span={12}>
                     <FormItem {...formItemLayout} label={<span>项目类型</span>}>
                     {getFieldDecorator('projectType', {
@@ -90,18 +96,6 @@ class BasicEdit extends Component {
                     }
                     </FormItem>
                 </Col>
-                <Col span={12}>
-                <FormItem {...formItemLayout} label={<span>项目负责人</span>}>
-                  {getFieldDecorator('projectPeopleName', {
-                                initialValue: basicInfo.projectPeopleName,
-                                rules:[{required:true, message:'请输入项目负责人!'}]
-                                })(
-                                    <Input placeholder="项目负责人" />
-                                )
-                                
-                        }
-                </FormItem>
-              </Col>
 
 
             </Row>
@@ -166,26 +160,37 @@ class BasicEdit extends Component {
             </Row>
 
             <Row type="flex" style={{marginTop: "25px"}}>
+                <Col span={12}>
+                    <FormItem {...formItemLayout} label={<span>项目负责人</span>}>
+                    {getFieldDecorator('projectPeopleName', {
+                                    initialValue: basicInfo.projectPeopleName,
+                                    rules:[{required:true, message:'请输入项目负责人!'}]
+                                    })(
+                                        <Input placeholder="项目负责人" />
+                                    )
+                                    
+                            }
+                    </FormItem>
+                </Col>
               <Col span={12}>
-                 <FormItem {...formItemLayout} label={<span>合同开始时间</span>}>
-                  {getFieldDecorator('beginTime', {
-                                initialValue: basicInfo.beginTime,
-                                rules: [{ required: true, message: '请选择合同开始时间!'}],
-                            })(
-                                <DatePicker format='YYYY-MM-DD' />
-                                )}
-                 </FormItem>
+                    <FormItem {...formItemLayout} label={<span>合同起始时间</span>}>
+                        {getFieldDecorator('startAndEndTime', {
+                                        initialValue: [basicInfo.startTime ? moment(basicInfo.startTime, 'YYYY-MM-DD') : null, 
+                                        basicInfo.endTime ? moment(basicInfo.endTime, 'YYYY-MM-DD') : null],
+                                        rules:[{required:true, message:'请选择起始时间!'}]
+                                        })(
+                                            <RangePicker
+                                              format="YYYY-MM-DD"
+                                              placeholder={['开始时间', '结束时间']}
+                                              onChange={this.handleChangeTime}
+                                          />
+                                        )
+                                        
+                                }
+                    </FormItem>
+
               </Col>
-              <Col span={12}>
-                 <FormItem {...formItemLayout} label={<span>合同结束时间</span>}>
-                   {getFieldDecorator('beginTime', {
-                                initialValue: basicInfo.endTime,
-                                rules: [{ required: true, message: '请选择合同结束时间!'}],
-                            })(
-                                <DatePicker format='YYYY-MM-DD' />
-                                )}
-                 </FormItem>
-              </Col>
+
             </Row>
             <Row type="flex" style={{marginTop: "25px"}}>
               <Col span={12}>
@@ -271,9 +276,9 @@ function mapStateToProps(state) {
     //   shopsInfo: state.shop.shopsInfo,
          basicData: state.basicData,
     //   loading: state.shop.basicloading
-        contractInfo: state.contractBasicData.contractInfo,
-        contractBasicInfo: state.contractBasicData.contractInfo.contractBasicInfo,
-        operInfo:state.contractBasicData.operInfo,
+        contractInfo: state.contractData.contractInfo,
+        contractBasicInfo: state.contractData.contractInfo.contractBasicInfo,
+        operInfo:state.contractData.operInfo,
     }
   }
   

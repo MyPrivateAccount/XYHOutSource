@@ -38,10 +38,11 @@ class BasicInfo extends Component {
                     </Row>
                     <Row className='viewRow'>
                         <Col span={12}>合同编号:{contractId}</Col>
+                        <Col span={12}>合同名称:{basicInfo.contractName}</Col>
                     </Row>
                     <Row className='viewRow'>
                         <Col span={12}>申请时间:{basicInfo.applyTime}</Col>
-                        <Col span={12}>申请部门:{basicInfo.oorganizationName}</Col>
+                        <Col span={12}>申请部门:{basicInfo.organizationName}</Col>
                     </Row>
                     <Row className='viewRow'>
                         <Col span={12}>合同类型:{basicInfo.contractType}</Col>
@@ -71,9 +72,7 @@ class BasicInfo extends Component {
                         <Col span={12}>佣金方式:{basicInfo.commissionType}</Col>
                         <Col span={12}>续签合同:{basicInfo.renewContract}</Col>
                     </Row>
-                    <Row className='viewRow'>
-                        
-                    </Row>
+
                 </Form>
             </div>
         )
@@ -82,7 +81,7 @@ class BasicInfo extends Component {
 
 function mapStateToProps(state) {
     return {
-        contractInfo: state.contractBasicData.contractInfo,
+        contractInfo: state.contractData.contractInfo,
         basicData: state.basicData,
     }
 }

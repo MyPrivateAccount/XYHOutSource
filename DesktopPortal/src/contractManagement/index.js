@@ -10,7 +10,7 @@ import {closeAttachMent, closeContractReord, getOrgList, getOrgDetail, openOrgSe
 import OrgSelect from './pages/orgSelect/orgSelect';
 import CustomerDetail from './pages/customerDetail';
 import AttchMent from './pages/attachMent';
-import ContractRecord from './pages/contractRecord';
+
 sagaMiddleware.run(rootSaga);
 
 const {Header, Sider, Content} = Layout;
