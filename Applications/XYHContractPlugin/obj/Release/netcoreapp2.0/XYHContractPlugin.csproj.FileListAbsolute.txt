@@ -1,0 +1,4 @@
+D:\XYHOutSource\Applications\XYHContractPlugin\obj\Release\netcoreapp2.0\XYHContractPlugin.csprojResolveAssemblyReference.cache
+D:\XYHOutSource\Applications\XYHContractPlugin\obj\Release\netcoreapp2.0\XYHContractPlugin.csproj.CoreCompileInputs.cache
+D:\XYHOutSource\Applications\XYHContractPlugin\obj\Release\netcoreapp2.0\XYHContractPlugin.AssemblyInfoInputs.cache
+D:\XYHOutSource\Applications\XYHContractPlugin\obj\Release\netcoreapp2.0\XYHContractPlugin.AssemblyInfo.cs

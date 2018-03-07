@@ -8,6 +8,7 @@ using ApplicationCore;
 using ApplicationCore.Dto;
 using ApplicationCore.Filters;
 using XYH.Core.Log;
+using XYHContractPlugin.Dto.Response;
 
 namespace XYHContractPlugin.Controllers
 {
@@ -44,14 +45,16 @@ namespace XYHContractPlugin.Controllers
 
         [HttpGet("{contractid}")]
         [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
-        public async Task<ResponseMessage<List<int>>> GetContractByid(UserInfo user, [FromRoute] string contractId)
+        public async Task<ResponseMessage<List<ContractInfoResponse>>> GetContractByid(UserInfo user, [FromRoute] string contractId)
         {
-            var Response = new ResponseMessage<List<int>>();
-            //if (string.IsNullOrEmpty(testinfo))
-            //{
-            //    Response.Code = ResponseCodeDefines.ModelStateInvalid;
-            //    Response.Message = "请求参数不正确";
-            //}
+            var Response = new ResponseMessage<List<ContractInfoResponse>>();
+            if (string.IsNullOrEmpty(contractId))
+            {
+                Response.Code = ResponseCodeDefines.ModelStateInvalid;
+                Response.Message = "请求参数不正确";
+                Logger.Error("error GetContractByid");
+                return Response;
+            }
             try
             {
                 //Response.Extension = await _userTypeValueManager.FindByTypeAsync(user.Id, type, HttpContext.RequestAborted);

@@ -9,3 +9,16 @@ E:\work\XYH\xinyaohang\DesktopPortal\obj\Debug\netcoreapp2.0\DesktopPortal.Assem
 E:\work\XYH\xinyaohang\DesktopPortal\obj\Debug\netcoreapp2.0\DesktopPortal.AssemblyInfo.cs
 E:\work\XYH\xinyaohang\DesktopPortal\obj\Debug\netcoreapp2.0\DesktopPortal.dll
 E:\work\XYH\xinyaohang\DesktopPortal\obj\Debug\netcoreapp2.0\DesktopPortal.pdb
+D:\XYHOutSource\DesktopPortal\obj\Debug\netcoreapp2.0\DesktopPortal.csprojResolveAssemblyReference.cache
+D:\XYHOutSource\DesktopPortal\obj\Debug\netcoreapp2.0\DesktopPortal.csproj.CoreCompileInputs.cache
+D:\XYHOutSource\DesktopPortal\obj\Debug\netcoreapp2.0\DesktopPortal.AssemblyInfoInputs.cache
+D:\XYHOutSource\DesktopPortal\obj\Debug\netcoreapp2.0\DesktopPortal.AssemblyInfo.cs
+D:\XYHOutSource\DesktopPortal\obj\Debug\netcoreapp2.0\DesktopPortal.dll
+D:\XYHOutSource\DesktopPortal\obj\Debug\netcoreapp2.0\DesktopPortal.pdb
+D:\XYHOutSource\DesktopPortal\bin\Debug\netcoreapp2.0\appsettings.json
+D:\XYHOutSource\DesktopPortal\bin\Debug\netcoreapp2.0\DesktopPortal.deps.json
+D:\XYHOutSource\DesktopPortal\bin\Debug\netcoreapp2.0\DesktopPortal.runtimeconfig.json
+D:\XYHOutSource\DesktopPortal\bin\Debug\netcoreapp2.0\DesktopPortal.runtimeconfig.dev.json
+D:\XYHOutSource\DesktopPortal\bin\Debug\netcoreapp2.0\DesktopPortal.dll
+D:\XYHOutSource\DesktopPortal\bin\Debug\netcoreapp2.0\DesktopPortal.pdb
+D:\XYHOutSource\DesktopPortal\bin\Debug\netcoreapp2.0\XYH.Core.dll
