@@ -14,8 +14,9 @@ export function* getParListAsync(state) {
     let result = { isOk: false, extension: [], msg: '系统参数获取失败！' };
     let url = WebApiConfig.dic.ParList;
     try {
+        //console.log('getParListAsync:', state);
         let res = yield call(ApiClient.post, url, state.payload)
-        // console.log(res, '获取参数列表');
+        //console.log(res, '获取参数列表');
         getApiResult(res, result);
         if (result.isOk) {
             yield put({ type: actionUtils.getActionType(actionTypes.DIC_GET_PARLIST_COMPLETE), payload: result.extension });

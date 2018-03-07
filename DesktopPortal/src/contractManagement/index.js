@@ -146,6 +146,7 @@ class ContractManagementIndex extends Component {
         let navigator = this.props.navigator;
         let activeOrg = this.props.activeOrg;
         console.log('我属于的部门:',this.props.activeOrg);
+        //console.log('所有部门:', this.props.orgInfo);
         let fullPath = this.getActiveOrgFullPath();
         return (
             <Layout className="page">

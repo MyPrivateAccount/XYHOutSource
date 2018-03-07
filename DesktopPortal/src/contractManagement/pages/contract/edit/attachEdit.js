@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { savePictureAsync, buildingPicView, shopPicView, 
+import { getDicParList, savePictureAsync, buildingPicView, shopPicView, 
   deletePicAsync, saveCompleteFileList, saveDeletePicList,attchLoadingStart } from '../../../actions/actionCreator';
 import React, { Component } from 'react'
 import './editCommon.less'
@@ -30,7 +30,11 @@ class AttachEdit extends Component {
     picGroup: '1', // 图片分类值
     imgFiles: {}
   };
-
+  componentWillMount(){
+    if(this.props.basicData.contractAttachTypes.length === 0){
+      this.props.dispatch(getDicParList(['CONTRACT_ATTACHMENT_CATEGORIES']));
+    }
+  }
   attachImgeCategories = [
     {name:'分类1', num:1, order:1, isRequired:1, isDisable:0, comment:''},
     {name:'分类2', num:2, order:1, isRequired:1, isDisable:0, comment:''},
@@ -162,7 +166,7 @@ class AttachEdit extends Component {
 
   }
   render(){
-    let attachImgeCategories = this.attachImgeCategories;//后面在字典中配置
+
     const {previewVisible, previewImage, fileList} = this.state;
     const uploadButton = (
       <div>
@@ -187,9 +191,9 @@ class AttachEdit extends Component {
                       <div className='picBox'>
                           <Tabs defaultActiveKey='1'>
                             {
-                              attachImgeCategories.map((item, i)=>{
+                              this.props.basicData.contractAttachTypes.map((item, i)=>{
                                 return (
-                                  <TabPane tab={item.name} key={item.num}>
+                                  <TabPane tab={item.key} key={item.value}>
                                     <div className='clearfix'>
                                       <Upload 
                                         beforeUpload={this.handleBeforeUpload}
@@ -232,6 +236,7 @@ class AttachEdit extends Component {
 function mapStateToProps(state) {
   // console.log("attachedit props：", state.buildInfo)
   return {
+    basicData: state.basicData,
     /*
     buildingOperInfo: state.building.operInfo,
     buildInfo: state.building.buildInfo,
