@@ -1,5 +1,5 @@
 import {connect} from 'react-redux';
-import {openAdjustCustomer, getCustomerDetail, searchStart, saveSearchCondition, setLoadingVisible} from '../actions/actionCreator';
+import {openAdjustCustomer, getCustomerDetail, searchStart, saveSearchCondition, setLoadingVisible,openAttachMent, openContractRecord} from '../actions/actionCreator';
 import React, {Component} from 'react';
 import {Button, Row, Col, Table} from 'antd';
 import moment from 'moment';
@@ -14,6 +14,31 @@ class SearchResult extends Component {
             total: 0
         },
         checkList: []//选中客户
+    }
+
+           //是否有权限
+    hasPermission(buttonInfo) {
+            let hasPermission = false;
+            if (this.props.judgePermissions && buttonInfo.requirePermission) {
+                for (let i = 0; i < buttonInfo.requirePermission.length; i++) {
+                    if (this.props.judgePermissions.includes(buttonInfo.requirePermission[i])) {
+                        hasPermission = true;
+                        break;
+                    }
+                }
+            } else {
+                hasPermission = true;
+            }
+            return hasPermission;
+    }
+
+    //导出
+    onClickExPort = (e) =>{
+        
+    }
+    //文件上传
+    onClickUploadFile = (e)=>{
+        this.props.dispatch(openAttachMent({id:1}));
     }
     //合同基本信息列
     getCustomerInfoColumns() {
@@ -484,6 +509,7 @@ function mapStateToProps(state) {
     return {
         searchInfo: state.search,
         basicData: state.basicData,
+        judgePermissions: state.judgePermissions
     }
 }
 
