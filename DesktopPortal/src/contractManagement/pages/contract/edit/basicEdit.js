@@ -3,6 +3,7 @@ import { getDicParList, saveContractBasic, viewBuildingBasic,basicLoadingStart }
 import React, { Component } from 'react';
 import { Icon, Input, InputNumber, Button, Checkbox, Row, Col, Form, DatePicker, Select, Cascader,Radio } from 'antd';
 import moment from 'moment';
+import { call } from 'redux-saga/effects';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -22,10 +23,20 @@ class BasicEdit extends Component {
         this.props.form.validateFields((err, values) => {
             if (!err) {
                 // this.setState({ loadingState: true });
-                console.log('values:', values);
+                
                 this.props.dispatch(basicLoadingStart())
-                let newBasicInfo = values;
+                let StartTime = moment(values.startAndEndTime[0]).format("YYYY-MM-DD");
+                let EndTime = moment(values.startAndEndTime[1]).format("YYYY-MM-DD");
+                let newBasicInfo = Object.assign({},values, {StartTime:StartTime, EndTime:EndTime});
+                delete newBasicInfo.startAndEndTime;
+    
                 newBasicInfo.id = this.props.contractInfo.id;
+                if(basicOperType === 'add')
+                {
+                    newBasicInfo.CreateTime = moment().format("YYYY-MM-DD");
+                    newBasicInfo.CreateDepartment = this.props.activeOrg.organizationName;
+                }
+ 
                 if (basicOperType != 'add') {
                     newBasicInfo = Object.assign({}, this.props.contractBasicInfo, values);
                 }
@@ -33,6 +44,7 @@ class BasicEdit extends Component {
                 // newBasicInfo.district = values.location[1];
                 // newBasicInfo.area = values.location[2];
                 // newBasicInfo.areaFullName = this.state.areaFullName
+                //console.log('newBasicInfo:', newBasicInfo);
                 let method = (basicOperType === 'add' ? 'POST' : "PUT");
                 this.props.dispatch(saveContractBasic({ 
                     method: method, 
@@ -41,6 +53,21 @@ class BasicEdit extends Component {
                 }));
             }
         });
+    }
+    handleChectDuringTime = (rule, value, callback) =>{
+        const form = this.props.form;
+        const duringTime = form.getFieldValue('startAndEndTime') || [];
+        if(duringTime[0] === null || duringTime[1] === null){
+            callback("请选择开始和结束时间");
+        }
+        else if(moment(duringTime[0]).Date >= moment(duringTime[1]).Date){
+
+            callback("结束时间不能小于开始时间");
+        }
+        else
+        {
+            callback();
+        }
     }
     render(){
         const { getFieldDecorator, getFieldsError, getFieldError, isFieldTouched } = this.props.form;
@@ -52,7 +79,7 @@ class BasicEdit extends Component {
           labelCol: { span: 6 },
           wrapperCol: { span: 14 },
         };
-        console.log('this.props.basicData.contractCategories:', this.props.basicData.contractCategories);
+        //console.log('this.props.basicData.contractCategories:', this.props.basicData.contractCategories);
         return (
           <Form layout="horizontal" style={{padding: '25px 0', marginTop: "25px"}}>
           <Icon type="tags-o" className='content-icon'/> <span className='content-title'>基本信息 (必填)</span>
@@ -62,8 +89,8 @@ class BasicEdit extends Component {
             <Row type="flex" style={{marginTop: "25px"}}>
               <Col span={12}>
                         <FormItem {...formItemLayout} label={<span>合同类型</span>}>
-                        {getFieldDecorator('contractType', {
-                                    initialValue: basicInfo.contractType,
+                        {getFieldDecorator('ContractType', {
+                                    initialValue: basicInfo.ContractType,
                                     rules: [{ required: true, message: '请选择合同类型!' }],
                                 })(
                                     <Select>
@@ -79,8 +106,8 @@ class BasicEdit extends Component {
                 <Col span={12}>
                     
                     <FormItem {...formItemLayout} label={<span>合同名称</span>}>
-                        {getFieldDecorator('contractName', {
-                        initialValue: basicInfo.contractName,
+                        {getFieldDecorator('ContractName', {
+                        initialValue: basicInfo.ContractName,
                         rules:[{required:true, message:'请输入合同名称!'}]
                         })(
                             <Input placeholder="合同名称" />
@@ -107,7 +134,7 @@ class BasicEdit extends Component {
                 </Col>
                 <Col span={12}>
                     <FormItem {...formItemLayout} label={<span>项目类型</span>}>
-                    {getFieldDecorator('ProjectName', {
+                    {getFieldDecorator('ProjectType', {
                             initialValue: basicInfo.ProjectType,
                             rules:[{required:true, message:'请选择项目类型!'}]
                             })(
@@ -189,8 +216,8 @@ class BasicEdit extends Component {
             <Row type="flex" style={{marginTop: "25px"}}>
                 <Col span={12}>
                     <FormItem {...formItemLayout} label={<span>项目负责人</span>}>
-                    {getFieldDecorator('projectPeopleName', {
-                                    initialValue: basicInfo.projectPeopleName,
+                    {getFieldDecorator('ProprincipalPepole', {
+                                    initialValue: basicInfo.ProprincipalPepole,
                                     rules:[{required:true, message:'请输入项目负责人!'}]
                                     })(
                                         <Input placeholder="项目负责人" />
@@ -204,7 +231,8 @@ class BasicEdit extends Component {
                         {getFieldDecorator('startAndEndTime', {
                                         initialValue: [basicInfo.StartTime ? moment(basicInfo.StartTime, 'YYYY-MM-DD') : null, 
                                         basicInfo.EndTime ? moment(basicInfo.EndTime, 'YYYY-MM-DD') : null],
-                                        rules:[{required:true, message:'请选择起始时间!'}]
+                                        rules:[{required:true, message:'请选择起始时间!'},
+                                               {validator: this.handleChectDuringTime}],
                                         })(
                                             <RangePicker
                                               format="YYYY-MM-DD"
@@ -226,7 +254,7 @@ class BasicEdit extends Component {
                                   initialValue: basicInfo.Count,
                                   rules:[{required:true, message:'请输入份数!'}]
                                   })(
-                                      <InputNumber min={0}  />
+                                      <InputNumber min={1}  />
                                   )
                                   
                      }
@@ -270,7 +298,7 @@ class BasicEdit extends Component {
               </Col>
                 <Col span={12}>
                     <FormItem {...formItemLayout} label={<span>续签合同</span>}>
-                        {getFieldDecorator('basicInfo.Follow', {
+                        {getFieldDecorator('Follow', {
                                     initialValue: basicInfo.Follow,
                                     //rules:[{required:true, message:'续签合同'}]
                                     })(
@@ -304,11 +332,11 @@ class BasicEdit extends Component {
                 }
                 <Col span={12}>
                     <FormItem {...formItemLayout} label={<span>备注</span>}>
-                        {getFieldDecorator('basicInfo.Remark', {
+                        {getFieldDecorator('Remark', {
                                     initialValue: basicInfo.Remark,
                                     //rules:[{required:true, message:'续签合同'}]
                                     })(
-                                        <span>{basicInfo.Remark ? basicInfo.Remark : '无'}</span>
+                                        <TextArea placeholder="备注" autosize />
                                     )
                                     
                             }
@@ -341,6 +369,7 @@ function mapStateToProps(state) {
         contractInfo: state.contractData.contractInfo,
         contractBasicInfo: state.contractData.contractInfo.contractBasicInfo,
         operInfo:state.contractData.operInfo,
+        activeOrg: state.search.activeOrg,
     }
   }
   

@@ -65,10 +65,11 @@ reducerMap[actionTypes.CONTRACT_BASIC_EDIT] = (state, action) => {
   }
   // 基本信息查看
 reducerMap[actionTypes.CONTRACT_BASIC_VIEW] = (state, action) => {
-    let contractInfo = { ...state.shopsInfo };
-  
+    let contractInfo = Object.assign({}, { ...state.contractInfo.contractBasicInfo }, {contractBasicInfo:action.body});
+    
     let operInfo = Object.assign({}, state.operInfo, { basicOperType: 'view' });
     let newState = Object.assign({}, state, { operInfo: operInfo, contractInfo: contractInfo });
+    console.log('newstate:', newState);
     return newState;
   }
   

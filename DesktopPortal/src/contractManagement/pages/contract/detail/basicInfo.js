@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { editBuildingBasic } from '../../../actions/actionCreator';
+import { editContractBasic } from '../../../actions/actionCreator';
 import React, { Component } from 'react'
 import { Icon, Table, Button, Checkbox, Row, Col, Form } from 'antd'
 import moment from 'moment';
@@ -13,13 +13,16 @@ class BasicInfo extends Component {
     }
 
     handleEdit = (e) => {
-        //this.props.dispatch(editBuildingBasic());
+        this.props.dispatch(editContractBasic());
     }
 
     render(){
         const basicInfo = this.props.contractInfo.contractBasicInfo;
-        if (basicInfo.landExpireDate && basicInfo.landExpireDate !== "") {
-            basicInfo.landExpireDate = moment(basicInfo.landExpireDate).format("YYYY-MM-DD");
+        if (basicInfo.StartTime && basicInfo.StartTime !== "") {
+            basicInfo.StartTime = moment(basicInfo.StartTime).format("YYYY-MM-DD");
+        }
+        if (basicInfo.EndTime && basicInfo.EndTime !== "") {
+            basicInfo.EndTime = moment(basicInfo.EndTime).format("YYYY-MM-DD");
         }
         const contractId = basicInfo.id;
         return (
@@ -38,47 +41,47 @@ class BasicInfo extends Component {
                     </Row>
                     <Row className='viewRow'>
                         <Col span={12}>合同编号:{contractId}</Col>
-                        <Col span={12}>合同名称:{basicInfo.contractName}</Col>
+                        <Col span={12}>合同类型:{basicInfo.ContractType }</Col>
                     </Row>
                     <Row className='viewRow'>
-                        <Col span={12}>申请时间:{basicInfo.applyTime}</Col>
-                        <Col span={12}>申请部门:{basicInfo.organizationName}</Col>
+                        <Col span={12}>申请时间:{basicInfo.CreateTime}</Col>
+                        <Col span={12}>申请部门:{basicInfo.CreateDepartment}</Col>
                     </Row>
                     <Row className='viewRow'>
-                        <Col span={12}>合同类型:{basicInfo.contractType}</Col>
-                        <Col span={12}>项目名称:{basicInfo.projectName}</Col>
+                        <Col span={12}>合同名称:{basicInfo.ContractName}</Col>
+                        <Col span={12}>项目名称:{basicInfo.ProjectName}</Col>
                     </Row>
                     <Row className='viewRow'>
-                        <Col span={12}>项目类型:{basicInfo.projectType}</Col>
-                        <Col span={12}>项目负责人:{basicInfo.projectPeopleName}</Col>
+                        <Col span={12}>项目类型:{basicInfo.ProjectType}</Col>
+                        <Col span={12}>项目负责人:{basicInfo.ProprincipalPepole}</Col>
                     </Row>
                     <Row className='viewRow'>
-                        <Col span={12}>甲方类型:{basicInfo.firstPartyType}</Col>
-                        <Col span={12}>甲方公司全称:{basicInfo.firstPartyFirmName}</Col>
+                        <Col span={12}>甲方类型:{basicInfo.CompanyAType}</Col>
+                        <Col span={12}>甲方公司全称:{basicInfo.CompanyA}</Col>
                     </Row>
                     <Row className='viewRow'>
-                        <Col span={12}>甲方负责人:{basicInfo.firstMainPeople}</Col>
-                        <Col span={12}>乙方负责人:{basicInfo.secondMainPeople}</Col>
+                        <Col span={12}>甲方负责人:{basicInfo.PrincipalpepoleA}</Col>
+                        <Col span={12}>乙方负责人:{basicInfo.PrincipalpepoleB}</Col>
                     </Row>
                     <Row className='viewRow'>
-                        <Col span={12}>合同开始时间:{basicInfo.beginTime}</Col>
-                        <Col span={12}>合同结束时间:{basicInfo.endTime}</Col>
+                        <Col span={12}>合同开始时间:{basicInfo.StartTime}</Col>
+                        <Col span={12}>合同结束时间:{basicInfo.EndTime}</Col>
                     </Row>
                     <Row className='viewRow'>
-                        <Col span={12}>份数:{basicInfo.contractNumber}</Col>
-                        <Col span={12}>返回原件:{basicInfo.returnOrigin}</Col>
+                        <Col span={12}>份数:{basicInfo.Count}</Col>
+                        <Col span={12}>返回原件:{basicInfo.ReturnOrigin}</Col>
                     </Row>
                     <Row className='viewRow'>
-                        <Col span={12}>佣金方式:{basicInfo.commissionType}</Col>
-                        <Col span={12}>续签合同:{basicInfo.renewContract}</Col>
+                        <Col span={12}>佣金方式:{basicInfo.CommisionType}</Col>
+                        <Col span={12}>续签合同:{basicInfo.Follow}</Col>
                     </Row>
                     <Row className='viewRow'>
-                        <Col span={12}>审核人:{basicInfo.commissionType}</Col>
-                        <Col span={12}>审核状态:{basicInfo.renewContract}</Col>
+                        <Col span={12}>审核人:{basicInfo.CheckPeople}</Col>
+                        <Col span={12}>审核状态:{basicInfo.CheckState}</Col>
                     </Row>
                     <Row className='viewRow'>
-                        <Col span={12}>是否作废:{basicInfo.commissionType}</Col>
-                        <Col span={12}>备注:{basicInfo.renewContract}</Col>
+                        <Col span={12}>是否作废:{(basicInfo.IsCancel && basicInfo.IsCancel === '1') ? "是" : "否"}</Col>
+                        <Col span={12}>备注:{basicInfo.Remark}</Col>
                     </Row>
 
                 </Form>
@@ -88,6 +91,7 @@ class BasicInfo extends Component {
 }
 
 function mapStateToProps(state) {
+
     return {
         contractInfo: state.contractData.contractInfo,
         basicData: state.basicData,

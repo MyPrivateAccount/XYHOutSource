@@ -30,7 +30,7 @@ class ContractRecord extends Component{
 
         if(!hasBasicInfo){
             notification.warning({
-                message: '请先完善楼盘信息，再提交',
+                message: '请先完善信息，再提交',
                 duration: 3
             })
             return;
