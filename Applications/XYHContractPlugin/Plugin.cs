@@ -2,7 +2,11 @@
 using System.Threading.Tasks;
 using ApplicationCore;
 using ApplicationCore.Plugin;
-
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.EntityFrameworkCore;
+using XYHContractPlugin.Models;
+using XYHContractPlugin.Stores;
+using XYHContractPlugin.Managers;
 
 namespace XYHContractPlugin
 {
@@ -35,8 +39,9 @@ namespace XYHContractPlugin
 
         public override Task<ResponseMessage> Init(ApplicationContext context)
         {
-            //context.Services.AddDbContext<BaseDataDbContext>(options => options.UseMySql("Server=server-d01;database=xinyaohang;uid=root;pwd=root;"));
-            //context.Services.AddDbContext<TestContext>(opt => opt.UseMemoryCache("ToDoList"));
+            context.Services.AddDbContext<ContractDbContext>(options => options.UseMySql(context.ConnectionString), ServiceLifetime.Scoped);
+            context.Services.AddScoped<IContractInfoStore, ContractInfoStore>();
+            context.Services.AddScoped<ContractInfoManager>();
             return base.Init(context);
         }
 

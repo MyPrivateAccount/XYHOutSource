@@ -8,9 +8,9 @@ namespace XYHContractPlugin.Dto.Response
     public class ContractInfoResponse
     {
         public string ID { get; set; }
-        public int? Number { get; set; }
-        public int? Type { get; set; }
+        public string Type { get; set; }
         public int? Relation { get; set; }
+        public string Name { get; set; }
         /// <summary>
         /// 楼盘
         /// </summary>
@@ -39,6 +39,7 @@ namespace XYHContractPlugin.Dto.Response
         public string ProjectName { get; set; }
         public int? ProjectType { get; set; }
         public string CompanyA { get; set; }
+        public int? CompanyAT { get; set; }
         public string PrincipalpepoleA { get; set; }
         public string PrincipalpepoleB { get; set; }
         public string ProprincipalPepole { get; set; }

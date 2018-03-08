@@ -7,10 +7,10 @@ USE `xyhdb`;
 -- ----------------------------
 DROP TABLE IF EXISTS `XYH_DT_CONTRACTINFO`;
 CREATE TABLE `XYH_DT_CONTRACTINFO` (
-  `ID` varchar(127) NOT NULL DEFAULT '', /*数据库id*/
-  `Number` varchar(256) DEFAULT '',/*合同id*/
-  `Type` int(11) NOT NULL,/*合同类型*/
+  `ID` varchar(127) NOT NULL DEFAULT '', /*数据库和合同id*/
+  `Type` varchar(127) NOT NULL DEFAULT '',/*合同类型*/
   `Relation` int(11) NOT NULL,/*合同关系*/
+  `Name` varchar(256) DEFAULT '',/*合同名称*/
   `ContractEstate` varchar(127) NOT NULL DEFAULT '',/*合同楼盘内容-连接其它表;多个楼盘分号*/
   `Modify` int(11) NOT NULL,/*合同修改内容是否有-包含创建*/
   `Annex` int(11) NOT NULL,/*合同附件是否有*/
@@ -20,6 +20,7 @@ CREATE TABLE `XYH_DT_CONTRACTINFO` (
   `ProjectName` varchar(64) DEFAULT '',/*项目名称*/
   `ProjectType` int(11) NOT NULL,/*项目类型*/
   `CompanyA` varchar(64) DEFAULT '',/*甲方公司全称*/
+  `CompanyAT` int(11) NOT NULL,/*甲方公司类型*/
   `PrincipalpepoleA` varchar(32) DEFAULT '',/*甲方负责人*/
   `PrincipalpepoleB` varchar(32) DEFAULT '',/*乙方负责人*/
   `ProprincipalPepole` varchar(32) DEFAULT '',/*项目负责人*/
@@ -95,6 +96,7 @@ CREATE TABLE `XYH_DT_MODIFY` (
   `ID` varchar(127) NOT NULL DEFAULT '',
   `ContractID` varchar(127) NOT NULL DEFAULT '',
   `Type` int(11) NOT NULL,/*修改-创建-附件*/
+  `ExamineStatus` int(11) NOT NULL,/*审核状态*/
   `ModifyPepole` varchar(32) NOT NULL DEFAULT '',
   `ModifyStartTime` datetime DEFAULT NULL,
   `ModifyCheck` varchar(127) NOT NULL DEFAULT '',/*审核流程*/

@@ -132,9 +132,9 @@ namespace XYHContractPlugin.Stores
                 ContractInfo buildings = new ContractInfo()
                 {
                     ID = contractinfo.ID,
-                    CREATEUSER = user.Id,
-                    CREATETIME = DateTime.Now,
-                    ISDELETE = false
+                    CreateUser = user.Id,
+                    CreateTime = DateTime.Now,
+                    IsDelete = false
                 };
 
                 Context.Add(buildings);

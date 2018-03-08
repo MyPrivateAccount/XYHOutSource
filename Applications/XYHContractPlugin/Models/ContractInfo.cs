@@ -10,10 +10,10 @@ namespace XYHContractPlugin.Models
         [Key]
         [MaxLength(127)]
         public string ID { get; set; }
-        [MaxLength(256)]
-        public string Number { get; set; }
-        public int? Type { get; set; }
+        public string Type { get; set; }
         public int? Relation { get; set; }
+        [MaxLength(127)]
+        public string Name { get; set; }
         public string ContractEstate { get; set; }
         public int? Modify { get; set; }
         public int? Annex { get; set; }
@@ -27,6 +27,7 @@ namespace XYHContractPlugin.Models
         public int? ProjectType { get; set; }
         [MaxLength(64)]
         public string CompanyA { get; set; }
+        public int? CompanyAT { get; set; }
         [MaxLength(32)]
         public string PrincipalpepoleA { get; set; }
         [MaxLength(32)]
