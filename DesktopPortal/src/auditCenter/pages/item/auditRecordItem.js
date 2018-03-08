@@ -8,7 +8,7 @@ import AuditCustomer from '../auditCustomer';
 import AuditHouseNewInfo from '../auditHouseNewInfo'
 import {setLoadingVisible} from '../../../customerManager/actions/actionCreator';
 import AuditBuildingOnSite from '../auditBuildingsOnSite';
-
+import AuditContract from '../auditHouseSource';
 const itemStyle = {
     itemBorder: {
         height: '80px',
@@ -91,6 +91,11 @@ export const auditType = {
         name: '指派驻场',
         icon: <i className='iconfont icon-manager' style={{fontSize: '48px'}}></i>,
         component: <AuditBuildingOnSite />
+    },
+    Contract: {
+        name:"合同",
+        icon: <i className='book' style={{fontSize: '48px'}}></i>,
+        component: <AuditContract />
     }
 }
 

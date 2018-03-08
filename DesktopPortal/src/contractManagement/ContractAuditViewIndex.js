@@ -6,23 +6,21 @@ import reducers from './reducers'
 import ContentPage from './pages/contentPage'
 import { sagaMiddleware } from '../'
 import rootSaga from './saga/rootSaga';
-import BuildingDishInfo from './pages/buildingDish/detail/buildingDashInfo'
+import ContractInfo from './pages/contract/detail/contractInfo'
 // import Shops from './pages/shops/edit/shopsEdit'
 import ShopsDetail from './pages/shops/detail/ShopsDetail'
-import { gotoThisBuild, gotoThisShop } from './actions/actionCreator';
+import { gotoThisContract, gotoThisShop } from './actions/actionCreator';
 sagaMiddleware.run(rootSaga);
 
-class HouseAuditViewIndex extends Component {
+class ContractAuditViewIndex extends Component {
 
     state = {
     }
     componentWillMount() {
         //console.log("首次加载 buildID:", this.props.buildingID);
         const contentInfo = this.props.contentInfo;
-        if (contentInfo.contentType === "building") {
-            this.props.dispatch(gotoThisBuild({ id: contentInfo.contentID }));
-        } else if (contentInfo.contentType === "shops") {
-            this.props.dispatch(gotoThisShop({ shopsInfo: { id: contentInfo.contentID } }));
+        if (contentInfo.contentType === "contract") {
+            this.props.dispatch(gotoThisContract({ id: contentInfo.contentID }));
         }
     }
 
@@ -36,7 +34,7 @@ class HouseAuditViewIndex extends Component {
         const contentInfo = this.props.contentInfo;
         return (
             <div>
-                {contentInfo.contentType === "building" ? <BuildingDishInfo /> : <ShopsDetail />}
+                 <ContractInfo />
             </div>
         )
     }
@@ -44,7 +42,7 @@ class HouseAuditViewIndex extends Component {
 function mapStateToProps(state) {
     //console.log(state, '首页加载我的楼盘')
     return {
-        buildInfo: state.building.buildInfo,
+        //buildInfo: state.building.buildInfo,
     }
 }
 function mapDispatchToProps(dispatch) {
@@ -53,4 +51,4 @@ function mapDispatchToProps(dispatch) {
     }
 }
 
-export default withReducer(reducers, 'HouseResourceIndex', { mapExtraState: (state, rootState) => ({ oidc: rootState.oidc }) })(connect(mapStateToProps, mapDispatchToProps)(HouseAuditViewIndex));
+export default withReducer(reducers, 'ContractManagementIndex', { mapExtraState: (state, rootState) => ({ oidc: rootState.oidc }) })(connect(mapStateToProps, mapDispatchToProps)(HouseAuditViewIndex));

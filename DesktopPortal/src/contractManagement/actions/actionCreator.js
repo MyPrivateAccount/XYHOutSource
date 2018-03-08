@@ -22,6 +22,12 @@ export const submitContractFinish = createAction(actionTypes.CONTRACT_INFO_SUBMI
 export const changeKeyWord = createAction(actionTypes.CHANGE_KEYWORD);
 export const searchStart = createAction(actionTypes.SEARCH_START);
 export const saveSearchCondition = createAction(actionTypes.SAVE_SEARCH_CONDITION);
+
+//跳转界面
+export const gotoThisContract = createAction(actionTypes.GOTO_THIS_CONTRACT);
+export const gotoThisContractStart = createAction(actionTypes.GOTO_THIS_CONTRACT_START);
+export const gotoThisContractFinish = createAction(actionTypes.GOTO_THIS_CONTRACT_FINISH);
+export const gotoChangeMyAdd = createAction(actionTypes.GOTO_CHANGE_MYADD);
 // 上传图片
 // export const savePictureAsync = createAction(actionTypes.SAVE_PICTURE_ASYNC);
 // export const uploadPicFinish = createAction(actionTypes.UPLOAD_PIC_FINISH);

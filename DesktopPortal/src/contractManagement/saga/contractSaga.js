@@ -8,7 +8,7 @@ import getApiResult from './sagaUtil';
 import { notification } from 'antd';
 import moment from 'moment';
 import { 
-    basicLoadingEnd
+    basicLoadingEnd, gotoThisContractStart, gotoThisContractFinish
 } from '../actions/actionCreator';
 
 const actionUtils = appAction(actionTypes.ACTION_ROUTE);
@@ -41,6 +41,26 @@ export function* saveContractBasicAsync(state) {
     });
 }
 
+// 编辑楼盘
+export function* gotoThisContract(action) {
+    // console.log(action, '点击楼盘')
+    let url = WebApiConfig.buildings.GetThisBuildings + action.payload.id;
+    let res;
+    yield put(actionUtils.action(gotoThisContractStart))
+    try {
+        res = yield call(ApiClient.get, url);
+        yield put(actionUtils.action(gotoThisContractFinish, res));
+        if (!action.payload.type) { // type==>dynamic 说明是在动态房源哪里掉的接口，不能进行页面跳转步骤
+           // yield put(actionUtils.action(gotoChangeMyAdd));
+           // yield put(actionUtils.action(changeShowGroup, {type: 2}));
+        } else {
+            //yield put(actionUtils.action(changeShowGroup, {type: 1}));
+        }
+    } catch (e) {
+        yield put(actionUtils.action(gotoThisContractFinish, { code: '1', message: '失败' }));
+    }
+}
+
 
 export function* watchContractAllAsync() {
     yield takeLatest(actionUtils.getActionType(actionTypes.CONTRACT_BASIC_SAVE), saveContractBasicAsync);
@@ -48,7 +68,7 @@ export function* watchContractAllAsync() {
     // yield takeLatest(actionUtils.getActionType(actionTypes.BUILDING_RELSHOP_SAVE), saveRelshopsAsync);
     // yield takeLatest(actionUtils.getActionType(actionTypes.BUILDING_PROJECT_SAVE), saveProjectAsync);
     // // yield takeLatest(actionUtils.getActionType(actionTypes.BUILDING_PICTURE_SAVE), savePictureAsync);
-    // yield takeLatest(actionUtils.getActionType(actionTypes.GOTO_THIS_BUILD), gotoThisBuild);
+     yield takeLatest(actionUtils.getActionType(actionTypes.GOTO_THIS_CONTRACT), gotoThisContract);
     // yield takeLatest(actionUtils.getActionType(actionTypes.BUILD_INFO_SUBMIT), submitBuildInfo);
     // yield takeLatest(actionUtils.getActionType(actionTypes.BATCH_BUILDING_SAVE_ASYNC), saveBatchBuildingAsync);
     // yield takeLatest(actionUtils.getActionType(actionTypes.SAVE_PICTURE_ASYNC), savePictureAsync);
