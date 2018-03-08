@@ -18,6 +18,10 @@ export const submitContractInfo = createAction(actionTypes.CONTRACT_INFO_SUBMIT)
 export const submitContractStart = createAction(actionTypes.CONTRACT_INFO_SUBMIT_START);
 export const submitContractFinish = createAction(actionTypes.CONTRACT_INFO_SUBMIT_FINISH);
 
+//搜索处理
+export const changeKeyWord = createAction(actionTypes.CHANGE_KEYWORD);
+export const searchStart = createAction(actionTypes.SEARCH_START);
+export const saveSearchCondition = createAction(actionTypes.SAVE_SEARCH_CONDITION);
 // 上传图片
 // export const savePictureAsync = createAction(actionTypes.SAVE_PICTURE_ASYNC);
 // export const uploadPicFinish = createAction(actionTypes.UPLOAD_PIC_FINISH);
@@ -69,10 +73,8 @@ export const changeSourceOrg = createAction(actionTypes.CHANGE_SOURCE_ORG);
 export const changeTargetOrg = createAction(actionTypes.CHANGE_TARGET_ORG);
 export const openCustomerAuditDetail = createAction(actionTypes.OPEN_CUSTOMER_AUDIT_INFO);
 export const getAuditHistory = createAction(actionTypes.GET_AUDIT_HISTORY);//获取审核历史
-//搜索处理
-export const changeKeyWord = createAction(actionTypes.CHANGE_KEYWORD);
-export const searchCustomer = createAction(actionTypes.SEARCH_CUSTOMER);
-export const saveSearchCondition = createAction(actionTypes.SAVE_SEARCH_CONDITION);
+
+
 export const getRepeatJudgeInfo = createAction(actionTypes.GET_REPEAT_JUDGE_INFO);
 export const removeAdjustItem = createAction(actionTypes.REMOVE_ADJUST_REQUEST_ITEM);
 

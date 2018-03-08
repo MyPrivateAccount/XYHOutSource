@@ -13,6 +13,18 @@ export const GET_ORG_USERLIST = 'GET_ORG_USERLIST';//获取部门用户列表
 export const GET_ORG_USERLIST_COMPLETE = 'GET_ORG_USERLIST_COMPLETE';//获取部门用户列表
 //遮罩层
 export const SET_SEARCH_LOADING = 'SET_SEARCH_LOADING';//获取待审核列表
+
+//页面切换
+export const CHANGE_MENU = 'CHANGE_MENU';//菜单切换
+
+
+//搜索处理
+export const SAVE_SEARCH_CONDITION = 'SAVE_SEARCH_CONDITION';//保存查询条件
+export const CHANGE_KEYWORD = 'CHANGE_KEYWORD';
+export const SEARCH_START = 'SEARCH_START';
+export const SEARCH_COMPLETE = 'SEARCH_COMPLETE';
+
+
 //部门选择
 export const OPEN_ORG_SELECT = 'OPEN_ORG_SELECT';//打开部门选择
 export const CLOSE_ORG_SELECT = 'CLOSE_ORG_SELECT';//关闭
@@ -30,15 +42,9 @@ export const GET_CUSTOMER_ALL_PHONE = 'GET_CUSTOMER_ALL_PHONE';//获取所有电
 export const GET_CUSTOMER_ALL_PHONE_COMPLETE = 'GET_CUSTOMER_ALL_PHONE_COMPLETE';//获取所有电话号码
 export const GET_REPEAT_JUDGE_INFO = 'GET_REPEAT_JUDGE_INFO';//客户去重信息
 export const GET_REPEAT_JUDGE_INFO_COMPLETE = 'GET_REPEAT_JUDGE_INFO_COMPLETE';//客户去重信息获取完成
-//页面切换
-export const CHANGE_MENU = 'CHANGE_MENU';//菜单切换
 
 
-//搜索处理
-export const SAVE_SEARCH_CONDITION = 'SAVE_SEARCH_CONDITION';//保存查询条件
-export const CHANGE_KEYWORD = 'CHANGE_KEYWORD';
-export const SEARCH_CUSTOMER = 'SEARCH_CUSTOMER';
-export const SEARCH_CUSTOMER_COMPLETE = 'SEARCH_CUSTOMER_COMPLETE';
+
 //调客审核列表
 export const GET_AUDIT_LIST = 'GET_AUDIT_LIST';//获取调客审核列表
 export const GET_AUDIT_LIST_COMPLETE = 'GET_AUDIT_LIST_COMPLETE';//获取调客审核完成

@@ -48,7 +48,7 @@ class BasicInfo extends Component {
                         <Col span={12}>申请部门:{basicInfo.CreateDepartment}</Col>
                     </Row>
                     <Row className='viewRow'>
-                        <Col span={12}>合同名称:{basicInfo.ContractName}</Col>
+                        <Col span={12}>合同名称:{basicInfo.Name}</Col>
                         <Col span={12}>项目名称:{basicInfo.ProjectName}</Col>
                     </Row>
                     <Row className='viewRow'>
@@ -82,6 +82,9 @@ class BasicInfo extends Component {
                     <Row className='viewRow'>
                         <Col span={12}>是否作废:{(basicInfo.IsCancel && basicInfo.IsCancel === '1') ? "是" : "否"}</Col>
                         <Col span={12}>备注:{basicInfo.Remark}</Col>
+                    </Row>
+                    <Row className='viewRow'>
+                        <Col span={24}>更改记录:{basicInfo.Remark}</Col>
                     </Row>
 
                 </Form>

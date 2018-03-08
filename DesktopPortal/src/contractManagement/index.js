@@ -16,7 +16,7 @@ sagaMiddleware.run(rootSaga);
 const {Header, Sider, Content} = Layout;
 const menuDefine = [
     {menuID: "menu_index", displayName: "合同信息", menuIcon: 'contacts'},
-    {menuID: "menu_renew", displayName: "合同续签", menuIcon: 'contacts'},
+    //{menuID: "menu_renew", displayName: "合同续签", menuIcon: 'contacts'},
 
     //{ menuID: "menu_analysis", displayName: "客户业态分析", menuIcon: 'pie-chart' }//租壹屋
 ];

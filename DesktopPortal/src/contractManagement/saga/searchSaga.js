@@ -32,7 +32,7 @@ export function* getCustomerListAsync(state) {
             if (res.data.validityCustomerCount) {
                 result.validityCustomerCount = res.data.validityCustomerCount;
             }
-            yield put({ type: actionUtils.getActionType(actionTypes.SEARCH_CUSTOMER_COMPLETE), payload: result });
+            yield put({ type: actionUtils.getActionType(actionTypes.SEARCH_COMPLETE), payload: result });
         }
         yield put({ type: actionUtils.getActionType(actionTypes.SET_SEARCH_LOADING), payload: false });
     } catch (e) {
@@ -88,7 +88,7 @@ export function* adjustCustomerAsync(state) {
         if (result.isOk) {
             result.msg = '调客成功！';
             if (state.payload.searchCondition) {
-                yield put({ type: actionUtils.getActionType(actionTypes.SEARCH_CUSTOMER), payload: state.payload.searchCondition });
+                yield put({ type: actionUtils.getActionType(actionTypes.SEARCH_START), payload: state.payload.searchCondition });
             }
             yield put({ type: actionUtils.getActionType(actionTypes.CLOSE_ADJUST_CUSTOMER), payload: null });
         }
@@ -226,7 +226,9 @@ export function* getAuditHistoryDetailAsync(state) {
 
 
 export default function* watchAllSearchAsync() {
-    yield takeLatest(actionUtils.getActionType(actionTypes.SEARCH_CUSTOMER), getCustomerListAsync);
+    yield takeLatest(actionUtils.getActionType(actionTypes.SEARCH_START), getCustomerListAsync);
+
+
     yield takeLatest(actionUtils.getActionType(actionTypes.GET_CUSTOMER_DETAIL), getCustomerDetailAsync);
     yield takeLatest(actionUtils.getActionType(actionTypes.ADJUST_CUSTOMER), adjustCustomerAsync);
     yield takeLatest(actionUtils.getActionType(actionTypes.GET_CUSTOMER_ALL_PHONE), getCustomerAllPhoneAsync);

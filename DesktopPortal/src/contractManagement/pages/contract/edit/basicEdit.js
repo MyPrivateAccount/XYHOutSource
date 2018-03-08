@@ -107,7 +107,7 @@ class BasicEdit extends Component {
                     
                     <FormItem {...formItemLayout} label={<span>合同名称</span>}>
                         {getFieldDecorator('ContractName', {
-                        initialValue: basicInfo.ContractName,
+                        initialValue: basicInfo.Name,
                         rules:[{required:true, message:'请输入合同名称!'}]
                         })(
                             <Input placeholder="合同名称" />

@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { setLoadingVisible, openAttachMent, openContractRecord, saveSearchCondition, searchCustomer } from '../actions/actionCreator';
+import { setLoadingVisible, openAttachMent, openContractRecord } from '../actions/actionCreator';
 import React, { Component } from 'react';
 import { Input, Menu, Icon, Row, Col, Spin, Checkbox, Button } from 'antd';
 import {LoadAttatchMentPage} from './contentPage';
@@ -61,7 +61,7 @@ class MainIndex extends Component {
         }
     }
     render() {
-        let showLoading = false;//this.props.showLoading;
+        let showLoading = this.props.showLoading;//this.props.showLoading;
         return (
             <div id='contractManagement'>
                 <Spin spinning={showLoading}>

@@ -51,7 +51,6 @@ const ApiClient = {
             Object.keys(qs).forEach(key => params.append(key, qs[key]));
             url = url + "?" + params.toString();
         }
-
         return fetch(url, options)
             .then((res) => res.json())
             .then((data) => ({ data }))
