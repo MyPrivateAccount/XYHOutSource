@@ -59,16 +59,30 @@ export const exportContract = createAction(actionTypes.EXPORT_CONTRACT);
 export const exportMultiContract = createAction(actionTypes.EXPORT_MULTI_CONTRACT);
 
 
-//客户详情处理
-export const openCustomerDetail = createAction(actionTypes.OPEN_CUSTOMER_DETAIL);
-export const closeCustomerDetail = createAction(actionTypes.CLOSE_CUSTOMER_DETAIL);
-export const changeCustomerMenu = createAction(actionTypes.CHANGE_MENU);
-export const getCustomerDetail = createAction(actionTypes.GET_CUSTOMER_DETAIL);
-export const getCustomerAllPhone = createAction(actionTypes.GET_CUSTOMER_ALL_PHONE);
+//合同详情处理
+export const openContractDetail = createAction(actionTypes.OPEN_CONTRACT_DETAIL);
+export const closeContractDetail = createAction(actionTypes.CLOSE_CONTRACT_DETAIL);
+export const changeContractMenu = createAction(actionTypes.CHANGE_MENU);
+export const getContractDetail = createAction(actionTypes.GET_CONTRACT_DETAIL);
+
+
+export const openContractChoose = createAction(actionTypes.OPEN_CONTRACT_CHOOSE);
+export const closeContractChoose = createAction(actionTypes.CLOSE_CONTRACT_CHOOSE);
+
+
+
+
+export const getAllPhone = createAction(actionTypes.GET_CUSTOMER_ALL_PHONE);
+
+
+
 //单位选择处理
 export const openOrgSelect = createAction(actionTypes.OPEN_ORG_SELECT);
 export const closeOrgSelect = createAction(actionTypes.CLOSE_ORG_SELECT);
 export const changeActiveOrg = createAction(actionTypes.CHAGNE_ACTIVE_ORG);
+
+
+
 //调客处理
 export const openAdjustCustomer = createAction(actionTypes.OPEN_ADJUST_CUSTOMER);
 export const closeAdjustCustomer = createAction(actionTypes.CLOSE_ADJUST_CUSTOMER);

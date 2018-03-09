@@ -46,7 +46,7 @@ export function* getCustomerListAsync(state) {
     }
 }
 //审核操作
-export function* getCustomerDetailAsync(state) {
+export function* getContractDetailAsync(state) {
     let result = { isOk: false, extension: {}, msg: '加载客户详情失败！' };
     let url = WebApiConfig.search.getCustomerDetail + state.payload.id;
     try {
@@ -54,7 +54,7 @@ export function* getCustomerDetailAsync(state) {
         // console.log(`加载客户详情:url:${url},result:${JSON.stringify(res)}`);
         getApiResult(res, result);
         if (result.isOk) {
-            result.msg = '加载客户详情成功！';
+            result.msg = '加载合同详情成功！';
             if (result.extension) {
                 if (result.extension.customerDealResponse === null) {
                     result.extension.customerDealResponse = state.payload.customerDealResponse;
@@ -63,11 +63,11 @@ export function* getCustomerDetailAsync(state) {
                     result.extension.customerLossResponse = state.payload.customerLossResponse;
                 }
             }
-            yield put({ type: actionUtils.getActionType(actionTypes.GET_CUSTOMER_DETAIL_COMPLETE), payload: result.extension });
+            yield put({ type: actionUtils.getActionType(actionTypes.GET_CONTRACT_DETAIL_COMPLETE), payload: result.extension });
         }
         yield put({ type: actionUtils.getActionType(actionTypes.SET_SEARCH_LOADING), payload: false });
     } catch (e) {
-        result.msg = "加载客户详情接口调用异常！";
+        result.msg = "加载合同详情接口调用异常！";
     }
     if (!result.isOk) {
         notification.error({
@@ -76,6 +76,8 @@ export function* getCustomerDetailAsync(state) {
         });
     }
 }
+
+
 
 //调客
 export function* adjustCustomerAsync(state) {
@@ -227,9 +229,9 @@ export function* getAuditHistoryDetailAsync(state) {
 
 export default function* watchAllSearchAsync() {
     yield takeLatest(actionUtils.getActionType(actionTypes.SEARCH_START), getCustomerListAsync);
+    yield takeLatest(actionUtils.getActionType(actionTypes.OPEN_CONTRACT_DETAIL), getContractDetailAsync);
 
-
-    yield takeLatest(actionUtils.getActionType(actionTypes.GET_CUSTOMER_DETAIL), getCustomerDetailAsync);
+    
     yield takeLatest(actionUtils.getActionType(actionTypes.ADJUST_CUSTOMER), adjustCustomerAsync);
     yield takeLatest(actionUtils.getActionType(actionTypes.GET_CUSTOMER_ALL_PHONE), getCustomerAllPhoneAsync);
     yield takeLatest(actionUtils.getActionType(actionTypes.GET_AUDIT_LIST), getWaitAuditListAsync);

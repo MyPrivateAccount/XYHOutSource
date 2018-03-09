@@ -10,6 +10,7 @@ const initState = {
 
     activeOrg: {id: '0', organizationName: '不限'},//当前部门
     activeMenu: 'menu_index',//当前菜单
+    showContractShow:false,
 
     activeCustomers: [],//选中客户信息
     searchKeyWord: '',//搜索关键词

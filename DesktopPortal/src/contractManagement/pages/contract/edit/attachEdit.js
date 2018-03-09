@@ -32,7 +32,7 @@ class AttachEdit extends Component {
   };
   componentWillMount(){
     if(this.props.basicData.contractAttachTypes.length === 0){
-      this.props.dispatch(getDicParList(['CONTRACT_ATTACHMENT_CATEGORIES']));
+      //this.props.dispatch(getDicParList(['CONTRACT_ATTACHMENT_CATEGORIES']));
     }
   }
   attachImgeCategories = [

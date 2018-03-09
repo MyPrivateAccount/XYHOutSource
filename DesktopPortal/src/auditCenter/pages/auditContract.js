@@ -1,7 +1,6 @@
 import { connect } from 'react-redux';
 import { } from '../actions/actionCreator';
 import React, { Component } from 'react';
-import { Input, Select, Icon, Button, Row, Col, Checkbox, Tag, Pagination, Spin } from 'antd';
 import AuditForm from './item/auditForm';
 import AuditHistory from './auditHistory'
 import getToolComponent from '../../tools';
@@ -20,11 +19,11 @@ class AuditContract extends Component {
 
 
     render() {
-        let HouseToolComponent = getToolComponent("houseInfo");
+        let HouseToolComponent = getToolComponent("contractInfo");
         let contentInfo = { contentID: this.props.activeAuditInfo.contentId, contentType: this.props.activeAuditInfo.contentType };
         return (
             <div>
-                <b>房源审核</b>
+                <b>合同审核</b>
                 <HouseToolComponent dispatch={this.props.dispatch} contentInfo={contentInfo} />
                 <AuditHistory />
                 {

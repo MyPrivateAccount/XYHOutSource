@@ -6,9 +6,9 @@ import reducers from './reducers';
 import ContentPage from './pages/contentPage';
 import {sagaMiddleware} from '../';
 import rootSaga from './saga/rootSaga';
-import {closeAttachMent, closeContractReord, getOrgList, getOrgDetail, openOrgSelect,closeOrgSelect, changeCustomerMenu} from './actions/actionCreator';
+import {closeAttachMent, closeContractReord, getOrgList, getOrgDetail, openOrgSelect,closeOrgSelect, changeContractMenu} from './actions/actionCreator';
 import OrgSelect from './pages/orgSelect/orgSelect';
-import CustomerDetail from './pages/customerDetail';
+
 import AttchMent from './pages/attachMent';
 
 sagaMiddleware.run(rootSaga);
@@ -63,7 +63,7 @@ class ContractManagementIndex extends Component {
             this.props.dispatch(openOrgSelect());
             return;
         }
-        this.props.dispatch(changeCustomerMenu(e.key));
+        this.props.dispatch(changeContractMenu(e.key));
         for (let i in menuDefine) {
             if (menuDefine[i].menuID == e.key) {
                 this.setState({

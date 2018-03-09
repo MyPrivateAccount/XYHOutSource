@@ -136,8 +136,8 @@ const auditTools = [{
     cache: null
 },
 {
-    id: 'ContractInfo', //楼盘检索缩略信息项
-    component: () => createLoadableComponent(import('./searchTool/buildingSearchView.js')),
+    id: 'ContractInfo', //合同检索缩略信息项
+    component: () => createLoadableComponent(import('./contractManagement/ContractAuditViewIndex.js')),
     cache: null
 },
 ];

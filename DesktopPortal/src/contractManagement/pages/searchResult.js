@@ -1,5 +1,5 @@
 import {connect} from 'react-redux';
-import {openAdjustCustomer, getCustomerDetail, searchStart, saveSearchCondition, setLoadingVisible,openAttachMent, openContractRecord} from '../actions/actionCreator';
+import { getContractDetail, searchStart, saveSearchCondition, setLoadingVisible,openAttachMent, openContractRecord} from '../actions/actionCreator';
 import React, {Component} from 'react';
 import {Button, Row, Col, Table} from 'antd';
 import moment from 'moment';
@@ -39,6 +39,10 @@ class SearchResult extends Component {
     //文件上传
     onClickUploadFile = (e)=>{
         this.props.dispatch(openAttachMent({id:1}));
+    }
+
+    onClickContractDetail = (e) =>{
+
     }
     //合同基本信息列
     getCustomerInfoColumns() {
@@ -255,7 +259,7 @@ class SearchResult extends Component {
                     dataIndex: 'AttachUpload',
                     key: 'AttachUpload',
                     render: (text, record) => (
-                        <Button type="primary" size='small' onClick={(e) => this.handleCustomerDetail(record)}>附件上传</Button>
+                        <Button type="primary" size='small' onClick={(e) => this.onClickUploadFile(record)}>附件上传</Button>
                     )
                 },
 
@@ -264,7 +268,7 @@ class SearchResult extends Component {
                     dataIndex: 'ContractDetail',
                     key: 'ContractDetail',
                     render: (text, record) => (
-                        <Button type="primary" size='small' onClick={(e) => this.handleCustomerDetail(record)}>合同详情</Button>
+                        <Button type="primary" size='small' onClick={(e) => this.onClickContractDetail(record)}>合同详情</Button>
                     )
                 },
                 {
@@ -272,7 +276,7 @@ class SearchResult extends Component {
                     dataIndex: 'Export',
                     key: 'Export',
                     render: (text, record) => (
-                        <Button type="primary" size='small' onClick={(e) => this.handleCustomerDetail(record)}>导出</Button>
+                        <Button type="primary" size='small' onClick={(e) => this.onClickExPort(record)}>导出</Button>
                     )
                 },
             ]
@@ -456,19 +460,11 @@ class SearchResult extends Component {
         this.props.dispatch(saveSearchCondition(condition));
         this.props.dispatch(searchStart(condition));
     }
-    //查看客户详情
-    handleCustomerDetail = (record) => {
-        this.props.dispatch(getCustomerDetail(record));
+    //查看合同详情
+    handleContractDetail = (record) => {
+        this.props.dispatch(getContractDetail(record));
     }
-    //调客
-    handleAdjustCustomer = (record) => {
-        //console.log("客户详情:", record);
-        this.props.dispatch(openAdjustCustomer([record]));
-    }
-    //批量调客
-    handleMultiAdjust = () => {
-        this.props.dispatch(openAdjustCustomer(this.state.checkList));
-    }
+
     // getTableScrollX() {
     //     let tableScrollX = 1000;
     //     let activeMenu = this.props.searchInfo.activeMenu;
@@ -496,7 +492,7 @@ class SearchResult extends Component {
         // const tableScrollX = this.getTableScrollX();
         return (
             <div id="searchResult">
-                <Table columns={this.getTableColumns()} pagination={this.state.pagination} onChange={this.handleChangePage} dataSource={dataSource} bordered size="middle" rowSelection={showSlection ? rowSelection : null} />
+                <Table rowKey={record => record.uid} columns={this.getTableColumns()} pagination={this.state.pagination} onChange={this.handleChangePage} dataSource={dataSource} bordered size="middle" rowSelection={showSlection ? rowSelection : null} />
               
 
             </div>

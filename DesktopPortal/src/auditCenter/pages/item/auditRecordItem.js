@@ -8,7 +8,7 @@ import AuditCustomer from '../auditCustomer';
 import AuditHouseNewInfo from '../auditHouseNewInfo'
 import {setLoadingVisible} from '../../../customerManager/actions/actionCreator';
 import AuditBuildingOnSite from '../auditBuildingsOnSite';
-import AuditContract from '../auditHouseSource';
+import AuditContract from '../auditContract';
 const itemStyle = {
     itemBorder: {
         height: '80px',

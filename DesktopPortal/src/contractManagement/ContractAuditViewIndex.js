@@ -1,15 +1,12 @@
 import React, { Component } from 'react';
 import { withReducer } from 'react-redux-dynamic-reducer'
-import { Spin, Menu, Icon, Button } from 'antd'
 import { connect } from 'react-redux'
 import reducers from './reducers'
-import ContentPage from './pages/contentPage'
 import { sagaMiddleware } from '../'
 import rootSaga from './saga/rootSaga';
 import ContractInfo from './pages/contract/detail/contractInfo'
 // import Shops from './pages/shops/edit/shopsEdit'
-import ShopsDetail from './pages/shops/detail/ShopsDetail'
-import { gotoThisContract, gotoThisShop } from './actions/actionCreator';
+import { gotoThisContract } from './actions/actionCreator';
 sagaMiddleware.run(rootSaga);
 
 class ContractAuditViewIndex extends Component {
@@ -51,4 +48,4 @@ function mapDispatchToProps(dispatch) {
     }
 }
 
-export default withReducer(reducers, 'ContractManagementIndex', { mapExtraState: (state, rootState) => ({ oidc: rootState.oidc }) })(connect(mapStateToProps, mapDispatchToProps)(HouseAuditViewIndex));
+export default withReducer(reducers, 'ContractManagementIndex', { mapExtraState: (state, rootState) => ({ oidc: rootState.oidc }) })(connect(mapStateToProps, mapDispatchToProps)(ContractAuditViewIndex));

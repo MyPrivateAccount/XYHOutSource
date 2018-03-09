@@ -24,7 +24,7 @@ class SearchBox extends Component{
     }
     handleKeyChangeWord = (e) =>{
         //处理关键字改变-需要
-        //this.props.dispatch(changeKeyWord(e.target.value));
+        this.props.dispatch(changeKeyWord(e.target.value));
     }
     handleSearch = () =>{
         let activeMenu = (this.props.searchInfo || {}).activeMenu;
@@ -46,7 +46,7 @@ class SearchBox extends Component{
         this.setState({searchType : e});
     }
     render(){
-        let keyword = '';//this.props.searchInfo.searchKeyWord;
+        let keyword = this.props.searchInfo.searchKeyWord;
         return (
             <div>
                 <div className="searchBox">

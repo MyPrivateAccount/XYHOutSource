@@ -1,9 +1,10 @@
 import { connect } from 'react-redux';
-import { getDicParList, saveContractBasic, viewBuildingBasic,basicLoadingStart } from '../../../actions/actionCreator';
+import { getDicParList, saveContractBasic, viewBuildingBasic,basicLoadingStart, openContractChoose } from '../../../actions/actionCreator';
 import React, { Component } from 'react';
 import { Icon, Input, InputNumber, Button, Checkbox, Row, Col, Form, DatePicker, Select, Cascader,Radio } from 'antd';
 import moment from 'moment';
 import { call } from 'redux-saga/effects';
+import ContractChoose from '../../dialog/contractChoose';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -16,6 +17,10 @@ class BasicEdit extends Component {
     handleChangeTime = (value, dateString)=>{
         console.log('curstatrEndTime:', value);
         console.log('format curstatrEndTime:', dateString);
+    }
+    handleRenewClick = (e)=>{
+        console.log("handleRenewClick");
+        this.props.dispatch(openContractChoose());
     }
     handleSave = (e) => {
         e.preventDefault();
@@ -60,7 +65,7 @@ class BasicEdit extends Component {
         if(duringTime[0] === null || duringTime[1] === null){
             callback("请选择开始和结束时间");
         }
-        else if(moment(duringTime[0]).Date >= moment(duringTime[1]).Date){
+        else if(moment(duringTime[0]).isSameOrAfter(duringTime[1])){
 
             callback("结束时间不能小于开始时间");
         }
@@ -70,6 +75,7 @@ class BasicEdit extends Component {
         }
     }
     render(){
+        console.log("this.props.contractChooseVisible:", this.props.contractChooseVisible);
         const { getFieldDecorator, getFieldsError, getFieldError, isFieldTouched } = this.props.form;
         //let contractTypes = '1';
         let basicOperType = this.props.basicOperType;
@@ -81,6 +87,7 @@ class BasicEdit extends Component {
         };
         //console.log('this.props.basicData.contractCategories:', this.props.basicData.contractCategories);
         return (
+          <div>
           <Form layout="horizontal" style={{padding: '25px 0', marginTop: "25px"}}>
           <Icon type="tags-o" className='content-icon'/> <span className='content-title'>基本信息 (必填)</span>
             <Row type="flex" style={{marginTop: "25px"}}>
@@ -302,11 +309,12 @@ class BasicEdit extends Component {
                                     initialValue: basicInfo.Follow,
                                     //rules:[{required:true, message:'续签合同'}]
                                     })(
-                                        <span title="点击选择">无</span>
+                                        <span title="点击选择" style={{color:'blue'}} onClick={this.handleRenewClick}>无</span>
                                     )
                                     
                             }
                     </FormItem>
+       
                 </Col>
 
             </Row>
@@ -351,8 +359,14 @@ class BasicEdit extends Component {
                         <Button type="primary" htmlType="submit" loading={this.props.loadingState} style={{width: "8rem"}} onClick={this.handleSave}>保存</Button>
                         {basicOperType !== "add" ? <Button className="oprationBtn" onClick={this.handleCancel}>取消</Button> : null}
                     </Col>
-                </Row>
+            </Row>
+            
           </Form>
+          <ContractChoose/> 
+         </div>
+        
+                        
+
         )
     }
 }
@@ -370,6 +384,7 @@ function mapStateToProps(state) {
         contractBasicInfo: state.contractData.contractInfo.contractBasicInfo,
         operInfo:state.contractData.operInfo,
         activeOrg: state.search.activeOrg,
+        contractChooseVisible: state.contractData.contractChooseVisible,
     }
   }
   

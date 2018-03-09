@@ -11,7 +11,7 @@ import BasicInfo from './basicInfo';
 import AttachInfo from './attachInfo';
 
 const { Header, Sider, Content } = Layout;
-class ContractRecord extends Component{
+class ContractInfo extends Component{
     componentWillMount(){
         if(this.props.basicData.contractCategories.length === 0 || this.props.basicData.firstPartyCatogories.length === 0
         || this.props.basicData.commissionCatogories.length === 0 || this.props.basicData.contractProjectCatogories.length === 0){
@@ -105,4 +105,4 @@ function mapDispathToProps(dispatch){
         dispatch
     };
 }
-export default connect(mapStateToProps, mapDispathToProps)(ContractRecord);
+export default connect(mapStateToProps, mapDispathToProps)(ContractInfo);
