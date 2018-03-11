@@ -14,19 +14,15 @@ const { Header, Sider, Content } = Layout;
 class ContractRecord extends Component{
     componentWillMount(){
     
-        if(this.props.basicData.contractCategories.length === 0 || this.props.basicData.firstPartyCatogories.length === 0
-        || this.props.basicData.commissionCatogories.length === 0 || this.props.basicData.contractProjectCatogories.length === 0){
-            this.props.dispatch(getDicParList(['CONTRACT_CATEGORIES', 'FIRST_PARTT_CATEGORIES', 'COMMISSION_CATEGORIES', 'XK_SELLER_TYPE', 'CONTRACT_ATTACHMENT_CATEGORIES']));
-        }
-        
+
       }
 
     handleAnchorChange = (e) =>{
         window.location.href = '#' + e.target.value;
     }
     handleSubmit = (e) => {
-        const contractBasicInfo = this.props.contractInfo.contractBasicInfo||{};
-        const hasBasicInfo = !isEmptyObject(contractBasicInfo); 
+        const basicInfo = this.props.contractInfo.baseInfo||{};
+        const hasBasicInfo = !isEmptyObject(basicInfo); 
         console.log(hasBasicInfo)
 
         if(!hasBasicInfo){
@@ -36,8 +32,9 @@ class ContractRecord extends Component{
             })
             return;
         }
-        this.props.dispatch(submitContractInfo({ entity: { id: this.props.contractInfo.id } }))
+        this.props.dispatch(submitContractInfo({ entity: this.props.contractInfo  }))
     }
+
     render(){
         let basicOperType = this.props.operInfo.basicOperType;
         let attachPicOperType = this.props.operInfo.attachPicOperType;
@@ -81,7 +78,7 @@ class ContractRecord extends Component{
                         <Row id="attchInfo">
                             {
                                 
-                                <Col span={24}>{attachPicOperType === 'view' ? <AttachInfo /> : <AttachEdit />}</Col>
+                                <Col span={24}>{(attachPicOperType === 'view') ? <AttachInfo /> : <AttachEdit />}</Col>
 
                             }
 
@@ -95,7 +92,7 @@ class ContractRecord extends Component{
                                     //[8, 1].includes(this.props.buildInfo.examineStatus)  ? null :
                                     <Button type="primary" size='large'
                                         style={{ width: "10rem", display: this.props.contractDisplay }}
-                                        onClick={this.handleOk} loading={this.props.submitLoading}>提交</Button>
+                                        onClick={this.handleSubmit} loading={this.props.submitLoading}>提交</Button>
                                 }
                             </Col>
                         </Row>

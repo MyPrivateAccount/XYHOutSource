@@ -2,6 +2,7 @@ import { connect } from 'react-redux';
 import { setLoadingVisible, openAttachMent, openContractRecord } from '../actions/actionCreator';
 import React, { Component } from 'react';
 import { Input, Menu, Icon, Row, Col, Spin, Checkbox, Button } from 'antd';
+import {getDicParList} from '../actions/actionCreator';
 import {LoadAttatchMentPage} from './contentPage';
 import SearchCondition from './searchCondition';
 import SearchResult from './searchResult';
@@ -17,6 +18,11 @@ class MainIndex extends Component {
 
     }
     componentWillMount() {
+        if(this.props.basicData.contractCategories.length === 0 || this.props.basicData.firstPartyCatogories.length === 0
+            || this.props.basicData.commissionCatogories.length === 0 || this.props.basicData.contractProjectCatogories.length === 0){
+                this.props.dispatch(getDicParList(['CONTRACT_CATEGORIES', 'FIRST_PARTT_CATEGORIES', 'COMMISSION_CATEGORIES', 'XK_SELLER_TYPE', 'CONTRACT_ATTACHMENT_CATEGORIES']));
+            }
+            
         //this.props.dispatch(setLoadingVisible(true));//后面打开
     }
 
@@ -61,7 +67,7 @@ class MainIndex extends Component {
         }
     }
     render() {
-        let showLoading = this.props.showLoading;//this.props.showLoading;
+        let showLoading = false;//this.props.showLoading;//this.props.showLoading;
         return (
             <div id='contractManagement'>
                 <Spin spinning={showLoading}>
@@ -81,6 +87,7 @@ class MainIndex extends Component {
 
 function mapStateToProps(state) {
     return {
+        basicData:state.basicData,
         searchResult: state.search.searchResult,
         showLoading: state.search.showLoading,
         searchCondition: state.search.searchCondition,

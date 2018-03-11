@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { getDicParList, savePictureAsync, buildingPicView, shopPicView, 
+import { savePictureAsync, contractPicView,
   deletePicAsync, saveCompleteFileList, saveDeletePicList,attchLoadingStart } from '../../../actions/actionCreator';
 import React, { Component } from 'react'
 import './editCommon.less'
@@ -20,8 +20,7 @@ class AttachEdit extends Component {
   state = {
     previewVisible: false,
     previewImage: '',
-    fileList: [
-    ],
+    fileList: [],
     attachments: [], //附件
     picUploading: false,
     // completeFileList: [],
@@ -29,47 +28,128 @@ class AttachEdit extends Component {
     deleteIdArr: [],
     picGroup: '1', // 图片分类值
     imgFiles: {}
-  };
+  }
+
   componentWillMount(){
     if(this.props.basicData.contractAttachTypes.length === 0){
       //this.props.dispatch(getDicParList(['CONTRACT_ATTACHMENT_CATEGORIES']));
     }
   }
-  attachImgeCategories = [
-    {name:'分类1', num:1, order:1, isRequired:1, isDisable:0, comment:''},
-    {name:'分类2', num:2, order:1, isRequired:1, isDisable:0, comment:''},
-    {name:'分类3', num:3, order:1, isRequired:1, isDisable:0, comment:''},
-    {name:'分类4', num:4, order:1, isRequired:1, isDisable:0, comment:''},
-    {name:'分类5', num:5, order:1, isRequired:1, isDisable:0, comment:''},
 
-  ];
-  handleCancel = () => this.setState({previewVisible:false});
-  handlePreview = (file) => {
-    this.setState(
-      {
-        previewImage: file.url || file.thumbUrl,
-        previewVisible:true,
-      }
-    )
+  componentWillReceiveProps(newProps) {
+    let fileList = [];
+    
+     if (newProps.attachInfo.fileList) {
+        if(!this.initFiles){
+          this.getGroup(newProps.attachInfo.fileList)
+        }
+        this.initFiles=true;   // true
+    }
   }
-  handleChange = ({fileList}) => this.setState({fileList:fileList});
+
+  getGroup = (fl)  => {
+    if(fl && fl.length>0){
+      let list= {}
+      fl.forEach(v => {
+          v.group = v.group ? v.group : '5'
+          if (!list.hasOwnProperty(v.group)) {
+              list[v.group] = [{
+                uid: v.fileGuid,
+                name: v.name || '',
+                status: 'done',
+                url: v.icon || v.localUrl
+              }]
+          } else {
+              list[v.group].push({
+                uid: v.fileGuid,
+                name: v.name || '',
+                status: 'done',
+                url: v.icon || v.localUrl
+              })
+          }
+      })
+      // console.log(this.state.imgFiles, list, 'hahahahh') // list 是reducer的，imgFiles 是才传的
+      let myObj = Object.assign({}, this.state.imgFiles)
+      if (Object.keys(myObj).length !== 0){
+        for(let i in list) {
+          if (list[i]){
+            myObj[i] = myObj[i].concat(list[i])
+          }
+        }
+        this.setState({
+          imgFiles: myObj
+          })
+      } else {
+        this.setState({
+            imgFiles: list
+        })
+      }
+    }
+  }
+
+
+  handleCancel = () => this.setState({ previewVisible: false })
+
+  hanldeRemove = (file) => {
+    // console.log(file, '删除图片')
+    let uid = file.uid, index;
+    let { fileList, deleteIdArr, imgFiles } = this.state;
+    let { deletePicList } = this.props
+    deleteIdArr.push(file.uid);
+    deletePicList.push(file)
+    // console.log(deleteIdArr, deletePicList, '删除的数据')
+    if (this.props.parentPage !== 'building') {
+      fileList.forEach((v, i) => {
+        if (v.uid === uid) {
+          index = i
+        }
+      })
+      fileList = fileList.splice(index, 1)
+      this.props.dispatch(saveDeletePicList({ deletePicList: deletePicList }))
+      this.setState({ deleteIdArr: deleteIdArr, filelist: fileList })
+
+    } else {
+
+      let arr = imgFiles[this.state.picGroup] || []
+      // console.log(imgFiles, arr, '删除图片组的这个是哪一个')
+      arr.forEach((v, i) => {
+        if (v.uid === uid) {
+          index = i
+        }
+      })
+      // console.log(index, '9')
+      arr.splice(index, 1)
+      // console.log(arr, 'arrArr')
+      imgFiles[this.state.picGroup] = arr.slice()
+      this.props.dispatch(saveDeletePicList({ deletePicList: deletePicList }))
+      this.setState({ deleteIdArr: deleteIdArr, imgFiles: imgFiles }, () => {
+        // console.log(this.state.imgFiles, '删除后的')
+      })
+    }
+    
+    
+    return true;
+  }
+  handleCancelBtn = () => {
+      this.props.dispatch(contractPicView({ filelist: this.props.attachInfo.fileList, type: 'cancel' }))
+  }
+ 
   handleBeforeUpload = (uploadFile) => {
     let reader = new FileReader();
     reader.readAsDataURL(uploadFile);
 
     reader.onloadend = function () {
-      if (uploadFile.type.startsWith("image/")) {
-          let nowImgFiles = this.state.imgFiles[this.state.picGroup] || []
-          let projectArr = nowImgFiles.concat([{
-            uid: uploadFile.uid,
-            name: uploadFile.name,
-            status: 'uploading',
-            url: reader.result
-          }])
-          let imgFiles =  Object.assign({}, this.state.imgFiles)
-          imgFiles[this.state.picGroup] = projectArr
-          this.setState({ imgFiles: imgFiles });
-      }
+      let nowImgFiles = this.state.imgFiles[this.state.picGroup] || []
+      let projectArr = nowImgFiles.concat([{
+        uid: uploadFile.uid,
+        name: uploadFile.name,
+        status: 'uploading',
+        url: reader.result
+      }])
+      let imgFiles =  Object.assign({}, this.state.imgFiles)
+      imgFiles[this.state.picGroup] = projectArr
+      this.setState({ imgFiles: imgFiles });
+        
     }.bind(this);
 
     if (!uploadFile.type.startsWith("image/")) {
@@ -80,34 +160,66 @@ class AttachEdit extends Component {
       return false;
     }
 
-    /*this.UploadFile(uploadFile, (ufile) => {
+    this.UploadFile(uploadFile, (ufile) => {
       console.log("回调信息：", ufile);
-        let imgFiles =  Object.assign({}, this.state.imgFiles)
-        imgFiles[this.state.picGroup].map(file => {
-          if (file.uid === ufile.fileGuid) {
-            file.status = 'done';
-            ufile.localUrl = file.url;
-            ufile.group = this.state.picGroup
-          }
-        });
-        this.setState({ imgFiles: imgFiles }, ()=>{
-          console.log(this.state.imgFiles, '上传之后的回调信息：')
-        });
       
+      let imgFiles =  Object.assign({}, this.state.imgFiles)
+      imgFiles[this.state.picGroup].map(file => {
+        if (file.uid === ufile.fileGuid) {
+          file.status = 'done';
+          ufile.localUrl = file.url;
+          ufile.group = this.state.picGroup
+        }
+      });
+      this.setState({ imgFiles: imgFiles }, ()=>{
+        console.log(this.state.imgFiles, '上传之后的回调信息：')
+      });
+     
       let completeFileList = [...this.props.completeFileList, ufile];
-      //console.log(completeFileList, '7')
-      //this.props.dispatch(saveCompleteFileList({ completeFileList: completeFileList }))
-    });*/
+      console.log(completeFileList, '7')
+      this.props.dispatch(saveCompleteFileList({ completeFileList: completeFileList }))
+    });
 
-    return true;
+    return false;
   }
+
+
+  //图片保存
+  handPictureSave = () => {
+    this.props.dispatch(attchLoadingStart())
+    const { deleteIdArr } = this.state;
+    const { completeFileList, deletePicList } = this.props;
+    console.log(completeFileList, deletePicList, '???s删除图片？？？？？？？？')
+    let id = 10;//this.props.basicInfo.id;
+    if (completeFileList.length !== 0) {
+      console.log('进入的是新增么？？')
+      
+      // this.setState({ uploading: true });
+      this.props.save({
+        fileInfo: completeFileList,
+        completeFileList: completeFileList,
+        id: id,
+        type: this.props.type, // shops  building  updataRecord
+      });
+      return;
+    }
+    if (deletePicList.length !== 0) { // 删除图片
+      console.log('进入的是删除么？？')
+      // this.setState({ uploading: true });
+      this.props.dispatch(deletePicAsync({
+        fileInfo: deleteIdArr,
+        id: id,
+        deletePicList: deletePicList,
+        type: this.props.type,
+      }))
+      return;
+    }
+  }
+
   UploadFile = (file, callback) => {
     // console.log(file);
-    let shopsInfo = this.props.shopsInfo;
-    let buildInfo = this.props.buildInfo;
-    //let uploadUrl = `${WebApiConfig.attach.uploadUrl}${id}`;
-    let id = 900;
-    let uploadUrl = `${WebApiConfig.attach.uploadUrl}`;//上载地址需要知道
+    let id = 5;//this.basicInfo.id;
+    let uploadUrl = `${WebApiConfig.attach.uploadUrl}${id}`;
     let fileGuid = file.uid;//NewGuid();//uuid.v4();
     let fd = new FormData();
     fd.append("fileGuid", fileGuid)
@@ -162,62 +274,117 @@ class AttachEdit extends Component {
       });
     }
   }
-  handleSubmit = () =>{
 
+
+  handlePreview = (file) => {
+    this.setState({
+        previewImage: file.url || file.localUrl,
+        previewVisible: true,
+    });
   }
-  render(){
 
-    const {previewVisible, previewImage, fileList} = this.state;
+  changeTabKey = (key) => {
+    // console.log(key, 'key')
+    this.setState({picGroup: key})
+  }
+
+  render() {
+    let attachPicOperType = this.props.operInfo.attachPicOperType;
+    let shopsInfo = this.props.shopsInfo;
+    let { previewVisible, previewImage, fileList } = this.state;
+    let basicData = this.props.basicData
+
     const uploadButton = (
       <div>
         <Icon type="plus" />
         <div className="ant-upload-text">添加图片</div>
       </div>
     );
+
+    let propsPic = {
+      multiple: true,
+      listType: "picture-card",
+      fileList: fileList,
+      onPreview: (file) => { // 图片预览
+        this.setState({
+          previewImage: file.url || file.localUrl,
+          previewVisible: true,
+        });
+      }
+    }
+
+    // console.log( this.props.basicData.photoCategories, '字典')
+
     return (
-        
+      <div className="">
         <Layout>
-            <Content className='' style={{padding:'25px 0', margin:'20px 0', backgroundColor:"#ECECEC"}}>
+          <Content className='' style={{ padding: '25px 0', margin: '20px 0', backgroundColor: "#ECECEC" }}>
+            {
+              this.props.type === 'dynamic' ? null :
+                <div>
+                  <Icon type="tags-o" className='content-icon' /> <span className='content-title'>附加信息</span>
+                </div>
+            }
+            <Row type="flex" justify="space-between">
+              <Col span={24}>
                 {
-                    <div>
-                        <Icon type='tags-o' className = 'content-icon'>
-                        </Icon>
-                        <span className='content-title'>附加信息</span>
-                    </div>
+                  this.props.type === 'dynamic' ? null :
+                    <div className='picture'>图片</div>
                 }
-                <Row type='flex' justify='space-between'>
-                  <Col span={24}>
-                      <div className='picture'>图片</div>
-                      <div className='picBox'>
-                          <Tabs defaultActiveKey='1'>
-                            {
-                              this.props.basicData.contractAttachTypes.map((item, i)=>{
+                <div className='picBox'>
+
+                  {
+                    <Tabs defaultActiveKey="1" onChange={this.changeTabKey}>
+                        {
+                          this.props.basicData.contractAttachTypes.map((item, i) => {
                                 return (
-                                  <TabPane tab={item.key} key={item.value}>
-                                    <div className='clearfix'>
-                                      <Upload 
-                                        beforeUpload={this.handleBeforeUpload}
-                                        listType='picture-card'
-                                        fileList = {fileList}
-                                        onPreview={this.handlePreview}
-                                        onChange={this.handleChange}
-                                      >
-                                        {uploadButton}
-                                      </Upload>
-                                      <Modal visible={previewVisible} footer={null} onCancel={this.handleCancel}>
-                                        <img alt="example" style={{ width: '100%' }} src={previewImage} />
-                                      </Modal>
+                                  <TabPane tab={item.key} key={item.value} >
+                                    <div className='picBox'>
+                                        <div className="clearfix">
+                                            <Upload  listType="picture-card"
+                                                     fileList= {this.state.imgFiles[item.value]}
+                                                     onPreview={this.handlePreview} 
+                                                     beforeUpload={this.handleBeforeUpload} 
+                                                     onRemove={this.hanldeRemove}>
+                                                {uploadButton}
+                                            </Upload>
+                                            <Modal visible={previewVisible} footer={null} onCancel={this.handleCancel}>
+                                                <img alt="example" style={{ width: '100%' }} src={previewImage} />
+                                            </Modal>
+                                        </div>
                                     </div>
-                                  </TabPane>
+                                </TabPane>  
                                 )
-                              })
-                            }
-                          </Tabs>
-                      </div>
-  
-                    </Col>
-                </Row>
+                            })
+                        }
+                    </Tabs> 
+                  }
+                </div>
+              </Col>
+            </Row>
+            {
                 <Row type="flex" justify="center" className='BtnTop'>
+                  {
+                      <div>
+                        <Button type="primary" size='default'
+                          style={{ width: "8rem" }}
+                          loading={this.props.loadingState}
+                          disabled={/*this.props.basicInfo.isDisabled*/ this.props.isDisabled}
+                          onClick={this.handPictureSave}>保存
+                        </Button>
+                        {
+                          attachPicOperType !== 'add' ?
+                            <Button size='default'
+                              className='oprationBtn'
+                              onClick={this.handleCancelBtn}>取消
+                           </Button> : null
+                        }
+                      </div>
+                  }
+
+                </Row>
+            }
+            <Row type="flex" justify="center" className='BtnTop'>
                   {
                     <div>
                       <Button type="primary" size='default'
@@ -226,24 +393,32 @@ class AttachEdit extends Component {
                       </Button>
                     </div>
                   }
-                </Row>
-            </Content>
+            </Row>
+          </Content>
         </Layout>
-    );
+      </div>
+    )
   }
 }
 
 function mapStateToProps(state) {
   // console.log("attachedit props：", state.buildInfo)
   return {
+    isDisabled: state.contractData.isDisabled,
     basicData: state.basicData,
+    attachInfo: state.contractData.attachInfo,
+    basicInfo:state.contractData.baseInfo,
+    
+    operInfo: state.contractData.operInfo,
     /*
     buildingOperInfo: state.building.operInfo,
+    shopsInfo: state.shop.shopsInfo,
     buildInfo: state.building.buildInfo,
     attachInfo: state.building.buildInfo.attachInfo,
+    shopAttachInfo: state.shop.shopsInfo.attachInfo,
     completeFileList: state.shop.completeFileList,
     deletePicList: state.shop.deletePicList,
-    basicData: state.basicData,
+    
     loadingState: state.building.attachloading,
     user: (state.oidc.user || {}).profile || {},
     */
@@ -252,7 +427,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    //save: (...args) => dispatch(savePictureAsync(...args)),
+    save: (...args) => dispatch(savePictureAsync(...args)),
     dispatch
   };
 }

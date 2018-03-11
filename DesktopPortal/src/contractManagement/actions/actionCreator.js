@@ -38,7 +38,13 @@ export const gotoChangeMyAdd = createAction(actionTypes.GOTO_CHANGE_MYADD);
 // export const saveCompleteFileList = createAction(actionTypes.SAVE_COMPLETE_FILE_LIST);
 // export const saveDeletePicList = createAction(actionTypes.SAVE_DELETE_PIC_LIST);
 
-
+export const savePictureAsync = createAction(actionTypes.SAVE_PICTURE_ASYNC);
+//export const uploadPicFinish = createAction(actionTypes.UPLOAD_PIC_FINISH);
+export const contractPicView = createAction(actionTypes.CONTRACT_PIC_VIEW);
+export const contractPicEdit = createAction(actionTypes.CONTRACT_PIC_EDIT);
+export const deletePicAsync = createAction(actionTypes.DELETE_PICTURE_ASYNC);
+export const saveCompleteFileList = createAction(actionTypes.SAVE_COMPLETE_FILE_LIST);
+export const saveDeletePicList = createAction(actionTypes.SAVE_DELETE_PIC_LIST);
 
 //文件上传
 export const openAttachMent = createAction(actionTypes.OPEN_ATTACHMENT);
@@ -100,3 +106,5 @@ export const removeAdjustItem = createAction(actionTypes.REMOVE_ADJUST_REQUEST_I
 
 export const basicLoadingStart = createAction(actionTypes.LOADING_START_BASIC);
 export const basicLoadingEnd = createAction(actionTypes.LOADING_END_BASIC);
+export const attchLoadingStart = createAction(actionTypes.LOADING_START_ATTACH);
+export const attchLoadingEnd = createAction(actionTypes.LOADING_END_ATTACH);

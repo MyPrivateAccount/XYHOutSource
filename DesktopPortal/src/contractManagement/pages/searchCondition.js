@@ -152,15 +152,15 @@ class SearchCondition extends Component {
                     </Row>
                     <div style={{display: expandSearchCondition ? "block" : "none"}}>   
                         <Row className="normalInfo">
-                            <Col span={2}>
+                            <Col span={4}>
                                 <label>已作废：</label>
                                     <Checkbox ></Checkbox>
                             </Col>
-                            <Col span={2}>
+                            <Col span={4}>
                                 <label>已过期：</label>
                                     <Checkbox ></Checkbox>
                             </Col>
-                            <Col span={2}>
+                            <Col span={4}>
                                 <label>已续签：</label>
                                     <Checkbox ></Checkbox>
                             </Col>

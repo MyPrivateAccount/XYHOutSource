@@ -17,12 +17,12 @@ class BasicInfo extends Component {
     }
 
     render(){
-        const basicInfo = this.props.contractInfo.contractBasicInfo;
-        if (basicInfo.StartTime && basicInfo.StartTime !== "") {
-            basicInfo.StartTime = moment(basicInfo.StartTime).format("YYYY-MM-DD");
+        const basicInfo = this.props.contractInfo.baseInfo;
+        if (basicInfo.startTime && basicInfo.startTime !== "") {
+            basicInfo.startTime = moment(basicInfo.startTime).format("YYYY-MM-DD");
         }
-        if (basicInfo.EndTime && basicInfo.EndTime !== "") {
-            basicInfo.EndTime = moment(basicInfo.EndTime).format("YYYY-MM-DD");
+        if (basicInfo.endTime && basicInfo.endTime !== "") {
+            basicInfo.endTime = moment(basicInfo.endTime).format("YYYY-MM-DD");
         }
         const contractId = basicInfo.id;
         return (
@@ -41,50 +41,50 @@ class BasicInfo extends Component {
                     </Row>
                     <Row className='viewRow'>
                         <Col span={12}>合同编号:{contractId}</Col>
-                        <Col span={12}>合同类型:{basicInfo.ContractType }</Col>
+                        <Col span={12}>合同类型:{basicInfo.type }</Col>
                     </Row>
                     <Row className='viewRow'>
-                        <Col span={12}>申请时间:{basicInfo.CreateTime}</Col>
-                        <Col span={12}>申请部门:{basicInfo.CreateDepartment}</Col>
+                        <Col span={12}>申请时间:{basicInfo.createTime}</Col>
+                        <Col span={12}>申请部门:{basicInfo.createDepartment}</Col>
                     </Row>
                     <Row className='viewRow'>
-                        <Col span={12}>合同名称:{basicInfo.Name}</Col>
-                        <Col span={12}>项目名称:{basicInfo.ProjectName}</Col>
+                        <Col span={12}>合同名称:{basicInfo.name}</Col>
+                        <Col span={12}>项目名称:{basicInfo.projectName}</Col>
                     </Row>
                     <Row className='viewRow'>
-                        <Col span={12}>项目类型:{basicInfo.ProjectType}</Col>
-                        <Col span={12}>项目负责人:{basicInfo.ProprincipalPepole}</Col>
+                        <Col span={12}>项目类型:{basicInfo.projectType}</Col>
+                        <Col span={12}>项目负责人:{basicInfo.proprincipalPepole}</Col>
                     </Row>
                     <Row className='viewRow'>
-                        <Col span={12}>甲方类型:{basicInfo.CompanyAType}</Col>
-                        <Col span={12}>甲方公司全称:{basicInfo.CompanyA}</Col>
+                        <Col span={12}>甲方类型:{basicInfo.companyAType}</Col>
+                        <Col span={12}>甲方公司全称:{basicInfo.companyA}</Col>
                     </Row>
                     <Row className='viewRow'>
-                        <Col span={12}>甲方负责人:{basicInfo.PrincipalpepoleA}</Col>
+                        <Col span={12}>甲方负责人:{basicInfo.principalpepoleA}</Col>
                         <Col span={12}>乙方负责人:{basicInfo.PrincipalpepoleB}</Col>
                     </Row>
                     <Row className='viewRow'>
-                        <Col span={12}>合同开始时间:{basicInfo.StartTime}</Col>
-                        <Col span={12}>合同结束时间:{basicInfo.EndTime}</Col>
+                        <Col span={12}>合同开始时间:{basicInfo.startTime}</Col>
+                        <Col span={12}>合同结束时间:{basicInfo.endTime}</Col>
                     </Row>
                     <Row className='viewRow'>
-                        <Col span={12}>份数:{basicInfo.Count}</Col>
-                        <Col span={12}>返回原件:{basicInfo.ReturnOrigin}</Col>
+                        <Col span={12}>份数:{basicInfo.count}</Col>
+                        <Col span={12}>返回原件:{basicInfo.returnOrigin}</Col>
                     </Row>
                     <Row className='viewRow'>
-                        <Col span={12}>佣金方式:{basicInfo.CommisionType}</Col>
-                        <Col span={12}>续签合同:{basicInfo.Follow}</Col>
+                        <Col span={12}>佣金方式:{basicInfo.commisionType}</Col>
+                        <Col span={12}>续签合同:{basicInfo.follow}</Col>
                     </Row>
                     <Row className='viewRow'>
-                        <Col span={12}>审核人:{basicInfo.CheckPeople}</Col>
-                        <Col span={12}>审核状态:{basicInfo.CheckState}</Col>
+                        <Col span={12}>审核人:{basicInfo.checkPeople}</Col>
+                        <Col span={12}>审核状态:{basicInfo.checkState}</Col>
                     </Row>
                     <Row className='viewRow'>
-                        <Col span={12}>是否作废:{(basicInfo.IsCancel && basicInfo.IsCancel === '1') ? "是" : "否"}</Col>
-                        <Col span={12}>备注:{basicInfo.Remark}</Col>
+                        <Col span={12}>是否作废:{(basicInfo.isCancel && basicInfo.IsCancel === '1') ? "是" : "否"}</Col>
+                        <Col span={12}>备注:{basicInfo.remark}</Col>
                     </Row>
                     <Row className='viewRow'>
-                        <Col span={24}>更改记录:{basicInfo.Remark}</Col>
+                        <Col span={24}>更改记录:{basicInfo.remark}</Col>
                     </Row>
 
                 </Form>

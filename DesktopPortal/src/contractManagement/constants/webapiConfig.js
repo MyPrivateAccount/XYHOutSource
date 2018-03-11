@@ -24,7 +24,8 @@ const WebApiConfig = {
         getAuditHistory: basicDataBaseApiUrl + "examines/",//获取审核历史详细
     },
     contractBasic: {
-        Base: basicDataBaseApiUrl + "contractinfo",//楼盘基础信息
+        Base: basicDataBaseApiUrl + "contractinfo/addsimplecontract",//
+        Submit: basicDataBaseApiUrl + "contractinfo/checksimplecontract",//
     },
     attach: {
         uploadUrl: `${UploadUrl}/file/upload/`

@@ -92,7 +92,7 @@ export const auditType = {
         icon: <i className='iconfont icon-manager' style={{fontSize: '48px'}}></i>,
         component: <AuditBuildingOnSite />
     },
-    Contract: {
+    ContractCommit: {
         name:"合同",
         icon: <i className='book' style={{fontSize: '48px'}}></i>,
         component: <AuditContract />

@@ -10,8 +10,10 @@ import { notification } from 'antd';
 const actionUtils = appAction(actionTypes.ACTION_ROUTE)
 
 export function* getCustomerListAsync(state) {
-    let result = { isOk: false, extension: [], msg: '客源查询失败！' };
+    let result = { isOk: true, extension: [], msg: '客源查询失败！' };
+    console.log('getCustomerListAsync:.......')
     let url = WebApiConfig.search.getSaleManCustomerList;//默认为业务员客户查询
+    yield put({ type: actionUtils.getActionType(actionTypes.SEARCH_COMPLETE), payload: result });
     let body = state.payload;
     if (body) {
         if (body.searchSourceType === "2") {//已成交客户列表
@@ -24,17 +26,18 @@ export function* getCustomerListAsync(state) {
             url = WebApiConfig.search.getPoolCustomerList;
         }
     }
+
     try {
-        let res = yield call(ApiClient.post, url, state.payload)
+        //let res = yield call(ApiClient.post, url, state.payload)
         // console.log(`url:${url},body:${JSON.stringify(state.payload)},result:${JSON.stringify(res)}`);
-        getApiResult(res, result);
-        if (result.isOk) {
-            if (res.data.validityCustomerCount) {
-                result.validityCustomerCount = res.data.validityCustomerCount;
-            }
+       // getApiResult(res, result);
+       // if (result.isOk) {
+       //     if (res.data.validityCustomerCount) {
+       //         result.validityCustomerCount = res.data.validityCustomerCount;
+      //      }
             yield put({ type: actionUtils.getActionType(actionTypes.SEARCH_COMPLETE), payload: result });
-        }
-        yield put({ type: actionUtils.getActionType(actionTypes.SET_SEARCH_LOADING), payload: false });
+       // }
+       // yield put({ type: actionUtils.getActionType(actionTypes.SET_SEARCH_LOADING), payload: false });
     } catch (e) {
         result.msg = "客源查询接口调用异常！";
     }

@@ -7,16 +7,18 @@ import moment from 'moment'
 const initState = {
     contractInfo:{//合同信息
         id: NewGuid(),
-        contractBasicInfo:{},
-        contractAttachInfo:{},
+        baseInfo:{},
+        attachInfo:{},
         additionalInfo:{},
-        modifyRecord:{},
+        modifyInfo:{},
 
     },
     operInfo: {
         basicOperType: 'add',
         attachPicOperType: 'add',
     },
+    completeFileList: [],
+    deletePicList: [],
     submitLoading: false, // 提交按钮
     contractDisplay: 'block', // 点击提交合同后，展示view页面， 所有操作按钮隐藏。
     basicloading: false,
@@ -24,7 +26,7 @@ const initState = {
     attachloading: false,
     previewVisible: false,
     contractChooseVisible:false,//打开合同选择页
-
+    isDisabled: false,
 
 }
 
@@ -32,10 +34,11 @@ let reducerMap = {};
 
 
 reducerMap[actionTypes.OPEN_RECORD] = function(state, action){
+    const id = NewGuid();
     let contractInfo={//合同信息
-        id: NewGuid(),
-        contractBasicInfo:{
-            
+        id: id,
+        baseInfo:{
+            id: id,
         },
         //contractAttachInfo:{},
 
@@ -67,7 +70,9 @@ reducerMap[actionTypes.CONTRACT_BASIC_EDIT] = (state, action) => {
   }
   // 基本信息查看
 reducerMap[actionTypes.CONTRACT_BASIC_VIEW] = (state, action) => {
-    let contractInfo = Object.assign({}, { ...state.contractInfo.contractBasicInfo }, {contractBasicInfo:action.body});
+    console.log("view state:", state);
+    console.log("body:" , action);
+    let contractInfo = Object.assign({}, state.contractInfo, {baseInfo:action.payload.baseInfo, modifyInfo:action.payload.modifyInfo});
     
     let operInfo = Object.assign({}, state.operInfo, { basicOperType: 'view' });
     let newState = Object.assign({}, state, { operInfo: operInfo, contractInfo: contractInfo });
@@ -103,7 +108,7 @@ reducerMap[actionTypes.GOTO_THIS_CONTRACT_FINISH] = (state, action) => {
 
     if (res.code === '0') {
         contractInfo = res.extension
-        contractInfo.buildingBasic = contractInfo.basicInfo
+        contractInfo.baseInfo = contractInfo.baseInfo
         contractInfo.buildingBasic.location = [contractInfo.basicInfo.city, contractInfo.basicInfo.district, contractInfo.basicInfo.area]
         contractInfo.supportInfo = contractInfo.facilitiesInfo
         contractInfo.relShopInfo = contractInfo.shopInfo
@@ -151,6 +156,99 @@ reducerMap[actionTypes.OPEN_CONTRACT_CHOOSE] = (state, action) =>{
 reducerMap[actionTypes.CLOSE_CONTRACT_CHOOSE] = (state, action) =>{
     let newState = Object.assign({}, state, {contractChooseVisible:false});
     return newState;
+}
+
+//图片信息编辑  //此时的情况是应该已经拿到了当前的合同id
+reducerMap[actionTypes.CONTRACT_PIC_EDIT] = (state, action) => {
+    let contractInfo = { ...state.contractInfo };
+    let operInfo = Object.assign({}, state.operInfo, { attachPicOperType: 'edit' });
+    let newState = Object.assign({}, state, { operInfo: operInfo, contractInfo: contractInfo });
+    return newState;
+  }
+  // 图片信息查看
+  // map[actionTypes.SHOP_PIC_VIEW] = (state, action) => {
+  //   let shopsInfo = { ...state.shopsInfo };
+  //   let operInfo = Object.assign({}, state.operInfo, { attachPicOperType: 'view' });
+  //   let newState = Object.assign({}, state, { operInfo: operInfo, shopsInfo: shopsInfo });
+  //   return newState;
+  // }
+  reducerMap[actionTypes.CONTRACT_PIC_VIEW] = (state, action) => {
+    const type = action.payload.type // add' 新增， 'delete'删除， 'cancel' 取消
+    let contractInfo = { ...state.contractInfo }
+    let attachInfo, oldFileList, nowFileList
+   
+
+    attachInfo = { ...state.contractInfo.attachInfo }
+    oldFileList = [...state.contractInfo.attachInfo.fileList]
+    nowFileList = action.payload.filelist
+    
+    let operInfo = { ...state.operInfo, attachPicOperType: 'view' };
+    if (type === 'delete') {
+      nowFileList.forEach((v, i) => {
+        let num = oldFileList.findIndex((item) => {
+          return v.uid === item.fileGuid
+        })
+        if (num !== -1) {
+          let myIndex = num;
+          oldFileList.splice(myIndex, 1)
+        }
+      })
+    } else {
+      nowFileList.forEach((v, i) => {
+        let num = oldFileList.findIndex((item) => {
+          return v.fileGuid === item.fileGuid
+        })
+        if (num === -1) {
+          if (type === 'add') {
+            // console.log('add');
+            oldFileList.push(v);
+          }
+        } else {
+          if (type === 'cancel') {
+            // console.log('cancel');
+            oldFileList = oldFileList;
+          }
+        }
+      })
+    }
+
+    attachInfo = Object.assign({}, state.contractInfo.attachInfo, { fileList: oldFileList })
+    contractInfo = Object.assign({}, contractInfo, {attachInfo: attachInfo});
+    let newState = Object.assign({}, state, { operInfo: operInfo, contractInfo: contractInfo});
+    return newState;
+  }
+  
+  // 存上传照片
+  reducerMap[actionTypes.SAVE_COMPLETE_FILE_LIST] = (state, action) => {
+    let completeFileList = []
+    completeFileList = action.payload.completeFileList
+    let newState = Object.assign({}, state, { completeFileList: completeFileList });
+    return newState;
+  }
+  // 存删除的照片数组
+  reducerMap[actionTypes.SAVE_DELETE_PIC_LIST] = (state, action) => {
+    // console.log(state.completeFileList, action.payload.deletePicList,'上传的图片数组啊啊啊')
+    let deletePicList = [], complete = []
+    deletePicList = action.payload.deletePicList
+    complete = state.completeFileList
+    if (state.completeFileList.length !== 0) {
+      deletePicList.map((v) => {
+        let index = complete.findIndex((item) => {
+          return item.fileGuid === v.uid
+        })
+        // console.log(index, '???')
+        complete.splice(index, 1)
+      })
+    }
+    let newState = Object.assign({}, state, { deletePicList: deletePicList, completeFileList: complete });
+    return newState;
+  }
+
+reducerMap[actionTypes.LOADING_START_ATTACH] = function (state, action) {
+    return Object.assign({}, state, { attachloading: true });
+}
+reducerMap[actionTypes.LOADING_END_ATTACH] = function (state, action) {
+    return Object.assign({}, state, { attachloading: false });
 }
 export default handleActions(reducerMap, initState);
 
