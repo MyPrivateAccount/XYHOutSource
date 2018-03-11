@@ -3536,6 +3536,16 @@
         "runtime": {
           "bin/placeholder/ApplicationCore.dll": {}
         }
+      },
+      "GatewayInterface/1.0.0": {
+        "type": "project",
+        "framework": ".NETStandard,Version=v2.0",
+        "compile": {
+          "bin/placeholder/GatewayInterface.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/GatewayInterface.dll": {}
+        }
       }
     }
   },
@@ -9950,11 +9960,17 @@
       "type": "project",
       "path": "../ApplicationCore/ApplicationCore.csproj",
       "msbuildProject": "../ApplicationCore/ApplicationCore.csproj"
+    },
+    "GatewayInterface/1.0.0": {
+      "type": "project",
+      "path": "../GatewayInterface/GatewayInterface.csproj",
+      "msbuildProject": "../GatewayInterface/GatewayInterface.csproj"
     }
   },
   "projectFileDependencyGroups": {
     ".NETCoreApp,Version=v2.0": [
       "ApplicationCore >= 1.0.0",
+      "GatewayInterface >= 1.0.0",
       "Microsoft.NETCore.App >= 2.0.0"
     ]
   },
@@ -9994,6 +10010,9 @@
           "projectReferences": {
             "D:\\XYHOutSource\\Applications\\ApplicationCore\\ApplicationCore.csproj": {
               "projectPath": "D:\\XYHOutSource\\Applications\\ApplicationCore\\ApplicationCore.csproj"
+            },
+            "D:\\XYHOutSource\\Applications\\GatewayInterface\\GatewayInterface.csproj": {
+              "projectPath": "D:\\XYHOutSource\\Applications\\GatewayInterface\\GatewayInterface.csproj"
             }
           }
         }

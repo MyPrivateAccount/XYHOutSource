@@ -134,7 +134,7 @@ namespace XYHShopsInterfacePlugin
                 ss.Mark = response.Extension.Mark;
                 ss.MaxCustomer = response.Extension.MaxCustomer;
                 ss.ReportedTemplate = response.Extension.ReportedTemplate;
-                ss.ReportTime = response.Extension.ReportTime;
+                ss.ReportTime = response.Extension.ReportTime.Value;
                 ss.ValidityDay = response.Extension.ValidityDay < 1 ? 1 : response.Extension.ValidityDay;
                 res.Extension = ss;
                 //未找到映射类型 很烦

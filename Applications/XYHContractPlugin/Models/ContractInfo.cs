@@ -10,12 +10,14 @@ namespace XYHContractPlugin.Models
         [Key]
         [MaxLength(127)]
         public string ID { get; set; }
+        [MaxLength(64)]
         public string Type { get; set; }
         public int? Relation { get; set; }
         [MaxLength(127)]
         public string Name { get; set; }
         public string ContractEstate { get; set; }
         public int? Modify { get; set; }
+        public string CurrentModify { get; set; }
         public int? Annex { get; set; }
         public int? Complement { get; set; }
         [MaxLength(127)]
@@ -24,7 +26,8 @@ namespace XYHContractPlugin.Models
         public string Remark { get; set; }
         [MaxLength(64)]
         public string ProjectName { get; set; }
-        public int? ProjectType { get; set; }
+        [MaxLength(64)]
+        public string ProjectType { get; set; }
         [MaxLength(64)]
         public string CompanyA { get; set; }
         public int? CompanyAT { get; set; }
@@ -43,7 +46,8 @@ namespace XYHContractPlugin.Models
         [MaxLength(127)]
         public string DeleteUser { get; set; }
         public DateTime? DeleteTime { get; set; }
-        public int? CommisionType { get; set; }
+        [MaxLength(64)]
+        public string CommisionType { get; set; }
         public DateTime? StartTime { get; set; }
         public DateTime? EndTime { get; set; }
         public int? Count { get; set; }

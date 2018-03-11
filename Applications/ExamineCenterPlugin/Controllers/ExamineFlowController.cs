@@ -552,7 +552,7 @@ namespace ExamineCenterPlugin.Controllers
 
                 var _shopsInterface = ApplicationContext.Current.Provider.GetRequiredService<IShopsInterface>();
                 var _customerInterface = ApplicationContext.Current.Provider.GetRequiredService<ICustomerInterface>();
-                var _contractInterface = ApplicationContext.Current.Provider.GetRequiredService<I>();
+                var _contractInterface = ApplicationContext.Current.Provider.GetRequiredService<IContractInterface>();
                 var response3 = new GatewayInterface.Dto.ResponseMessage();
 
                 if (flow.ContentType == "building")
@@ -577,7 +577,7 @@ namespace ExamineCenterPlugin.Controllers
                 }
                 else if (flow.ContentType == "ContractCommit")
                 {
-                    response3 = await _customerInterface.CustomerDealCallback(examineResponse);
+                    response3 = await _contractInterface.SubmitContractCallback(examineResponse);
                 }
                 else
                 {

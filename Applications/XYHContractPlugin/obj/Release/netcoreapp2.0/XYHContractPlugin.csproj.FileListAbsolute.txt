@@ -14,3 +14,5 @@ D:\XYHOutSource\Applications\XYHContractPlugin\bin\Release\netcoreapp2.0\Microso
 D:\XYHOutSource\Applications\XYHContractPlugin\bin\Release\netcoreapp2.0\Microsoft.Extensions.Identity.Stores.xml
 D:\XYHOutSource\Applications\XYHContractPlugin\obj\Release\netcoreapp2.0\XYHContractPlugin.dll
 D:\XYHOutSource\Applications\XYHContractPlugin\obj\Release\netcoreapp2.0\XYHContractPlugin.pdb
+D:\XYHOutSource\Applications\XYHContractPlugin\bin\Release\netcoreapp2.0\GatewayInterface.dll
+D:\XYHOutSource\Applications\XYHContractPlugin\bin\Release\netcoreapp2.0\GatewayInterface.pdb

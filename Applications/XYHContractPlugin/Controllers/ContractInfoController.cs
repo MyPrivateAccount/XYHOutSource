@@ -14,6 +14,7 @@ using XYH.Core.Log;
 using XYHContractPlugin.Dto.Response;
 using XYHContractPlugin.Managers;
 using ContractInfoRequest = XYHContractPlugin.Dto.Response.ContractInfoResponse;
+using ContractContentInfoRequest = XYHContractPlugin.Dto.Response.ContractContentResponse;
 
 namespace XYHContractPlugin.Controllers
 {
@@ -56,9 +57,9 @@ namespace XYHContractPlugin.Controllers
 
         [HttpGet("{contractid}")]
         [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
-        public async Task<ResponseMessage<ContractInfoResponse>> GetContractByid(UserInfo user, [FromRoute] string contractId)
+        public async Task<ResponseMessage<ContractContentResponse>> GetContractByid(UserInfo user, [FromRoute] string contractId)
         {
-            var Response = new ResponseMessage<ContractInfoResponse>();
+            var Response = new ResponseMessage<ContractContentResponse>();
             if (string.IsNullOrEmpty(contractId))
             {
                 Response.Code = ResponseCodeDefines.ModelStateInvalid;
@@ -68,7 +69,7 @@ namespace XYHContractPlugin.Controllers
             }
             try
             {
-                Response.Extension = await _contractInfoManager.FindByIdAsync(contractId, HttpContext.RequestAborted);
+                Response.Extension = await _contractInfoManager.GetAllinfoByIdAsync(contractId, HttpContext.RequestAborted);
             }
             catch (Exception e)
             {
@@ -79,11 +80,159 @@ namespace XYHContractPlugin.Controllers
             return Response;
         }
 
-        [HttpPost("addcontract")]
+        [HttpPost("addsimplecontract")]
+        [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
+        public async Task<ResponseMessage<bool>> AddSimpleContract(UserInfo User, [FromBody]ContractContentInfoRequest request)
+        {
+            Logger.Trace($"用户{User?.UserName ?? ""}({User?.Id ?? ""})保存合同基础信息(PutBuildingBaseInfo)：\r\n请求参数为：\r\n" + (request != null ? JsonHelper.ToJson(request) : ""));
+
+            if (User.Id == null)
+            {
+                {
+                    User.Id = "66df64cb-67c5-4645-904f-704ff92b3e81";
+                    User.UserName = "wqtest";
+                    User.KeyWord = "";
+                    User.OrganizationId = "270";
+                    User.PhoneNumber = "18122132334";
+                };
+            }
+
+            var response = new ResponseMessage<bool>();
+            if (!ModelState.IsValid)
+            {
+                response.Code = ResponseCodeDefines.ModelStateInvalid;
+                response.Message = ModelState.GetAllErrors();
+                return response;
+            }
+
+            try
+            {
+                //写发送成功后的表
+                await _contractInfoManager.AddContractAsync(request, HttpContext.RequestAborted);
+                response.Message = "add simple ok";
+            }
+            catch (Exception e)
+            {
+                response.Code = ResponseCodeDefines.ServiceError;
+                response.Message = e.ToString();
+                Logger.Error($"用户{User?.UserName ?? ""}({User?.Id ?? ""})合同动态提交审核(UpdateRecordSubmit)报错：\r\n{e.ToString()},\r\n请求参数为：\r\n" + (request != null ? JsonHelper.ToJson(request) : ""));
+            }
+
+            return response;
+        }
+
+        [HttpPost("checksimplecontract")]
+        [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
+        public async Task<ResponseMessage<bool>> CheckSimpleContract(UserInfo User, [FromBody]ContractCheckInfoRequest request)
+        {
+            Logger.Trace($"用户{User?.UserName ?? ""}({User?.Id ?? ""})审核合同基础信息(PutBuildingBaseInfo)：\r\n请求参数为：\r\n" + (request != null ? JsonHelper.ToJson(request) : ""));
+
+            if (User.Id == null)
+            {
+                {
+                    User.Id = "66df64cb-67c5-4645-904f-704ff92b3e81";
+                    User.UserName = "wqtest";
+                    User.KeyWord = "";
+                    User.OrganizationId = "270";
+                    User.PhoneNumber = "18122132334";
+                };
+            }
+
+            var response = new ResponseMessage<bool>();
+            if (!ModelState.IsValid)
+            {
+                response.Code = ResponseCodeDefines.ModelStateInvalid;
+                response.Message = ModelState.GetAllErrors();
+                return response;
+            }
+
+            try
+            {
+                GatewayInterface.Dto.ExamineSubmitRequest exarequest = new GatewayInterface.Dto.ExamineSubmitRequest();
+                exarequest.ContentId = request.ContractID;
+                exarequest.ContentType = "ContractCommit";
+                exarequest.ContentName = request.CheckName;
+                exarequest.SubmitDefineId = request.ModifyID;
+                exarequest.Source = "";
+                exarequest.CallbackUrl = ApplicationContext.Current.UpdateExamineCallbackUrl;
+                exarequest.Action = request.Action/*"TEST" exarequest.ContentType*/;
+                exarequest.TaskName = $"{User.UserName}提交合同{exarequest.ContentName}的动态{exarequest.ContentType}";
+
+                GatewayInterface.Dto.UserInfo userinfo = new GatewayInterface.Dto.UserInfo()
+                {
+                    Id = User.Id,
+                    KeyWord = User.KeyWord,
+                    OrganizationId = User.OrganizationId,
+                    OrganizationName = User.OrganizationName,
+                    UserName = User.UserName
+                };
+
+                var examineInterface = ApplicationContext.Current.Provider.GetRequiredService<IExamineInterface>();
+                var reponse = await examineInterface.Submit(userinfo, exarequest);
+                if (reponse.Code != ResponseCodeDefines.SuccessCode)
+                {
+                    response.Code = ResponseCodeDefines.ServiceError;
+                    response.Message = "向审核中心发起审核请求失败：" + reponse.Message;
+                    return response;
+                }
+
+                //写发送成功后的表
+                await _contractInfoManager.SubmitAsync(request, ExamineStatusEnum.Auditing, HttpContext.RequestAborted);
+                response.Message = $"check {request.CheckName} sucess";
+            }
+            catch (Exception e)
+            {
+                response.Code = ResponseCodeDefines.ServiceError;
+                response.Message = e.ToString();
+                Logger.Error($"用户{User?.UserName ?? ""}({User?.Id ?? ""})合同动态提交审核(UpdateRecordSubmit)报错：\r\n{e.ToString()},\r\n请求参数为：\r\n" + (request != null ? JsonHelper.ToJson(request) : ""));
+            }
+
+            return response;
+        }
+
+        [HttpGet("getcontractcurcheck/{contractId}")]
+        [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
+        public async Task<ResponseMessage<ContractModifyResponse>> GetContractCurCheck(UserInfo user, [FromRoute] string contractId)
+        {
+            var Response = new ResponseMessage<ContractModifyResponse>();
+            if (string.IsNullOrEmpty(contractId))
+            {
+                Response.Code = ResponseCodeDefines.ModelStateInvalid;
+                Response.Message = "请求参数不正确";
+                Logger.Error("error GetContractByid");
+                return Response;
+            }
+            try
+            {
+                Response.Extension = await _contractInfoManager.CurrentModifyByContractIdAsync(contractId, HttpContext.RequestAborted);
+            }
+            catch (Exception e)
+            {
+                Response.Code = ResponseCodeDefines.ServiceError;
+                Response.Message = "服务器错误：" + e.ToString();
+                Logger.Error("error");
+            }
+            return Response;
+        }
+
+        #region//测试接口
+        [HttpPost("addcontract")]//
         [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
         public async Task<ResponseMessage<bool>> AddContract(UserInfo User, [FromBody]ContractInfoRequest request)
         {
-            Logger.Trace($"用户{User?.UserName ?? ""}({User?.Id ?? ""})保存楼盘基础信息(PutBuildingBaseInfo)：\r\n请求参数为：\r\n" + (request != null ? JsonHelper.ToJson(request) : ""));
+            Logger.Trace($"用户{User?.UserName ?? ""}({User?.Id ?? ""})保存合同基础信息(PutBuildingBaseInfo)：\r\n请求参数为：\r\n" + (request != null ? JsonHelper.ToJson(request) : ""));
+
+            if (User.Id == null)
+            {
+                {
+                    User.Id = "66df64cb-67c5-4645-904f-704ff92b3e81";
+                    User.UserName = "wqtest";
+                    User.KeyWord = "";
+                    User.OrganizationId = "270";
+                    User.PhoneNumber = "18122132334";
+                };
+
+            }
 
             var response = new ResponseMessage<bool>();
             if (!ModelState.IsValid)
@@ -99,10 +248,10 @@ namespace XYHContractPlugin.Controllers
                 exarequest.ContentId = request.ID;
                 exarequest.ContentType = "ContractCommit";
                 exarequest.ContentName = request.Name;
-                exarequest.SubmitDefineId = request.ID;
+                exarequest.SubmitDefineId = Guid.NewGuid().ToString();
                 exarequest.Source = "";
                 exarequest.CallbackUrl = ApplicationContext.Current.UpdateExamineCallbackUrl;
-                exarequest.Action = exarequest.ContentType;
+                exarequest.Action = "TEST"/*exarequest.ContentType*/;
                 exarequest.TaskName = $"{User.UserName}提交合同{exarequest.ContentName}的动态{exarequest.ContentType}"; ;
                 GatewayInterface.Dto.UserInfo userinfo = new GatewayInterface.Dto.UserInfo()
                 {
@@ -123,7 +272,7 @@ namespace XYHContractPlugin.Controllers
                 }
 
                 //写发送成功后的表
-                await _contractInfoManager.CreateAsync(request, HttpContext.RequestAborted);
+                await _contractInfoManager.CreateAsync(request, exarequest.SubmitDefineId, HttpContext.RequestAborted);
             }
             catch (Exception e)
             {
@@ -132,6 +281,80 @@ namespace XYHContractPlugin.Controllers
                 Logger.Error($"用户{User?.UserName ?? ""}({User?.Id ?? ""})合同动态提交审核(UpdateRecordSubmit)报错：\r\n{e.ToString()},\r\n请求参数为：\r\n" + (request != null ? JsonHelper.ToJson(request) : ""));
             }
 
+            return response;
+        }
+
+        #endregion
+        [HttpPost("audit/updatecontractcallback")]
+        [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
+        public async Task<ResponseMessage> UpdateRecordContractCallback([FromBody] ExamineResponse examineResponse)
+        {
+            Logger.Warn($" 加推、报备规则、佣金方案、楼栋批次、优惠政策审核回调接口(UpdateRecordSubmitCallback)：\r\n请求参数为：\r\n" + (examineResponse != null ? JsonHelper.ToJson(examineResponse) : ""));
+
+            ResponseMessage response = new ResponseMessage();
+            if (!ModelState.IsValid)
+            {
+                response.Code = ResponseCodeDefines.ModelStateInvalid;
+                response.Message = ModelState.GetAllErrors();
+                Logger.Warn($"房源动态审核回调(UpdateRecordSubmitCallback)报错：\r\n{response.Message ?? ""},\r\n请求参数为：\r\n" + (examineResponse != null ? JsonHelper.ToJson(examineResponse) : ""));
+
+                return response;
+            }
+            try
+            {
+                //await _updateRecordManager.UpdateRecordSubmitCallback(examineResponse);
+
+            }
+            catch (Exception e)
+            {
+                response.Code = ResponseCodeDefines.ServiceError;
+                response.Message = e.ToString();
+                Logger.Error($"房源动态审核回调(UpdateRecordSubmitCallback)报错：\r\n{response.Message ?? ""},\r\n请求参数为：\r\n" + (examineResponse != null ? JsonHelper.ToJson(examineResponse) : ""));
+            }
+            return response;
+        }
+
+        [HttpPost("audit/submitcontractcallback")]
+        [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
+        public async Task<ResponseMessage<ExamineStatusEnum>> SubmitContractCallback([FromBody] ExamineResponse examineResponse)
+        {
+            Logger.Trace($"合同提交审核中心回调(SubmitContractCallback)：\r\n请求参数为：\r\n" + (examineResponse != null ? JsonHelper.ToJson(examineResponse) : ""));
+
+            ResponseMessage<ExamineStatusEnum> response = new ResponseMessage<ExamineStatusEnum>();
+            if (!ModelState.IsValid)
+            {
+                response.Code = ResponseCodeDefines.ModelStateInvalid;
+                response.Message = ModelState.GetAllErrors();
+                Logger.Error($"合同提交审核中心回调(SubmitContractCallback)模型验证失败：\r\n{response.Message ?? ""}，\r\n请求参数为：\r\n" + (examineResponse != null ? JsonHelper.ToJson(examineResponse) : ""));
+                return response;
+            }
+            try
+            {
+                var building = await _contractInfoManager.FindByIdAsync(examineResponse.ContentId, HttpContext.RequestAborted);
+                if (building == null)
+                {
+                    response.Code = ResponseCodeDefines.NotFound;
+                    response.Message = "合同不存在：" + examineResponse.ContentId;
+                    Logger.Error($"合同提交审核中心回调(SubmitBuildingCallback)失败：合同不存在，\r\n请求参数为：\r\n" + (examineResponse != null ? JsonHelper.ToJson(examineResponse) : ""));
+                    return response;
+                }
+                if (examineResponse.ExamineStatus == ExamineStatus.Examined)
+                {
+                    await _contractInfoManager.SubmitAsync(examineResponse.SubmitDefineId, ExamineStatusEnum.Approved);
+                    response.Extension = ExamineStatusEnum.Approved;
+                }
+                else if (examineResponse.ExamineStatus == ExamineStatus.Reject)
+                {
+                    await _contractInfoManager.SubmitAsync(examineResponse.SubmitDefineId, ExamineStatusEnum.Reject);
+                    response.Extension = ExamineStatusEnum.Reject;
+                }
+            }
+            catch (Exception e)
+            {
+                response.Code = ResponseCodeDefines.ServiceError;
+                response.Message = e.ToString();
+                Logger.Error($"合同提交审核中心回调(SubmitBuildingCallback)报错：\r\n{e.ToString()}，\r\n请求参数为：\r\n" + examineResponse != null ? JsonHelper.ToJson(examineResponse) : "");
+            }
             return response;
         }
 

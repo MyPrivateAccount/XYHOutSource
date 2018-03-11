@@ -25,7 +25,8 @@ namespace XYHContractPlugin.Models
         public string ID { get; set; }
         [MaxLength(127)]
         public string ContractID { get; set; }
-        public int? Type { get; set; }
+        [MaxLength(32)]
+        public string Type { get; set; }
         [MaxLength(255)]
         public string Path { get; set; }
     }
@@ -68,10 +69,9 @@ namespace XYHContractPlugin.Models
         [MaxLength(127)]
         public string ContractID { get; set; }
         public int? Type { get; set; }
-        /// <summary>
-        /// 0未 1审核中 2完成 3拒绝
-        /// </summary>
+        
         public int? ExamineStatus { get; set; }
+        public DateTime? ExamineTime { get; set; }
         [MaxLength(32)]
         public string ModifyPepole { get; set; }
         public DateTime? ModifyStartTime { get; set; }
