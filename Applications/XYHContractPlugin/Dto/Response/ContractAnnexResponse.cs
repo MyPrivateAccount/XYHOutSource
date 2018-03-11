@@ -8,7 +8,7 @@ namespace XYHContractPlugin.Dto.Response
     {
         public string ID { get; set; }
         public string ContractID { get; set; }
-        public int? Type { get; set; }
+        public string Type { get; set; }
         public string Path { get; set; }
     }
 }

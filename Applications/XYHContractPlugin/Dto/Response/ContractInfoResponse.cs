@@ -14,12 +14,13 @@ namespace XYHContractPlugin.Dto.Response
         /// <summary>
         /// 楼盘
         /// </summary>
-        public ContractEstateResponse ContractEstate { get; set; }
+        public string ContractEstate { get; set; }
 
         /// <summary>
         /// 是否有修改历史-包括new
         /// </summary>
         public int? Modifyed { get; set; }
+        public string CurrentModify { get; set; }
 
         /// <summary>
         /// 是否上传附件
@@ -37,7 +38,7 @@ namespace XYHContractPlugin.Dto.Response
         public string Follow { get; set; }
         public string Remark { get; set; }
         public string ProjectName { get; set; }
-        public int? ProjectType { get; set; }
+        public string ProjectType { get; set; }
         public string CompanyA { get; set; }
         public int? CompanyAT { get; set; }
         public string PrincipalpepoleA { get; set; }
@@ -46,8 +47,8 @@ namespace XYHContractPlugin.Dto.Response
         public string CreateUser { get; set; }
         public DateTime? CreateTime { get; set; }
         public string CreateDepartment { get; set; }
-        public int? CommisionType { get; set; }
-        public DateTime? StarttTime { get; set; }
+        public string CommisionType { get; set; }
+        public DateTime? StartTime { get; set; }
         public DateTime? EndTime { get; set; }
         public int? Count { get; set; }
         public int? ReturnOrigin { get; set; }

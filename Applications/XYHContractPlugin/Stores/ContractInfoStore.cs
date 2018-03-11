@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using ApplicationCore.Models;
+using XYHContractPlugin.Dto.Response;
 
 namespace XYHContractPlugin.Stores
 {
@@ -21,13 +22,26 @@ namespace XYHContractPlugin.Stores
         protected ContractDbContext Context { get; }
         public IQueryable<ContractInfo> ContractInfos { get; set; }
 
-        public async Task<ContractInfo> CreateAsync(ContractInfo buildingBaseInfo, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ContractInfo> CreateAsync(ContractInfo buildingBaseInfo, string modifyid, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (buildingBaseInfo == null)
             {
                 throw new ArgumentNullException(nameof(buildingBaseInfo));
             }
+            var modify = new ModifyInfo();
+            modify.ID = modifyid;
+            modify.Type = 1;//创建
+            modify.ContractID = buildingBaseInfo.ID;
+            modify.ModifyPepole = buildingBaseInfo.CreateUser;
+            modify.ModifyStartTime = DateTime.Now;
+            modify.ExamineStatus = (int)ExamineStatusEnum.UnSubmit;
+            modify.ExamineTime = modify.ModifyStartTime;
+            modify.ModifyCheck = "0";
+
+            buildingBaseInfo.Modify = 1;
+            buildingBaseInfo.CurrentModify = modifyid;
             Context.Add(buildingBaseInfo);
+            Context.Add(modify);
             await Context.SaveChangesAsync(cancellationToken);
             return buildingBaseInfo;
         }
@@ -82,6 +96,24 @@ namespace XYHContractPlugin.Stores
                 throw new ArgumentNullException(nameof(query));
             }
             return query.Invoke(Context.ContractInfos.AsNoTracking()).ToListAsync(cancellationToken);
+        }
+
+        public Task<TResult> GetModifyAsync<TResult>(Func<IQueryable<ModifyInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (query == null)
+            {
+                throw new ArgumentNullException(nameof(query));
+            }
+            return query.Invoke(Context.ModifyInfos.AsNoTracking()).SingleOrDefaultAsync(cancellationToken);
+        }
+
+        public Task<List<TResult>> ListModifyAsync<TResult>(Func<IQueryable<ModifyInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (query == null)
+            {
+                throw new ArgumentNullException(nameof(query));
+            }
+            return query.Invoke(Context.ModifyInfos.AsNoTracking()).ToListAsync(cancellationToken);
         }
 
         public async Task UpdateAsync(ContractInfo areaDefine, CancellationToken cancellationToken = default(CancellationToken))
@@ -147,6 +179,25 @@ namespace XYHContractPlugin.Stores
                 await Context.SaveChangesAsync(cancellationToken);
             }
             catch (DbUpdateConcurrencyException) { }
+        }
+
+        public async Task UpdateExamineStatus(string modifyId, ExamineStatusEnum status, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            ModifyInfo buildings = new ModifyInfo()
+            {
+                ID = modifyId,
+                ExamineTime = DateTime.Now,
+                ExamineStatus = (int)status
+            };
+            var entry = Context.Attach(buildings);
+            //var entry = Context.Entry(buildings);
+            entry.Property(x => x.ExamineStatus).IsModified = true;
+            entry.Property(x => x.ExamineTime).IsModified = true;
+            try
+            {
+                await Context.SaveChangesAsync(cancellationToken);
+            }
+            catch (DbUpdateConcurrencyException) { throw; }
         }
     }
 }

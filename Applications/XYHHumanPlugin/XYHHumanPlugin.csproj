@@ -5,8 +5,8 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile>D:\OutSource\Applications\ApplicationGateway\bin\Debug\netcoreapp2.0\Plugin\XYHHumanPlugin.xml</DocumentationFile>
-    <OutputPath>D:\OutSource\Applications\ApplicationGateway\bin\Debug\netcoreapp2.0\Plugin\</OutputPath>
+    <DocumentationFile>bin\Debug\netcoreapp2.0\XYHHumanPlugin.xml</DocumentationFile>
+    <OutputPath>bin\Debug\netcoreapp2.0\</OutputPath>
   </PropertyGroup>
 
   <ItemGroup>

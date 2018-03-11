@@ -13,4 +13,12 @@ namespace XYHContractPlugin.Dto.Response
         public string To { get; set; }
         public string Current { get; set; }
     }
+
+    public class ContractCheckInfoRequest
+    {
+        public string ContractID { get; set; }
+        public string ModifyID { get; set; }
+        public string CheckName { get; set; }
+        public string Action { get; set; }
+    }
 }
