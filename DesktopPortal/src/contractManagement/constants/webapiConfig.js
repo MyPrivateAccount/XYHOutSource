@@ -23,6 +23,9 @@ const WebApiConfig = {
         getCustomerByUserID: basicDataBaseApiUrl + 'customerInfo/salesmancustomer/',//根据用户ID获取客户列表
         getAuditHistory: basicDataBaseApiUrl + "examines/",//获取审核历史详细
     },
+    contractBasic: {
+        Base: basicDataBaseApiUrl + "contractinfo",//楼盘基础信息
+    },
     attach: {
         uploadUrl: `${UploadUrl}/file/upload/`
     },

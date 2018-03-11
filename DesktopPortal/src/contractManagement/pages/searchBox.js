@@ -50,12 +50,15 @@ class SearchBox extends Component{
         return (
             <div>
                 <div className="searchBox">
-                    <p>
-                        <Input style ={{width: '450px'}} placeholder={this.state.searchType === '1' ? '请输入合同编号或者名称': ''} 
+    <Row type="flex">
+                        <Col span={12}>
+                        <Input placeholder={this.state.searchType === '1' ? '请输入合同编号或者名称': ''} 
                          value = {keyword} onChange = {this.handleKeyChangeWord}/> 
+                        </Col>
+                        <Col span={8}>
                         <Button type='primary' className='searchButton' onClick={this.handleSearch}>查询</Button>
-                    </p>
-                </div>
+                        </Col>
+                        </Row>                </div>
             </div>
         )
     }

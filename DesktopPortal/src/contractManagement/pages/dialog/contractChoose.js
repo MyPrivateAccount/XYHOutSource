@@ -2,7 +2,7 @@ import {connect} from 'react-redux';
 //import {closeAdjustCustomer, getUserByOrg, adjustCustomer, setLoadingVisible} from '../../actions/actionCreator';
 import { getContractDetail, searchStart, saveSearchCondition, setLoadingVisible,closeContractChoose,openAttachMent, openContractRecord} from '../../actions/actionCreator';
 import React, {Component} from 'react';
-import {Row, Col, Modal, Select, TreeSelect, Form, Table} from 'antd';
+import {Row, Col, Modal, Select, TreeSelect, Form, Table,Button} from 'antd';
 import SearchBox from '../searchBox';
 
 
@@ -18,12 +18,13 @@ class ContractChoose extends Component{
     }
     state = {
         pagination: {
-            pageSize: 10,
+            pageSize: 5,
             current: 0,
             total: 0
         },
         checkList: [],
-        curSelectRecord:{}
+        curSelectRecord:{},
+        curSelectIndex:null
     }
     handleOk = (e) => {
         e.preventDefault();
@@ -36,12 +37,13 @@ class ContractChoose extends Component{
         //console.log("newProps.searchInfo.searchResul", newProps.searchInfo.searchResult);
         let {pageIndex, pageSize, totalCount} = newProps.searchInfo.searchResult;
         if (newProps.searchInfo.searchResult && pageIndex) {
-            this.setState({pagination: {current: pageIndex, pageSize: pageSize, total: totalCount}});
+            this.setState({pagination: {current: pageIndex, pageSize: 5, total: totalCount}});
         }
     }
     handleCancel = () => {
 
         //this.props.dispatch(closeAdjustCustomer());
+        console.log("9999999999999999999")
         this.props.dispatch(closeContractChoose());
     }
     getTableColumns = () =>{
@@ -50,13 +52,15 @@ class ContractChoose extends Component{
                 title: '合同类型',
                 // width: 80,
                 dataIndex: 'Number',
-                key: 'Number'
+                key: 'Number',
+
             },
             {
                 title: '合同名称',
                 // width: 80,
                 dataIndex: 'ContractName',
-                key: 'ContractName'
+                key: 'ContractName',
+                
             },
         ]
         return columns;
@@ -82,21 +86,25 @@ class ContractChoose extends Component{
         let dataSource = this.props.searchInfo.searchResult.extension;
         console.log("contractChooseVisible:", this.props.contractChooseVisible);
         const rowSelection = {
+            type:"radio",
             onChange: (selectedRowKeys, selectedRows) => {
+                console.log("selectedRowKeys:", selectedRowKeys);
                 this.setState({checkList: selectedRows});
             }
         };
         return(
-            <Modal title="合同选择" confirmLoading={this.props.showLoading} className='adjustCustomer' maskClosable={false} visible={this.props.contractChooseVisible} onOk={this.handleOk} onCancel={this.handleCancel}>
-                <Row type= "flex">
-                    <Col span={24}>
-                        <SearchBox style={{marginRight: '10px', width:'300px'}}/>
-                     </Col>
-                </Row>
-                
-                <div id="searchResult">
-                    <Table rowKey={record => record.uid} columns={this.getTableColumns()} pagination={this.state.pagination} onChange={this.handleChangePage} dataSource={dataSource} bordered size="small" onRowClick={this.handleRowClick} />
-                </div>
+            <Modal 
+                title="合同选择" style={{ top: 20 }} confirmLoading={this.props.showLoading} className='contractChoose' maskClosable={false} visible={this.props.contractChooseVisible} 
+                onCancel={this.handleCancel}
+                footer={[
+                    <Button key="back" type="default" size="large" onClick={this.handleCancel}>取消</Button>,
+                    <Button key="submit" type="primary" size="large" loading={this.state.loading} onClick={this.handleOk}>
+                        确定
+                    </Button>,
+                ]}
+            >
+                <SearchBox />
+                <Table rowKey={record => record.uid} columns={this.getTableColumns()} rowSelection={rowSelection} pagination={this.state.pagination} onChange={this.handleChangePage} dataSource={dataSource}  onRowClick={this.handleRowClick} />  
             </Modal>
         )
     }

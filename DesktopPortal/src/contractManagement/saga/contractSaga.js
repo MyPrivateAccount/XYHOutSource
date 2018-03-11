@@ -16,19 +16,19 @@ const actionUtils = appAction(actionTypes.ACTION_ROUTE);
 export function* saveContractBasicAsync(state) {
     console.log('state.payload.entity:', state.payload.entity);
     let result = { isOk: false, msg: '合同基础信息保存失败！' };
-    // let url = WebApiConfig.buildingBasic.Base + "/" + state.payload.entity.id;
+     let url = WebApiConfig.contractBasic.Base
+     let method = state.payload.method;
      let body = state.payload.entity;
-    // let method = state.payload.method;
     // let city = state.payload.ownCity; // 自己所在城市
     try {
         // console.log(`楼盘基础信息保存url:${url},body:${JSON.stringify(body)}`);
-        //const saveResult = yield call(ApiClient.post, url, body, null, "PUT");
-        //getApiResult(saveResult, result);
-        // console.log("保存结果", saveResult);
+        const saveResult = yield call(ApiClient.post, url, body, null, "PUT");
+        getApiResult(saveResult, result);
+         console.log("保存结果", saveResult);
         //if (result.isOk) {
             result.msg = "合同基础信息保存成功";
-            yield put({ type: actionUtils.getActionType(actionTypes.CONTRACT_BASIC_VIEW), /*payload: result.extension ||*/ body });
-            //yield put({ type: actionUtils.getActionType(actionTypes.GET_ADD_BUILDING), payload: city  });
+            yield put({ type: actionUtils.getActionType(actionTypes.CONTRACT_BASIC_VIEW), payload: result.extension  });
+            //yield put({ type: actionUtils.getActionType(actionTypes.GET_ADD_CONTRACT), payload: city  });
        // }
         yield put(actionUtils.action(basicLoadingEnd))
     } catch (e) {
