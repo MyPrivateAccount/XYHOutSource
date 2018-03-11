@@ -50,6 +50,7 @@ namespace XYHContractPlugin
                 .ForMember(d => d.Count, m => m.MapFrom(src => src.BaseInfo.Count))
                 .ForMember(d => d.ReturnOrigin, m => m.MapFrom(src => src.BaseInfo.ReturnOrigin));
             CreateMap<ContractInfo, ContractContentResponse>()
+                .ForMember(d => d.Discard, m => m.MapFrom(src => src.IsDelete))
                 .ForMember(d => d.BaseInfo, m => m.MapFrom(src => new BaseInfoResponse
                 {
                     ID = src.ID,

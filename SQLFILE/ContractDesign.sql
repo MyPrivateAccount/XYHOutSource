@@ -16,9 +16,9 @@ CREATE TABLE `XYH_DT_CONTRACTINFO` (
   `CurrentModify` varchar(127) NOT NULL DEFAULT '',
   `Annex` int(11) DEFAULT '0',/*合同附件是否有*/
   `Complement` int(11) DEFAULT '0',/*合同补充内容-是否有*/
-  `Follow` varchar(127) NOT NULL DEFAULT '',/*合同续签id*/
+  `Follow` varchar(127) DEFAULT '',/*合同续签id*/
   `Remark` varchar(4000) DEFAULT '',/*合同备注*/
-  `ProjectName` varchar(64) DEFAULT '',/*项目名称*/
+  `ProjectName` varchar(64) NOT NULL DEFAULT '',/*项目名称*/
   `ProjectType` varchar(64) NOT NULL DEFAULT '',/*项目类型*/
   `CompanyA` varchar(64) NOT NULL DEFAULT '',/*甲方公司全称*/
   `CompanyAT` int(11) NOT NULL,/*甲方公司类型*/
@@ -99,7 +99,7 @@ CREATE TABLE `XYH_DT_MODIFY` (
   `Type` int(11) NOT NULL,/*修改-创建-附件*/
   `ExamineStatus` int(11) NOT NULL,/*审核状态*/
   `ExamineTime` datetime DEFAULT NULL,/*审核更新时间*/
-  `ModifyPepole` varchar(32) NOT NULL DEFAULT '',
+  `ModifyPepole` varchar(127) NOT NULL DEFAULT '',
   `ModifyStartTime` datetime DEFAULT NULL,
   `ModifyCheck` varchar(127) NOT NULL DEFAULT '',/*审核流程*/
   PRIMARY KEY (`ID`)

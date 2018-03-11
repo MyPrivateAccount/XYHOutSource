@@ -22,7 +22,7 @@ namespace XYHContractPlugin.Stores
         protected ContractDbContext Context { get; }
         public IQueryable<ContractInfo> ContractInfos { get; set; }
 
-        public async Task<ContractInfo> CreateAsync(ContractInfo buildingBaseInfo, string modifyid, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ContractInfo> CreateAsync(SimpleUser userinfo, ContractInfo buildingBaseInfo, string modifyid, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (buildingBaseInfo == null)
             {
@@ -32,27 +32,39 @@ namespace XYHContractPlugin.Stores
             modify.ID = modifyid;
             modify.Type = 1;//创建
             modify.ContractID = buildingBaseInfo.ID;
-            modify.ModifyPepole = buildingBaseInfo.CreateUser;
+            modify.ModifyPepole = userinfo.Id;
             modify.ModifyStartTime = DateTime.Now;
             modify.ExamineStatus = (int)ExamineStatusEnum.UnSubmit;
             modify.ExamineTime = modify.ModifyStartTime;
             modify.ModifyCheck = "0";
 
+            buildingBaseInfo.IsDelete = false;
+            buildingBaseInfo.CreateUser = userinfo.Id;
+            buildingBaseInfo.CreateDepartment = userinfo.OrganizationName;
             buildingBaseInfo.Modify = 1;
             buildingBaseInfo.CurrentModify = modifyid;
+            buildingBaseInfo.CreateTime = DateTime.Now;
             Context.Add(buildingBaseInfo);
             Context.Add(modify);
             await Context.SaveChangesAsync(cancellationToken);
             return buildingBaseInfo;
         }
 
-        public async Task DeleteAsync(ContractInfo areaDefine, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task DeleteAsync(SimpleUser userinfo, string contractid, CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (areaDefine == null)
+            if (contractid == null)
             {
-                throw new ArgumentNullException(nameof(areaDefine));
+                throw new ArgumentNullException(nameof(contractid));
             }
-            Context.Remove(areaDefine);
+            //Context.Remove(areaDefine);
+            ContractInfo buildings = new ContractInfo()
+            {
+                ID = contractid,
+                DeleteUser = userinfo.Id,
+                DeleteTime = DateTime.Now,
+                IsDelete = true
+            };
+
             try
             {
                 await Context.SaveChangesAsync(cancellationToken);
@@ -158,7 +170,7 @@ namespace XYHContractPlugin.Stores
                 throw new ArgumentNullException(nameof(contractinfo));
             }
 
-            //查看楼盘是否存在
+            //查看合同是否存在
             if (!Context.ContractInfos.Any(x => x.ID == contractinfo.ID))
             {
                 ContractInfo buildings = new ContractInfo()

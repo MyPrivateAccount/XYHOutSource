@@ -33,6 +33,10 @@ namespace XYHContractPlugin.Dto.Response
     }
     public class ContractContentResponse
     {
+        /// <summary>
+        /// 是否废弃
+        /// </summary>
+        public bool Discard { get; set; }
         public BaseInfoResponse BaseInfo { get; set; }
         public ContractEstateResponse EstateInfo { get; set; }
         public List<ContractAnnexResponse> AnnexInfo { get; set; }

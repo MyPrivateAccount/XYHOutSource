@@ -1,3 +1,4 @@
+D:\XYHOutSource\Applications\XYHContractPlugin\bin\Debug\netcoreapp2.0\XYHContractPlugin.xml
 D:\XYHOutSource\Applications\XYHContractPlugin\bin\Debug\netcoreapp2.0\XYHContractPlugin.deps.json
 D:\XYHOutSource\Applications\XYHContractPlugin\bin\Debug\netcoreapp2.0\XYHContractPlugin.dll
 D:\XYHOutSource\Applications\XYHContractPlugin\bin\Debug\netcoreapp2.0\XYHContractPlugin.pdb
@@ -16,4 +17,3 @@ D:\XYHOutSource\Applications\XYHContractPlugin\obj\Debug\netcoreapp2.0\XYHContra
 D:\XYHOutSource\Applications\XYHContractPlugin\obj\Debug\netcoreapp2.0\XYHContractPlugin.AssemblyInfo.cs
 D:\XYHOutSource\Applications\XYHContractPlugin\obj\Debug\netcoreapp2.0\XYHContractPlugin.dll
 D:\XYHOutSource\Applications\XYHContractPlugin\obj\Debug\netcoreapp2.0\XYHContractPlugin.pdb
-D:\XYHOutSource\Applications\XYHContractPlugin\bin\Debug\netcoreapp2.0\XYHContractPlugin.xml

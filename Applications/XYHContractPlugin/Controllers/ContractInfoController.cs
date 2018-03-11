@@ -80,9 +80,71 @@ namespace XYHContractPlugin.Controllers
             return Response;
         }
 
+        [HttpGet("{getallcontractbyuser}")]
+        [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
+        public async Task<ResponseMessage<List<ContractContentResponse>>> GetAllContractByUser(UserInfo user, [FromRoute] string contractId)
+        {
+            if (user.Id == null)
+            {
+                {
+                    user.Id = "66df64cb-67c5-4645-904f-704ff92b3e81";
+                    user.UserName = "wqtest";
+                    user.KeyWord = "";
+                    user.OrganizationId = "270";
+                    user.PhoneNumber = "18122132334";
+                };
+            }
+
+            var Response = new ResponseMessage<List<ContractContentResponse>>();
+            if (string.IsNullOrEmpty(contractId))
+            {
+                Response.Code = ResponseCodeDefines.ModelStateInvalid;
+                Response.Message = "请求参数不正确";
+                Logger.Error("error GetContractByid");
+                return Response;
+            }
+            try
+            {
+                Response.Extension = await _contractInfoManager.GetAllListinfoByUserIdAsync(user.Id, HttpContext.RequestAborted);
+            }
+            catch (Exception e)
+            {
+                Response.Code = ResponseCodeDefines.ServiceError;
+                Response.Message = "服务器错误：" + e.ToString();
+                Logger.Error("error");
+            }
+            return Response;
+        }
+
+        [HttpGet("discardcontract")]
+        [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
+        public async Task<ResponseMessage<ContractContentResponse>> DiscardContractByid(UserInfo user, [FromRoute] string contractId)
+        {
+            var Response = new ResponseMessage<ContractContentResponse>();
+            if (string.IsNullOrEmpty(contractId))
+            {
+                Response.Code = ResponseCodeDefines.ModelStateInvalid;
+                Response.Message = "请求参数不正确";
+                Logger.Error("error GetContractByid");
+                return Response;
+            }
+            try
+            {
+                await _contractInfoManager.DiscardAsync(user, contractId, HttpContext.RequestAborted);
+                Response.Message = $"discard {contractId} sucess";
+            }
+            catch (Exception e)
+            {
+                Response.Code = ResponseCodeDefines.ServiceError;
+                Response.Message = "服务器错误：" + e.ToString();
+                Logger.Error("error");
+            }
+            return Response;
+        }
+
         [HttpPost("addsimplecontract")]
         [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
-        public async Task<ResponseMessage<bool>> AddSimpleContract(UserInfo User, [FromBody]ContractContentInfoRequest request)
+        public async Task<ResponseMessage<ContractInfoResponse>> AddSimpleContract(UserInfo User, [FromBody]ContractContentInfoRequest request)
         {
             Logger.Trace($"用户{User?.UserName ?? ""}({User?.Id ?? ""})保存合同基础信息(PutBuildingBaseInfo)：\r\n请求参数为：\r\n" + (request != null ? JsonHelper.ToJson(request) : ""));
 
@@ -97,7 +159,7 @@ namespace XYHContractPlugin.Controllers
                 };
             }
 
-            var response = new ResponseMessage<bool>();
+            var response = new ResponseMessage<ContractInfoResponse>();
             if (!ModelState.IsValid)
             {
                 response.Code = ResponseCodeDefines.ModelStateInvalid;
@@ -108,7 +170,7 @@ namespace XYHContractPlugin.Controllers
             try
             {
                 //写发送成功后的表
-                await _contractInfoManager.AddContractAsync(request, HttpContext.RequestAborted);
+                response.Extension = await _contractInfoManager.AddContractAsync(User, request, HttpContext.RequestAborted);
                 response.Message = "add simple ok";
             }
             catch (Exception e)
@@ -272,7 +334,7 @@ namespace XYHContractPlugin.Controllers
                 }
 
                 //写发送成功后的表
-                await _contractInfoManager.CreateAsync(request, exarequest.SubmitDefineId, HttpContext.RequestAborted);
+                await _contractInfoManager.CreateAsync(User,request, exarequest.SubmitDefineId, HttpContext.RequestAborted);
             }
             catch (Exception e)
             {

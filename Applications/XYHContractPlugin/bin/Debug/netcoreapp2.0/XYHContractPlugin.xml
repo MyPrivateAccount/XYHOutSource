@@ -9,6 +9,11 @@
             是否续签
             </summary>
         </member>
+        <member name="P:XYHContractPlugin.Dto.Response.ContractContentResponse.Discard">
+            <summary>
+            是否废弃
+            </summary>
+        </member>
         <member name="P:XYHContractPlugin.Dto.Response.ContractContentResponse.Modifyinfo">
             <summary>
             是否有修改历史-包括new

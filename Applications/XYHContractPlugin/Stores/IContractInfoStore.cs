@@ -14,9 +14,9 @@ namespace XYHContractPlugin.Stores
     {
         IQueryable<ContractInfo> ContractInfos { get; set; }
 
-        Task<ContractInfo> CreateAsync(ContractInfo buildingBaseInfo, string modifyid, CancellationToken cancellationToken = default(CancellationToken));
+        Task<ContractInfo> CreateAsync(SimpleUser userinfo, ContractInfo buildingBaseInfo, string modifyid, CancellationToken cancellationToken = default(CancellationToken));
 
-        Task DeleteAsync(ContractInfo buildingBaseInfo, CancellationToken cancellationToken = default(CancellationToken));
+        Task DeleteAsync(SimpleUser userinfo, string contractid, CancellationToken cancellationToken = default(CancellationToken));
 
         Task DeleteListAsync(List<ContractInfo> buildingBaseList, CancellationToken cancellationToken = default(CancellationToken));
 
