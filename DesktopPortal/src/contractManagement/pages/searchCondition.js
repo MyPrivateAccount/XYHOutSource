@@ -9,7 +9,7 @@ import SearchBox from './searchBox';
 // const CheckboxGroup = Checkbox.Group;
 // const ButtonGroup = Button.Group;
 const Option = Select.Option;
-const businessChanceDefine = [{value: '0', key: '已报备'}, {value: '1', key: '已带看'}];
+const checkStateDefine = [{value: '0', key: '未审核'}, {value: '1', key: '审核中'},{value: '1', key: '已审核'}];
 let t = null;
 class SearchCondition extends Component {
     state = {
@@ -17,39 +17,26 @@ class SearchCondition extends Component {
         filterTags: [],
         condition: {
             keyWord: '',
-            tradePlannings: [],//业态规划 租壹屋
-            businessTypes: [],//经营类型 租壹屋
-            isCooperate: false,//是否战略合作 租壹屋
-            customerLevel: null,//客户等级
-            requirementLevel: null,//需求等级
-            businessChance: [],//商机阶段
-            customerSource: [],//客户来源
-            invalidTypes: [],//无效类型
-            followUpStart: null,//跟进
-            followUpEnd: null,
-            createDateStart: null,//录入时间
-            createDateEnd: null,
-            acreageStart: null,//面积
-            acreageEnd: null,
-            priceStart: null,//价格
-            priceEnd: null,
-            firstAreaKey: '0',//意向区域
-            secondAreaKey: '0',
-            thirdAreaKey: '0',
-            orderRule: false,
-            isOnlyRepeat: false,
+            CheckState: null,//审核状态
+            OrganizationName: [],//客户来源
+            CreateDateStart: null,//录入时间
+            CreateDateEnd: null,
+            IsExpire:false,
+            IsInvalid:false,
+            IsFollow:false,
+            OrderRule: false,
             pageIndex: 0,
             pageSize: 10
         },
-        firstAreaOption: [],
-        secondAreaOption: [],
-        thirdAreaOption: [],
+        // firstAreaOption: [],
+        // secondAreaOption: [],
+        // thirdAreaOption: [],
         selectedMenuKey: 'menu_index',
         searchHandleMethod: null//searchbox的查询方法
     }
     componentWillMount() {
 
-        this.props.dispatch(getDicParList(["CUSTOMER_LEVEL", "REQUIREMENT_LEVEL", "CUSTOMER_SOURCE", "INVALID_REASON", "RATE_PROGRESS", "REQUIREMENT_TYPE"]));
+        //this.props.dispatch(getDicParList(["CUSTOMER_LEVEL", "REQUIREMENT_LEVEL", "CUSTOMER_SOURCE", "INVALID_REASON", "RATE_PROGRESS", "REQUIREMENT_TYPE"]));
         this.props.dispatch(getAreaList());
     }
     componentDidMount() {
@@ -72,11 +59,7 @@ class SearchCondition extends Component {
             }
             this.setState({selectedMenuKey: newProps.activeMenu, condition: condition});
         }
-        let areaList = newProps.basicData.areaList.slice();
-        if (this.props.user && this.props.user.City !== "") {
-            areaList = areaList.filter(area => area.value === this.props.user.City);
-        }
-        this.setState({firstAreaOption: areaList});
+
     }
 
     handleSearchBoxToggle = (e) => {//筛选条件展开、收缩
@@ -101,29 +84,19 @@ class SearchCondition extends Component {
    
 
 
-    handleFollowChange = (e) => {//更近信息更改
-        //console.log("更近信息更改:", e);
-        let followStart = '', followEnd = '';
-        if (e.key.includes("-")) {
-            followStart = e.key.split('-')[0];
-            followEnd = e.key.split('-')[1];
-        }
-        let condition = {...this.state.condition};
-        condition.followUpStart = followStart;
-        condition.followUpEnd = followEnd;
-        this.setState({condition: condition}, () => {this.handleSearch()});
+    handleRecordTimeChange = (e) => {//更近信息更改
+     
+        // let followStart = '', followEnd = '';
+        // if (e.key.includes("-")) {
+        //     followStart = e.key.split('-')[0];
+        //     followEnd = e.key.split('-')[1];
+        // }
+        // let condition = {...this.state.condition};
+        // condition.followUpStart = followStart;
+        // condition.followUpEnd = followEnd;
+        // this.setState({condition: condition}, () => {this.handleSearch()});
     }
-    handleNumberChange = (e, field) => {
-        //console.log("数字范围更改:", e, field);
-        let condition = {...this.state.condition};
-        condition[field] = e;
-        this.setState({condition: condition}, () => {
-            if (t) {
-                clearTimeout(t);
-            }
-            t = setTimeout(() => this.handleSearch(), 1000);
-        });
-    }
+
     handleCreateTime = (e, field) => {
         //console.log("录入时间:", e, field);
         let condition = {...this.state.condition};
@@ -137,19 +110,19 @@ class SearchCondition extends Component {
         condition["orderRule"] = e.target.value;
         this.setState({condition: condition}, () => {this.handleSearch()});
     }
-    //禁用日期
-    disabledDate(current) {
-        // Can not select days before today and today
-        return current && current.valueOf() > Date.now();
-    }
-    //处理查看重客状态变更
-    handleViewRepeatChange = (e) => {
-        console.log("查看重客状态变更:", e.target.checked);
-        let condition = {...this.state.condition};
-        condition.pageIndex = 0;
-        condition.isOnlyRepeat = e.target.checked;
-        this.setState({condition: condition}, () => {this.handleSearch()});
-    }
+    // //禁用日期
+    // disabledDate(current) {
+    //     // Can not select days before today and today
+    //     return current && current.valueOf() > Date.now();
+    // }
+    // //处理查看重客状态变更
+    // handleViewRepeatChange = (e) => {
+    //     console.log("查看重客状态变更:", e.target.checked);
+    //     let condition = {...this.state.condition};
+    //     condition.pageIndex = 0;
+    //     condition.isOnlyRepeat = e.target.checked;
+    //     this.setState({condition: condition}, () => {this.handleSearch()});
+    // }
     render() {
         let expandSearchCondition = this.state.expandSearchCondition;
         // const tradePlannings = this.props.basicData.tradePlannings;
@@ -159,10 +132,8 @@ class SearchCondition extends Component {
         // const customerSource = this.props.basicData.customerSource;
         // const invalidResions = this.props.basicData.invalidResions;
         // const areaList = this.props.basicData.areaList;
-        let createDateStart = this.state.condition.createDateStart === null ? null : moment(this.state.condition.createDateStart);
-        let createDateEnd = this.state.condition.createDateEnd === null ? null : moment(this.state.condition.createDateEnd);
-        let followUpStart = this.state.condition.followUpStart === null ? null : moment(this.state.condition.followUpStart);
-        let followUpEnd = this.state.condition.followUpEnd === null ? null : moment(this.state.condition.followUpEnd);
+        let CreateDateStart = this.state.condition.CreateDateStart === null ? null : moment(this.state.condition.CreateDateStart);
+        let CreateDateEnd = this.state.condition.CreateDateEnd === null ? null : moment(this.state.condition.CreateDateEnd);
         const activeMenu = this.props.activeMenu;
         const dataSourceTotal = this.props.searchResult.validityCustomerCount || 0;
 
@@ -180,16 +151,45 @@ class SearchCondition extends Component {
                         </Col>
                     </Row>
                     <div style={{display: expandSearchCondition ? "block" : "none"}}>   
-                        {/*这些条件可能后面会需要        
                         <Row className="normalInfo">
-                            <Col>
-                                {activeMenu !== "menu_invalid" ?
-                                    <label><span style={{marginRight: '10px'}}>跟进日期：</span>
-                                        <DatePicker disabledDate={this.disabledDate} value={followUpStart} onChange={(e, dateString) => this.handleCreateTime(dateString, 'followUpStart')} />- <DatePicker disabledDate={this.disabledDate} value={followUpEnd} onChange={(e, dateString) => this.handleCreateTime(dateString, 'followUpEnd')} />
-                                    </label> : null}
+                            <Col span={2}>
+                                <label>已作废：</label>
+                                    <Checkbox ></Checkbox>
+                            </Col>
+                            <Col span={2}>
+                                <label>已过期：</label>
+                                    <Checkbox ></Checkbox>
+                            </Col>
+                            <Col span={2}>
+                                <label>已续签：</label>
+                                    <Checkbox ></Checkbox>
                             </Col>
                         </Row>
-        
+                 
+                        <Row className="normalInfo">
+                             <Col span={24}>
+                                <label>审核状态：</label>
+                                <Checkbox.Group onChange={(e) => this.handleCheckChange(e, 'businessChance')} value={this.state.condition.businessChance}>
+                                    {
+                                        checkStateDefine.map(b =>
+                                            <Checkbox key={b.key} value={b.value}>{b.key}</Checkbox>
+                                        )
+                                    }
+                                </Checkbox.Group>
+                            </Col>
+                        </Row>
+                   
+                        {      
+
+                            <Row className="normalInfo">
+                                <Col>
+                                    {activeMenu !== "menu_invalid" ?
+                                        <label><span style={{marginRight: '10px'}}>录入日期：</span>
+                                            <DatePicker disabledDate={this.disabledDate} value={CreateDateStart} onChange={(e, dateString) => this.handleCreateTime(dateString, 'CreateDateStart')} />- <DatePicker disabledDate={this.disabledDate} value={CreateDateEnd} onChange={(e, dateString) => this.handleCreateTime(dateString, 'CreateDateStart')} />
+                                        </label> : null}
+                                </Col>
+                            </Row>
+                        /*这些条件可能后面会需要  
                         <Row className="normalInfo">
                             <Col>
                                 {(activeMenu === "menu_index" || activeMenu === "menu_invalid") ? <label><span style={{marginRight: '10px'}}>录入时间：</span><DatePicker disabledDate={this.disabledDate} value={createDateStart} onChange={(e, dateString) => this.handleCreateTime(dateString, 'createDateStart')} />- <DatePicker disabledDate={this.disabledDate} value={createDateEnd} onChange={(e, dateString) => this.handleCreateTime(dateString, 'createDateEnd')} /></label> : null}
@@ -205,7 +205,7 @@ class SearchCondition extends Component {
                         */}
                     </div>
                 </div>
-                {activeMenu === "menu_index" ? <p style={{marginBottom: '10px'}}>目前已为你筛选出<b>{dataSourceTotal}</b>条客户信息（已为你去掉重客）<Checkbox onChange={this.handleViewRepeatChange}><b>查看重客</b></Checkbox></p> : null}
+                {activeMenu === "menu_index" ? <p style={{marginBottom: '10px'}}>目前已为你筛选出<b>{dataSourceTotal}</b>条合同信息</p> : null}
             </div>
         )
     }

@@ -125,6 +125,7 @@ export function* getOrgUserListAsync(state) {
 }
 
 export default function* watchDicAllAsync() {
+    //这个只是获取最新的一个，使用时切忌在组件嵌套的情况且需要同时加载的时不要在componentWillMount中同时获取这样会导致前一次的执行被取消
     yield takeLatest(actionUtils.getActionType(actionTypes.DIC_GET_PARLIST), getParListAsync)
     yield takeLatest(actionUtils.getActionType(actionTypes.DIC_GET_AREA), getAllAreaAsync);
     yield takeLatest(actionUtils.getActionType(actionTypes.DIC_GET_ORG_LIST), getAllChildOrgsAsync);

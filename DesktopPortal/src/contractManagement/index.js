@@ -6,9 +6,9 @@ import reducers from './reducers';
 import ContentPage from './pages/contentPage';
 import {sagaMiddleware} from '../';
 import rootSaga from './saga/rootSaga';
-import {closeAttachMent, closeContractReord, getOrgList, getOrgDetail, openOrgSelect,closeOrgSelect, changeCustomerMenu} from './actions/actionCreator';
+import {closeAttachMent, closeContractReord, getOrgList, getOrgDetail, openOrgSelect,closeOrgSelect, changeContractMenu} from './actions/actionCreator';
 import OrgSelect from './pages/orgSelect/orgSelect';
-import CustomerDetail from './pages/customerDetail';
+
 import AttchMent from './pages/attachMent';
 
 sagaMiddleware.run(rootSaga);
@@ -16,7 +16,7 @@ sagaMiddleware.run(rootSaga);
 const {Header, Sider, Content} = Layout;
 const menuDefine = [
     {menuID: "menu_index", displayName: "合同信息", menuIcon: 'contacts'},
-    {menuID: "menu_renew", displayName: "合同续签", menuIcon: 'contacts'},
+    //{menuID: "menu_renew", displayName: "合同续签", menuIcon: 'contacts'},
 
     //{ menuID: "menu_analysis", displayName: "客户业态分析", menuIcon: 'pie-chart' }//租壹屋
 ];
@@ -63,7 +63,7 @@ class ContractManagementIndex extends Component {
             this.props.dispatch(openOrgSelect());
             return;
         }
-        this.props.dispatch(changeCustomerMenu(e.key));
+        this.props.dispatch(changeContractMenu(e.key));
         for (let i in menuDefine) {
             if (menuDefine[i].menuID == e.key) {
                 this.setState({

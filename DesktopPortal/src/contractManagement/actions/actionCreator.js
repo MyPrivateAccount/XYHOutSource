@@ -18,6 +18,16 @@ export const submitContractInfo = createAction(actionTypes.CONTRACT_INFO_SUBMIT)
 export const submitContractStart = createAction(actionTypes.CONTRACT_INFO_SUBMIT_START);
 export const submitContractFinish = createAction(actionTypes.CONTRACT_INFO_SUBMIT_FINISH);
 
+//搜索处理
+export const changeKeyWord = createAction(actionTypes.CHANGE_KEYWORD);
+export const searchStart = createAction(actionTypes.SEARCH_START);
+export const saveSearchCondition = createAction(actionTypes.SAVE_SEARCH_CONDITION);
+
+//跳转界面
+export const gotoThisContract = createAction(actionTypes.GOTO_THIS_CONTRACT);
+export const gotoThisContractStart = createAction(actionTypes.GOTO_THIS_CONTRACT_START);
+export const gotoThisContractFinish = createAction(actionTypes.GOTO_THIS_CONTRACT_FINISH);
+export const gotoChangeMyAdd = createAction(actionTypes.GOTO_CHANGE_MYADD);
 // 上传图片
 // export const savePictureAsync = createAction(actionTypes.SAVE_PICTURE_ASYNC);
 // export const uploadPicFinish = createAction(actionTypes.UPLOAD_PIC_FINISH);
@@ -49,16 +59,30 @@ export const exportContract = createAction(actionTypes.EXPORT_CONTRACT);
 export const exportMultiContract = createAction(actionTypes.EXPORT_MULTI_CONTRACT);
 
 
-//客户详情处理
-export const openCustomerDetail = createAction(actionTypes.OPEN_CUSTOMER_DETAIL);
-export const closeCustomerDetail = createAction(actionTypes.CLOSE_CUSTOMER_DETAIL);
-export const changeCustomerMenu = createAction(actionTypes.CHANGE_MENU);
-export const getCustomerDetail = createAction(actionTypes.GET_CUSTOMER_DETAIL);
-export const getCustomerAllPhone = createAction(actionTypes.GET_CUSTOMER_ALL_PHONE);
+//合同详情处理
+export const openContractDetail = createAction(actionTypes.OPEN_CONTRACT_DETAIL);
+export const closeContractDetail = createAction(actionTypes.CLOSE_CONTRACT_DETAIL);
+export const changeContractMenu = createAction(actionTypes.CHANGE_MENU);
+export const getContractDetail = createAction(actionTypes.GET_CONTRACT_DETAIL);
+
+
+export const openContractChoose = createAction(actionTypes.OPEN_CONTRACT_CHOOSE);
+export const closeContractChoose = createAction(actionTypes.CLOSE_CONTRACT_CHOOSE);
+
+
+
+
+export const getAllPhone = createAction(actionTypes.GET_CUSTOMER_ALL_PHONE);
+
+
+
 //单位选择处理
 export const openOrgSelect = createAction(actionTypes.OPEN_ORG_SELECT);
 export const closeOrgSelect = createAction(actionTypes.CLOSE_ORG_SELECT);
 export const changeActiveOrg = createAction(actionTypes.CHAGNE_ACTIVE_ORG);
+
+
+
 //调客处理
 export const openAdjustCustomer = createAction(actionTypes.OPEN_ADJUST_CUSTOMER);
 export const closeAdjustCustomer = createAction(actionTypes.CLOSE_ADJUST_CUSTOMER);
@@ -69,10 +93,8 @@ export const changeSourceOrg = createAction(actionTypes.CHANGE_SOURCE_ORG);
 export const changeTargetOrg = createAction(actionTypes.CHANGE_TARGET_ORG);
 export const openCustomerAuditDetail = createAction(actionTypes.OPEN_CUSTOMER_AUDIT_INFO);
 export const getAuditHistory = createAction(actionTypes.GET_AUDIT_HISTORY);//获取审核历史
-//搜索处理
-export const changeKeyWord = createAction(actionTypes.CHANGE_KEYWORD);
-export const searchCustomer = createAction(actionTypes.SEARCH_CUSTOMER);
-export const saveSearchCondition = createAction(actionTypes.SAVE_SEARCH_CONDITION);
+
+
 export const getRepeatJudgeInfo = createAction(actionTypes.GET_REPEAT_JUDGE_INFO);
 export const removeAdjustItem = createAction(actionTypes.REMOVE_ADJUST_REQUEST_ITEM);
 

@@ -23,6 +23,8 @@ const initState = {
     supportloading: false,
     attachloading: false,
     previewVisible: false,
+    contractChooseVisible:false,//打开合同选择页
+
 
 }
 
@@ -65,10 +67,11 @@ reducerMap[actionTypes.CONTRACT_BASIC_EDIT] = (state, action) => {
   }
   // 基本信息查看
 reducerMap[actionTypes.CONTRACT_BASIC_VIEW] = (state, action) => {
-    let contractInfo = { ...state.shopsInfo };
-  
+    let contractInfo = Object.assign({}, { ...state.contractInfo.contractBasicInfo }, {contractBasicInfo:action.body});
+    
     let operInfo = Object.assign({}, state.operInfo, { basicOperType: 'view' });
     let newState = Object.assign({}, state, { operInfo: operInfo, contractInfo: contractInfo });
+    console.log('newstate:', newState);
     return newState;
   }
   
@@ -83,6 +86,70 @@ reducerMap[actionTypes.CONTRACT_INFO_SUBMIT_FINISH] = function (state, action) {
 
     }
     let newState = Object.assign({}, state, { submitLoading: false, operInfo: operInfo, buildDisplay: 'none' });
+    return newState;
+}
+
+
+// 点击进入这个合同（用于在保存后编辑，然后准备阶段）
+reducerMap[actionTypes.GOTO_THIS_CONTRACT_START] = (state, action) => {
+    let newState = state;
+    return newState;
+}
+reducerMap[actionTypes.GOTO_THIS_CONTRACT_FINISH] = (state, action) => {
+    // console.log(state.buildInfo, '旧值', action)
+    let contractInfo = { ...state.contractInfo };
+    let operInfo = { ...state.operInfo };
+    let res = action.payload.data
+
+    if (res.code === '0') {
+        contractInfo = res.extension
+        contractInfo.buildingBasic = contractInfo.basicInfo
+        contractInfo.buildingBasic.location = [contractInfo.basicInfo.city, contractInfo.basicInfo.district, contractInfo.basicInfo.area]
+        contractInfo.supportInfo = contractInfo.facilitiesInfo
+        contractInfo.relShopInfo = contractInfo.shopInfo
+        contractInfo.projectInfo = { summary: contractInfo.summary };
+        contractInfo.attachInfo = { fileList: contractInfo.fileList, attachmentList: contractInfo.attachmentList }
+        if ([1, 8].includes(res.extension.examineStatus)) {
+            operInfo = {
+                basicOperType: 'view',
+                supportOperType: 'view',
+                relShopOperType: 'view',
+                projectOperType: 'view',
+                attachPicOperType: 'view',
+                attachFileOperType: 'view',
+                batchBuildOperType: 'view',
+                rulesOperType: 'view',
+                rulesTemplateOperType: 'view',
+                commissionOperType: 'view',
+            }
+        } else {
+            operInfo = {
+                basicOperType: 'edit',
+                supportOperType: 'edit',
+                relShopOperType: 'edit',
+                projectOperType: 'edit',
+                attachPicOperType: 'edit',
+                attachFileOperType: 'edit',
+                batchBuildOperType: 'edit',
+                rulesOperType: 'edit',
+                rulesTemplateOperType: 'edit',
+                commissionOperType: 'edit',
+            }
+        }
+
+    }
+    let newState = Object.assign({}, state, { contractInfo: contractInfo, operInfo: operInfo, buildDisplay: 'block' });
+    console.log(newState, '新值')
+    return newState;
+}
+
+reducerMap[actionTypes.OPEN_CONTRACT_CHOOSE] = (state, action) =>{
+    let newState = Object.assign({}, state, {contractChooseVisible:true});
+    return newState;
+}
+
+reducerMap[actionTypes.CLOSE_CONTRACT_CHOOSE] = (state, action) =>{
+    let newState = Object.assign({}, state, {contractChooseVisible:false});
     return newState;
 }
 export default handleActions(reducerMap, initState);

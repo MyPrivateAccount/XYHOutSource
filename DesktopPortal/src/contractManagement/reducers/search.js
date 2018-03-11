@@ -10,6 +10,8 @@ const initState = {
 
     activeOrg: {id: '0', organizationName: '不限'},//当前部门
     activeMenu: 'menu_index',//当前菜单
+    showContractShow:false,
+
     activeCustomers: [],//选中客户信息
     searchKeyWord: '',//搜索关键词
     searchCondition: {},//完整搜索条件
@@ -100,7 +102,7 @@ reducerMap[actionTypes.CHANGE_KEYWORD] = function (state, action) {
     return Object.assign({}, state, {searchKeyWord: action.payload});
 }
 //搜索完成
-reducerMap[actionTypes.SEARCH_CUSTOMER_COMPLETE] = function (state, action) {
+reducerMap[actionTypes.SEARCH_COMPLETE] = function (state, action) {
     let list = action.payload.extension;
     let result = action.payload;
     if (!action.payload) {

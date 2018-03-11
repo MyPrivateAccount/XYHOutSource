@@ -1,5 +1,5 @@
 import {connect} from 'react-redux';
-import {changeKeyWord, searchCustomer, setLoadingVisible, saveSearchCondition} from '../actions/actionCreator';
+import {changeKeyWord, searchStart, setLoadingVisible, saveSearchCondition} from '../actions/actionCreator';
 import React, {Component} from 'react'
 import {Input, Select, Icon, Button, Row, Col, Checkbox, Tag, Pagination, Spin} from 'antd'
 import './search.less'
@@ -11,6 +11,9 @@ class SearchBox extends Component{
     };
     componentWillMount(){
         //这个地方需要对默认搜索进行处理
+        if (this.props.willMountCallback) {
+            this.props.willMountCallback(this.handleSearch);
+        }
     }
 
     componentWillReceiveProps(newProps){
@@ -21,6 +24,7 @@ class SearchBox extends Component{
     }
     handleKeyChangeWord = (e) =>{
         //处理关键字改变-需要
+        this.props.dispatch(changeKeyWord(e.target.value));
     }
     handleSearch = () =>{
         let activeMenu = (this.props.searchInfo || {}).activeMenu;
@@ -36,13 +40,13 @@ class SearchBox extends Component{
         console.log("最终搜索条件:", standardCondition);
         this.props.dispatch(saveSearchCondition(standardCondition));//每次搜索时保存便于在此基础上更新
         this.props.dispatch(setLoadingVisible(true));
-        this.props.dispatch(searchCustomer(standardCondition));
+        this.props.dispatch(searchStart(standardCondition));
     }
     handleSearchTypeChange = (e) =>{
         this.setState({searchType : e});
     }
     render(){
-        let keyword = '';//this.props.searchInfo.searchKeyWord;
+        let keyword = this.props.searchInfo.searchKeyWord;
         return (
             <div>
                 <div className="searchBox">
@@ -61,9 +65,6 @@ export function getSearchType(activeMenu) {
     switch (activeMenu) {
         case 'menu_index':
             searchSourceType = "1";
-            break;
-        case 'menu_renew':
-            searchSourceType = "2";
             break;
         default:
             searchSourceType = "1";

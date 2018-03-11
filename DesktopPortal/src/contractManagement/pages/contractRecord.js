@@ -13,11 +13,12 @@ import AttachInfo from './contract/detail/attachInfo';
 const { Header, Sider, Content } = Layout;
 class ContractRecord extends Component{
     componentWillMount(){
+    
         if(this.props.basicData.contractCategories.length === 0 || this.props.basicData.firstPartyCatogories.length === 0
         || this.props.basicData.commissionCatogories.length === 0 || this.props.basicData.contractProjectCatogories.length === 0){
-          this.props.dispatch(getDicParList(['CONTRACT_CATEGORIES', 'FIRST_PARTT_CATEGORIES', 'COMMISSION_CATEGORIES', 'XK_SELLER_TYPE']));
+            this.props.dispatch(getDicParList(['CONTRACT_CATEGORIES', 'FIRST_PARTT_CATEGORIES', 'COMMISSION_CATEGORIES', 'XK_SELLER_TYPE', 'CONTRACT_ATTACHMENT_CATEGORIES']));
         }
-       
+        
       }
 
     handleAnchorChange = (e) =>{
@@ -30,7 +31,7 @@ class ContractRecord extends Component{
 
         if(!hasBasicInfo){
             notification.warning({
-                message: '请先完善楼盘信息，再提交',
+                message: '请先完善信息，再提交',
                 duration: 3
             })
             return;
