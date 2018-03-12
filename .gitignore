@@ -19,6 +19,12 @@ Applications/XYHShopsInterfacePlugin/obj/
 Applications/XYHShopsPlugin/bin/
 Applications/XYHShopsPlugin/obj/
 
+Applications/XYHCustomerInterfacePlugin/bin/
+Applications/XYHCustomerInterfacePlugin/obj/
+
+Applications/XYHCustomerPlugin/bin/
+Applications/XYHCustomerPlugin/obj/
+
 DesktopPortal/bin/
 
 Authorization/AuthorizationCenter/obj/

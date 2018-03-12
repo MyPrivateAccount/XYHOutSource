@@ -72,10 +72,6 @@ namespace XYHContractPlugin.Managers
         public virtual async Task<ContractContentResponse> GetAllinfoByIdAsync(string id, CancellationToken cancellationToken = default(CancellationToken))
         {
             var baseinfo = await Store.GetAsync(a => a.Where(b => b.ID == id), cancellationToken);
-            if (baseinfo.IsDelete)
-            {
-                throw new ArgumentNullException("已被删除");
-            }
 
             var modifyinfo = await Store.ListModifyAsync(a => a.Where(b => b.ContractID == id));
             baseinfo.Modify = modifyinfo.Count;

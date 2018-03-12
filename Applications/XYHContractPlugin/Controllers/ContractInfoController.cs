@@ -15,10 +15,11 @@ using XYHContractPlugin.Dto.Response;
 using XYHContractPlugin.Managers;
 using ContractInfoRequest = XYHContractPlugin.Dto.Response.ContractInfoResponse;
 using ContractContentInfoRequest = XYHContractPlugin.Dto.Response.ContractContentResponse;
+using ContractAnnexInfoRequest = XYHContractPlugin.Dto.Response.ContractAnnexResponse;
 
 namespace XYHContractPlugin.Controllers
 {
-    //[Authorize(AuthenticationSchemes = OAuthValidationDefaults.AuthenticationScheme)]
+    [Authorize(AuthenticationSchemes = OAuthValidationDefaults.AuthenticationScheme)]
     [Produces("application/json")]
     [Route("api/contractinfo")]
     public class ContractInfoController : Controller
@@ -78,6 +79,25 @@ namespace XYHContractPlugin.Controllers
                 Logger.Error("error");
             }
             return Response;
+        }
+
+        [HttpGet("uploadannex")]
+        [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
+        public async Task<List<ContractAnnexResponse>> UploadAnnexInfo(UserInfo userinfo, [FromBody]ContractAnnexInfoRequest request)
+        {
+            if (user.Id == null)
+            {
+                {
+                    user.Id = "66df64cb-67c5-4645-904f-704ff92b3e81";
+                    user.UserName = "wqtest";
+                    user.KeyWord = "";
+                    user.OrganizationId = "270";
+                    user.PhoneNumber = "18122132334";
+                };
+            }
+
+            var Response = new ResponseMessage<List<ContractAnnexResponse>>();
+            
         }
 
         [HttpGet("{getallcontractbyuser}")]
