@@ -16,6 +16,7 @@ using XYHContractPlugin.Managers;
 using ContractInfoRequest = XYHContractPlugin.Dto.Response.ContractInfoResponse;
 using ContractContentInfoRequest = XYHContractPlugin.Dto.Response.ContractContentResponse;
 using ContractAnnexInfoRequest = XYHContractPlugin.Dto.Response.ContractAnnexResponse;
+using AspNet.Security.OAuth.Validation;
 
 namespace XYHContractPlugin.Controllers
 {
@@ -85,14 +86,14 @@ namespace XYHContractPlugin.Controllers
         [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
         public async Task<List<ContractAnnexResponse>> UploadAnnexInfo(UserInfo userinfo, [FromBody]ContractAnnexInfoRequest request)
         {
-            if (user.Id == null)
+            if (userinfo.Id == null)
             {
                 {
-                    user.Id = "66df64cb-67c5-4645-904f-704ff92b3e81";
-                    user.UserName = "wqtest";
-                    user.KeyWord = "";
-                    user.OrganizationId = "270";
-                    user.PhoneNumber = "18122132334";
+                    userinfo.Id = "66df64cb-67c5-4645-904f-704ff92b3e81";
+                    userinfo.UserName = "wqtest";
+                    userinfo.KeyWord = "";
+                    userinfo.OrganizationId = "270";
+                    userinfo.PhoneNumber = "18122132334";
                 };
             }
 
