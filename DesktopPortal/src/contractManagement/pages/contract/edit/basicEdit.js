@@ -310,7 +310,7 @@ class BasicEdit extends Component {
                                     initialValue: basicInfo.follow,
                                     //rules:[{required:true, message:'续签合同'}]
                                     })(
-                                        <span title="点击选择" style={{color:'blue'}} onClick={this.handleRenewClick}>{basicInfo.follow ? basicInfo.follow : "无"}</span>
+                                        <Input style={{color:'blue'}} onClick={this.handleRenewClick}>{basicInfo.follow ? basicInfo.follow : "无"}</Input>
                                     )
                                     
                             }

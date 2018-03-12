@@ -26,7 +26,7 @@ export function* getCustomerListAsync(state) {
     }
     try {
         let res = yield call(ApiClient.post, url, state.payload)
-        // console.log(`url:${url},body:${JSON.stringify(state.payload)},result:${JSON.stringify(res)}`);
+        console.log(`9999999url:${url},body:${JSON.stringify(state.payload)},result:${JSON.stringify(res)}`);
         getApiResult(res, result);
         if (result.isOk) {
             if (res.data.validityCustomerCount) {

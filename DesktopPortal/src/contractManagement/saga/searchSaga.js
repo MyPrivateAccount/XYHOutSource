@@ -9,35 +9,25 @@ import { notification } from 'antd';
 
 const actionUtils = appAction(actionTypes.ACTION_ROUTE)
 
-export function* getCustomerListAsync(state) {
+export function* getContractListAsync(state) {
     let result = { isOk: true, extension: [], msg: '客源查询失败！' };
-    console.log('getCustomerListAsync:.......')
-    let url = WebApiConfig.search.getSaleManCustomerList;//默认为业务员客户查询
-    yield put({ type: actionUtils.getActionType(actionTypes.SEARCH_COMPLETE), payload: result });
+    console.log('getContractListAsync:.......')
+    let url = WebApiConfig.search.getContractList;//默认为业务员客户查询
+    
     let body = state.payload;
-    if (body) {
-        if (body.searchSourceType === "2") {//已成交客户列表
-            url = WebApiConfig.search.getDealCustomerList;
-        }
-        else if (body.searchSourceType === "3") {//失效客户列表
-            url = WebApiConfig.search.getLoosCustomerList;
-        }
-        else if (body.searchSourceType === "4") {//公客池客户列表
-            url = WebApiConfig.search.getPoolCustomerList;
-        }
-    }
+
 
     try {
-        //let res = yield call(ApiClient.post, url, state.payload)
-        // console.log(`url:${url},body:${JSON.stringify(state.payload)},result:${JSON.stringify(res)}`);
-       // getApiResult(res, result);
-       // if (result.isOk) {
-       //     if (res.data.validityCustomerCount) {
-       //         result.validityCustomerCount = res.data.validityCustomerCount;
-      //      }
+        let res = yield call(ApiClient.get, url)
+        console.log(`url:${url},body:${JSON.stringify(state.payload)},result:${JSON.stringify(res)}`);
+       getApiResult(res, result);
+       if (result.isOk) {
+       if (res.data.validityCustomerCount) {
+               result.validityCustomerCount = res.data.validityCustomerCount;
+       }
             yield put({ type: actionUtils.getActionType(actionTypes.SEARCH_COMPLETE), payload: result });
-       // }
-       // yield put({ type: actionUtils.getActionType(actionTypes.SET_SEARCH_LOADING), payload: false });
+     }
+        yield put({ type: actionUtils.getActionType(actionTypes.SET_SEARCH_LOADING), payload: false });
     } catch (e) {
         result.msg = "客源查询接口调用异常！";
     }
@@ -231,7 +221,7 @@ export function* getAuditHistoryDetailAsync(state) {
 
 
 export default function* watchAllSearchAsync() {
-    yield takeLatest(actionUtils.getActionType(actionTypes.SEARCH_START), getCustomerListAsync);
+    yield takeLatest(actionUtils.getActionType(actionTypes.SEARCH_START), getContractListAsync);
     yield takeLatest(actionUtils.getActionType(actionTypes.OPEN_CONTRACT_DETAIL), getContractDetailAsync);
 
     

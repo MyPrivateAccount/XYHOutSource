@@ -37,14 +37,24 @@ class AttachEdit extends Component {
   }
 
   componentWillReceiveProps(newProps) {
+    console.log("newProps:", newProps);
     let fileList = [];
-    
-     if (newProps.attachInfo.fileList) {
+    try {
+      if (newProps.attachInfo.fileList) {
         if(!this.initFiles){
           this.getGroup(newProps.attachInfo.fileList)
         }
         this.initFiles=true;   // true
+      }
+    } catch (e) {
+      console.log("e:", e);
     }
+    //  if (newProps.attachInfo.fileList) {
+    //     if(!this.initFiles){
+    //       this.getGroup(newProps.attachInfo.fileList)
+    //     }
+    //     this.initFiles=true;   // true
+    // }
   }
 
   getGroup = (fl)  => {
@@ -98,17 +108,7 @@ class AttachEdit extends Component {
     deleteIdArr.push(file.uid);
     deletePicList.push(file)
     // console.log(deleteIdArr, deletePicList, '删除的数据')
-    if (this.props.parentPage !== 'building') {
-      fileList.forEach((v, i) => {
-        if (v.uid === uid) {
-          index = i
-        }
-      })
-      fileList = fileList.splice(index, 1)
-      this.props.dispatch(saveDeletePicList({ deletePicList: deletePicList }))
-      this.setState({ deleteIdArr: deleteIdArr, filelist: fileList })
 
-    } else {
 
       let arr = imgFiles[this.state.picGroup] || []
       // console.log(imgFiles, arr, '删除图片组的这个是哪一个')
@@ -125,7 +125,7 @@ class AttachEdit extends Component {
       this.setState({ deleteIdArr: deleteIdArr, imgFiles: imgFiles }, () => {
         // console.log(this.state.imgFiles, '删除后的')
       })
-    }
+    
     
     
     return true;
@@ -218,7 +218,7 @@ class AttachEdit extends Component {
 
   UploadFile = (file, callback) => {
     // console.log(file);
-    let id = 5;//this.basicInfo.id;
+    let id = 10;//this.basicInfo.id;
     let uploadUrl = `${WebApiConfig.attach.uploadUrl}${id}`;
     let fileGuid = file.uid;//NewGuid();//uuid.v4();
     let fd = new FormData();
@@ -233,14 +233,14 @@ class AttachEdit extends Component {
     xhr.onload = function (e) {
       if (this.status === 200) {
         let r = JSON.parse(this.response);
-        // console.log("返回结果：", this.response);
+         console.log("返回结果：", this.response);
         if (r.code === "0") {
           let uf = {
             fileGuid: fileGuid,
             from: 'pc-upload',
             WXPath: r.extension,
             sourceId: id,
-            appId: 'houseSource',
+            appId: 'contractManagement',
             localUrl: file.url,
             name: file.name
           }
@@ -290,9 +290,7 @@ class AttachEdit extends Component {
 
   render() {
     let attachPicOperType = this.props.operInfo.attachPicOperType;
-    let shopsInfo = this.props.shopsInfo;
     let { previewVisible, previewImage, fileList } = this.state;
-    let basicData = this.props.basicData
 
     const uploadButton = (
       <div>
@@ -320,7 +318,6 @@ class AttachEdit extends Component {
         <Layout>
           <Content className='' style={{ padding: '25px 0', margin: '20px 0', backgroundColor: "#ECECEC" }}>
             {
-              this.props.type === 'dynamic' ? null :
                 <div>
                   <Icon type="tags-o" className='content-icon' /> <span className='content-title'>附加信息</span>
                 </div>
@@ -328,7 +325,6 @@ class AttachEdit extends Component {
             <Row type="flex" justify="space-between">
               <Col span={24}>
                 {
-                  this.props.type === 'dynamic' ? null :
                     <div className='picture'>图片</div>
                 }
                 <div className='picBox'>
@@ -402,14 +398,16 @@ class AttachEdit extends Component {
 }
 
 function mapStateToProps(state) {
-  // console.log("attachedit props：", state.buildInfo)
+  //console.log("attachedit state",state.contractData.contractInfo)
   return {
     isDisabled: state.contractData.isDisabled,
     basicData: state.basicData,
-    attachInfo: state.contractData.attachInfo,
-    basicInfo:state.contractData.baseInfo,
+    attachInfo: state.contractData.contractInfo.attachInfo,
+    basicInfo:state.contractData.contractInfo.baseInfo,
     
     operInfo: state.contractData.operInfo,
+    completeFileList: state.contractData.completeFileList,
+    deletePicList: state.contractData.deletePicList,
     /*
     buildingOperInfo: state.building.operInfo,
     shopsInfo: state.shop.shopsInfo,

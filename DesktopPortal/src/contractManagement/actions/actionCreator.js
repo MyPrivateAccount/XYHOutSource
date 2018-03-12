@@ -76,6 +76,15 @@ export const openContractChoose = createAction(actionTypes.OPEN_CONTRACT_CHOOSE)
 export const closeContractChoose = createAction(actionTypes.CLOSE_CONTRACT_CHOOSE);
 
 
+//
+export const openModifyHistory = createAction(actionTypes.OPEN_MODIFY_HISTORY);
+export const closeModifyHistory = createAction(actionTypes.CLOSE_MODIFY_HISTORY);
+
+
+
+
+
+
 
 
 export const getAllPhone = createAction(actionTypes.GET_CUSTOMER_ALL_PHONE);

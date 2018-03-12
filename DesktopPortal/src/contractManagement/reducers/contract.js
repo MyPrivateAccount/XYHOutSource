@@ -28,11 +28,19 @@ const initState = {
     contractChooseVisible:false,//打开合同选择页
     isDisabled: false,
 
+    modifyHistoryVisible:false,
+
 }
 
 let reducerMap = {};
 
+reducerMap[actionTypes.OPEN_MODIFY_HISTORY] = function(state,action){
+    return Object.assign({}, state, { modifyHistoryVisible: true });
+}
 
+reducerMap[actionTypes.CLOSE_MODIFY_HISTORY] = function(state,action){
+    return Object.assign({}, state, { modifyHistoryVisible: false });
+}
 reducerMap[actionTypes.OPEN_RECORD] = function(state, action){
     const id = NewGuid();
     let contractInfo={//合同信息
@@ -173,7 +181,7 @@ reducerMap[actionTypes.CONTRACT_PIC_EDIT] = (state, action) => {
   //   return newState;
   // }
   reducerMap[actionTypes.CONTRACT_PIC_VIEW] = (state, action) => {
-    const type = action.payload.type // add' 新增， 'delete'删除， 'cancel' 取消
+    const type = action.payload.type // add' 新增， 'delete'删除， 'cancel' 取消这是上一次操作的动作
     let contractInfo = { ...state.contractInfo }
     let attachInfo, oldFileList, nowFileList
    
