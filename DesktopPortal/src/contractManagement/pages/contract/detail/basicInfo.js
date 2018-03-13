@@ -102,7 +102,7 @@ class BasicInfo extends Component {
                         <Col span={12}>审核状态:{basicInfo.checkState}</Col>
                     </Row>
                     <Row className='viewRow'>
-                        <Col span={12}>是否作废:{(basicInfo.isCancel && basicInfo.IsCancel === '1') ? "是" : "否"}</Col>
+                        <Col span={12}>是否作废:{(basicInfo.discard && basicInfo.discard === '1') ? "是" : "否"}</Col>
                         <Col span={12} onClick={this.handleViewHistory} style={{color:'blue'}} title="点击获取更改记录">更改记录</Col>
                     </Row>
                     <Row className='viewRow'>
