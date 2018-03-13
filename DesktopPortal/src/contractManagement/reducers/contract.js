@@ -11,6 +11,9 @@ const initState = {
         attachInfo:{},
         additionalInfo:{},
         modifyInfo:{},
+        complementInfo:{},//补充协议
+        discard:false,
+        annexInfo:{},
 
     },
     operInfo: {
@@ -22,7 +25,6 @@ const initState = {
     submitLoading: false, // 提交按钮
     contractDisplay: 'block', // 点击提交合同后，展示view页面， 所有操作按钮隐藏。
     basicloading: false,
-    supportloading: false,
     attachloading: false,
     previewVisible: false,
     contractChooseVisible:false,//打开合同选择页
@@ -49,6 +51,9 @@ reducerMap[actionTypes.OPEN_RECORD] = function(state, action){
             id: id,
         },
         //contractAttachInfo:{},
+        discard:false,
+        complementInfo:{},//补充协议
+        annexInfo:{},
 
     }
     let operInfo = {

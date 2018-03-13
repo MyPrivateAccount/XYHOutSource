@@ -51,7 +51,7 @@ class BasicEdit extends Component {
                 // newBasicInfo.areaFullName = this.state.areaFullName
                 //console.log('newBasicInfo:', newBasicInfo);
                 let method = (basicOperType === 'add' ? 'POST' : "PUT");
-                console.log('=========');
+     
                 this.props.dispatch(saveContractBasic({ 
                     method: method, 
                     entity: newBasicInfo, 
@@ -351,9 +351,22 @@ class BasicEdit extends Component {
                             }
                     </FormItem>
                 </Col>
-
+  
             </Row>
-
+            <Row type="flex" style={{marginTop:"25px"}}>
+                <Col span={24}>
+                    <FormItem {...formItemLayout} label={<span>补充协议</span>}>
+                        {getFieldDecorator('remark', {
+                                    initialValue: basicInfo.Remark,
+                                    //rules:[{required:true, message:'续签合同'}]
+                                    })(
+                                        <TextArea placeholder="补充协议" autosize />
+                                    )
+                                    
+                            }
+                    </FormItem>
+                </Col>
+            </Row>
 
             <Row>
                     <Col span={24} style={{ textAlign: 'center' }} className='BtnTop'>

@@ -103,12 +103,14 @@ class BasicInfo extends Component {
                     </Row>
                     <Row className='viewRow'>
                         <Col span={12}>是否作废:{(basicInfo.isCancel && basicInfo.IsCancel === '1') ? "是" : "否"}</Col>
-                        <Col span={12}>备注:{basicInfo.remark}</Col>
+                        <Col span={12} onClick={this.handleViewHistory} style={{color:'blue'}} title="点击获取更改记录">更改记录</Col>
                     </Row>
                     <Row className='viewRow'>
-                        <Col span={24} onClick={this.handleViewHistory}>更改记录:{basicInfo.remark}</Col>
+                        <Col span={24}>备注:{basicInfo.remark}</Col>   
                     </Row>
-
+                    <Row className='viewRow'>
+                        <Col span={24}>补充协议:{basicInfo.remark}</Col>   
+                    </Row>
                 </Form>
             </div>
         )
