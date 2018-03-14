@@ -34,15 +34,19 @@ namespace XYHContractPlugin.Managers
             }
 
             var Response = new ContractSearchResponse<ContractInfoResponse>();
-            var sql = @"SELECT a.* from XYH_DT_CONTRACTINFO as a
-                        where";
+            var sql = @"SELECT a.* from XYH_DT_CONTRACTINFO as a where";
+
+            if ((condition?.SearchType & 0x10) > 0)
+            {
+                sql = @"SELECT a.* from XYH_DT_CONTRACTINFO as a LEFT JOIN XYH_DT_MODIFY as b ON a.`CurrentModify`=b.`ID` where";
+            }
 
             string connectstr=" ";
             if ((condition?.SearchType & 0x01) >0)
             {
                 if (!string.IsNullOrEmpty(condition.KeyWord))
                 {
-                    sql += connectstr + @"LOCATE(" + condition.KeyWord + ", a.`Name`)>0";
+                    sql += connectstr + @"LOCATE('" + condition.KeyWord + "', a.`Name`)>0";
                     connectstr = " and ";
                 }
             }
@@ -58,11 +62,11 @@ namespace XYHContractPlugin.Managers
                 sql += connectstr + @"a.`EndTime`<=CURTIME()";
                 connectstr = " and ";
             }
-            else
+            else if ((condition?.SearchType & 0x20) > 0)
             {
-                sql += connectstr + @"a.`StartTime`<=" + condition.CreateDateStart.Value;
+                sql += connectstr + @"(a.`StartTime`<='" + condition.CreateDateStart.Value+"'";
                 connectstr = " and ";
-                sql += connectstr + @"a.`EndTime`>=" + condition.CreateDateEnd.Value;
+                sql += connectstr + @"a.`EndTime`>='" + condition.CreateDateEnd.Value+"')";
             }
 
             if ((condition?.SearchType & 0x08) > 0)
@@ -73,9 +77,16 @@ namespace XYHContractPlugin.Managers
 
             if ((condition?.SearchType & 0x10) > 0)
             {
-                sql += connectstr + @"a.`CheckStatu`!=''";
+                sql += connectstr + @"b.`ExamineStatus`="+condition.CheckStatu;
                 connectstr = " and ";
             }
+
+            if ((condition?.SearchType & 0x40) > 0)
+            {
+                sql += connectstr + @"a.`CreateDepartment`='" + condition.Organizate + "'";
+                connectstr = " and ";
+            }
+
 
             if (condition?.OrderRule == 0)
             {

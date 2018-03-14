@@ -16,6 +16,7 @@ namespace XYHContractPlugin.Dto.Request
         public int OverTime { get; set; }
         public int Follow { get; set; }
         public int CheckStatu { get; set; }
+        public string Organizate { get; set; }
         /// <summary>
         /// 创建时间开始
         /// </summary>

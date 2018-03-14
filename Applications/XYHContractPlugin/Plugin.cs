@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using XYHContractPlugin.Models;
 using XYHContractPlugin.Stores;
 using XYHContractPlugin.Managers;
+using ApplicationCore.Managers;
 
 namespace XYHContractPlugin
 {
@@ -41,7 +42,9 @@ namespace XYHContractPlugin
         {
             context.Services.AddDbContext<ContractDbContext>(options => options.UseMySql(context.ConnectionString), ServiceLifetime.Scoped);
             context.Services.AddScoped<IContractInfoStore, ContractInfoStore>();
+            context.Services.AddScoped<ContractListManager>();
             context.Services.AddScoped<ContractInfoManager>();
+            context.Services.AddScoped<PermissionExpansionManager>();
             return base.Init(context);
         }
 

@@ -20,7 +20,7 @@ using AspNet.Security.OAuth.Validation;
 
 namespace XYHContractPlugin.Controllers
 {
-    [Authorize(AuthenticationSchemes = OAuthValidationDefaults.AuthenticationScheme)]
+    //[Authorize(AuthenticationSchemes = OAuthValidationDefaults.AuthenticationScheme)]
     [Produces("application/json")]
     [Route("api/contractinfo")]
     public class ContractInfoController : Controller
