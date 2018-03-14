@@ -82,24 +82,6 @@ namespace XYHContractPlugin.Controllers
             return Response;
         }
 
-        [HttpGet("uploadannex")]
-        [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
-        public async Task<List<ContractAnnexResponse>> UploadAnnexInfo(UserInfo userinfo, [FromBody]ContractAnnexInfoRequest request)
-        {
-            if (userinfo.Id == null)
-            {
-                {
-                    userinfo.Id = "66df64cb-67c5-4645-904f-704ff92b3e81";
-                    userinfo.UserName = "wqtest";
-                    userinfo.KeyWord = "";
-                    userinfo.OrganizationId = "270";
-                    userinfo.PhoneNumber = "18122132334";
-                };
-            }
-
-            var Response = new ResponseMessage<List<ContractAnnexResponse>>();
-            
-        }
 
         [HttpGet("{getallcontractbyuser}")]
         [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]

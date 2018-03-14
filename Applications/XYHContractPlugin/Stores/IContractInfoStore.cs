@@ -13,6 +13,7 @@ namespace XYHContractPlugin.Stores
     public interface IContractInfoStore
     {
         IQueryable<ContractInfo> ContractInfos { get; set; }
+        IEnumerable<T> DapperSelect<T>(string sql);
 
         Task<ContractInfo> CreateAsync(SimpleUser userinfo, ContractInfo buildingBaseInfo, string modifyid, CancellationToken cancellationToken = default(CancellationToken));
 

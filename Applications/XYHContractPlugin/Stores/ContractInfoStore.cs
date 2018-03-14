@@ -5,6 +5,7 @@ using XYHContractPlugin.Models;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Dapper;
 using Microsoft.EntityFrameworkCore;
 using ApplicationCore.Models;
 using XYHContractPlugin.Dto.Response;
@@ -21,6 +22,11 @@ namespace XYHContractPlugin.Stores
 
         protected ContractDbContext Context { get; }
         public IQueryable<ContractInfo> ContractInfos { get; set; }
+
+        public IEnumerable<T> DapperSelect<T>(string sql)
+        {
+            return Context.Database.GetDbConnection().Query<T>(sql);
+        }
 
         public async Task<ContractInfo> CreateAsync(SimpleUser userinfo, ContractInfo buildingBaseInfo, string modifyid, CancellationToken cancellationToken = default(CancellationToken))
         {
