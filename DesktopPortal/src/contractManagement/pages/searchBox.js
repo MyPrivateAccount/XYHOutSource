@@ -31,7 +31,7 @@ class SearchBox extends Component{
         let condition = {...this.props.condition};
         condition.keyWord = this.props.searchInfo.searchKeyWord;
         if (this.props.searchInfo.activeOrg.id !== "0") {
-            condition.departmentId = this.props.searchInfo.activeOrg.id;
+            condition.organizate = this.props.searchInfo.activeOrg.id;
         }
         condition.searchSourceType = getSearchType(activeMenu);
         condition.searchType = this.state.searchType;

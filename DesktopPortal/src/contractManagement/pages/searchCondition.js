@@ -19,8 +19,8 @@ class SearchCondition extends Component {
             keyWord: '',
             checkStatu: null,//审核状态
             organizationName: [],//客户来源
-            createDateStart: null,//录入时间
-            createDateEnd: null,
+            createDateStart: '',//录入时间
+            createDateEnd: '',
             //IsExpire:false,
             discard:0,
             follow:0,
@@ -146,7 +146,10 @@ class SearchCondition extends Component {
     }
 
     handleCheckChange = (e, type) =>{
-        
+        let condition = {...this.condition};
+        if(type === 'checkstatu'){
+            condition["checkstatu"] = e.target.value;
+        }
     }
     render() {
         let expandSearchCondition = this.state.expandSearchCondition;
@@ -210,7 +213,7 @@ class SearchCondition extends Component {
                                 <Col>
                                     {activeMenu !== "menu_invalid" ?
                                         <label><span style={{marginRight: '10px'}}>录入日期：</span>
-                                            <DatePicker disabledDate={this.disabledDate} value={CreateDateStart} onChange={(e, dateString) => this.handleCreateTime(dateString, 'CreateDateStart')} />- <DatePicker disabledDate={this.disabledDate} value={CreateDateEnd} onChange={(e, dateString) => this.handleCreateTime(dateString, 'CreateDateStart')} />
+                                            <DatePicker disabledDate={this.disabledDate} value={CreateDateStart} onChange={(e, dateString) => this.handleCreateTime(dateString, 'createDateStart')} />- <DatePicker disabledDate={this.disabledDate} value={CreateDateEnd} onChange={(e, dateString) => this.handleCreateTime(dateString, 'createDateStart')} />
                                         </label> : null}
                                 </Col>
                             </Row>
