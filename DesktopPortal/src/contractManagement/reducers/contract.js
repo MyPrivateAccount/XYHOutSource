@@ -18,6 +18,7 @@ const initState = {
     },
     operInfo: {
         basicOperType: 'add',
+        attachFileOperType: 'add',
         attachPicOperType: 'add',
     },
     completeFileList: [],
@@ -143,9 +144,6 @@ reducerMap[actionTypes.GOTO_THIS_CONTRACT_FINISH] = (state, action) => {
         } else {
             operInfo = {
                 basicOperType: 'edit',
-                supportOperType: 'edit',
-                relShopOperType: 'edit',
-                projectOperType: 'edit',
                 attachPicOperType: 'edit',
                 attachFileOperType: 'edit',
                 batchBuildOperType: 'edit',
@@ -186,13 +184,14 @@ reducerMap[actionTypes.CONTRACT_PIC_EDIT] = (state, action) => {
   //   return newState;
   // }
   reducerMap[actionTypes.CONTRACT_PIC_VIEW] = (state, action) => {
+    console.log("进入预览附件");
     const type = action.payload.type // add' 新增， 'delete'删除， 'cancel' 取消这是上一次操作的动作
     let contractInfo = { ...state.contractInfo }
     let attachInfo, oldFileList, nowFileList
    
 
     attachInfo = { ...state.contractInfo.attachInfo }
-    oldFileList = [...state.contractInfo.attachInfo.fileList]
+    oldFileList = [...state.contractInfo.attachInfo.fileList || []]
     nowFileList = action.payload.filelist
     
     let operInfo = { ...state.operInfo, attachPicOperType: 'view' };
@@ -228,6 +227,7 @@ reducerMap[actionTypes.CONTRACT_PIC_EDIT] = (state, action) => {
     attachInfo = Object.assign({}, state.contractInfo.attachInfo, { fileList: oldFileList })
     contractInfo = Object.assign({}, contractInfo, {attachInfo: attachInfo});
     let newState = Object.assign({}, state, { operInfo: operInfo, contractInfo: contractInfo});
+    console.log("离开预览附件:", newState);
     return newState;
   }
   
@@ -262,6 +262,15 @@ reducerMap[actionTypes.LOADING_START_ATTACH] = function (state, action) {
 }
 reducerMap[actionTypes.LOADING_END_ATTACH] = function (state, action) {
     return Object.assign({}, state, { attachloading: false });
+}
+
+reducerMap[actionTypes.OPEN_ATTACHMENT] = function(state, action){
+    let operInfo = { ...state.operInfo, attachPicOperType: 'add' };
+    return Object.assign({}, state, {operInfo: operInfo});
+}
+
+reducerMap[actionTypes.CLOSE_ATTACHMENT] = function(state,action){
+    return Object.assign({}, state, {attachFileOperType: 'view'})
 }
 export default handleActions(reducerMap, initState);
 

@@ -38,7 +38,7 @@ export const gotoChangeMyAdd = createAction(actionTypes.GOTO_CHANGE_MYADD);
 // export const saveCompleteFileList = createAction(actionTypes.SAVE_COMPLETE_FILE_LIST);
 // export const saveDeletePicList = createAction(actionTypes.SAVE_DELETE_PIC_LIST);
 
-export const savePictureAsync = createAction(actionTypes.SAVE_PICTURE_ASYNC);
+export const savePictureAsync = createAction(actionTypes.CONTRACT_SAVE_PICTURE_ASYNC);
 //export const uploadPicFinish = createAction(actionTypes.UPLOAD_PIC_FINISH);
 export const contractPicView = createAction(actionTypes.CONTRACT_PIC_VIEW);
 export const contractPicEdit = createAction(actionTypes.CONTRACT_PIC_EDIT);

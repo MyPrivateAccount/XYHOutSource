@@ -15,8 +15,8 @@ class BasicEdit extends Component {
 
     handleCancel = () => this.setState({ previewVisible: false })
     handleChangeTime = (value, dateString)=>{
-        console.log('curstatrEndTime:', value);
-        console.log('format curstatrEndTime:', dateString);
+        //console.log('curstatrEndTime:', value);
+       // console.log('format curstatrEndTime:', dateString);
     }
     handleRenewClick = (e)=>{
         console.log("handleRenewClick");
@@ -97,7 +97,8 @@ class BasicEdit extends Component {
             <Row type="flex" style={{marginTop: "25px"}}>
               <Col span={12}>
                         <FormItem {...formItemLayout} label={<span>合同类型</span>}>
-                        {getFieldDecorator('type', {
+                        {
+                            getFieldDecorator('type', {
                                     initialValue: basicInfo.type,
                                     rules: [{ required: true, message: '请选择合同类型!' }],
                                 })(
@@ -310,7 +311,8 @@ class BasicEdit extends Component {
                                     initialValue: basicInfo.follow,
                                     //rules:[{required:true, message:'续签合同'}]
                                     })(
-                                        <Input style={{color:'blue'}} onClick={this.handleRenewClick}>{basicInfo.follow ? basicInfo.follow : "无"}</Input>
+                                        //<span>{'无'}</span>
+                                        <Input  onClick={this.handleRenewClick}></Input>
                                     )
                                     
                             }
@@ -354,10 +356,10 @@ class BasicEdit extends Component {
   
             </Row>
             <Row type="flex" style={{marginTop:"25px"}}>
-                <Col span={24}>
+                <Col span={12}>
                     <FormItem {...formItemLayout} label={<span>补充协议</span>}>
-                        {getFieldDecorator('remark', {
-                                    initialValue: basicInfo.Remark,
+                        {getFieldDecorator('contentInfo', {
+                                    initialValue: this.props.complementInfo.contentInfo,
                                     //rules:[{required:true, message:'续签合同'}]
                                     })(
                                         <TextArea placeholder="补充协议" autosize />
@@ -399,6 +401,7 @@ function mapStateToProps(state) {
         operInfo:state.contractData.operInfo,
         activeOrg: state.search.activeOrg,
         contractChooseVisible: state.contractData.contractChooseVisible,
+        complementInfo: state.contractData.contractInfo.complementInfo,
     }
   }
   

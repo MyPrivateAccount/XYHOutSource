@@ -19,22 +19,11 @@ const LoadContractRecordPage = Loadable({
 });
 
 
-const LoadableAdjustPage = Loadable({
-    loader: () => import('./adjustCustomerAudit'),
-    loading: () => <LoadableLoading />,
-});
-const LoadableAnalysisPage = Loadable({
-    loader: () => import('./analysis'),
-    loading: () => <LoadableLoading />,
-});
 const LoadableSelectOrgPage = Loadable({
     loader: () => import('./orgSelect/orgSelect'),
     loading: () => <LoadableLoading />,
 });
-const LoadableRepeatCustomerPage = Loadable({
-    loader: () => import('./repeatCustomer'),
-    loading: () => <LoadableLoading />,
-});
+
 
 function ContentPage(props) {
     const { curMenuID } = props;

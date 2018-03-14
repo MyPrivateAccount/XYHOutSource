@@ -109,7 +109,7 @@ class BasicInfo extends Component {
                         <Col span={24}>备注:{basicInfo.remark}</Col>   
                     </Row>
                     <Row className='viewRow'>
-                        <Col span={24}>补充协议:{basicInfo.remark}</Col>   
+                        <Col span={24}>补充协议:{this.props.complementInfo.contentInfo}</Col>   
                     </Row>
                 </Form>
             </div>
@@ -122,6 +122,7 @@ function mapStateToProps(state) {
     return {
         contractInfo: state.contractData.contractInfo,
         basicData: state.basicData,
+        complementInfo: state.contractData.contractInfo.complementInfo,
     }
 }
 

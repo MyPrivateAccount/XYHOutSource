@@ -20,7 +20,7 @@ class AttachInfo extends Component {
     }
     componentDidMount() {
         let fileList = [];
-    
+        console.log("进入info");
         if (this.props.contractAttachInfo.fileList) {
             this.getGroup(this.props.contractAttachInfo.fileList)
         }

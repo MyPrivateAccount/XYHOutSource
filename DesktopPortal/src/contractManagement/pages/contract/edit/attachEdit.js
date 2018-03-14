@@ -5,7 +5,7 @@ import React, { Component } from 'react'
 import './editCommon.less'
 import {
   Layout, Button, message, Icon, Row, Col, Form, Input,
-  Radio, Select, Upload, Modal, notification, Tabs
+  Radio, Select, Upload, Modal, notification, Tabs,BackTop
 } from 'antd'
 import { NewGuid } from '../../../../utils/appUtils';
 import WebApiConfig from '../../../constants/webapiConfig'
@@ -140,12 +140,14 @@ class AttachEdit extends Component {
 
     reader.onloadend = function () {
       let nowImgFiles = this.state.imgFiles[this.state.picGroup] || []
+      console.log("nowImgFiles:", nowImgFiles);
       let projectArr = nowImgFiles.concat([{
         uid: uploadFile.uid,
         name: uploadFile.name,
         status: 'uploading',
         url: reader.result
       }])
+      console.log('projectArr:', projectArr);
       let imgFiles =  Object.assign({}, this.state.imgFiles)
       imgFiles[this.state.picGroup] = projectArr
       this.setState({ imgFiles: imgFiles });
@@ -380,17 +382,21 @@ class AttachEdit extends Component {
 
                 </Row>
             }
-            <Row type="flex" justify="center" className='BtnTop'>
+
+          </Content>
+          <div>
+              <BackTop visibilityHeight={400} />
+          </div>
+          <Row type="flex" justify="space-between" className='BtnTop'>
                   {
-                    <div>
+                    <Col  span={24} style={{ textAlign: 'right' }} className='BtnTop'>
                       <Button type="primary" size='default'
                         style={{ width: "8rem" }}
                         onClick={this.handleSubmit}>提交
                       </Button>
-                    </div>
+                    </Col>
                   }
             </Row>
-          </Content>
         </Layout>
       </div>
     )

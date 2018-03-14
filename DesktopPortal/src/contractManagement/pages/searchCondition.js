@@ -17,14 +17,14 @@ class SearchCondition extends Component {
         filterTags: [],
         condition: {
             keyWord: '',
-            CheckState: null,//审核状态
-            OrganizationName: [],//客户来源
-            CreateDateStart: null,//录入时间
-            CreateDateEnd: null,
-            IsExpire:false,
-            IsInvalid:false,
-            IsFollow:false,
-            OrderRule: false,
+            checkStatu: null,//审核状态
+            organizationName: [],//客户来源
+            createDateStart: null,//录入时间
+            createDateEnd: null,
+            //IsExpire:false,
+            discard:0,
+            follow:0,
+            orderRule: 0,
             pageIndex: 0,
             pageSize: 10
         },
@@ -123,6 +123,31 @@ class SearchCondition extends Component {
     //     condition.isOnlyRepeat = e.target.checked;
     //     this.setState({condition: condition}, () => {this.handleSearch()});
     // }
+    handleExpire = (e) =>{
+        let condition = {...this.condition};
+        condition["overTime"] = e.target.checked ? 1: 0;
+        this.setState({condition:condition}, () =>{this.handleSearch()});
+    }
+
+    handleExpire = (e) =>{
+        let condition = {...this.condition};
+        condition["checkStatu"] = e.target.checked ? 1: 0;
+        this.setState({condition:condition}, () =>{this.handleSearch()});
+    }
+    handleFollow = (e) =>{
+        let condition = {...this.condition};
+        condition["follow"] = e.target.checked ? 1: 0;
+        this.setState({condition:condition}, () =>{this.handleSearch()});
+    }
+    handleInvalid = (e) =>{
+        let condition = {...this.condition};
+        condition["discard"] = e.target.checked ? 1: 0;
+        this.setState({condition:condition}, () =>{this.handleSearch()});
+    }
+
+    handleCheckChange = (e, type) =>{
+        
+    }
     render() {
         let expandSearchCondition = this.state.expandSearchCondition;
         // const tradePlannings = this.props.basicData.tradePlannings;
@@ -154,22 +179,22 @@ class SearchCondition extends Component {
                         <Row className="normalInfo">
                             <Col span={4}>
                                 <label>已作废：</label>
-                                    <Checkbox ></Checkbox>
+                                    <Checkbox onChange={this.handleInvalid}></Checkbox>
                             </Col>
                             <Col span={4}>
                                 <label>已过期：</label>
-                                    <Checkbox ></Checkbox>
+                                    <Checkbox onChange={this.handleExpire}></Checkbox>
                             </Col>
                             <Col span={4}>
                                 <label>已续签：</label>
-                                    <Checkbox ></Checkbox>
+                                    <Checkbox onChange={this.handleFollow}></Checkbox>
                             </Col>
                         </Row>
                  
                         <Row className="normalInfo">
                              <Col span={24}>
                                 <label>审核状态：</label>
-                                <Checkbox.Group onChange={(e) => this.handleCheckChange(e, 'businessChance')} value={this.state.condition.businessChance}>
+                                <Checkbox.Group onChange={(e) => this.handleCheckChange(e, 'checkStatu')} value={this.state.condition.checkStatu}>
                                     {
                                         checkStateDefine.map(b =>
                                             <Checkbox key={b.key} value={b.value}>{b.key}</Checkbox>

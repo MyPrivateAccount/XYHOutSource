@@ -3,7 +3,7 @@ import { getContractDetail, searchStart, saveSearchCondition, setLoadingVisible,
 import React, {Component} from 'react';
 import {Button, Row, Col, Table} from 'antd';
 import moment from 'moment';
-import AdjustCustomer from './dialog/adjustCustomer';
+
 
 
 class SearchResult extends Component {

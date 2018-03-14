@@ -103,6 +103,8 @@ export function* savePictureAsync(action) {
     try {
         let body = action.payload.fileInfo;
         yield put({ type: actionUtils.getActionType(actionTypes.CONTRACT_PIC_VIEW), payload: { filelist: action.payload.completeFileList, type: 'add' } });
+            yield put(actionUtils.action(attchLoadingEnd));
+        return;
         //let res = yield call(ApiClient.post, url, body);
         //getApiResult(res, result);
         //console.log(`上传图片url:${url},body:${JSON.stringify(body)}，result：${res}`);
@@ -159,7 +161,7 @@ export function* watchContractAllAsync() {
      yield takeLatest(actionUtils.getActionType(actionTypes.GOTO_THIS_CONTRACT), gotoThisContract);
      yield takeLatest(actionUtils.getActionType(actionTypes.CONTRACT_INFO_SUBMIT), submitContractInfo);
     // yield takeLatest(actionUtils.getActionType(actionTypes.BATCH_BUILDING_SAVE_ASYNC), saveBatchBuildingAsync);
-     yield takeLatest(actionUtils.getActionType(actionTypes.SAVE_PICTURE_ASYNC), savePictureAsync);
+     yield takeLatest(actionUtils.getActionType(actionTypes.CONTRACT_SAVE_PICTURE_ASYNC), savePictureAsync);
      yield takeLatest(actionUtils.getActionType(actionTypes.DELETE_PICTURE_ASYNC), deletePicAsync);
     // yield takeLatest(actionUtils.getActionType(actionTypes.COMMISSION_SAVE), saveCommissionInfo);
     // yield takeLatest(actionUtils.getActionType(actionTypes.RULES_SAVE), saveRulesInfo);
