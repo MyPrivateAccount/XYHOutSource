@@ -26,6 +26,10 @@ namespace XYHContractPlugin
             CreateMap<ContractContentResponse, ContractInfo>()
                 .ForMember(d => d.ID, m=>m.MapFrom(src => src.BaseInfo.ID))
                 .ForMember(d => d.Type, m => m.MapFrom(src => src.BaseInfo.Type))
+                .ForMember(d => d.Settleaccounts, m => m.MapFrom(src => src.BaseInfo.Settleaccounts))
+                .ForMember(d => d.IsSubmmitShop, m => m.MapFrom(src => src.BaseInfo.IsSubmmitShop))
+                .ForMember(d => d.IsSubmmitRelation, m => m.MapFrom(src => src.BaseInfo.IsSubmmitRelation))
+                .ForMember(d => d.Commission, m => m.MapFrom(src => src.BaseInfo.Commission))
                 .ForMember(d => d.Relation, m => m.MapFrom(src => src.BaseInfo.Relation))
                 .ForMember(d => d.Name, m => m.MapFrom(src => src.BaseInfo.Name))
                 .ForMember(d => d.ContractEstate, m => m.MapFrom(src => src.EstateInfo.ID))
@@ -49,12 +53,17 @@ namespace XYHContractPlugin
                 .ForMember(d => d.EndTime, m => m.MapFrom(src => src.BaseInfo.EndTime))
                 .ForMember(d => d.Count, m => m.MapFrom(src => src.BaseInfo.Count))
                 .ForMember(d => d.ReturnOrigin, m => m.MapFrom(src => src.BaseInfo.ReturnOrigin));
+
             CreateMap<ContractInfo, ContractContentResponse>()
                 .ForMember(d => d.Discard, m => m.MapFrom(src => src.IsDelete))
                 .ForMember(d => d.BaseInfo, m => m.MapFrom(src => new BaseInfoResponse
                 {
                     ID = src.ID,
                     Type = src.Type,
+                    Settleaccounts = src.Settleaccounts,
+                    IsSubmmitShop = src.IsSubmmitShop,
+                    IsSubmmitRelation = src.IsSubmmitRelation,
+                    Commission = src.Commission,
                     Relation = src.Relation,
                     Name = src.Name,
                     Follow = src.Follow,

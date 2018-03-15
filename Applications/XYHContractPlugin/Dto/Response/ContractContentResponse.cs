@@ -8,6 +8,10 @@ namespace XYHContractPlugin.Dto.Response
     {
         public string ID { get; set; }
         public string Type { get; set; }
+        public string Settleaccounts { get; set; }
+        public bool IsSubmmitShop { get; set; }
+        public bool IsSubmmitRelation { get; set; }
+        public string Commission { get; set; }
         public int? Relation { get; set; }
         public string Name { get; set; }
         /// <summary>

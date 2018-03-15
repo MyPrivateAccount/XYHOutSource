@@ -36,52 +36,80 @@ namespace XYHContractPlugin.Managers
             var Response = new ContractSearchResponse<ContractInfoResponse>();
             var sql = @"SELECT a.* from XYH_DT_CONTRACTINFO as a where";
 
-            if ((condition?.SearchType & 0x10) > 0)
+            if (condition?.CheckStatu > 0)
             {
                 sql = @"SELECT a.* from XYH_DT_CONTRACTINFO as a LEFT JOIN XYH_DT_MODIFY as b ON a.`CurrentModify`=b.`ID` where";
             }
 
             string connectstr=" ";
-            if ((condition?.SearchType & 0x01) >0)
+            if (!string.IsNullOrEmpty(condition?.KeyWord))
             {
-                if (!string.IsNullOrEmpty(condition.KeyWord))
-                {
-                    sql += connectstr + @"LOCATE('" + condition.KeyWord + "', a.`Name`)>0";
-                    connectstr = " and ";
-                }
+                sql += connectstr + @"LOCATE('" + condition.KeyWord + "', a.`Name`)>0";
+                connectstr = " and ";
+            }
+            else if (condition?.KeyWord != null)
+            {
+                sql += connectstr + @"a.`ID`!=''";
+                connectstr = " and ";
             }
 
-            if ((condition?.SearchType & 0x02) > 0)
+            if (condition?.Discard == 1)
             {
                 sql += connectstr + @"a.IsDelete";
                 connectstr = " and ";
             }
 
-            if ((condition?.SearchType & 0x04) > 0)//过期和时间限定分开
+            if (condition?.OverTime == 1)//过期和时间限定分开
             {
                 sql += connectstr + @"a.`EndTime`<=CURTIME()";
                 connectstr = " and ";
             }
-            else if ((condition?.SearchType & 0x20) > 0)
+            else if (condition?.CreateDateStart != null && condition?.CreateDateEnd != null)
             {
                 sql += connectstr + @"(a.`StartTime`<='" + condition.CreateDateStart.Value+"'";
                 connectstr = " and ";
                 sql += connectstr + @"a.`EndTime`>='" + condition.CreateDateEnd.Value+"')";
             }
 
-            if ((condition?.SearchType & 0x08) > 0)
+            if (condition?.Follow == 1)
             {
                 sql += connectstr + @"a.`Follow`!=''";
                 connectstr = " and ";
             }
 
-            if ((condition?.SearchType & 0x10) > 0)
+            if (condition?.CheckStatu > 0)
             {
-                sql += connectstr + @"b.`ExamineStatus`="+condition.CheckStatu;
+                string head = "(", tail=")";
+                if ((condition?.CheckStatu & 0x01) > 0)//1 2 4 8 未提交 审核中 通过 驳回
+                {
+                    sql += connectstr + head + @"b.`ExamineStatus`=0";
+                    connectstr = " or ";
+                    head = "";
+                }
+                if ((condition?.CheckStatu & 0x02) > 0)
+                {
+                    sql += connectstr + head + @"b.`ExamineStatus`=1";
+                    connectstr = " or ";
+                    head = "";
+                }
+                if ((condition?.CheckStatu & 0x04) > 0)
+                {
+                    sql += connectstr + head + @"b.`ExamineStatus`=8";
+                    connectstr = " or ";
+                    head = "";
+                }
+                if ((condition?.CheckStatu & 0x08) > 0)
+                {
+                    sql += connectstr + head + @"b.`ExamineStatus`=16";
+                    connectstr = " or ";
+                    head = "";
+                }
+
+                sql += tail;
                 connectstr = " and ";
             }
 
-            if ((condition?.SearchType & 0x40) > 0)
+            if (!string.IsNullOrEmpty(condition?.Organizate))
             {
                 sql += connectstr + @"a.`CreateDepartment`='" + condition.Organizate + "'";
                 connectstr = " and ";
