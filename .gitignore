@@ -43,6 +43,7 @@ Authorization/AuthorizationTest/bin/
 # testing
 /coverage
 
+*.cache
 # production
 /build
 # misc

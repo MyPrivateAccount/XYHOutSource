@@ -1,4 +1,4 @@
-USE `xyhdb`;
+﻿USE `xyhdb`;
 
 -- ----------------------------
 -- Table structure for XYH_HU_HUMANMANAGE
@@ -10,16 +10,20 @@ CREATE TABLE `XYH_HU_HUMANMANAGE` (
   `Name` varchar(127) NOT NULL DEFAULT '',/*名字*/
   `IDCard` varchar(127) NOT NULL DEFAULT '',/*身份证号*/
   `Position` varchar(127) DEFAULT '',/*职位--外链*/
-  `Payment` int(11) DEFAULT '0',/*薪酬*/
   `Modify` int(11) DEFAULT '0',/*修改个数*/
   `Picture` varchar(127) DEFAULT '',/*员工照片*/
   `RecentModify` varchar(127) DEFAULT '',/*最近修改:创建 入职 离职--外链表*/
-  `Contract` varchar(127) DEFAULT '',/*合同上次内容个数--外链*/
-  `Blacklist` BOOLEAN DEFAULT FALSE,/*黑名单*/
+  `Contract` varchar(127) DEFAULT '',/*合同上传内容个数--外链*/
   `EntryTime` datetime DEFAULT NULL,/*入职时间*/
   `BecomeTime` datetime DEFAULT NULL,/*转正时间*/
   `IsSocialInsurance` BOOLEAN DEFAULT FALSE,/*是否参加社保*/
   `SocialInsuranceInfo` varchar(127) DEFAULT '',/*社保具体信息*/
+  `BaseSalary` int(11) DEFAULT 0,/*基本工资*/
+  `Subsidy`int(11) DEFAULT 0,/*岗位补贴*/
+  `ClothesBack` int(11) DEFAULT 0,/*工装扣款*/
+  `AdministrativeBack` int(11) DEFAULT 0,/*行政扣款*/
+  `PortBack` int(11) DEFAULT 0,/*端口扣款*/
+  `OtherBack` int(11) DEFAULT 0,/*其它扣款*/
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -33,6 +37,17 @@ CREATE TABLE `XYH_HU_CONTRACT` (
   `ContentPath` varchar(255) NOT NULL DEFAULT '',
   `ContentInfo` varchar(255) DEFAULT '',
   PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Table structure for XYH_HU_BLACKLIST
+-- ----------------------------
+DROP TABLE IF EXISTS `XYH_HU_BLACKLIST`;/*黑名单*/
+CREATE TABLE `XYH_HU_BLACKLIST` (
+  `IDCard` varchar(127) NOT NULL DEFAULT '',/*身份证号*/
+  `Name` varchar(127) NOT NULL DEFAULT ''/*名字*/
+  `Reason` varchar(256) DEFAULT ''/*名字*/
+  PRIMARY KEY (`IDCard`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
@@ -76,7 +91,28 @@ CREATE TABLE `XYH_HU_MONTH` (
   `ID` varchar(127) NOT NULL DEFAULT '',
   `SettleTime` datetime DEFAULT NULL,/*月结时间*/
   `OperName` varchar(127) NOT NULL DEFAULT '',/*操作人*/
-  `SalaryForm` varchar(127) NOT NULL DEFAULT '',/*工资表*/
-  `AttendanceForm` varchar(127) NOT NULL DEFAULT '',/*考勤表*/
+  `OperTime` datetime DEFAULT NULL,/*操作时间*/
+  `AttendanceForm` varchar(127) NOT NULL DEFAULT '',/*月结考勤表-链接到XYH_HU_ATTENDANCEFORM.ID*/
   PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `XYH_HU_SALARYFORM`;/*月结工资表*/
+CREATE TABLE `XYH_HU_SALARYFORM` (
+  `ID` varchar(127) NOT NULL DEFAULT '',/*工资表ID*/
+  `MonthID` varchar(127) NOT NULL DEFAULT '',
+  `HumanID` varchar(127) NOT NULL DEFAULT '',/*数据库和员工id，取员工信息*/
+  `BaseSalary` int(11) DEFAULT 0,/*基本工资*/
+  `Subsidy`int(11) DEFAULT 0,/*岗位补贴*/
+  `ClothesBack` int(11) DEFAULT 0,/*工装扣款*/
+  `AdministrativeBack` int(11) DEFAULT 0,/*行政扣款*/
+  `PortBack` int(11) DEFAULT 0,/*端口扣款*/
+  `OtherBack` int(11) DEFAULT 0,/*其它扣款*/
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `XYH_HU_ATTENDANCEFORM`;/*月结考勤表*/
+CREATE TABLE `XYH_HU_ATTENDANCEFORM` (
+  `ID` varchar(127) NOT NULL DEFAULT '',/*考勤表ID*/
+  `MonthID` varchar(127) NOT NULL DEFAULT '',
+  `HumanID` varchar(127) NOT NULL DEFAULT ''/*数据库和员工id*/
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
