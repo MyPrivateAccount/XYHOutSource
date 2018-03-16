@@ -10,8 +10,6 @@ const WebApiConfig = {
         GetOrgUserList: BaseApiUrl + "user/list",//获取部门下的用户
     },
     search: {
-        getContractList: basicDataBaseApiUrl+ 'contractlist/searchcontract',
-        
         getSaleManCustomerList: basicDataBaseApiUrl + 'customerInfo/listsaleman',// 业务员客户查询
         getPoolCustomerList: basicDataBaseApiUrl + 'customerInfo/listpool',//公共池客户
         getDealCustomerList: basicDataBaseApiUrl + 'customerInfo/listdeal',//成交客户

@@ -4,6 +4,22 @@
         <name>XYHContractPlugin</name>
     </assembly>
     <members>
+        <member name="P:XYHContractPlugin.Dto.Request.ContractSearchRequest.SearchType">
+            <summary>
+            用户条件
+            </summary>
+            
+        </member>
+        <member name="P:XYHContractPlugin.Dto.Request.ContractSearchRequest.CreateDateStart">
+            <summary>
+            创建时间开始
+            </summary>
+        </member>
+        <member name="P:XYHContractPlugin.Dto.Request.ContractSearchRequest.CreateDateEnd">
+            <summary>
+            创建时间结束
+            </summary>
+        </member>
         <member name="P:XYHContractPlugin.Dto.Response.BaseInfoResponse.Follow">
             <summary>
             是否续签

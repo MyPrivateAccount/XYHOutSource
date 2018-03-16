@@ -2,80 +2,42 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {contractInfoGroup} from '../constants/commonDefine';
 import { Layout, Table, Button, Checkbox, Radio, Row, Col, Icon, Anchor, BackTop, Modal, notification } from 'antd'
-import { getDicParList, openContractRecord,submitContractInfo,changeContractMenu } from '../actions/actionCreator';
+import { getDicParList, openContractRecord,submitContractInfo } from '../actions/actionCreator';
 import { isEmptyObject } from '../../utils/utils'
 import './contract/edit/contract.less';
 import BasicEdit from './contract/edit/basicEdit';
 import BasicInfo from './contract/detail/basicInfo';
 import AttachEdit from './contract/edit/attachEdit';
 import AttachInfo from './contract/detail/attachInfo';
-import { isNullOrUndefined } from 'util';
 
 const { Header, Sider, Content } = Layout;
 class ContractRecord extends Component{
-    state = {
-        isBasicNeedSubmit:true,
-        isAdditionNeesSubmit:true,
-        isAttachNeedSubmit:true,
-    }
     componentWillMount(){
     
 
       }
-    
-    
 
-    componentWillReceiveProps(newProps){
-
-    }
     handleAnchorChange = (e) =>{
         window.location.href = '#' + e.target.value;
     }
-    handleSubmit = (type) => {
-        return ()=> {
-            if(type === "basicInfo"){
-                const basicInfo = this.props.contractInfo.baseInfo||{};
-                const hasBasicInfo = !isEmptyObject(basicInfo); 
-                console.log(hasBasicInfo)
-        
-                if(!hasBasicInfo){
-                    notification.warning({
-                        message: '请先完善信息，再提交',
-                        duration: 3
-                    })
-                    return;
-                }
-                this.props.dispatch(submitContractInfo({ entity: this.props.contractInfo, type:"basicInfo"  }));
-            }else if(type === "attachInfo"){
+    handleSubmit = (e) => {
+        const basicInfo = this.props.contractInfo.baseInfo||{};
+        const hasBasicInfo = !isEmptyObject(basicInfo); 
+        console.log(hasBasicInfo)
 
-            }else if(type === "addtionalInfo"){
-
-            }
+        if(!hasBasicInfo){
+            notification.warning({
+                message: '请先完善信息，再提交',
+                duration: 3
+            })
+            return;
         }
+        this.props.dispatch(submitContractInfo({ entity: this.props.contractInfo  }))
     }
-    handleReturn = ()=>{
-        this.props.dispatch(changeContractMenu());
-    }
+
     render(){
         let basicOperType = this.props.operInfo.basicOperType;
         let attachPicOperType = this.props.operInfo.attachPicOperType;
-        let additionOperType = this.props.operInfo.additionOperType;
-        let infoGroup = [];
-        contractInfoGroup.forEach((item) =>{
-            if( basicOperType === "add"){
-                if(item.id === "basicInfo"){
-                    infoGroup.push(item);
-                }
-            }else{
-                infoGroup.push(item);
-            }
-            // console.log('item:', item);
-            // if(item.id  === 'additionalInfo' && isNullOrUndefined(additionOperType)){
-
-            // } else{
-            //     infoGroup.push(item);
-            // }
-        });
         return(
             <div className="relative">
                 <Layout>
@@ -91,7 +53,7 @@ class ContractRecord extends Component{
                             <Col span={20} style={{ textAlign: 'right' }}>
                                 <Radio.Group defaultValue='basicInfo' onChange={this.handleAnchorChange} size='large'>
                                     {
-                                        infoGroup.map((info) => <Radio.Button value={info.id} key={info.id}>{info.name}<Icon type="check" /></Radio.Button>)
+                                        contractInfoGroup.map((info) => <Radio.Button value={info.id} key={info.id}>{info.name}<Icon type="check" /></Radio.Button>)
                                     }
                                 </Radio.Group>
                             </Col>
@@ -113,62 +75,25 @@ class ContractRecord extends Component{
                             }
 
                         </Row>
-                    
-                         
-                         <div>
-                             {
-                                [8, 1].includes(this.props.basicInfo.examineStatus)  ? null :
-                                <div>
-                                    <Row type="flex" justify="space-between">
-                                        <Col  span={24} style={{ textAlign: 'right' }} className='BtnTop'>
-                                            <BackTop visibilityHeight={400} />
-                                            <Button type="primary" size='large' className="oprationBtn"
-                                                style={{ width: "10rem", display: this.props.contractDisplay }}
-                                                onClick={this.handleSubmit("basicInfo")} loading={this.props.submitLoading}>提交</Button>
-                                        </Col>
-                                    </Row>
-                                </div>
-                                
-                             }
-                        </div>
-                         
-                    
                         <Row id="attchInfo">
                             {
-                                basicOperType  === 'add' ? null :
+                                
                                 <Col span={24}>{(attachPicOperType === 'view') ? <AttachInfo /> : <AttachEdit />}</Col>
 
                             }
 
                         </Row>
-                                                 
-                        <div>
-                             {
-                                ((basicOperType  === 'add')  || [8, 1].includes(this.props.attachInfo.examineStatus))  ? null :
-                                <div>
-                                    <Row type="flex" justify="space-between">
-                                        <Col  span={24} style={{ textAlign: 'right' }} className='BtnTop'>
-                                            <BackTop visibilityHeight={400} />
-                                            <Button type="primary" size='large' className="oprationBtn"
-                                                style={{ width: "10rem", display: this.props.contractDisplay }}
-                                                onClick={this.handleSubmit("attachInfo")} loading={this.props.submitLoading}>提交</Button>
-                                        </Col>
-                                    </Row>
-                                </div>
-                                
-                             }
-                        </div>
                         <div>
                             <BackTop visibilityHeight={400} />
                         </div>
                         <Row type="flex" justify="space-between">
-                            <Col  span={24} style={{ textAlign: 'center' }} className='BtnTop'>
+                            <Col span={24} style={{ display: 'flex', justifyContent: 'flex-end',margin: '5px  0 25px 0' }}>
+                                {
+                                    //[8, 1].includes(this.props.buildInfo.examineStatus)  ? null :
                                     <Button type="primary" size='large'
-                                    style={{ width: "10rem", display: this.props.contractDisplay }}
-                                    onClick={this.handleReturn} loading={this.props.submitLoading}>返回</Button>
-
-
-                                
+                                        style={{ width: "10rem", display: this.props.contractDisplay }}
+                                        onClick={this.handleSubmit} loading={this.props.submitLoading}>提交</Button>
+                                }
                             </Col>
                         </Row>
                     </Content>
@@ -185,8 +110,6 @@ function mapStateToProps(state){
         contractInfo: state.contractData.contractInfo,
         submitLoading: state.contractData.contractInfo.submitLoading,
         contractDisplay:state.contractData.contractInfo.contractDisplay,
-        attachInfo:state.contractData.contractInfo.complementInfo,
-        basicInfo: state.contractData.contractInfo.baseInfo,
     }
     
 }

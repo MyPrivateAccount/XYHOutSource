@@ -15,6 +15,8 @@ using XYHContractPlugin.Dto.Response;
 using XYHContractPlugin.Managers;
 using ContractInfoRequest = XYHContractPlugin.Dto.Response.ContractInfoResponse;
 using ContractContentInfoRequest = XYHContractPlugin.Dto.Response.ContractContentResponse;
+using ContractAnnexInfoRequest = XYHContractPlugin.Dto.Response.ContractAnnexResponse;
+using AspNet.Security.OAuth.Validation;
 
 namespace XYHContractPlugin.Controllers
 {
@@ -79,6 +81,7 @@ namespace XYHContractPlugin.Controllers
             }
             return Response;
         }
+
 
         [HttpGet("{getallcontractbyuser}")]
         [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]

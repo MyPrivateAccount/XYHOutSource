@@ -94,7 +94,7 @@ reducerMap[actionTypes.CHANGE_MENU] = function (state, action) {
         searchResult: [],
         showLoading: false,
         showOrgSelect: false,
-        //showAuditDetail: false
+        showAuditDetail: false
     });
 }
 //搜索关键字改变

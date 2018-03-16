@@ -18,6 +18,11 @@ Applications/XYHShopsInterfacePlugin/bin/
 Applications/XYHShopsInterfacePlugin/obj/
 Applications/XYHShopsPlugin/bin/
 Applications/XYHShopsPlugin/obj/
+Applications/XYHContractPlugin/bin/
+Applications/XYHContractPlugin/obj/
+Applications/XYHContractInterfacePlugin/bin/
+Applications/XYHContractInterfacePlugin/obj/
+Applications/.vs/
 
 DesktopPortal/bin/
 
