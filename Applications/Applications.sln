@@ -31,7 +31,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XYHShopsPlugin", "XYHShopsP
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XYHContractPlugin", "XYHContractPlugin\XYHContractPlugin.csproj", "{4C77BC3B-2CB2-4F1D-9C93-E4B89B179F99}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XYHContractInterfacePlugin", "XYHContractInterfacePlugin\XYHContractInterfacePlugin.csproj", "{3A72241A-D036-4D2E-BC80-14E408A5BB10}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XYHContractInterfacePlugin", "XYHContractInterfacePlugin\XYHContractInterfacePlugin.csproj", "{3A72241A-D036-4D2E-BC80-14E408A5BB10}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XYHCustomerPlugin", "XYHCustomerPlugin\XYHCustomerPlugin.csproj", "{06EC4F85-446E-4D22-BD03-68D55676F194}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XYHCustomerInterfacePlugin", "XYHCustomerInterfacePlugin\XYHCustomerInterfacePlugin.csproj", "{16A4762C-7477-4D67-B26E-04447D2DDD9C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XYHCustomerPlugin", "XYHCustomerPlugin\XYHCustomerPlugin.csproj", "{06EC4F85-446E-4D22-BD03-68D55676F194}"
 EndProject
