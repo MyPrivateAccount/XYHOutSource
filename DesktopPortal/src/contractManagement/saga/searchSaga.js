@@ -6,20 +6,30 @@ import WebApiConfig from '../constants/webapiConfig';
 import appAction from '../../utils/appUtils';
 import getApiResult from './sagaUtil';
 import { notification } from 'antd';
+import { isNull } from 'util';
 
 const actionUtils = appAction(actionTypes.ACTION_ROUTE)
 
+function dealCondition(body){
+    let newBody = {};
+    for(let key in body){
+        if(body[key] !== '' && body[key] !== null){
+            newBody[key] = body[key];
+        }
+    }
+    return newBody;
+}
 export function* getContractListAsync(state) {
-    let result = { isOk: true, extension: [], msg: '客源查询失败！' };
+    let result = { isOk: true, extension: [], msg: '合同查询失败！' };
     console.log('getContractListAsync:.......')
-    let url = WebApiConfig.search.getContractList;//默认为业务员客户查询
+    let url = WebApiConfig.search.getContractList;
     
     let body = state.payload;
-
+    let newBody = dealCondition(body);
 
     try {
-        let res = yield call(ApiClient.get, url)
-        console.log(`url:${url},body:${JSON.stringify(state.payload)},result:${JSON.stringify(res)}`);
+        let res = yield call(ApiClient.post, url, {});
+        console.log(`url:${url},body:${JSON.stringify(state.payload)},result:${JSON.stringify(res)},newBody:${JSON.stringify(newBody)}`);
        getApiResult(res, result);
        if (result.isOk) {
        if (res.data.validityCustomerCount) {
@@ -29,7 +39,7 @@ export function* getContractListAsync(state) {
      }
         yield put({ type: actionUtils.getActionType(actionTypes.SET_SEARCH_LOADING), payload: false });
     } catch (e) {
-        result.msg = "客源查询接口调用异常！";
+        result.msg = "合同查询接口调用异常！";
     }
     if (!result.isOk) {
         notification.error({

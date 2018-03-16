@@ -33,8 +33,8 @@ class SearchBox extends Component{
         if (this.props.searchInfo.activeOrg.id !== "0") {
             condition.organizate = this.props.searchInfo.activeOrg.id;
         }
-        condition.searchSourceType = getSearchType(activeMenu);
-        condition.searchType = this.state.searchType;
+        //condition.searchSourceType = getSearchType(activeMenu);
+        //condition.searchType = this.state.searchType;
         // console.log("格式化前的搜索条件:", condition);
         let standardCondition = formatSearchCondition(condition);
         console.log("最终搜索条件:", standardCondition);

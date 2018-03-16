@@ -257,6 +257,34 @@ class BasicEdit extends Component {
 
             </Row>
             <Row type="flex" style={{marginTop: "25px"}}>
+                <Col span={12}>
+                        <FormItem {...formItemLayout} label={<span>结算方式</span>}>
+                        {getFieldDecorator('settleaccounts', {
+                                    initialValue: basicInfo.settleaccounts,
+                                    rules:[{required:true, message:'请输入结算方式!'}]
+                                    })(
+                                        <Input placeholder="结算方式" />
+                                    )
+                                    
+                            }
+                        </FormItem>
+                    </Col>
+                <Col span={12}>
+                    <FormItem {...formItemLayout} label={<span>佣金方案</span>}>
+                    {getFieldDecorator('commission', {
+                                initialValue: basicInfo.commission,
+                                rules:[{required:true, message:'请输入佣金方案!'}]
+                                })(
+                                    <Input placeholder="佣金方案" />
+                                )
+                                
+                        }
+                    </FormItem>
+                </Col>
+
+            </Row>
+
+            <Row type="flex" style={{marginTop: "25px"}}>
               <Col span={12}>
                  <FormItem {...formItemLayout} label={<span>份数</span>}>
                   {getFieldDecorator('count', {
