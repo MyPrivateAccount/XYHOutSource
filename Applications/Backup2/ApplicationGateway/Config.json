@@ -1,0 +1,27 @@
+﻿{
+  "Data": {
+    "DefaultConnection": {
+      "ConnectionString": "Server=120.77.152.254;database=xyhdb;uid=root;pwd=root;"
+    }
+  },
+  "Port": 7000,
+  "Log": {
+    "Level": "Trace",
+    "MaxFileSize": "10MB",
+    "SaveDays": 7
+  },
+  "Redis": {
+    "InstanceName": "AC",
+    "Configuration": "127.0.0.1:6379"
+  },
+  "AuthUrl": "http://localhost:5000",
+  "ClientID": "apigateway",
+  "ClientSecret": "123456",
+  "NWFUrl": "http://localhost:7100/api/task/nwf",
+  "MessageServerUrl": "http://120.77.152.254:9000",
+  "FileServerRoot": "http://120.77.152.254:5100/image",
+  "ExamineUrl": "http://120.77.152.254:7000/api/examines/submit",
+  "NWFExamineCallbackUrl": "http://120.77.152.254:7100/examine/callback/ExamineCallback",
+  "BuildingExamineCallbackUrl": "http://120.77.152.254:7000/api/buildings/audit/examinecallback",
+  "UpdateExamineCallbackUrl": ""
+}

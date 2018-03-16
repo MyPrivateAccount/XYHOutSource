@@ -1,0 +1,22 @@
+﻿[
+  {
+    "Code": "Filiale",
+    "Name": "分公司",
+    "Value": 10
+  },
+  {
+    "Code": "Region",
+    "Name": "大区",
+    "Value": 3
+  },
+  {
+    "Code": "Area",
+    "Name": "片区",
+    "Value": 0
+  },
+  {
+    "Code": "Group",
+    "Name": "小组",
+    "Value": 0
+  }
+]
