@@ -1,22 +1,44 @@
+<<<<<<< HEAD
+<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>2.0</OldToolsVersion>
+  </PropertyGroup>
+=======
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
   </PropertyGroup>
 
+>>>>>>> cb45804d3aa9944c74d063f4b633fb28142a83dd
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <OutputPath>bin\Debug\</OutputPath>
     <DocumentationFile>bin\Debug\netcoreapp2.0\XYHCustomerPlugin.xml</DocumentationFile>
     <NoWarn>1701;1702;1705;1591</NoWarn>
   </PropertyGroup>
+<<<<<<< HEAD
+  <ItemGroup>
+    <PackageReference Include="XYH.Core" Version="1.0.1" />
+  </ItemGroup>
+=======
 
   <ItemGroup>
     <PackageReference Include="XYH.Core" Version="1.0.1" />
   </ItemGroup>
 
+>>>>>>> cb45804d3aa9944c74d063f4b633fb28142a83dd
   <ItemGroup>
     <ProjectReference Include="..\ApplicationCore\ApplicationCore.csproj" />
     <ProjectReference Include="..\GatewayInterface\GatewayInterface.csproj" />
   </ItemGroup>
+<<<<<<< HEAD
+</Project>
+=======
 
 </Project>
+>>>>>>> cb45804d3aa9944c74d063f4b633fb28142a83dd

@@ -15,8 +15,8 @@ class BasicEdit extends Component {
 
     handleCancel = () => this.setState({ previewVisible: false })
     handleChangeTime = (value, dateString)=>{
-        console.log('curstatrEndTime:', value);
-        console.log('format curstatrEndTime:', dateString);
+        //console.log('curstatrEndTime:', value);
+       // console.log('format curstatrEndTime:', dateString);
     }
     handleRenewClick = (e)=>{
         console.log("handleRenewClick");
@@ -51,7 +51,7 @@ class BasicEdit extends Component {
                 // newBasicInfo.areaFullName = this.state.areaFullName
                 //console.log('newBasicInfo:', newBasicInfo);
                 let method = (basicOperType === 'add' ? 'POST' : "PUT");
-                console.log('=========');
+     
                 this.props.dispatch(saveContractBasic({ 
                     method: method, 
                     entity: newBasicInfo, 
@@ -97,7 +97,8 @@ class BasicEdit extends Component {
             <Row type="flex" style={{marginTop: "25px"}}>
               <Col span={12}>
                         <FormItem {...formItemLayout} label={<span>合同类型</span>}>
-                        {getFieldDecorator('type', {
+                        {
+                            getFieldDecorator('type', {
                                     initialValue: basicInfo.type,
                                     rules: [{ required: true, message: '请选择合同类型!' }],
                                 })(
@@ -256,6 +257,34 @@ class BasicEdit extends Component {
 
             </Row>
             <Row type="flex" style={{marginTop: "25px"}}>
+                <Col span={12}>
+                        <FormItem {...formItemLayout} label={<span>结算方式</span>}>
+                        {getFieldDecorator('settleaccounts', {
+                                    initialValue: basicInfo.settleaccounts,
+                                    rules:[{required:true, message:'请输入结算方式!'}]
+                                    })(
+                                        <Input placeholder="结算方式" />
+                                    )
+                                    
+                            }
+                        </FormItem>
+                    </Col>
+                <Col span={12}>
+                    <FormItem {...formItemLayout} label={<span>佣金方案</span>}>
+                    {getFieldDecorator('commission', {
+                                initialValue: basicInfo.commission,
+                                rules:[{required:true, message:'请输入佣金方案!'}]
+                                })(
+                                    <Input placeholder="佣金方案" />
+                                )
+                                
+                        }
+                    </FormItem>
+                </Col>
+
+            </Row>
+
+            <Row type="flex" style={{marginTop: "25px"}}>
               <Col span={12}>
                  <FormItem {...formItemLayout} label={<span>份数</span>}>
                   {getFieldDecorator('count', {
@@ -310,7 +339,8 @@ class BasicEdit extends Component {
                                     initialValue: basicInfo.follow,
                                     //rules:[{required:true, message:'续签合同'}]
                                     })(
-                                        <span title="点击选择" style={{color:'blue'}} onClick={this.handleRenewClick}>{basicInfo.follow ? basicInfo.follow : "无"}</span>
+                                        //<span>{'无'}</span>
+                                        <Input  onClick={this.handleRenewClick}></Input>
                                     )
                                     
                             }
@@ -351,9 +381,22 @@ class BasicEdit extends Component {
                             }
                     </FormItem>
                 </Col>
-
+  
             </Row>
-
+            <Row type="flex" style={{marginTop:"25px"}}>
+                <Col span={12}>
+                    <FormItem {...formItemLayout} label={<span>补充协议</span>}>
+                        {getFieldDecorator('contentInfo', {
+                                    initialValue: this.props.complementInfo.contentInfo,
+                                    //rules:[{required:true, message:'续签合同'}]
+                                    })(
+                                        <TextArea placeholder="补充协议" autosize />
+                                    )
+                                    
+                            }
+                    </FormItem>
+                </Col>
+            </Row>
 
             <Row>
                     <Col span={24} style={{ textAlign: 'center' }} className='BtnTop'>
@@ -386,6 +429,7 @@ function mapStateToProps(state) {
         operInfo:state.contractData.operInfo,
         activeOrg: state.search.activeOrg,
         contractChooseVisible: state.contractData.contractChooseVisible,
+        complementInfo: state.contractData.contractInfo.complementInfo,
     }
   }
   

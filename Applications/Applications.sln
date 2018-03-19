@@ -1,15 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
+# Blend for Visual Studio 15
 VisualStudioVersion = 15.0.27130.2027
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApplicationCore", "ApplicationCore\ApplicationCore.csproj", "{41F23D46-0208-40D9-8EB6-B285697243AF}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugins", "Plugins", "{AA8E828A-2B34-44D9-A4FD-4F934989907D}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XYHBaseDataPlugin", "XYHBaseDataPlugin\XYHBaseDataPlugin.csproj", "{58AF0A99-03AA-4890-96BC-259B9A81935C}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApplicationGateway", "ApplicationGateway\ApplicationGateway.csproj", "{2168233B-EC0D-4B7F-A43B-538AE5668D4F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Document", "Document", "{4D5BC8EE-6CCD-42FA-A0B2-9298CC81E498}"
 	ProjectSection(SolutionItems) = preProject
@@ -17,25 +11,35 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Document", "Document", "{4D
 		DataBaseUpdate-1108sql.txt = DataBaseUpdate-1108sql.txt
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GatewayInterface", "GatewayInterface\GatewayInterface.csproj", "{C7E73392-EFAC-45D2-A681-D58730BC8F81}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApplicationCore", "ApplicationCore\ApplicationCore.csproj", "{41F23D46-0208-40D9-8EB6-B285697243AF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XYHHumanPlugin", "XYHHumanPlugin\XYHHumanPlugin.csproj", "{6ABF00A8-AF10-4B3E-8ADE-13C7DF6824F0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XYHBaseDataPlugin", "XYHBaseDataPlugin\XYHBaseDataPlugin.csproj", "{58AF0A99-03AA-4890-96BC-259B9A81935C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExamineCenterInterfacePlugin", "ExamineCenterInterfacePlugin\ExamineCenterInterfacePlugin.csproj", "{0C168E9E-C1C7-4B7E-9642-D62868FF0234}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApplicationGateway", "ApplicationGateway\ApplicationGateway.csproj", "{2168233B-EC0D-4B7F-A43B-538AE5668D4F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExamineCenterPlugin", "ExamineCenterPlugin\ExamineCenterPlugin.csproj", "{DFE2AC48-1930-49A5-ABC3-0F8C651DFB72}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GatewayInterface", "GatewayInterface\GatewayInterface.csproj", "{C7E73392-EFAC-45D2-A681-D58730BC8F81}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XYHShopsInterfacePlugin", "XYHShopsInterfacePlugin\XYHShopsInterfacePlugin.csproj", "{55B7D90D-2922-4E44-B844-4CB2356092AB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XYHHumanPlugin", "XYHHumanPlugin\XYHHumanPlugin.csproj", "{6ABF00A8-AF10-4B3E-8ADE-13C7DF6824F0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XYHShopsPlugin", "XYHShopsPlugin\XYHShopsPlugin.csproj", "{F1725F98-B564-4CA4-A397-62B0BA7E6F48}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExamineCenterInterfacePlugin", "ExamineCenterInterfacePlugin\ExamineCenterInterfacePlugin.csproj", "{0C168E9E-C1C7-4B7E-9642-D62868FF0234}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XYHContractPlugin", "XYHContractPlugin\XYHContractPlugin.csproj", "{4C77BC3B-2CB2-4F1D-9C93-E4B89B179F99}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExamineCenterPlugin", "ExamineCenterPlugin\ExamineCenterPlugin.csproj", "{DFE2AC48-1930-49A5-ABC3-0F8C651DFB72}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XYHShopsInterfacePlugin", "XYHShopsInterfacePlugin\XYHShopsInterfacePlugin.csproj", "{55B7D90D-2922-4E44-B844-4CB2356092AB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XYHShopsPlugin", "XYHShopsPlugin\XYHShopsPlugin.csproj", "{F1725F98-B564-4CA4-A397-62B0BA7E6F48}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XYHContractPlugin", "XYHContractPlugin\XYHContractPlugin.csproj", "{4C77BC3B-2CB2-4F1D-9C93-E4B89B179F99}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XYHContractInterfacePlugin", "XYHContractInterfacePlugin\XYHContractInterfacePlugin.csproj", "{3A72241A-D036-4D2E-BC80-14E408A5BB10}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XYHCustomerPlugin", "XYHCustomerPlugin\XYHCustomerPlugin.csproj", "{06EC4F85-446E-4D22-BD03-68D55676F194}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XYHCustomerInterfacePlugin", "XYHCustomerInterfacePlugin\XYHCustomerInterfacePlugin.csproj", "{16A4762C-7477-4D67-B26E-04447D2DDD9C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XYHCustomerPlugin", "XYHCustomerPlugin\XYHCustomerPlugin.csproj", "{06EC4F85-446E-4D22-BD03-68D55676F194}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XYHCustomerInterfacePlugin", "XYHCustomerInterfacePlugin\XYHCustomerInterfacePlugin.csproj", "{16A4762C-7477-4D67-B26E-04447D2DDD9C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
