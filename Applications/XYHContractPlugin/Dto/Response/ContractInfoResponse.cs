@@ -51,6 +51,7 @@ namespace XYHContractPlugin.Dto.Response
         public string CreateUser { get; set; }
         public DateTime? CreateTime { get; set; }
         public string CreateDepartment { get; set; }
+        public string Organizete { get; set; }
         public string CommisionType { get; set; }
         public DateTime? StartTime { get; set; }
         public DateTime? EndTime { get; set; }

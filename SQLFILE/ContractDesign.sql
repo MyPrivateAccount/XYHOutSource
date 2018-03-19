@@ -26,12 +26,13 @@ CREATE TABLE `XYH_DT_CONTRACTINFO` (
   `ProjectType` varchar(64) NOT NULL DEFAULT '',/*项目类型*/
   `CompanyA` varchar(64) NOT NULL DEFAULT '',/*甲方公司全称*/
   `CompanyAT` int(11) NOT NULL,/*甲方公司类型*/
-  `PrincipalpepoleA` varchar(32) NOT NULL DEFAULT '',/*甲方负责人*/
-  `PrincipalpepoleB` varchar(32) NOT NULL DEFAULT '',/*乙方负责人*/
-  `ProprincipalPepole` varchar(32) NOT NULL DEFAULT '',/*项目负责人*/
+  `PrincipalpepoleA` varchar(127) NOT NULL DEFAULT '',/*甲方负责人*/
+  `PrincipalpepoleB` varchar(127) NOT NULL DEFAULT '',/*乙方负责人*/
+  `ProprincipalPepole` varchar(127) NOT NULL DEFAULT '',/*项目负责人*/
   `CreateUser` varchar(127) NOT NULL DEFAULT '',/*申请人*/
   `CreateTime` datetime DEFAULT NULL,/*申请时间*/
-  `CreateDepartment` varchar(32) DEFAULT '',/*申请部门*/
+  `CreateDepartment` varchar(127) DEFAULT '',/*申请部门*/
+  `Organizete` varchar(127) DEFAULT '',/*归属组织*/
   `IsDelete` BOOLEAN DEFAULT FALSE,/*是否删除*/
   `DeleteUser` varchar(127) DEFAULT '',/*删除人*/
   `DeleteTime` datetime DEFAULT NULL,/*删除时间*/
@@ -87,6 +88,7 @@ CREATE TABLE `XYH_DT_CHECK` (
 DROP TABLE IF EXISTS `XYH_DT_CONTRACTESTATE`; /*楼盘；不明，未继续*/
 CREATE TABLE `XYH_DT_CONTRACTESTATE` (
   `ID` varchar(127) NOT NULL DEFAULT '',
+  `Organizate` varchar(127) NOT NULL DEFAULT '',/*组织*/
   `EstateName` varchar(255) NOT NULL DEFAULT '',
   `Developer` varchar(255) NOT NULL DEFAULT '',
   `Address` varchar(255) NOT NULL DEFAULT '',
