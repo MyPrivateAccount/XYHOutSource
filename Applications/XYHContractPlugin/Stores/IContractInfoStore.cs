@@ -15,6 +15,8 @@ namespace XYHContractPlugin.Stores
         IQueryable<ContractInfo> ContractInfos { get; set; }
         IEnumerable<T> DapperSelect<T>(string sql);
 
+        //IQueryable<ContractFileScope> GetDetailQuery();
+
         Task<ContractInfo> CreateAsync(SimpleUser userinfo, ContractInfo buildingBaseInfo, string modifyid, CancellationToken cancellationToken = default(CancellationToken));
 
         Task DeleteAsync(SimpleUser userinfo, string contractid, CancellationToken cancellationToken = default(CancellationToken));

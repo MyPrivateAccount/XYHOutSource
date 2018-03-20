@@ -4,6 +4,41 @@
         <name>XYHContractPlugin</name>
     </assembly>
     <members>
+        <member name="M:XYHContractPlugin.Controllers.ContractFileController.UploadFiles(ApplicationCore.Dto.UserInfo,System.Collections.Generic.List{XYHContractPlugin.Dto.Request.FileInfoRequest},System.String,System.String,System.String)">
+            <summary>
+            批量上传文件
+            </summary>
+            <param name="user"></param>
+            <param name="fileInfoRequests"></param>
+            <param name="source"></param>
+            <param name="contractId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:XYHContractPlugin.Controllers.ContractFileController.FileCallback(System.String,System.Collections.Generic.List{XYHContractPlugin.Dto.Request.FileInfoCallbackRequest})">
+            <summary>
+            
+            </summary>
+            <param name="userId"></param>
+            <param name="fileInfoCallbackRequestList"></param>
+            <returns></returns>
+        </member>
+        <member name="M:XYHContractPlugin.Controllers.ContractFileController.DeleteContractFiles(ApplicationCore.Dto.UserInfo,System.String,System.Collections.Generic.List{System.String})">
+            <summary>
+            删除合同文件
+            </summary>
+            <param name="user"></param>
+            <param name="buildingId"></param>
+            <param name="fileGuids"></param>
+            <returns></returns>
+        </member>
+        <member name="M:XYHContractPlugin.Controllers.ContractFileController.GetFileListByContractId(ApplicationCore.Dto.UserInfo,System.String)">
+            <summary>
+            获取合同文件
+            </summary>
+            <param name="user"></param>
+            <param name="contractId"></param>
+            <returns></returns>
+        </member>
         <member name="P:XYHContractPlugin.Dto.Request.ContractSearchRequest.SearchType">
             <summary>
             用户条件

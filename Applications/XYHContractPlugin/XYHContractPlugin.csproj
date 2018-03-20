@@ -16,13 +16,16 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore">
-      <HintPath>..\..\..\OutSource\Applications\dll\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll</HintPath>
+      <HintPath>..\dll\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Extensions.Identity.Stores">
-      <HintPath>..\..\..\OutSource\Applications\dll\Microsoft.Extensions.Identity.Stores.dll</HintPath>
+      <HintPath>..\dll\Microsoft.Extensions.Identity.Stores.dll</HintPath>
     </Reference>
     <Reference Include="XYH.Core">
-      <HintPath>..\..\..\OutSource\Applications\dll\XYH.Core.dll</HintPath>
+      <HintPath>..\dll\XYH.Core.dll</HintPath>
     </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Dto\Common\" />
   </ItemGroup>
 </Project>

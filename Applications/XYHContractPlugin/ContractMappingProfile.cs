@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using XYHContractPlugin.Dto.Response;
 using XYHContractPlugin.Models;
+using XYHContractPlugin.Dto.Request;
 
 namespace XYHContractPlugin
 {
@@ -22,6 +23,17 @@ namespace XYHContractPlugin
 
             CreateMap<ContractModifyResponse, ModifyInfo>();
             CreateMap<ModifyInfo, ContractModifyResponse>();
+
+            CreateMap<FileInfoRequest, ContractFileScope>();
+
+            CreateMap<FileInfoCallbackRequest, FileInfo>();
+            CreateMap<FileInfo, FileInfoCallbackRequest>();
+
+            CreateMap<FileInfoResponse, FileInfo>();
+            CreateMap<FileInfo, FileInfoResponse>();
+
+//            CreateMap<FileInfo, FileInfoResponse>();
+//            CreateMap<FileInfoResponse,FileInfo>();
 
             CreateMap<ContractContentResponse, ContractInfo>()
                 .ForMember(d => d.ID, m=>m.MapFrom(src => src.BaseInfo.ID))
