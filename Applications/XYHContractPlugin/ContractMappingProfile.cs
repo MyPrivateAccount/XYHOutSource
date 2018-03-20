@@ -48,6 +48,7 @@ namespace XYHContractPlugin
                 .ForMember(d => d.CreateUser, m => m.MapFrom(src => src.BaseInfo.CreateUser))
                 .ForMember(d => d.CreateTime, m => m.MapFrom(src => src.BaseInfo.CreateTime))
                 .ForMember(d => d.CreateDepartment, m => m.MapFrom(src => src.BaseInfo.CreateDepartment))
+                .ForMember(d => d.Organizete, m => m.MapFrom(src => src.BaseInfo.Organizete))
                 .ForMember(d => d.CommisionType, m => m.MapFrom(src => src.BaseInfo.CommisionType))
                 .ForMember(d => d.StartTime, m => m.MapFrom(src => src.BaseInfo.StartTime))
                 .ForMember(d => d.EndTime, m => m.MapFrom(src => src.BaseInfo.EndTime))
@@ -78,6 +79,7 @@ namespace XYHContractPlugin
                     CreateUser = src.CreateUser,
                     CreateTime = src.CreateTime,
                     CreateDepartment = src.CreateDepartment,
+                    Organizete = src.Organizete,
                     CommisionType = src.CommisionType,
                     StartTime = src.StartTime,
                     EndTime = src.EndTime,

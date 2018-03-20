@@ -20,7 +20,7 @@ using AspNet.Security.OAuth.Validation;
 
 namespace XYHContractPlugin.Controllers
 {
-    //[Authorize(AuthenticationSchemes = OAuthValidationDefaults.AuthenticationScheme)]
+    [Authorize(AuthenticationSchemes = OAuthValidationDefaults.AuthenticationScheme)]
     [Produces("application/json")]
     [Route("api/contractinfo")]
     public class ContractInfoController : Controller
@@ -36,7 +36,7 @@ namespace XYHContractPlugin.Controllers
 
         [HttpGet("testinfo")]
         [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
-        public async Task<ResponseMessage<List<int>>> GetTestInfo()//[FromRoute]string testinfo
+        public async Task<ResponseMessage<List<int>>> GetTestInfo(UserInfo user)//[FromRoute]string testinfo
         {
             var Response = new ResponseMessage<List<int>>();
             //if (string.IsNullOrEmpty(testinfo))
@@ -46,6 +46,7 @@ namespace XYHContractPlugin.Controllers
             //}
             try
             {
+                return Response;
                 //Response.Extension = await _userTypeValueManager.FindByTypeAsync(user.Id, type, HttpContext.RequestAborted);
             }
             catch (Exception e)

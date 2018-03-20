@@ -17,7 +17,7 @@ using ApplicationCore.Managers;
 
 namespace XYHContractPlugin.Controllers
 {
-    //[Authorize(AuthenticationSchemes = OAuthValidationDefaults.AuthenticationScheme)]
+    [Authorize(AuthenticationSchemes = OAuthValidationDefaults.AuthenticationScheme)]
     [Produces("application/json")]
     [Route("api/contractlist")]
     public class ContractListController : Controller

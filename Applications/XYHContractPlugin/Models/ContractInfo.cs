@@ -37,17 +37,19 @@ namespace XYHContractPlugin.Models
         [MaxLength(64)]
         public string CompanyA { get; set; }
         public int? CompanyAT { get; set; }
-        [MaxLength(32)]
+        [MaxLength(127)]
         public string PrincipalpepoleA { get; set; }
-        [MaxLength(32)]
+        [MaxLength(127)]
         public string PrincipalpepoleB { get; set; }
-        [MaxLength(32)]
+        [MaxLength(127)]
         public string ProprincipalPepole { get; set; }
         [MaxLength(127)]
         public string CreateUser { get; set; }
         public DateTime? CreateTime { get; set; }
-        [MaxLength(32)]
+        [MaxLength(127)]
         public string CreateDepartment { get; set; }
+        [MaxLength(127)]
+        public string Organizete { get; set; }
         public bool IsDelete { get; set; }
         [MaxLength(127)]
         public string DeleteUser { get; set; }
