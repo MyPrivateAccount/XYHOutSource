@@ -38,7 +38,7 @@ export const gotoChangeMyAdd = createAction(actionTypes.GOTO_CHANGE_MYADD);
 // export const saveCompleteFileList = createAction(actionTypes.SAVE_COMPLETE_FILE_LIST);
 // export const saveDeletePicList = createAction(actionTypes.SAVE_DELETE_PIC_LIST);
 
-export const savePictureAsync = createAction(actionTypes.SAVE_PICTURE_ASYNC);
+export const savePictureAsync = createAction(actionTypes.CONTRACT_SAVE_PICTURE_ASYNC);
 //export const uploadPicFinish = createAction(actionTypes.UPLOAD_PIC_FINISH);
 export const contractPicView = createAction(actionTypes.CONTRACT_PIC_VIEW);
 export const contractPicEdit = createAction(actionTypes.CONTRACT_PIC_EDIT);
@@ -74,6 +74,15 @@ export const getContractDetail = createAction(actionTypes.GET_CONTRACT_DETAIL);
 
 export const openContractChoose = createAction(actionTypes.OPEN_CONTRACT_CHOOSE);
 export const closeContractChoose = createAction(actionTypes.CLOSE_CONTRACT_CHOOSE);
+
+
+//
+export const openModifyHistory = createAction(actionTypes.OPEN_MODIFY_HISTORY);
+export const closeModifyHistory = createAction(actionTypes.CLOSE_MODIFY_HISTORY);
+
+
+
+
 
 
 
