@@ -1,5 +1,6 @@
 import { connect } from 'react-redux';
 import { editContractBasic, openModifyHistory } from '../../../actions/actionCreator';
+import ModifyHistory from '../../dialog/modifyHistory';
 import React, { Component } from 'react'
 import { Icon, Table, Button, Checkbox, Row, Col, Form } from 'antd'
 import moment from 'moment';
@@ -98,6 +99,14 @@ class BasicInfo extends Component {
                         <Col span={12}>续签合同:{basicInfo.follow}</Col>
                     </Row>
                     <Row className='viewRow'>
+                        <Col span={12}>是否提交铺号:{basicInfo.isSubmmitShop}</Col>
+                        <Col span={12}>是否提交关系证明:{basicInfo.isSubmmitRelation}</Col>
+                    </Row>
+                    <Row className='viewRow'>
+                        <Col span={12}>结算方式:{basicInfo.settleaccounts}</Col>
+                        <Col span={12}>佣金方案:{basicInfo.commission}</Col>
+                    </Row>
+                    <Row className='viewRow'>
                         <Col span={12}>审核人:{basicInfo.checkPeople}</Col>
                         <Col span={12}>审核状态:{basicInfo.checkState}</Col>
                     </Row>
@@ -106,12 +115,14 @@ class BasicInfo extends Component {
                         <Col span={12} onClick={this.handleViewHistory} style={{color:'blue'}} title="点击获取更改记录">更改记录</Col>
                     </Row>
                     <Row className='viewRow'>
-                        <Col span={24}>备注:{basicInfo.remark}</Col>   
+                        <Col span={12}>归属部门:{basicInfo.Organizete}</Col>
+                        <Col span={12}>备注:{basicInfo.remark}</Col>   
                     </Row>
                     <Row className='viewRow'>
                         <Col span={24}>补充协议:{this.props.complementInfo.contentInfo}</Col>   
                     </Row>
                 </Form>
+                <ModifyHistory />
             </div>
         )
     }

@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { shopPicEdit, buildingPicEdit,getDynamicInfoList, editBatchBuilding } from '../../../actions/actionCreator';
+import { shopPicEdit, contractPicEdit } from '../../../actions/actionCreator';
 import React, { Component } from 'react'
 import { Layout, Table, Button, Icon, Popconfirm, Tooltip, Col, Row, Modal, Upload ,Tabs } from 'antd'
 import '../edit/editCommon.less'
@@ -38,7 +38,7 @@ class AttachInfo extends Component {
 
 
     handleEdit = (e) => {
-        // this.props.dispatch(buildingPicEdit());//这里后续添加contractPicEdit()
+        this.props.dispatch(contractPicEdit());//这里后续添加contractPicEdit()
     }
     handleCancel = () => this.setState({ previewVisible: false })
 
@@ -171,7 +171,7 @@ class AttachInfo extends Component {
 function mapStateToProps(state) {
     // console.log(state.shop.shopsInfo.attachInfo, state.building.buildInfo.attachInfo, '图片展示列表' )
     return {
-        contractAttachInfo: state.contractData.contractInfo.attachInfo,
+        contractAttachInfo: state.contractData.contractInfo.annexInfo,
         basicData: state.basicData
     }
 }

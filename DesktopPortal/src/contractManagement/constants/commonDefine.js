@@ -1,7 +1,7 @@
 //合同信息分组定义
 export const contractInfoGroup = [
     {id:'basicInfo', name:'基本信息'},
-    {id:'additionalInfo', name:'补充信息'},
+   // {id:'additionalInfo', name:'补充信息'},
     { id: 'attachInfo', name: '附加信息' }
 ];
 

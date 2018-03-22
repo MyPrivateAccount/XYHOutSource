@@ -9,7 +9,7 @@ import SearchBox from './searchBox';
 // const CheckboxGroup = Checkbox.Group;
 // const ButtonGroup = Button.Group;
 const Option = Select.Option;
-const checkStateDefine = [{value: '0', key: '未审核'}, {value: '1', key: '审核中'},{value: '1', key: '已审核'}];
+const checkStateDefine = [{value: '0', key: '未审核'}, {value: '1', key: '审核中'},{value: '2', key: '已审核'}];
 let t = null;
 class SearchCondition extends Component {
     state = {
@@ -18,7 +18,7 @@ class SearchCondition extends Component {
         condition: {
             keyWord: '',
             checkStatu: null,//审核状态
-            organizationName: [],//客户来源
+            //organizationName: [],//
             createDateStart: null,//录入时间
             createDateEnd: null,
             //IsExpire:false,
@@ -110,43 +110,39 @@ class SearchCondition extends Component {
         condition["orderRule"] = e.target.value;
         this.setState({condition: condition}, () => {this.handleSearch()});
     }
-    // //禁用日期
-    // disabledDate(current) {
-    //     // Can not select days before today and today
-    //     return current && current.valueOf() > Date.now();
-    // }
-    // //处理查看重客状态变更
-    // handleViewRepeatChange = (e) => {
-    //     console.log("查看重客状态变更:", e.target.checked);
-    //     let condition = {...this.state.condition};
-    //     condition.pageIndex = 0;
-    //     condition.isOnlyRepeat = e.target.checked;
-    //     this.setState({condition: condition}, () => {this.handleSearch()});
-    // }
+
     handleExpire = (e) =>{
-        let condition = {...this.condition};
+        let condition = {...this.state.condition};
         condition["overTime"] = e.target.checked ? 1: 0;
         this.setState({condition:condition}, () =>{this.handleSearch()});
     }
 
-    handleExpire = (e) =>{
-        let condition = {...this.condition};
-        condition["checkStatu"] = e.target.checked ? 1: 0;
-        this.setState({condition:condition}, () =>{this.handleSearch()});
-    }
+
     handleFollow = (e) =>{
-        let condition = {...this.condition};
+        let condition = {...this.state.condition};
         condition["follow"] = e.target.checked ? 1: 0;
         this.setState({condition:condition}, () =>{this.handleSearch()});
     }
     handleInvalid = (e) =>{
-        let condition = {...this.condition};
+        let condition = {...this.state.condition};
         condition["discard"] = e.target.checked ? 1: 0;
         this.setState({condition:condition}, () =>{this.handleSearch()});
     }
 
-    handleCheckChange = (e, type) =>{
+    handleCheckChange = (e, typeq) =>{
+        let condition = {...this.state.condition};
+        e.map(value =>{
+            if(typeq === "checkStatu"){
+                let res = checkStateDefine.find(tp => tp.value === value);
+                if(res){
+                    condition["checkStatu"] = e;
+                }
+       
+            }
+        })
+  
         
+        this.setState({condition:condition}, () =>{this.handleSearch()});
     }
     render() {
         let expandSearchCondition = this.state.expandSearchCondition;
@@ -157,10 +153,10 @@ class SearchCondition extends Component {
         // const customerSource = this.props.basicData.customerSource;
         // const invalidResions = this.props.basicData.invalidResions;
         // const areaList = this.props.basicData.areaList;
-        let CreateDateStart = this.state.condition.CreateDateStart === null ? null : moment(this.state.condition.CreateDateStart);
-        let CreateDateEnd = this.state.condition.CreateDateEnd === null ? null : moment(this.state.condition.CreateDateEnd);
+        let createDateStart = this.state.condition.createDateStart === null ? null : moment(this.state.condition.createDateStart);
+        let createDateEnd = this.state.condition.createDateEnd === null ? null : moment(this.state.condition.createDateEnd);
         const activeMenu = this.props.activeMenu;
-        const dataSourceTotal = this.props.searchResult.validityCustomerCount || 0;
+        const dataSourceTotal = this.props.searchResult.extension.length || 0;
 
         return (
             <div>
@@ -190,11 +186,11 @@ class SearchCondition extends Component {
                                     <Checkbox onChange={this.handleFollow}></Checkbox>
                             </Col>
                         </Row>
-                 
+                        {/*
                         <Row className="normalInfo">
                              <Col span={24}>
                                 <label>审核状态：</label>
-                                <Checkbox.Group onChange={(e) => this.handleCheckChange(e, 'checkStatu')} value={this.state.condition.checkStatu}>
+                                <Checkbox.Group onChange={(e) => this.handleCheckChange(e, "checkStatu")} value={this.state.condition.checkStatu}>
                                     {
                                         checkStateDefine.map(b =>
                                             <Checkbox key={b.key} value={b.value}>{b.key}</Checkbox>
@@ -203,14 +199,14 @@ class SearchCondition extends Component {
                                 </Checkbox.Group>
                             </Col>
                         </Row>
-                   
+                        */}
                         {      
 
                             <Row className="normalInfo">
                                 <Col>
                                     {activeMenu !== "menu_invalid" ?
                                         <label><span style={{marginRight: '10px'}}>录入日期：</span>
-                                            <DatePicker disabledDate={this.disabledDate} value={CreateDateStart} onChange={(e, dateString) => this.handleCreateTime(dateString, 'CreateDateStart')} />- <DatePicker disabledDate={this.disabledDate} value={CreateDateEnd} onChange={(e, dateString) => this.handleCreateTime(dateString, 'CreateDateStart')} />
+                                            <DatePicker disabledDate={this.disabledDate} value={createDateStart} onChange={(e, dateString) => this.handleCreateTime(dateString, 'createDateStart')} />- <DatePicker disabledDate={this.disabledDate} value={createDateEnd} onChange={(e, dateString) => this.handleCreateTime(dateString, 'createDateStart')} />
                                         </label> : null}
                                 </Col>
                             </Row>

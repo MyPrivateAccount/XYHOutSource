@@ -7,7 +7,7 @@ export const basicDataServiceUrl = window._basicDataUrl || 'https://testapi.xiny
 export const basicDataBaseApiUrl = basicDataServiceUrl + '/api/';
 export const FlowChartUrl = window._flowChartUrl || 'https://testauth.xinyaohangdc.com';
 export const FlowChartApiUrl = FlowChartUrl + '/api/';
-export const UploadUrl = window._uploadUrl || 'https://testauth.xinyaohangdc.com';
+export const UploadUrl = window._uploadUrl || 'https://testfile.xinyaohangdc.com';
 //应用类型
 export const ApplicationTypes = [
     { key: 'pc', value: 'PC端应用', icon: 'desktop' },

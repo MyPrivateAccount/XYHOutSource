@@ -19,9 +19,9 @@ class SearchBox extends Component{
     componentWillReceiveProps(newProps){
         //更新某些属性
     }
-    getSearchType = ()=>{
+    // getSearchType = ()=>{
 
-    }
+    // }
     handleKeyChangeWord = (e) =>{
         //处理关键字改变-需要
         this.props.dispatch(changeKeyWord(e.target.value));
@@ -29,12 +29,13 @@ class SearchBox extends Component{
     handleSearch = () =>{
         let activeMenu = (this.props.searchInfo || {}).activeMenu;
         let condition = {...this.props.condition};
+    
         condition.keyWord = this.props.searchInfo.searchKeyWord;
         if (this.props.searchInfo.activeOrg.id !== "0") {
-            condition.departmentId = this.props.searchInfo.activeOrg.id;
+            condition.organizate = this.props.searchInfo.activeOrg.id;
         }
-        condition.searchSourceType = getSearchType(activeMenu);
-        condition.searchType = this.state.searchType;
+        //condition.searchSourceType = getSearchType(activeMenu);
+        //condition.searchType = this.state.searchType;
         // console.log("格式化前的搜索条件:", condition);
         let standardCondition = formatSearchCondition(condition);
         console.log("最终搜索条件:", standardCondition);
@@ -50,15 +51,16 @@ class SearchBox extends Component{
         return (
             <div>
                 <div className="searchBox">
-    <Row type="flex">
+                    <Row type="flex">
                         <Col span={12}>
-                        <Input placeholder={this.state.searchType === '1' ? '请输入合同编号或者名称': ''} 
-                         value = {keyword} onChange = {this.handleKeyChangeWord}/> 
+                            <Input placeholder={this.state.searchType === '1' ? '请输入合同编号或者名称': ''} 
+                            value = {keyword} onChange = {this.handleKeyChangeWord}/> 
                         </Col>
                         <Col span={8}>
-                        <Button type='primary' className='searchButton' onClick={this.handleSearch}>查询</Button>
+                            <Button type='primary' className='searchButton' onClick={this.handleSearch}>查询</Button>
                         </Col>
-                        </Row>                </div>
+                    </Row>               
+             </div>
             </div>
         )
     }

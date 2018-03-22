@@ -389,6 +389,7 @@ class AttachEdit extends Component {
           </div>
           <Row type="flex" justify="space-between" className='BtnTop'>
                   {
+                     (this.props.isCurShowContractDetail  || [8, 1].includes(this.props.attachInfo.examineStatus))  ? null :
                     <Col  span={24} style={{ textAlign: 'right' }} className='BtnTop'>
                       <Button type="primary" size='default'
                         style={{ width: "8rem" }}
@@ -414,6 +415,7 @@ function mapStateToProps(state) {
     operInfo: state.contractData.operInfo,
     completeFileList: state.contractData.completeFileList,
     deletePicList: state.contractData.deletePicList,
+    isCurShowContractDetail: state.contractData.isCurShowContractDetail,
     /*
     buildingOperInfo: state.building.operInfo,
     shopsInfo: state.shop.shopsInfo,

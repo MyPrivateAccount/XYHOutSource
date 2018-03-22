@@ -49,6 +49,7 @@ class ModifyHistory extends Component{
 
 
     render(){
+        console.log("modifyHistoryVisible:", this.props.modifyHistoryVisible);
         let dataSource = this.modifyRecord;
         return(
             <Modal 
@@ -62,6 +63,7 @@ class ModifyHistory extends Component{
 }
 
 function mapStateToProps(state){
+    console.log("historyState:", state);
     return {
         modifyRecord: state.contractData.contractInfo.modifyInfo,
         modifyHistoryVisible: state.contractData.modifyHistoryVisible
