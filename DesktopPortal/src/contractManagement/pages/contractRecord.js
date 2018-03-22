@@ -54,7 +54,7 @@ class ContractRecord extends Component{
         }
     }
     handleReturn = ()=>{
-        this.props.dispatch(changeContractMenu());
+        this.props.dispatch(changeContractMenu("menu_index"));
     }
     render(){
         let basicOperType = this.props.operInfo.basicOperType;
@@ -96,15 +96,6 @@ class ContractRecord extends Component{
                                 </Radio.Group>
                             </Col>
                         </Row>
-
-                        {/* <Row>
-                            {
-                                this.props.buildInfo.examineStatus !== 16 ? null :
-                                <p style={{color: 'red', fontWeight: 'bold'}}>
-                                    驳回原因：XXXXXXX
-                                </p>
-                            }
-                        </Row> */}
                         <Row id="basicInfo">
                             {
                                 

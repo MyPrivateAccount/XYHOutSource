@@ -156,7 +156,11 @@ class SearchCondition extends Component {
         let createDateStart = this.state.condition.createDateStart === null ? null : moment(this.state.condition.createDateStart);
         let createDateEnd = this.state.condition.createDateEnd === null ? null : moment(this.state.condition.createDateEnd);
         const activeMenu = this.props.activeMenu;
-        const dataSourceTotal = this.props.searchResult.extension.length || 0;
+        let dataSourceTotal = 0;
+        if(this.props.searchResult.extension){
+            dataSourceTotal = this.props.searchResult.extension.length;
+        }
+      
 
         return (
             <div>
