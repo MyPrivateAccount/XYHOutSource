@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { shopPicEdit, buildingPicEdit,getDynamicInfoList, editBatchBuilding } from '../../../actions/actionCreator';
+import { shopPicEdit, contractPicEdit } from '../../../actions/actionCreator';
 import React, { Component } from 'react'
 import { Layout, Table, Button, Icon, Popconfirm, Tooltip, Col, Row, Modal, Upload ,Tabs } from 'antd'
 import '../edit/editCommon.less'
@@ -20,7 +20,7 @@ class AttachInfo extends Component {
     }
     componentDidMount() {
         let fileList = [];
-    
+        console.log("进入info");
         if (this.props.contractAttachInfo.fileList) {
             this.getGroup(this.props.contractAttachInfo.fileList)
         }
@@ -38,7 +38,7 @@ class AttachInfo extends Component {
 
 
     handleEdit = (e) => {
-        // this.props.dispatch(buildingPicEdit());//这里后续添加contractPicEdit()
+        this.props.dispatch(contractPicEdit());//这里后续添加contractPicEdit()
     }
     handleCancel = () => this.setState({ previewVisible: false })
 
@@ -99,22 +99,18 @@ class AttachInfo extends Component {
                         <Row type="flex" >
                             <Col span={20}>
                             {
-                                 this.props.type === 'dynamic' ? null : 
+                            
                                  <div>
-                                 <Icon type="tags-o" className='content-icon' /> <span className='content-title'>附加信息</span>
+                                    <Icon type="tags-o" className='content-icon' /> <span className='content-title'>附加信息</span>
                                  </div>
                             }
                                
                             </Col>
                             <Col span={4}>
                                 {
-                                     // this.props.type = 'dynamic' 说明这个页面是从动态房源哪里引用的。因为动态房源都是审核通过的页面，但是可以进行修改，所以要加以判断
-                                    this.props.type === 'dynamic' ? 
-                                    // [1].includes(a.examineStatus) ? null : 
-                                    <Button type="primary" shape="circle" icon="edit" onClick={this.handleEdit} /> 
-                                    :
                                     // 下面的判断是因为在新增房源那里，1和8状态的楼盘都不可修改
-                                    [1, 8].includes(this.props.buildInfo.examineStatus) ? null : <Button type="primary" shape="circle" icon="edit" onClick={this.handleEdit} />
+                                    //[1, 8].includes(this.props.buildInfo.examineStatus) ? null : <Button type="primary" shape="circle" icon="edit" onClick={this.handleEdit} />
+                                    <Button type="primary" shape="circle" icon="edit" onClick={this.handleEdit} />
                             
                                 }
                             </Col>
@@ -175,7 +171,7 @@ class AttachInfo extends Component {
 function mapStateToProps(state) {
     // console.log(state.shop.shopsInfo.attachInfo, state.building.buildInfo.attachInfo, '图片展示列表' )
     return {
-        contractAttachInfo: state.contractData.contractAttachInfo,
+        contractAttachInfo: state.contractData.contractInfo.annexInfo,
         basicData: state.basicData
     }
 }

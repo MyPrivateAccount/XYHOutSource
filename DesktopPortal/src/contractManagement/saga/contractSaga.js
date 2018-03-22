@@ -98,14 +98,17 @@ export function* savePictureAsync(action) {
     let result = { isOk: false, msg: '图片保存失败！' };
     console.log(action, '上传图片')
     let id = action.payload.id;
-    let city = action.payload.ownCity; // 自己所在城市
-    let url = WebApiConfig.buildingAttachInfo.PicUpload.replace("{dest}", action.payload.type) + id;
+    //let city = action.payload.ownCity; // 自己所在城市
+    //let url = WebApiConfig.buildingAttachInfo.PicUpload.replace("{dest}", action.payload.type) + id;
     try {
         let body = action.payload.fileInfo;
-        let res = yield call(ApiClient.post, url, body);
-        getApiResult(res, result);
-        console.log(`上传图片url:${url},body:${JSON.stringify(body)}，result：${res}`);
-        console.log(res, body, 'res')
+        yield put({ type: actionUtils.getActionType(actionTypes.CONTRACT_PIC_VIEW), payload: { filelist: action.payload.completeFileList, type: 'add' } });
+            yield put(actionUtils.action(attchLoadingEnd));
+        return;
+        //let res = yield call(ApiClient.post, url, body);
+        //getApiResult(res, result);
+        //console.log(`上传图片url:${url},body:${JSON.stringify(body)}，result：${res}`);
+        //console.log(res, body, 'res')
         if (result.isOk) {
             result.msg = '图片保存成功！';
             yield put({ type: actionUtils.getActionType(actionTypes.CONTRACT_PIC_VIEW), payload: { filelist: action.payload.completeFileList, type: 'add' } });
@@ -158,7 +161,7 @@ export function* watchContractAllAsync() {
      yield takeLatest(actionUtils.getActionType(actionTypes.GOTO_THIS_CONTRACT), gotoThisContract);
      yield takeLatest(actionUtils.getActionType(actionTypes.CONTRACT_INFO_SUBMIT), submitContractInfo);
     // yield takeLatest(actionUtils.getActionType(actionTypes.BATCH_BUILDING_SAVE_ASYNC), saveBatchBuildingAsync);
-     yield takeLatest(actionUtils.getActionType(actionTypes.SAVE_PICTURE_ASYNC), savePictureAsync);
+     yield takeLatest(actionUtils.getActionType(actionTypes.CONTRACT_SAVE_PICTURE_ASYNC), savePictureAsync);
      yield takeLatest(actionUtils.getActionType(actionTypes.DELETE_PICTURE_ASYNC), deletePicAsync);
     // yield takeLatest(actionUtils.getActionType(actionTypes.COMMISSION_SAVE), saveCommissionInfo);
     // yield takeLatest(actionUtils.getActionType(actionTypes.RULES_SAVE), saveRulesInfo);

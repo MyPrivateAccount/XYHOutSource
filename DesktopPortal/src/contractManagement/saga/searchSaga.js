@@ -13,7 +13,7 @@ const actionUtils = appAction(actionTypes.ACTION_ROUTE)
 function dealCondition(body){
     let newBody = {};
     for(let key in body){
-        if(body[key] !== '' && body[key] !== null){
+        if(key === 'keyWord' || (body[key] !== '' && body[key] !== null)){
             newBody[key] = body[key];
         }
     }
@@ -26,9 +26,9 @@ export function* getContractListAsync(state) {
     
     let body = state.payload;
     let newBody = dealCondition(body);
-
+    //newBody = {"keyWord": "","pageIndex":0,"pageSize":10};
     try {
-        let res = yield call(ApiClient.post, url, {});
+        let res = yield call(ApiClient.post, url, newBody);
         console.log(`url:${url},body:${JSON.stringify(state.payload)},result:${JSON.stringify(res)},newBody:${JSON.stringify(newBody)}`);
        getApiResult(res, result);
        if (result.isOk) {

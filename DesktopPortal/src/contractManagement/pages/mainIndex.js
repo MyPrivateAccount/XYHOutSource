@@ -41,19 +41,19 @@ class MainIndex extends Component {
         }
         return hasPermission;
     }
-    //录入
-    onClickRecord = (e) =>{
-        console.log('录入');
-        this.props.dispatch(openContractRecord({id:0}));
-    }
-    //导出
-    onClickExPort = (e) =>{
+    // //录入
+    // onClickRecord = (e) =>{
+    //     console.log('录入');
+    //     this.props.dispatch(openContractRecord({id:0}));
+    // }
+    // //导出
+    // onClickExPort = (e) =>{
         
-    }
-    //文件上传
-    onClickUploadFile = (e)=>{
-        this.props.dispatch(openAttachMent({id:1}));
-    }
+    // }
+    // //文件上传
+    // onClickUploadFile = (e)=>{
+    //     this.props.dispatch(openAttachMent({id:1}));
+    // }
     handleClickFucButton = (buttonID) =>{
         switch(buttonID){
             case 'record':
@@ -67,16 +67,16 @@ class MainIndex extends Component {
         }
     }
     render() {
-        let showLoading = false;//this.props.showLoading;//this.props.showLoading;
+        let showLoading = this.props.showLoading;
         return (
             <div id='contractManagement'>
                 <Spin spinning={showLoading}>
                     <SearchCondition />
                     {
-                        buttonDef.map(
-                            (button, i)=>this.hasPermission(button) ? <Button key = {i} id= {button.buttonID} style={{marginBottom: '10px', marginRight: '10px', border:0}}  onClick = {this.handleClickFucButton(button.buttonID)} icon={button.icon} size={button.size} type={button.type}>{button.buttonName}</Button> : null
+                        // buttonDef.map(
+                        //     (button, i)=>this.hasPermission(button) ? <Button key = {i} id= {button.buttonID} style={{marginBottom: '10px', marginRight: '10px', border:0}}  onClick = {this.handleClickFucButton(button.buttonID)} icon={button.icon} size={button.size} type={button.type}>{button.buttonName}</Button> : null
 
-                        )
+                        // )
                     }
                     <SearchResult />
                 </Spin>

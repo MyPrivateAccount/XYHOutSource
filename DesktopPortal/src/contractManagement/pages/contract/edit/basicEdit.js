@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { getDicParList, saveContractBasic, viewBuildingBasic,basicLoadingStart, openContractChoose } from '../../../actions/actionCreator';
+import { getDicParList, saveContractBasic, viewContractBasic,basicLoadingStart, openContractChoose } from '../../../actions/actionCreator';
 import React, { Component } from 'react';
 import { Icon, Input, InputNumber, Button, Checkbox, Row, Col, Form, DatePicker, Select, Cascader,Radio } from 'antd';
 import moment from 'moment';
@@ -13,14 +13,18 @@ const { RangePicker } = DatePicker;
 const { TextArea } = Input;
 class BasicEdit extends Component {
 
-    handleCancel = () => this.setState({ previewVisible: false })
+    handleCancel = () => {
+        this.props.dispatch(viewContractBasic())
+    }
     handleChangeTime = (value, dateString)=>{
         //console.log('curstatrEndTime:', value);
        // console.log('format curstatrEndTime:', dateString);
     }
     handleRenewClick = (e)=>{
         console.log("handleRenewClick");
-        this.props.dispatch(openContractChoose());
+        let curFollowContract = this.props.curFollowContract || {};
+        let contractName = curFollowContract.Name ? curFollowContract.Name : '';
+        this.props.dispatch(openContractChoose({contractName: contractName}));
     }
     handleSave = (e) => {
         e.preventDefault();
@@ -76,7 +80,9 @@ class BasicEdit extends Component {
         }
     }
     render(){
-        console.log("this.props.contractChooseVisible:", this.props.contractChooseVisible);
+        //console.log("this.props.contractChooseVisible:", this.props.contractChooseVisible);
+        console.log('this.props.curFollowContract:', this.props.curFollowContract);
+        let curFollowContract = this.props.curFollowContract || {};
         const { getFieldDecorator, getFieldsError, getFieldError, isFieldTouched } = this.props.form;
         //let contractTypes = '1';
         let basicOperType = this.props.basicOperType;
@@ -336,7 +342,7 @@ class BasicEdit extends Component {
                 <Col span={12}>
                     <FormItem {...formItemLayout} label={<span>续签合同</span>}>
                         {getFieldDecorator('follow', {
-                                    initialValue: basicInfo.follow,
+                                    initialValue: curFollowContract.name !== undefined ? curFollowContract.name : basicInfo.follow,
                                     //rules:[{required:true, message:'续签合同'}]
                                     })(
                                         //<span>{'无'}</span>
@@ -349,13 +355,30 @@ class BasicEdit extends Component {
                 </Col>
 
             </Row>
+			<Row type="flex" style={{marginTop:"25px"}}>
+                {
+  
+                    <Col span={12}>
+                        <FormItem {...formItemLayout} label={<span>归属部门</span>}>
+                        {getFieldDecorator('Organizete', {
+                                        initialValue: basicInfo.Organizete,
+                                        rules:[{required:true, message:'请选择归属部门!'}]
+                                        })(
+                                            <Input placeholder="归属部门"/>
+                                        )
+                                        
+                        }
+                        </FormItem>
+                    </Col>
+                }
+            </Row>
             <Row type="flex" style={{marginTop:"25px"}}>
                 {
                     basicOperType === 'edit' ? 
                     <Col span={12}>
                         <FormItem {...formItemLayout} label={<span>是否作废</span>}>
                         {getFieldDecorator('isCancel', {
-                                        initialValue: basicInfo.isCancel == null ? (basicInfo.isCancel === 1 ? '是' :'否') : null ,
+                                        initialValue: basicInfo.discard == null ? (basicInfo.discard === 1 ? '是' :'否') : null ,
                                         rules:[{required:true, message:'请选择是否作废!'}]
                                         })(
                                             <RadioGroup >
@@ -430,6 +453,7 @@ function mapStateToProps(state) {
         activeOrg: state.search.activeOrg,
         contractChooseVisible: state.contractData.contractChooseVisible,
         complementInfo: state.contractData.contractInfo.complementInfo,
+        curFollowContract: state.contractData.curFollowContract,
     }
   }
   

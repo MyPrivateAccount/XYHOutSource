@@ -1,11 +1,16 @@
 import {connect} from 'react-redux';
-import { getContractDetail, searchStart, saveSearchCondition, setLoadingVisible,openAttachMent, openContractRecord} from '../actions/actionCreator';
+import { getContractDetail, searchStart, saveSearchCondition, setLoadingVisible,openAttachMent, openContractRecord, openContractDetail} from '../actions/actionCreator';
 import React, {Component} from 'react';
 import {Button, Row, Col, Table} from 'antd';
 import moment from 'moment';
-import AdjustCustomer from './dialog/adjustCustomer';
+import XLSX from 'xlsx';
 
-
+const buttonDef = [
+    { buttonID:"record", buttonName:"录入", icon:'', type:'primary', size:'small', requirePermission:['RECORD_FUC']},
+    { buttonID:"uploadFile", buttonName:"附件上传", icon:'', type:'primary', size:'small',requirePermission:['UPLOAD_FILE']},
+    { buttonID:"export", buttonName:"导出", icon:'', type:'primary', size:'small', requirePermission:['EXPORT_CONTRACT']},
+   
+];
 class SearchResult extends Component {
     state = {
         pagination: {
@@ -13,215 +18,444 @@ class SearchResult extends Component {
             current: 0,
             total: 0
         },
-        checkList: []//选中客户
+        checkList: []//
     }
-
-           //是否有权限
+    
     hasPermission(buttonInfo) {
-            let hasPermission = false;
-            if (this.props.judgePermissions && buttonInfo.requirePermission) {
-                for (let i = 0; i < buttonInfo.requirePermission.length; i++) {
-                    if (this.props.judgePermissions.includes(buttonInfo.requirePermission[i])) {
-                        hasPermission = true;
-                        break;
-                    }
+        let hasPermission = false;
+        if (this.props.judgePermissions && buttonInfo.requirePermission) {
+            for (let i = 0; i < buttonInfo.requirePermission.length; i++) {
+                if (this.props.judgePermissions.includes(buttonInfo.requirePermission[i])) {
+                    hasPermission = true;
+                    break;
                 }
-            } else {
-                hasPermission = true;
             }
-            return hasPermission;
+        } else {
+            hasPermission = true;
+        }
+        return hasPermission;
+    }
+    getCurTitlePosition = (item,  colIndex, row= 1) =>{
+        let obj = {};
+
+        obj = Object.assign({}, {v:item.title, position: String.fromCharCode(colIndex) + row}) ;
+        
+        if(item.children){
+            let nowRow = row + 1;
+            for(let j =0 ; j < item.children.length; j ++){
+                let itemCh = item.children[j];
+               this.getCurTitlePosition(itemCh, colIndex + j, nowRow );
+            }
+            // item.children.map((itemCh, i) =>{   
+            //     return this.getCurTitlePosition(itemCh, colIndex + i, nowRow );
+             
+            // })
+           
+        }
+        console.log("obj:", obj);
+        return obj;
+    }
+    getHeadersFromColums = () =>{
+        let columns = this.getContractInfoColumns();
+        let header = [{v:"序号", position:'A1'}];
+        var colIndex = 65;
+
+        let sheader = columns.map((item, i) => {
+            colIndex = colIndex + 1;
+            return this.getCurTitlePosition(item, colIndex);
+        });
+        
+        return header.concat(sheader);
     }
 
+
+    formatContractData = () =>{
+        let dataSource = this.props.searchInfo.searchResult.extension;
+        let baseInfo = dataSource.baseInfo;
+        //
+    }
+    getHeader = (columns, colIndex = 65, row= 1, header=[]) =>{
+       
+        //let header = [{v:"序号", position:'A1'}];
+   
+        var newHeader = header;
+        for(let i =0; i < columns.length; i ++){
+            colIndex = colIndex + 1;
+            let item = columns[i];
+            var obj = {};
+     
+            obj = Object.assign({}, {v:item.title, position: String.fromCharCode(colIndex) + row, key: item.key}) ;    
+      
+            newHeader.push(obj);
+       
+            if(item.children){
+
+                this.getHeader(item.children, colIndex -1, row + 1, newHeader);
+                colIndex = colIndex + item.children.length -1;
+            }
+            
+        }
+ 
+        return newHeader;
+    }
+    getContractInfoExportColumns() {
+ 
+        let columns = [
+            {
+                title: '申请日期',
+                // width: 80,
+                dataIndex: 'createTime',
+                key: 'createTime',
+                render: this.dateTimeRender,
+            },
+            {
+                title: '部门',
+                // width: 80,
+                dataIndex: 'createDepartment',
+                key: 'createDepartment'
+            },
+            {
+                title: '申请人',
+                dataIndex:'createUser',
+                key: 'createUser',
+            },
+            {
+                title: '合同编号',
+                dataIndex: 'id',
+                key: 'id',
+            },
+            {
+                title: '项目名称',
+                // width: 80,
+                dataIndex: 'projectName',
+                key: 'projectName'
+            },
+            {
+                title: '项目类型',
+                // width: 80,
+                dataIndex: 'projectType',
+                key: 'projectType',
+                render: this.getNameByType('projectType'),
+            }, 
+    
+            {
+                title: '合同名称',
+                // width: 80,
+                dataIndex: 'name',
+                key: 'name'
+            },
+            {
+                title: '合同类型',
+                // width: 80,
+                dataIndex: 'type',
+                key: 'type',
+                render: this.getNameByType('type'),
+            },
+            {
+                title: '开发商(甲方全称)',
+                // width: 80,
+                dataIndex: 'companyA',
+                key: 'companyA'
+            },
+            {
+                title: '甲方项目对接人',
+                // width: 80,
+                dataIndex: 'principalpepoleA',
+                key: 'principalpepoleA'
+            },
+  
+            {
+                title: '签订起始时间',
+                dataIndex:'startTime',
+                key:'startTime',
+                render: this.dateTimeRender,
+            },
+            {
+                title: '签订止时间',
+                dataIndex:'endTime',
+                key:'endTime',
+                render: this.dateTimeRender,
+            },
+                
+            {
+                title: '包销方/开发商',
+                dataIndex:'companyAT',
+                key:'companyAT',
+                render: this.getNameByType('companyAT'),
+            },
+            {
+                title: '是否提供关系证明',
+                dataIndex:'isSubmmitRelation',
+                key:'isSubmmitRelation',
+                render: this.isTrueOrFalse,
+            },
+            {
+                title: '是否提供铺号(销控明细)',
+                dataIndex:'isSubmmitShop',
+                key:'isSubmmitShop',
+                render: this.isTrueOrFalse,
+            },
+            {
+                title: '佣金方案',
+                dataIndex:'commisionType',
+                key:'commisionType',
+                render: this.getNameByType('commisionType'),
+            },
+            {
+                title: '结算方式',
+                dataIndex:'settleaccounts',
+                key:'settleaccounts',
+            },
+            {
+                title: '新签/续签',
+                dataIndex:'follow',
+                key:'follow',
+            },
+            {
+                title: '备注',
+                dataIndex:'remark',
+                key:'remark',
+            },
+        ];
+        return columns;
+    };
+
+    getSingleItem = ( pos, key, value,isNum, num) =>{
+        let obj = {};
+        if(isNum){
+            value = num;
+        }
+        else if(value === null){
+            value = '';
+        }else if(value === true){
+            value = '是';
+        }else if(value === false){
+            value = '否';
+        }else{
+            if(key === 'type'){
+                value = this.findKeyByValue(this.props.basicData.contractCategories, value);
+            }else if(key === 'projectType'){
+                value = this.findKeyByValue(this.props.basicData.contractProjectCatogories, value);
+            }else if(key === 'companyAT'){
+                value = this.findKeyByValue(this.props.basicData.firstPartyCatogories, value);
+            }else if(key === 'commisionType'){
+                value = this.findKeyByValue(this.props.basicData.commissionCatogories, value);
+            }
+        }
+        obj = Object.assign({}, {v:value,position: pos.substr(0, 1) + (num+1)}) ;  
+        return obj;
+    }
+    getSingleExportData = (header, record, num = 1) =>{
+        let isNum = false;
+        let data = [];
+        data = header.map((item, i) =>{
+            item.key === 'num' ? isNum = true: isNum =false;
+            return this.getSingleItem(item.position, item.key, record[item.key], isNum, num);
+        })
+        return data;
+    }
     //导出
-    onClickExPort = (e) =>{
-        
+    onClickExPort = (record) =>{
+        let header = [{v:"序号", position:'A1', key: 'num'}];
+        let columns = this.getContractInfoExportColumns();
+        let headers = header.concat(this.getHeader(columns));
+        let newHeader = headers.reduce((prev, next) => Object.assign({}, prev, {[next.position]: {v: next.v}}), {});
+        let data = this.getSingleExportData(headers, record);
+        let newData = data.reduce((prev, next) => Object.assign({}, prev, {[next.position]: {v: next.v}}), {});
+        console.log(headers,newHeader);
+        console.log('newData:', newData);
+        let output = Object.assign({}, newHeader, newData);
+        // 获取所有单元格的位置
+        let outputPos = Object.keys(output);
+        // 计算出范围
+        let ref = outputPos[0] + ':' + outputPos[outputPos.length - 1];
+        // 构建 workbook 对象
+        let wb = {
+            SheetNames: ['mySheet'],
+            Sheets: {
+                'mySheet': Object.assign({}, output, { '!ref': ref })
+            }
+        };
+        XLSX.writeFile(wb, 'output.xlsx');
     }
     //文件上传
     onClickUploadFile = (e)=>{
         this.props.dispatch(openAttachMent({id:1}));
     }
 
-    onClickContractDetail = (e) =>{
-
+    onClickContractDetail = (record) =>{
+        //console.log('record:', record);
+        this.props.dispatch(openContractRecord({'record':record}));
+    }
+    dateTimeRender = (text, record) => {
+        let newText = text;
+        if (text) {
+            newText = moment(text).format('YYYY-MM-DD');
+        }
+        return (<span>{newText}</span>);
+    }
+    findKeyByValue = (dic, value) =>{
+        let key = '';
+        dic.forEach(item => {
+            if(item.value === value){
+                key = item.key;
+            }
+        });
+        return key;
+    }
+    
+    getNameByType = (curType) =>{
+       return  (text, record) =>{
+            if(curType === 'type'){
+                return this.findKeyByValue(this.props.basicData.contractCategories, text);
+            }else if(curType === 'projectType'){
+                return this.findKeyByValue(this.props.basicData.contractProjectCatogories, text);
+            }else if(curType === 'companyAT'){
+                return this.findKeyByValue(this.props.basicData.firstPartyCatogories, text);
+            }else if(curType === 'commisionType'){
+                return this.findKeyByValue(this.props.basicData.commissionCatogories, text);
+            }else{
+                return '';
+            }
+        }
     }
     //合同基本信息列
-    getCustomerInfoColumns() {
-        // const customerSource = this.props.basicData.customerSource;
-        let columns = [{
-            title: '合同名称',
-            // width: 80,
-            dataIndex: 'ContractName',
-            key: 'ContractName'
-        },
-        {
-            title: '合同类型',
-            // width: 80,
-            dataIndex: 'ContractType',
-            key: 'ContractType'
-        },
-        {
-            title: '申请时间',
-            // width: 80,
-            dataIndex: 'CreateTime',
-            key: 'CreateTime'
-        },
-        {
-            title: '申请部门',
-            // width: 80,
-            dataIndex: 'CreateDepartment',
-            key: 'CreateDepartment'
-        },
-        {
-            title: '项目类型',
-            // width: 80,
-            dataIndex: 'ProjectType',
-            key: 'ProjectType'
-        },
-        {
-            title: '项目名称',
-            // width: 80,
-            dataIndex: 'ProjectName',
-            key: 'ProjectName'
-        },
-        {
-            title: '项目负责人',
-            // width: 80,
-            dataIndex: 'ProprincipalPepole',
-            key: 'ProprincipalPepole' 
-        },
-        {
-            title: '甲方类型',
-            // width: 80,
-            dataIndex: 'CompanyAType',
-            key: 'CompanyAType'
-        },
-        {
-            title: '甲方公司全称',
-            // width: 80,
-            dataIndex: 'CompanyA',
-            key: 'CompanyA'
-        },
-        {
-            title: '甲方负责人',
-            // width: 80,
-            dataIndex: 'PrincipalpepoleA',
-            key: 'PrincipalpepoleA'
-        },
-        {
-            title: '乙方负责人',
-            // width: 80,
-            dataIndex: 'PrincipalpepoleB',
-            key: 'PrincipalpepoleB'
-        },
-        {
-            title: '合同开始时间',
-            // width: 80,
-            dataIndex: 'StartTime',
-            key: 'StartTime'
-        },
-        {
-            title: '合同结束时间',
-            // width: 80,
-            dataIndex: 'EndTime',
-            key: 'EndTime'
-        },
-        {
-            title: '份数',
-            // width: 80,
-            dataIndex: 'Count',
-            key: 'Count'
-        },
-        {
-            title: '返回原件',
-            // width: 80,
-            dataIndex: 'ReturnOrigin',
-            key: 'ReturnOrigin'
-        },
-        {
-            title: '佣金方式',
-            // width: 80,
-            dataIndex: 'CommisionType',
-            key: 'CommisionType'
-        },
-        {
-            title: '续签合同',
-            // width: 80,
-            dataIndex: 'Follow',
-            key: 'Follow'
-        },
-
-        {
-            title: '是否作废',
-            // width: 80,
-            dataIndex: 'IsCancel',
-            key: 'IsCancel'
-        },
-        {
-            title: '备注',
-            // width: 80,
-            dataIndex: 'Remark',
-            key: 'Remark'
-        },
-            /*{
-                title: '意向价格', width: 90,
-                dataIndex: 'price',
-                key: 'price',
-                render: (text, record) => (
-                    record.customerDemandResponse ? <span>¥{record.customerDemandResponse.priceStart}-{record.customerDemandResponse.priceEnd}万元</span> : null
-                )
-            },
+    getContractInfoColumns() {
+ 
+        let columns = [
             {
-                title: '意向面积', width: 90,
-                dataIndex: 'Acreage',
-                key: 'Acreage',
-                render: (text, record) => (
-                    record.customerDemandResponse ? <span>{record.customerDemandResponse.acreageStart}-{record.customerDemandResponse.acreageEnd}㎡</span> : null
-                )
-            },
-            {
-                title: '意向区域', width: 90,
-                dataIndex: 'customerDemandResponse.areaFullName',
-                key: 'customerDemandResponse.areaFullName'
-            },
-            {
-                title: '业态规划',
-                dataIndex: 'tradplanning1',
-                key: 'tradplanning1'
-            }, {
-                title: '经营品牌',
-                dataIndex: 'brand1',
-                key: 'brand1'
-            }, {
-                title: '经营类型',
-                dataIndex: 'businessType1',
-                key: 'businessType1'
-            }, {
-                title: '战略合作',
-                dataIndex: 'cooperate1',
-                key: 'cooperate1'
-            },
-            {
-                title: '客户来源', width: 90,
-                dataIndex: 'source',
-                key: 'source',
-                render: (text, record) => {
-                    let sourceText = record.source;
-                    let sourceInfo = customerSource.find(cl => cl.value === sourceText);
-                    if (sourceInfo) {
-                        sourceText = sourceInfo.key;
-                    }
-                    return (< span > {sourceText}</span >)
-                }
-            }, 
-            {
-                title: '录入时间', width: 90,
+                title: '申请日期',
+                // width: 80,
                 dataIndex: 'createTime',
-                key: 'createTime'
-            }*/
+                key: 'createTime',
+                render: this.dateTimeRender,
+            },
+            {
+                title: '部门',
+                // width: 80,
+                dataIndex: 'createDepartment',
+                key: 'createDepartment'
+            },
+            {
+                title: '申请人',
+                dataIndex:'createUser',
+                key: 'createUser',
+            },
+            {
+                title: '合同编号',
+                dataIndex: 'id',
+                key: 'id',
+            },
+            {
+                title: '项目名称',
+                // width: 80,
+                dataIndex: 'projectName',
+                key: 'projectName'
+            },
+            {
+                title: '项目类型',
+                // width: 80,
+                dataIndex: 'projectType',
+                key: 'projectType',
+                render: this.getNameByType('projectType'),
+            }, 
+    
+            {
+                title: '合同名称',
+                // width: 80,
+                dataIndex: 'name',
+                key: 'name'
+            },
+            {
+                title: '合同类型',
+                // width: 80,
+                dataIndex: 'type',
+                key: 'type',
+                render: this.getNameByType('type'),
+            },
+            {
+                title: '开发商(甲方全称)',
+                // width: 80,
+                dataIndex: 'companyA',
+                key: 'companyA'
+            },
+            {
+                title: '甲方项目对接人',
+                // width: 80,
+                dataIndex: 'principalpepoleA',
+                key: 'principalpepoleA'
+            },
+            {
+                title: '签约时间',
+                children: [
+                    {
+                        title: '签订起始时间',
+                        dataIndex:'startTime',
+                        key:'startTime',
+                        render: this.dateTimeRender,
+                    },
+                    {
+                        title: '签订止时间',
+                        dataIndex:'endTime',
+                        key:'endTime',
+                        render: this.dateTimeRender,
+                    },
+                    
+                ],
+            },
+            
+            {
+                title: '包销方/开发商',
+                children: [
+                    {
+                        title: '包销方/开发商',
+                        dataIndex:'companyAT',
+                        key:'companyAT',
+                        render: this.getNameByType('companyAT'),
+                    },
+                    {
+                        title: '是否提供关系证明',
+                        dataIndex:'isSubmmitRelation',
+                        key:'isSubmmitRelation',
+                        render: this.isTrueOrFalse,
+                    },
+                    
+                ],
+            },
+            {
+                title: '是否提供铺号(销控明细)',
+                dataIndex:'isSubmmitShop',
+                key:'isSubmmitShop',
+                render: this.isTrueOrFalse,
+            },
+            {
+                title: '佣金方案',
+                dataIndex:'commisionType',
+                key:'commisionType',
+                render: this.getNameByType('commisionType'),
+            },
+            {
+                title: '结算方式',
+                dataIndex:'settleaccounts',
+                key:'settleaccounts',
+            },
+            {
+                title: '新签/续签',
+                dataIndex:'follow',
+                key:'follow',
+            },
+            {
+                title: '备注',
+                dataIndex:'remark',
+                key:'remark',
+            },
         ];
         return columns;
     };
-    //成交信息列
+    isTrueOrFalse = (text, record) =>{
+        return <span>{text ? '是' : '否'}</span>
+    }
+
     getDealInfoColumns() {
         let columns = {
             title: '审核信息',
@@ -249,194 +483,52 @@ class SearchResult extends Component {
         };
         return columns;
     }
+
+    getPermissonCol = (button,i) =>{
+        return {
+            
+                title: button.buttonName,
+                dataIndex: button.buttonID,
+                key: button.buttonID,
+                render: (text, record) => (
+                    <Button key = {i} id= {button.buttonID}  icon={button.icon} size={button.size} type={button.type} onClick={button.buttonID === 'export' ? (e) => this.onClickExPort(record) : (e) => this.onClickUploadFile(record)}>{button.buttonName}</Button>
+                )
+            
+        };
+    }
     //其他信息列
     getOtherInfoColumns() {
-        let columns = {
+        let columns ={
             title: '其他',
             children: [
                 {
-                    title: '附件上传',
-                    dataIndex: 'AttachUpload',
-                    key: 'AttachUpload',
-                    render: (text, record) => (
-                        <Button type="primary" size='small' onClick={(e) => this.onClickUploadFile(record)}>附件上传</Button>
-                    )
-                },
-
-                {
                     title: '合同详情',
-                    dataIndex: 'ContractDetail',
-                    key: 'ContractDetail',
+                    dataIndex: 'contractDetail',
+                    key: 'contractDetail',
                     render: (text, record) => (
                         <Button type="primary" size='small' onClick={(e) => this.onClickContractDetail(record)}>合同详情</Button>
                     )
                 },
-                {
-                    title: '导出',
-                    dataIndex: 'Export',
-                    key: 'Export',
-                    render: (text, record) => (
-                        <Button type="primary" size='small' onClick={(e) => this.onClickExPort(record)}>导出</Button>
-                    )
-                },
+
             ]
         };
-        // let activeMenu = this.props.searchInfo.activeMenu;
-        // let rateProgress = this.props.basicData.rateProgress || [];
-        // if (activeMenu === "menu_index") {
-        //     let empColumns = [{
-        //         title: '商机阶段',
-        //         dataIndex: 'rateProgress',
-        //         key: 'rateProgress',
-        //         render: (text, record) => {
-        //             let returnText = (text || '').toString();
-        //             let progress = rateProgress.find(cl => cl.value === returnText);
-        //             if (progress) {
-        //                 returnText = progress.key;
-        //             }
-        //             return returnText;
-        //         }
-        //     }, {
-        //         title: '跟进情况',
-        //         dataIndex: 'followupTime',
-        //         key: 'followupTime',
-        //         render: (text, record) => {
-        //             let days = 0;
-        //             if (text) {
-        //                 days = moment().diff(moment(text), 'days');
-        //             }
-        //             return (<span>{days === 0 ? "当天跟进" : days + "天未跟进"}</span>)
-        //         }
-        //     }, {
-        //         title: '跟进总数',
-        //         dataIndex: 'followUpNum',
-        //         key: 'followUpNum'
-        //     }, {
-        //         title: '最近跟进房源',
-        //         dataIndex: 'followHouse',
-        //         key: 'followHouse'
-        //     }, {
-        //         title: '调客',
-        //         dataIndex: 'adjustCustomer',
-        //         key: 'adjustCustomer',
-        //         render: (text, record) => (
-        //             <Button type="primary" size='small' onClick={(e) => this.handleAdjustCustomer(record)}>调客</Button>
-        //         )
-        //     }];
-        //     columns.children = [...empColumns, ...columns.children];
-        // } else if (activeMenu === "menu_public_pool") {//公客池
-        //     let publicPoolColumn = [{
-        //         title: '转入公客时间',
-        //         dataIndex: 'transferTime',
-        //         key: 'transferTime'
-        //     }];
-        //     columns.children = [...publicPoolColumn, ...columns.children];
-        // }
-        // else if (activeMenu === "menu_have_deal") {//已成交
-        //     let haveDealPoolColumn = [{
-        //         title: '是否仍有购买意向',
-        //         dataIndex: 'isSellIntention',
-        //         key: 'isSellIntention',
-        //         render: (text, record) => {
-        //             return (<span>{text ? "有" : "无"}</span>)
-        //         }
-        //     }];
-        //     columns.children = [...haveDealPoolColumn, ...columns.children];
-        // }
-        // else if (activeMenu === "menu_invalid") {//已失效
-        //     let invalidColumn = [{
-        //         title: '无效类型',
-        //         dataIndex: 'customerLossResponse.lossTypeId',
-        //         key: 'customerLossResponse.lossTypeId',
-        //         render: (text, record) => {
-        //             let newText = text;
-        //             let findResult = this.props.basicData.invalidResions.find(r => r.value == text);
-        //             newText = findResult ? findResult.key : newText;
-        //             return (
-        //                 <span>{newText}</span>
-        //             )
-        //         }
-        //     }, {
-        //         title: '无效原因',
-        //         dataIndex: 'customerLossResponse.lossRemark',
-        //         key: 'customerLossResponse.lossRemark'
-        //     }, {
-        //         title: '无效时间',
-        //         dataIndex: 'customerLossResponse.lossTime',
-        //         key: 'customerLossResponse.lossTime',
-        //         render: this.dateTimeRender
-        //     }];
-        //     columns.children = [...invalidColumn, ...columns.children];
-        // }
+        buttonDef.map((button, i) =>{
+            return this.hasPermission(button,i)&& button.buttonID != 'record' ? columns.children.push(this.getPermissonCol(button)) : null
+        });
+        console.log('getOtherInfoColumns:', columns);
         return columns;
     }
-    dateTimeRender = (text, record) => {
-        let newText = text;
-        if (text) {
-            newText = moment(text).format('YYYY-MM-DD HH:mm:ss');
-        }
-        return (<span>{newText}</span>);
-    }
+
 
     getTableColumns() {
-        console.log("basicData:", this.props.basicData)
+        //console.log("basicData:", this.props.basicData)
         // const customerLevels = this.props.basicData.customerLevels;
         // const requirementLevels = this.props.basicData.requirementLevels;
-        let basicIinfoColumns = this.getCustomerInfoColumns();
-        let columns = [
-            {
-                title: '合同基本信息',
-                children: basicIinfoColumns,
-                // fixed: 'left'
-            },
-            // {
-            //     title: '客户等级',
-            //     children: [{
-            //         title: '客户等级',
-            //         width: 90,
-            //         dataIndex: 'customerDemandResponse.importance',
-            //         key: 'customerDemandResponse.importance',
-            //         render: (text, record) => {
-            //             let level = text;
-            //             let levelInfo = customerLevels.find(cl => cl.value === level.toString());
-            //             if (levelInfo) {
-            //                 level = levelInfo.key;
-            //             }
-            //             return (< span > {level}</span >)
-            //         }
-            //     }, {
-            //         title: '需求等级',
-            //         width: 90,
-            //         dataIndex: 'customerDemandResponse.demandLevel',
-            //         key: 'customerDemandResponse.demandLevel',
-            //         render: (text, record) => {
-            //             let level = text;
-            //             let levelInfo = requirementLevels.find(cl => cl.value === level.toString());
-            //             if (levelInfo) {
-            //                 level = levelInfo.key;
-            //             }
-            //             return (< span > {level}</span >)
-            //         }
-            //     }]
-            // },
-            // {
-            //     title: '客户归属信息',
-            //     children: [{
-            //         title: '归属部门',
-            //         // width: 90,
-            //         dataIndex: 'departmentName',
-            //         key: 'departmentName'
-            //     }, {
-            //         title: '业务员',
-            //         // width: 90,
-            //         dataIndex: 'userName',
-            //         key: 'userName'
-            //     }]
-            // }
-        ];
+        let columns = this.getContractInfoColumns();
+
         let activeMenu = this.props.searchInfo.activeMenu;
         if (activeMenu === "menu_index" || activeMenu === "menu_have_deal") {
-            columns.push(this.getDealInfoColumns());
+            //columns.push(this.getDealInfoColumns());
         }
         columns.push(this.getOtherInfoColumns());
         console.log('columns:', columns);
@@ -464,24 +556,66 @@ class SearchResult extends Component {
     handleContractDetail = (record) => {
         this.props.dispatch(getContractDetail(record));
     }
+    handleMultiExport = () =>{
+        let header = [{v:"序号", position:'A1', key: 'num'}];
+        let columns = this.getContractInfoExportColumns();
+        let headers = header.concat(this.getHeader(columns));
+        let newHeader = headers.reduce((prev, next) => Object.assign({}, prev, {[next.position]: {v: next.v}}), {});
+        let dataList = {};
+        let newData = {};
+        for(let i = 0; i < this.state.checkList.length ; i++)
+        {
+            let data = this.getSingleExportData(headers, this.state.checkList[i], i + 1);
+            newData = data.reduce((prev, next) => Object.assign({}, prev, {[next.position]: {v: next.v}}), {});
+            Object.assign(dataList, {...newData});
+        }
+        console.log('datalist:', dataList);
+        let output = Object.assign({}, newHeader, dataList);
+        // 获取所有单元格的位置
+        let outputPos = Object.keys(output);
+        // 计算出范围
+        let ref = outputPos[0] + ':' + outputPos[outputPos.length - 1];
+        // 构建 workbook 对象
+        let wb = {
+            SheetNames: ['mySheet'],
+            Sheets: {
+                'mySheet': Object.assign({}, output, { '!ref': ref })
+            }
+        };
+        XLSX.writeFile(wb, 'output.xlsx');
+    }
+     onClickRecord = (e) =>{
+         console.log('录入');
+         this.props.dispatch(openContractRecord({id:0}));
+     }
+    handleClickFucButton = (buttonID) =>{
+        switch(buttonID){
+            case 'record':
+                return this.onClickRecord;
+            case 'export':
+                return this.handleMultiExport;
+            case 'uploadFile':
+                return this.onClickUploadFile;
+            default:
+                return null;
+        }
+    }
 
-    // getTableScrollX() {
-    //     let tableScrollX = 1000;
-    //     let activeMenu = this.props.searchInfo.activeMenu;
-    //     if (activeMenu === "menu_index") {
-    //         tableScrollX = 1000;
-    //     }
-    //     else if (activeMenu === "menu_public_pool") {
-    //         tableScrollX = 1000;
-    //     } else {
-    //         tableScrollX = 1000;
-    //     }
-    //     return tableScrollX;
-    // }
+    getMainButton = (button, i) =>{
+        if(this.hasPermission(button)&& (button.buttonID !='uploadFile' )){
+            if(button.buttonID ==='export' && this.state.checkList.length === 0){
+                return null;
+            }
+            return <Button key = {i} id= {button.buttonID} style={{marginBottom: '10px', marginRight: '10px', border:0}}  onClick = {this.handleClickFucButton(button.buttonID)} icon={button.icon} size={button.size} type={button.type}>{button.buttonName}</Button> ;
+        }else{
+            return null;
+        }
+    }
     render() {
         let dataSource = this.props.searchInfo.searchResult.extension;
         const rowSelection = {
             onChange: (selectedRowKeys, selectedRows) => {
+                console.log('checkList:', selectedRows);
                 this.setState({checkList: selectedRows});
             }
         };
@@ -491,10 +625,13 @@ class SearchResult extends Component {
         }
         // const tableScrollX = this.getTableScrollX();
         return (
+  
             <div id="searchResult">
-                <Table rowKey={record => record.uid} columns={this.getTableColumns()} pagination={this.state.pagination} onChange={this.handleChangePage} dataSource={dataSource} bordered size="middle" rowSelection={showSlection ? rowSelection : null} />
-              
-
+                {    
+                    buttonDef.map(
+                        (button,i) => this.getMainButton(button,i))
+                }
+                <Table id= {"table"} rowKey={record => record.uid} columns={this.getTableColumns()} pagination={this.state.pagination} onChange={this.handleChangePage} dataSource={dataSource} bordered size="middle" rowSelection={showSlection ? rowSelection : null} />
             </div>
         )
     }

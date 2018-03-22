@@ -12,7 +12,6 @@ const FormItem = Form.Item;
 class ContractChoose extends Component{
     lastSearchInfo = {};
     componentWillMount(){
-        console.log("-----------------");
         //这个地方需要对默认搜索进行处理
         this.lastSearchInfo = this.props.searchInfo;
     }
@@ -28,7 +27,7 @@ class ContractChoose extends Component{
     }
     handleOk = (e) => {
         e.preventDefault();
-        this.props.dispatch(closeContractChoose());
+        this.props.dispatch(closeContractChoose({record: this.state.checkList[0]}));
         this.props.dispatch(setLoadingVisible(true));
         
         //this.props.dispatch(adjustCustomer(requestInfo));
@@ -43,23 +42,22 @@ class ContractChoose extends Component{
     handleCancel = () => {
 
         //this.props.dispatch(closeAdjustCustomer());
-        console.log("9999999999999999999")
         this.props.dispatch(closeContractChoose());
     }
     getTableColumns = () =>{
         let columns = [
             {
-                title: '合同类型',
+                title: '合同编号',
                 // width: 80,
-                dataIndex: 'Number',
-                key: 'Number',
+                dataIndex: 'id',
+                key: 'id',
 
             },
             {
                 title: '合同名称',
                 // width: 80,
-                dataIndex: 'ContractName',
-                key: 'ContractName',
+                dataIndex: 'name',
+                key: 'name',
                 
             },
         ]
@@ -88,7 +86,7 @@ class ContractChoose extends Component{
         const rowSelection = {
             type:"radio",
             onChange: (selectedRowKeys, selectedRows) => {
-                console.log("selectedRowKeys:", selectedRowKeys);
+                console.log("selectedRowKeys:", selectedRows);
                 this.setState({checkList: selectedRows});
             }
         };

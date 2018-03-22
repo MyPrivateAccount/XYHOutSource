@@ -1,5 +1,6 @@
 import { connect } from 'react-redux';
 import { editContractBasic, openModifyHistory } from '../../../actions/actionCreator';
+import ModifyHistory from '../../dialog/modifyHistory';
 import React, { Component } from 'react'
 import { Icon, Table, Button, Checkbox, Row, Col, Form } from 'antd'
 import moment from 'moment';
@@ -114,12 +115,14 @@ class BasicInfo extends Component {
                         <Col span={12} onClick={this.handleViewHistory} style={{color:'blue'}} title="点击获取更改记录">更改记录</Col>
                     </Row>
                     <Row className='viewRow'>
-                        <Col span={24}>备注:{basicInfo.remark}</Col>   
+                        <Col span={12}>归属部门:{basicInfo.Organizete}</Col>
+                        <Col span={12}>备注:{basicInfo.remark}</Col>   
                     </Row>
                     <Row className='viewRow'>
                         <Col span={24}>补充协议:{this.props.complementInfo.contentInfo}</Col>   
                     </Row>
                 </Form>
+                <ModifyHistory />
             </div>
         )
     }
