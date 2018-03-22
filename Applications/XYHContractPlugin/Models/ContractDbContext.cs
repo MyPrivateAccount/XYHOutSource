@@ -20,6 +20,8 @@ namespace XYHContractPlugin.Models
         public DbSet<EstateInfo> EstateInfos { get; set; }
         public DbSet<ModifyInfo> ModifyInfos { get; set; }
 
+        public DbSet<FileInfo> FileInfos { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -57,6 +59,12 @@ namespace XYHContractPlugin.Models
             {
                 b.HasKey(K => new { K.ID });
                 b.ToTable("XYH_DT_MODIFY");
+            });
+
+            builder.Entity<FileInfo>(b =>
+            {
+                b.ToTable("XYH_DT_CONTRACTFILEINFOS");
+                b.HasKey(k => new { k.FileGuid, k.FileExt, k.Type });
             });
         }
 

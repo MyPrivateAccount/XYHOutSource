@@ -45,6 +45,51 @@ CREATE TABLE `XYH_DT_CONTRACTINFO` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
+-- Table structure for XYH_DT_CONTRACTANNEX
+-- ----------------------------
+DROP TABLE IF EXISTS `XYH_DT_CONTRACTANNEX`;
+CREATE TABLE `XYH_DT_CONTRACTANNEX` (
+  `ID` varchar(127) NOT NULL DEFAULT '',
+  `ContractID` varchar(127) NOT NULL DEFAULT '',
+  `FileGuid` varchar(127) NOT NULL,
+  `From` varchar(255) DEFAULT NULL,
+  `Group` varchar(255) DEFAULT NULL,
+  `CreateUser` varchar(127) DEFAULT NULL,
+  `CreateTime` datetime(6) DEFAULT NULL,
+  `UpdateUser` varchar(127) DEFAULT NULL,
+  `UpdateTime` datetime(6) DEFAULT NULL,
+  `IsDeleted` bit(1) NOT NULL,
+  `DeleteUser` varchar(127) DEFAULT NULL,
+  `DeleteTime` datetime(6) DEFAULT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+/******************************图片文件具体信息********************************/
+DROP TABLE IF EXISTS `XYH_DT_CONTRACTFILEINFOS`;
+CREATE TABLE `XYH_DT_CONTRACTFILEINFOS` (
+  `FileGuid` varchar(127) NOT NULL,
+  `Name` varchar(255) DEFAULT NULL,
+  `Size` double NOT NULL,
+  `Type` varchar(64) NOT NULL,
+  `FileExt` varchar(32) NOT NULL,
+  `Height` int(11) DEFAULT NULL,
+  `Uri` varchar(1000) DEFAULT NULL,
+  `Width` int(11) DEFAULT NULL,
+  `Ext1` varchar(1000) DEFAULT NULL,
+  `Ext2` varchar(1000) DEFAULT NULL,
+  `IsDeleted` bit(1) NOT NULL,
+  `Summary` varchar(512) DEFAULT NULL,
+  `UpdateTime` datetime(6) DEFAULT NULL,
+  `UpdateUser` varchar(127) DEFAULT NULL,
+  `CreateTime` datetime(6) DEFAULT NULL,
+  `CreateUser` varchar(127) DEFAULT NULL,
+  `DeleteTime` datetime(6) DEFAULT NULL,
+  `DeleteUser` varchar(127) DEFAULT NULL,
+  `Driver` varchar(64) DEFAULT NULL,
+  PRIMARY KEY (`FileGuid`,`FileExt`,`Type`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ----------------------------
 -- Table structure for XYH_DT_CONTRACTCOMPLEMENT
 -- ----------------------------
 DROP TABLE IF EXISTS `XYH_DT_CONTRACTCOMPLEMENT`;/*不明，未继续*/
@@ -53,18 +98,6 @@ CREATE TABLE `XYH_DT_CONTRACTCOMPLEMENT` (
   `ContractID` varchar(127) NOT NULL DEFAULT '',
   `ContentID` int(11) NOT NULL,
   `ContentInfo` varchar(255) DEFAULT '',
-  PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Table structure for XYH_DT_CONTRACTANNEX
--- ----------------------------
-DROP TABLE IF EXISTS `XYH_DT_CONTRACTANNEX`;
-CREATE TABLE `XYH_DT_CONTRACTANNEX` (
-  `ID` varchar(127) NOT NULL DEFAULT '',
-  `ContractID` varchar(127) NOT NULL DEFAULT '',
-  `Type` varchar(32) NOT NULL DEFAULT '',/*附件类型*/
-  `Path` varchar(255) NOT NULL DEFAULT '',/*附件路径*/
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

@@ -25,10 +25,22 @@ namespace XYHContractPlugin.Models
         public string ID { get; set; }
         [MaxLength(127)]
         public string ContractID { get; set; }
-        [MaxLength(32)]
-        public string Type { get; set; }
+        [MaxLength(127)]
+        public string FileGuid { get; set; }
         [MaxLength(255)]
-        public string Path { get; set; }
+        public string From { get; set; }
+        [MaxLength(255)]
+        public string Group { get; set; }
+        [MaxLength(127)]
+        public string CreateUser { get; set; }
+        public DateTime? CreateTime { get; set; }
+        [MaxLength(127)]
+        public string UpdateUser { get; set; }
+        public DateTime? UpdateTime { get; set; }
+        public bool IsDeleted { get; set; }
+        [MaxLength(127)]
+        public string DeleteUser { get; set; }
+        public DateTime? DeleteTime { get; set; }
     }
 
     public class CheckInfo

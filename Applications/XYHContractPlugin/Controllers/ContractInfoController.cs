@@ -58,7 +58,7 @@ namespace XYHContractPlugin.Controllers
             return Response;
         }
 
-        [HttpGet("{contractid}")]
+        [HttpGet("{getcontractbyid}")]
         [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
         public async Task<ResponseMessage<ContractContentResponse>> GetContractByid(UserInfo user, [FromRoute] string contractId)
         {
@@ -83,21 +83,20 @@ namespace XYHContractPlugin.Controllers
             return Response;
         }
 
-
         [HttpGet("{getallcontractbyuser}")]
         [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
         public async Task<ResponseMessage<List<ContractContentResponse>>> GetAllContractByUser(UserInfo user, [FromRoute] string contractId)
         {
-            if (user.Id == null)
-            {
-                {
-                    user.Id = "66df64cb-67c5-4645-904f-704ff92b3e81";
-                    user.UserName = "wqtest";
-                    user.KeyWord = "";
-                    user.OrganizationId = "270";
-                    user.PhoneNumber = "18122132334";
-                };
-            }
+            //if (user.Id == null)
+            //{
+            //    {
+            //        user.Id = "66df64cb-67c5-4645-904f-704ff92b3e81";
+            //        user.UserName = "wqtest";
+            //        user.KeyWord = "";
+            //        user.OrganizationId = "270";
+            //        user.PhoneNumber = "18122132334";
+            //    };
+            //}
 
             var Response = new ResponseMessage<List<ContractContentResponse>>();
             if (string.IsNullOrEmpty(contractId))

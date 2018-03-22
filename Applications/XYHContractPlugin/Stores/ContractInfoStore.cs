@@ -56,6 +56,38 @@ namespace XYHContractPlugin.Stores
             return buildingBaseInfo;
         }
 
+        public async Task<bool> CreateAsync(SimpleUser userinfo, List<AnnexInfo> annexinfo, CancellationToken cancle = default(CancellationToken))
+        {
+            if (annexinfo == null)
+            {
+                throw new ArgumentNullException(nameof(annexinfo));
+            }
+
+            if (annexinfo.Count > 0)
+            {
+                Context.AddRange(annexinfo);
+                await Context.SaveChangesAsync(cancle);
+            }
+            
+            return true;
+        }
+
+        public async Task<bool> CreateAsync(SimpleUser userinfo, List<ComplementInfo> compleinfo, CancellationToken cancle = default(CancellationToken))
+        {
+            if (compleinfo == null)
+            {
+                throw new ArgumentNullException(nameof(compleinfo));
+            }
+
+            if (compleinfo.Count > 0)
+            {
+                Context.AddRange(compleinfo);
+                await Context.SaveChangesAsync(cancle);
+            }
+            
+            return true;
+        }
+
         public async Task DeleteAsync(SimpleUser userinfo, string contractid, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (contractid == null)
@@ -125,13 +157,31 @@ namespace XYHContractPlugin.Stores
             return query.Invoke(Context.ModifyInfos.AsNoTracking()).SingleOrDefaultAsync(cancellationToken);
         }
 
-        public Task<List<TResult>> ListModifyAsync<TResult>(Func<IQueryable<ModifyInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<List<TResult>> GetListModifyAsync<TResult>(Func<IQueryable<ModifyInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (query == null)
             {
                 throw new ArgumentNullException(nameof(query));
             }
             return query.Invoke(Context.ModifyInfos.AsNoTracking()).ToListAsync(cancellationToken);
+        }
+
+       public Task<List<TResult>> GetListAnnexAsync<TResult>(Func<IQueryable<AnnexInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (query == null)
+            {
+                throw new ArgumentNullException(nameof(query));
+            }
+            return query.Invoke(Context.AnnexInfos.AsNoTracking()).ToListAsync(cancellationToken);
+        }
+
+        public Task<List<TResult>> GetListComplementAsync<TResult>(Func<IQueryable<ComplementInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (query == null)
+            {
+                throw new ArgumentNullException(nameof(query));
+            }
+            return query.Invoke(Context.ComplementInfos.AsNoTracking()).ToListAsync(cancellationToken);
         }
 
         public async Task UpdateAsync(ContractInfo areaDefine, CancellationToken cancellationToken = default(CancellationToken))

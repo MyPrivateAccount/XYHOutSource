@@ -43,6 +43,9 @@ namespace XYHContractPlugin.Managers
                 throw new ArgumentNullException(nameof(buildingBaseInfoRequest));
             }
 
+            await Store.CreateAsync(_mapper.Map<SimpleUser>(userinfo), _mapper.Map<List<AnnexInfo>>(buildingBaseInfoRequest.AnnexInfo), cancellationToken);
+            await Store.CreateAsync(_mapper.Map<SimpleUser>(userinfo), _mapper.Map<List<ComplementInfo>>(buildingBaseInfoRequest.ComplementInfo), cancellationToken);
+
             var baseinfo = await Store.CreateAsync(_mapper.Map<SimpleUser>(userinfo), _mapper.Map<ContractInfo>(buildingBaseInfoRequest), buildingBaseInfoRequest.Modifyinfo.ElementAt(0).ID, cancellationToken);
             return _mapper.Map<ContractInfoResponse>(baseinfo);
         }
@@ -69,25 +72,25 @@ namespace XYHContractPlugin.Managers
         }
 
 
-        public virtual async Task<ContractContentResponse> GetAllinfoByIdAsync(string id, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            var baseinfo = await Store.GetAsync(a => a.Where(b => b.ID == id), cancellationToken);
+        //public virtual async Task<ContractContentResponse> GetAllinfoByIdAsync(string id, CancellationToken cancellationToken = default(CancellationToken))
+        //{
+        //    var baseinfo = await Store.GetAsync(a => a.Where(b => b.ID == id), cancellationToken);
 
-            var modifyinfo = await Store.ListModifyAsync(a => a.Where(b => b.ContractID == id));
-            baseinfo.Modify = modifyinfo.Count;
+        //    var modifyinfo = await Store.GetListModifyAsync(a => a.Where(b => b.ContractID == id));
+        //    baseinfo.Modify = modifyinfo.Count;
 
-            var rt = _mapper.Map<ContractContentResponse>(baseinfo);
-            foreach (var item in modifyinfo)
-            {
-                var mf = _mapper.Map<ContractModifyResponse>(item);
-                if (rt.Modifyinfo == null)
-                {
-                    rt.Modifyinfo = new List<ContractModifyResponse>();
-                }
-                rt.Modifyinfo.Add(mf);
-            }
-            return rt;
-        }
+        //    var rt = _mapper.Map<ContractContentResponse>(baseinfo);
+        //    foreach (var item in modifyinfo)
+        //    {
+        //        var mf = _mapper.Map<ContractModifyResponse>(item);
+        //        if (rt.Modifyinfo == null)
+        //        {
+        //            rt.Modifyinfo = new List<ContractModifyResponse>();
+        //        }
+        //        rt.Modifyinfo.Add(mf);
+        //    }
+        //    return rt;
+        //}
 
         public virtual async Task<List<ContractContentResponse>> GetAllListinfoByUserIdAsync(string id, CancellationToken cancellationToken = default(CancellationToken))
         {
@@ -101,7 +104,7 @@ namespace XYHContractPlugin.Managers
                     continue;
                 }
 
-                var modifyinfo = await Store.ListModifyAsync(a => a.Where(b => b.ContractID == id));
+                var modifyinfo = await Store.GetListModifyAsync(a => a.Where(b => b.ContractID == id));
                 item.Modify = modifyinfo.Count;
 
                 var rt = _mapper.Map<ContractContentResponse>(item);
@@ -117,6 +120,23 @@ namespace XYHContractPlugin.Managers
                 returninfo.Add(rt);
             }
             
+            return returninfo;
+        }
+
+        public virtual async Task<ContractContentResponse> GetAllinfoByIdAsync(string id, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var contractinfo = await Store.GetAsync(a => a.Where(b => b.ID == id), cancellationToken);
+            var returninfo = _mapper.Map<ContractContentResponse>(contractinfo);
+
+            var annexinfo = await Store.GetListAnnexAsync(a => a.Where(b => b.ContractID == id), cancellationToken);
+            returninfo.AnnexInfo = _mapper.Map<List<ContractAnnexResponse>>(annexinfo);
+
+            var complementinfo = await Store.GetListComplementAsync(a => a.Where(b => b.ContractID == id));
+            returninfo.ComplementInfo = _mapper.Map<List<ContractComplementResponse>>(complementinfo);
+
+            var modifyinfo = await Store.GetListModifyAsync(a => a.Where(b => b.ContractID == id));
+            returninfo.Modifyinfo = _mapper.Map<List<ContractModifyResponse>>(modifyinfo);
+
             return returninfo;
         }
 

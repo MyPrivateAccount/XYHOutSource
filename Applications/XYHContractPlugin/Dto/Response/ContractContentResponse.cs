@@ -50,6 +50,7 @@ namespace XYHContractPlugin.Dto.Response
         /// 是否有修改历史-包括new
         /// </summary>
         public List<ContractModifyResponse> Modifyinfo { get; set; }
-        
+        public List<FileItemResponse> FileList { get; set; }
+
     }
 }

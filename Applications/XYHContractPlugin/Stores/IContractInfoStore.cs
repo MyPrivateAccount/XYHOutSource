@@ -15,7 +15,11 @@ namespace XYHContractPlugin.Stores
         IQueryable<ContractInfo> ContractInfos { get; set; }
         IEnumerable<T> DapperSelect<T>(string sql);
 
+        //IQueryable<ContractFileScope> GetDetailQuery();
+
         Task<ContractInfo> CreateAsync(SimpleUser userinfo, ContractInfo buildingBaseInfo, string modifyid, CancellationToken cancellationToken = default(CancellationToken));
+        Task<bool> CreateAsync(SimpleUser userinfo, List<AnnexInfo> annexinfo, CancellationToken cancle = default(CancellationToken));
+        Task<bool> CreateAsync(SimpleUser userinfo, List<ComplementInfo> compleinfo, CancellationToken cancle = default(CancellationToken));
 
         Task DeleteAsync(SimpleUser userinfo, string contractid, CancellationToken cancellationToken = default(CancellationToken));
 
@@ -26,7 +30,10 @@ namespace XYHContractPlugin.Stores
         Task<List<TResult>> ListAsync<TResult>(Func<IQueryable<ContractInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken));
 
         Task<TResult> GetModifyAsync<TResult>(Func<IQueryable<ModifyInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken));
-        Task<List<TResult>> ListModifyAsync<TResult>(Func<IQueryable<ModifyInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken));
+        Task<List<TResult>> GetListModifyAsync<TResult>(Func<IQueryable<ModifyInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken));
+
+        Task<List<TResult>> GetListAnnexAsync<TResult>(Func<IQueryable<AnnexInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken));
+        Task<List<TResult>> GetListComplementAsync<TResult>(Func<IQueryable<ComplementInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken));
 
         Task UpdateAsync(ContractInfo buildingBase, CancellationToken cancellationToken = default(CancellationToken));
 
