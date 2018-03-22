@@ -124,7 +124,7 @@ class ContractRecord extends Component{
                         </div>
                          
                     
-                        <Row id="attchInfo">
+                        <Row id="attachInfo">
                             {
                                 basicOperType  === 'add' ? null :
                                 <Col span={24}>{(attachPicOperType === 'view') ? <AttachInfo /> : <AttachEdit />}</Col>
