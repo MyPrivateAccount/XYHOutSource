@@ -26,6 +26,7 @@ class BasicEdit extends Component {
         let contractName = curFollowContract.Name ? curFollowContract.Name : '';
         this.props.dispatch(openContractChoose({contractName: contractName}));
     }
+    //不要保存取消
     handleSave = (e) => {
         e.preventDefault();
         let { basicOperType } = this.props.operInfo;
@@ -420,14 +421,28 @@ class BasicEdit extends Component {
                     </FormItem>
                 </Col>
             </Row>
-
+            {/*
             <Row>
                     <Col span={24} style={{ textAlign: 'center' }} className='BtnTop'>
                         <Button type="primary" htmlType="submit" loading={this.props.loadingState} style={{width: "8rem"}} onClick={this.handleSave}>保存</Button>
                         {basicOperType !== "add" ? <Button className="oprationBtn" onClick={this.handleCancel}>取消</Button> : null}
                     </Col>
             </Row>
+            */}
+            {
+                [8, 1].includes(this.props.basicInfo.examineStatus)  ? null :
+                <div>
+                    <Row type="flex" justify="space-between">
+                        <Col  span={24} style={{ textAlign: 'center' }} className='BtnTop'>
+
+                            <Button type="primary" size='large' className="oprationBtn"
+                                style={{ width: "10rem", display: this.props.contractDisplay }}
+                                onClick={this.handleSave} loading={this.props.submitLoading}>提交</Button>
+                        </Col>
+                    </Row>
+                </div>
             
+            }
           </Form>
           <ContractChoose/> 
          </div>

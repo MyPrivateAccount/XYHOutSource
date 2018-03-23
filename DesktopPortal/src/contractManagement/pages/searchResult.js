@@ -279,8 +279,8 @@ class SearchResult extends Component {
         XLSX.writeFile(wb, 'output.xlsx');
     }
     //文件上传
-    onClickUploadFile = (e)=>{
-        this.props.dispatch(openAttachMent({id:1}));
+    onClickUploadFile = (record)=>{
+        this.props.dispatch(openAttachMent({'record':record}));
     }
 
     onClickContractDetail = (record) =>{

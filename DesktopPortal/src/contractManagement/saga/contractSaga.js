@@ -24,7 +24,6 @@ export function* saveContractBasicAsync(state) {
      body.relation = "1";
      const modifyId = NewGuid();
      let baseInfo = Object.assign({}, {baseInfo:body, modifyInfo: [{iD:modifyId, contractID:body.id}]});
-    // let city = state.payload.ownCity; // 自己所在城市
     try {
         console.log(`合同基础信息保存url:${url},baseInfo:${JSON.stringify(baseInfo)}`);
         const saveResult = yield call(ApiClient.post, url, baseInfo, null, "POST");
@@ -98,17 +97,17 @@ export function* savePictureAsync(action) {
     let result = { isOk: false, msg: '图片保存失败！' };
     console.log(action, '上传图片')
     let id = action.payload.id;
-    //let city = action.payload.ownCity; // 自己所在城市
-    //let url = WebApiConfig.buildingAttachInfo.PicUpload.replace("{dest}", action.payload.type) + id;
+    
+    let url = WebApiConfig.attach.savePicUrl+ id;
     try {
         let body = action.payload.fileInfo;
-        yield put({ type: actionUtils.getActionType(actionTypes.CONTRACT_PIC_VIEW), payload: { filelist: action.payload.completeFileList, type: 'add' } });
-            yield put(actionUtils.action(attchLoadingEnd));
-        return;
-        //let res = yield call(ApiClient.post, url, body);
-        //getApiResult(res, result);
-        //console.log(`上传图片url:${url},body:${JSON.stringify(body)}，result：${res}`);
-        //console.log(res, body, 'res')
+        // yield put({ type: actionUtils.getActionType(actionTypes.CONTRACT_PIC_VIEW), payload: { filelist: action.payload.completeFileList, type: 'add' } });
+        //     yield put(actionUtils.action(attchLoadingEnd));
+        // return;
+        let res = yield call(ApiClient.post, url, body);
+        getApiResult(res, result);
+        console.log(`上传图片url:${url},body:${JSON.stringify(body)}，result：${res}`);
+        console.log(res, body, 'res')
         if (result.isOk) {
             result.msg = '图片保存成功！';
             yield put({ type: actionUtils.getActionType(actionTypes.CONTRACT_PIC_VIEW), payload: { filelist: action.payload.completeFileList, type: 'add' } });

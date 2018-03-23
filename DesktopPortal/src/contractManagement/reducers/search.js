@@ -113,6 +113,7 @@ reducerMap[actionTypes.SEARCH_COMPLETE] = function (state, action) {
             c.createTime = moment(c.createTime).format("YYYY-MM-DD HH:mm:ss");
         }
     });
+
     return Object.assign({}, state, {searchResult: result});
 }
 

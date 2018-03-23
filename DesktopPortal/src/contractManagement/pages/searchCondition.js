@@ -146,19 +146,13 @@ class SearchCondition extends Component {
     }
     render() {
         let expandSearchCondition = this.state.expandSearchCondition;
-        // const tradePlannings = this.props.basicData.tradePlannings;
-        // const businessTypes = this.props.basicData.businessTypes;
-        // const customerLevels = this.props.basicData.customerLevels;
-        // const requirementLevels = this.props.basicData.requirementLevels;
-        // const customerSource = this.props.basicData.customerSource;
-        // const invalidResions = this.props.basicData.invalidResions;
-        // const areaList = this.props.basicData.areaList;
+
         let createDateStart = this.state.condition.createDateStart === null ? null : moment(this.state.condition.createDateStart);
         let createDateEnd = this.state.condition.createDateEnd === null ? null : moment(this.state.condition.createDateEnd);
         const activeMenu = this.props.activeMenu;
         let dataSourceTotal = 0;
-        if(this.props.searchResult.ValidityContractCount){
-            dataSourceTotal = this.props.searchResult.ValidityContractCount;
+        if(this.props.searchResult.validityContractCount){
+            dataSourceTotal = this.props.searchResult.validityContractCount;
         }
       
 
@@ -210,7 +204,7 @@ class SearchCondition extends Component {
                                 <Col>
                                     {activeMenu !== "menu_invalid" ?
                                         <label><span style={{marginRight: '10px'}}>录入日期：</span>
-                                            <DatePicker disabledDate={this.disabledDate} value={createDateStart} onChange={(e, dateString) => this.handleCreateTime(dateString, 'createDateStart')} />- <DatePicker disabledDate={this.disabledDate} value={createDateEnd} onChange={(e, dateString) => this.handleCreateTime(dateString, 'createDateStart')} />
+                                            <DatePicker disabledDate={this.disabledDate} value={createDateStart} onChange={(e, dateString) => this.handleCreateTime(dateString, 'createDateStart')} />- <DatePicker disabledDate={this.disabledDate} value={createDateEnd} onChange={(e, dateString) => this.handleCreateTime(dateString, 'createDateEnd')} />
                                         </label> : null}
                                 </Col>
                             </Row>

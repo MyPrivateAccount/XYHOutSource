@@ -30,7 +30,8 @@ const WebApiConfig = {
         Submit: basicDataBaseApiUrl + "contractinfo/checksimplecontract",//
     },
     attach: {
-        uploadUrl: `${UploadUrl}/file/upload/`
+        uploadUrl: `${UploadUrl}/file/upload/`,
+        savePicUrl: basicDataBaseApiUrl + 'contractfiles/contract/uploadmore/'
     },
 }
 export default WebApiConfig;

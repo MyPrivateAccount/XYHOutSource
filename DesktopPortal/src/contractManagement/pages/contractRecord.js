@@ -107,7 +107,7 @@ class ContractRecord extends Component{
                     
                          
                          <div>
-                             {
+                             {/*
                                 [8, 1].includes(this.props.basicInfo.examineStatus)  ? null :
                                 <div>
                                     <Row type="flex" justify="space-between">
@@ -120,21 +120,24 @@ class ContractRecord extends Component{
                                     </Row>
                                 </div>
                                 
-                             }
+                             */}
                         </div>
                          
                     
                         <Row id="attachInfo">
-                            {
+                            {/*
                                 basicOperType  === 'add' ? null :
                                 <Col span={24}>{(attachPicOperType === 'view') ? <AttachInfo /> : <AttachEdit />}</Col>
 
+                            */}
+                            {
+                                <Col span={24}>{(attachPicOperType === 'view') ? <AttachInfo /> : <AttachEdit />}</Col>
                             }
 
                         </Row>
                                                  
                         <div>
-                             {
+                             {/*
                                 ((basicOperType  === 'add')  || [8, 1].includes(this.props.attachInfo.examineStatus))  ? null :
                                 <div>
                                     <Row type="flex" justify="space-between">
@@ -147,7 +150,7 @@ class ContractRecord extends Component{
                                     </Row>
                                 </div>
                                 
-                             }
+                             */}
                         </div>
                         <div>
                             <BackTop visibilityHeight={400} />

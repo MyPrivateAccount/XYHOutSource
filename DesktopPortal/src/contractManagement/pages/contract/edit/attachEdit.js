@@ -192,7 +192,7 @@ class AttachEdit extends Component {
     const { deleteIdArr } = this.state;
     const { completeFileList, deletePicList } = this.props;
     console.log(completeFileList, deletePicList, '???s删除图片？？？？？？？？')
-    let id = 10;//this.props.basicInfo.id;
+    let id = this.props.basicInfo.id;
     if (completeFileList.length !== 0) {
       console.log('进入的是新增么？？')
       
@@ -220,7 +220,7 @@ class AttachEdit extends Component {
 
   UploadFile = (file, callback) => {
     // console.log(file);
-    let id = 10;//this.basicInfo.id;
+    let id = this.props.basicInfo.id;
     let uploadUrl = `${WebApiConfig.attach.uploadUrl}${id}`;
     let fileGuid = file.uid;//NewGuid();//uuid.v4();
     let fd = new FormData();
@@ -360,14 +360,8 @@ class AttachEdit extends Component {
                 </div>
               </Col>
             </Row>
-            {
-                <Row type="flex" justify="center" className='BtnTop'>
-                  {
-                      <div>
-                        <Button type="primary" size='default'
-                          style={{ width: "8rem" }}
-                          loading={this.props.loadingState}
-                          disabled={/*this.props.basicInfo.isDisabled*/ this.props.isDisabled}
+            {/*
+                this.props.isDisabled}
                           onClick={this.handPictureSave}>保存
                         </Button>
                         {
@@ -381,23 +375,35 @@ class AttachEdit extends Component {
                   }
 
                 </Row>
-            }
-
+            */}
+              <Row type="flex" justify="space-between" className='BtnTop'>
+                    {
+                      (this.props.isCurShowContractDetail  || [8, 1].includes(this.props.attachInfo.examineStatus))  ? null :
+                      <Col  span={24} style={{ textAlign: 'center' }} className='BtnTop'>
+                        <Button type="primary" size='default'
+                          style={{ width: "8rem" }}
+                          onClick={this.handPictureSave}>提交
+                        </Button>
+                      </Col>
+                    }
+              </Row>
           </Content>
           <div>
               <BackTop visibilityHeight={400} />
           </div>
-          <Row type="flex" justify="space-between" className='BtnTop'>
-                  {
-                     (this.props.isCurShowContractDetail  || [8, 1].includes(this.props.attachInfo.examineStatus))  ? null :
-                    <Col  span={24} style={{ textAlign: 'right' }} className='BtnTop'>
-                      <Button type="primary" size='default'
-                        style={{ width: "8rem" }}
-                        onClick={this.handleSubmit}>提交
-                      </Button>
-                    </Col>
-                  }
-            </Row>
+          {/*
+            <Row type="flex" justify="space-between" className='BtnTop'>
+                    {
+                      (this.props.isCurShowContractDetail  || [8, 1].includes(this.props.attachInfo.examineStatus))  ? null :
+                      <Col  span={24} style={{ textAlign: 'right' }} className='BtnTop'>
+                        <Button type="primary" size='default'
+                          style={{ width: "8rem" }}
+                          onClick={this.handPictureSave}>提交
+                        </Button>
+                      </Col>
+                    }
+              </Row>
+                  */}
         </Layout>
       </div>
     )
@@ -405,7 +411,7 @@ class AttachEdit extends Component {
 }
 
 function mapStateToProps(state) {
-  //console.log("attachedit state",state.contractData.contractInfo)
+  console.log("attachedit state",state)
   return {
     isDisabled: state.contractData.isDisabled,
     basicData: state.basicData,
