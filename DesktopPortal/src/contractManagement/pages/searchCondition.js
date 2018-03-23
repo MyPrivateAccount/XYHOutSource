@@ -157,8 +157,8 @@ class SearchCondition extends Component {
         let createDateEnd = this.state.condition.createDateEnd === null ? null : moment(this.state.condition.createDateEnd);
         const activeMenu = this.props.activeMenu;
         let dataSourceTotal = 0;
-        if(this.props.searchResult.extension){
-            dataSourceTotal = this.props.searchResult.extension.length;
+        if(this.props.searchResult.ValidityContractCount){
+            dataSourceTotal = this.props.searchResult.ValidityContractCount;
         }
       
 
