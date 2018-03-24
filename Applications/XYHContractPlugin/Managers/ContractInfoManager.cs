@@ -18,6 +18,8 @@ namespace XYHContractPlugin.Managers
 {
     public class ContractInfoManager
     {
+        public static int CreateContract = 1;
+        public static int ModifyContract = 2;
         public ContractInfoManager(IContractInfoStore contractStore, IMapper mapper)
         {
             Store = contractStore ?? throw new ArgumentNullException(nameof(contractStore));
@@ -66,18 +68,46 @@ namespace XYHContractPlugin.Managers
                 throw new ArgumentNullException(nameof(buildingBaseInfoRequest));
             }
 
-            //if (buildingBaseInfoRequest.AnnexInfo != null&&buildingBaseInfoRequest.AnnexInfo.Count > 0)
-            //    await Store.UpdateListAsync(_mapper.Map<List<AnnexInfo>>(buildingBaseInfoRequest.AnnexInfo), cancellationToken);
+            string guid = Guid.NewGuid().ToString();
+            await Store.CreateModifyAsync(_mapper.Map<SimpleUser>(userinfo),
+                buildingBaseInfoRequest.BaseInfo.ID,
+                guid, ModifyContract, true,
+                JsonHelper.ToJson(buildingBaseInfoRequest), null, cancellationToken);//2是修改
 
-            //if (buildingBaseInfoRequest.ComplementInfo != null && buildingBaseInfoRequest.ComplementInfo.Count > 0)
-            //    await Store.UpdateListAsync(_mapper.Map<List<ComplementInfo>>(buildingBaseInfoRequest.ComplementInfo), cancellationToken);
+            return guid;
+        }
 
-            var ct = _mapper.Map<ContractInfo>(buildingBaseInfoRequest);
-            ct.CurrentModify = Guid.NewGuid().ToString();
-            //await Store.UpdateAsync(ct, cancellationToken);
-            await Store.CreateModifyAsync(_mapper.Map<SimpleUser>(userinfo), ct.ID, ct.CurrentModify, 2, true, JsonHelper.ToJson(ct), null, cancellationToken);//2是修改
+        public virtual async Task ModifyContractAsync(ContractContentInfoRequest buildingBaseInfoRequest, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (buildingBaseInfoRequest == null)
+            {
+                throw new ArgumentNullException(nameof(buildingBaseInfoRequest));
+            }
 
-            return ct.CurrentModify;
+            if (buildingBaseInfoRequest.AnnexInfo != null && buildingBaseInfoRequest.AnnexInfo.Count > 0)
+                await Store.UpdateListAsync(_mapper.Map<List<AnnexInfo>>(buildingBaseInfoRequest.AnnexInfo), cancellationToken);
+
+            if (buildingBaseInfoRequest.ComplementInfo != null && buildingBaseInfoRequest.ComplementInfo.Count > 0)
+                await Store.UpdateListAsync(_mapper.Map<List<ComplementInfo>>(buildingBaseInfoRequest.ComplementInfo), cancellationToken);
+
+            await Store.UpdateAsync(_mapper.Map<ContractInfo>(buildingBaseInfoRequest), cancellationToken);
+        }
+
+        public virtual async Task ModifyContractAfterCheckAsync(string modifyid, string contractid, ExamineStatusEnum ext, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (modifyid == null)
+            {
+                throw new ArgumentNullException(nameof(modifyid));
+            }
+
+            var tv = await Store.GetModifyAsync(a => a.Where(b=> b.ID == modifyid), cancellationToken);
+            var tc = await Store.GetAsync(a => a.Where(b => b.ID==contractid));
+
+            if (ext == ExamineStatusEnum.Approved && tv.Type == ModifyContract && tc.CurrentModify == tv.ID)//当前修改的审核，批准才能修改数据
+            {
+                var modifyedinfo = JsonHelper.ToObject<ContractContentInfoRequest>(tv.Ext1);
+                await ModifyContractAsync(modifyedinfo, cancellationToken);
+            }
         }
 
         public virtual async Task<List<ContractModifyResponse>> GetAllModifyInfo(string id, CancellationToken cancellationToken = default(CancellationToken))

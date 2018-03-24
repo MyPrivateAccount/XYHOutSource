@@ -71,11 +71,12 @@ reducerMap[actionTypes.OPEN_RECORD] = function(state, action){
         discard:false,
         complementInfo:{},//补充协议
         annexInfo:{},
+        attachInfo:{},
 
     }
     let operInfo = {
         basicOperType: 'add',
-        //attachPicOperType: 'add',
+        attachPicOperType: 'add',
     }
 
     let newState = Object.assign({}, state, { contractInfo: contractInfo, basicloading: false,operInfo: operInfo, contractDisplay: 'block' , isCurShowContractDetail: false,curFollowContract:{} });

@@ -231,9 +231,10 @@ namespace XYHContractPlugin.Controllers
                 //写发送成功后的表
                 var guid = await _contractInfoManager.ModifyContractBeforCheckAsync(User, request, HttpContext.RequestAborted);
 
+                //审核提交
                 GatewayInterface.Dto.ExamineSubmitRequest exarequest = new GatewayInterface.Dto.ExamineSubmitRequest();
                 exarequest.ContentId = request.BaseInfo.ID;
-                exarequest.ContentType = "Contract";
+                exarequest.ContentType = "ContractCommit";
                 exarequest.ContentName = "Modify";
                 exarequest.SubmitDefineId = guid;
                 exarequest.Source = "";
@@ -301,7 +302,7 @@ namespace XYHContractPlugin.Controllers
             {
                 GatewayInterface.Dto.ExamineSubmitRequest exarequest = new GatewayInterface.Dto.ExamineSubmitRequest();
                 exarequest.ContentId = request.ContractID;
-                exarequest.ContentType = "Contract";
+                exarequest.ContentType = "ContractCommit";
                 exarequest.ContentName = request.CheckName;
                 exarequest.SubmitDefineId = request.ModifyID;
                 exarequest.Source = "";
@@ -492,6 +493,7 @@ namespace XYHContractPlugin.Controllers
                 if (examineResponse.ExamineStatus == ExamineStatus.Examined)
                 {
                     await _contractInfoManager.SubmitAsync(examineResponse.SubmitDefineId, ExamineStatusEnum.Approved);
+                    await _contractInfoManager.ModifyContractAfterCheckAsync(examineResponse.SubmitDefineId, examineResponse.ContentId, ExamineStatusEnum.Approved, HttpContext.RequestAborted);
                     response.Extension = ExamineStatusEnum.Approved;
                 }
                 else if (examineResponse.ExamineStatus == ExamineStatus.Reject)

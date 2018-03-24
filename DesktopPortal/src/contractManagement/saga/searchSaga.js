@@ -29,13 +29,14 @@ export function* getContractListAsync(state) {
     //newBody = {"keyWord": "","pageIndex":0,"pageSize":10};
     try {
         let res = yield call(ApiClient.post, url, newBody);
-        console.log(`url:${url},body:${JSON.stringify(state.payload)},result:${JSON.stringify(res)},newBody:${JSON.stringify(newBody)}`);
+        //console.log(`url:${url},body:${JSON.stringify(state.payload)},result:${JSON.stringify(res)},newBody:${JSON.stringify(newBody)}`);
        getApiResult(res, result);
        if (result.isOk) {
-       if (res.data.validityCustomerCount) {
-               result.validityCustomerCount = res.data.validityCustomerCount;
+       if (res.data.validityContractCount) {
+            result.msg = "合同查询成功！";
+            result.validityContractCount = res.data.validityContractCount;
        }
-            yield put({ type: actionUtils.getActionType(actionTypes.SEARCH_COMPLETE), payload: result });
+        yield put({ type: actionUtils.getActionType(actionTypes.SEARCH_COMPLETE), payload: result });
      }
         yield put({ type: actionUtils.getActionType(actionTypes.SET_SEARCH_LOADING), payload: false });
     } catch (e) {
