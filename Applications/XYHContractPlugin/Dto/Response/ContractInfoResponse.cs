@@ -25,7 +25,7 @@ namespace XYHContractPlugin.Dto.Response
         /// </summary>
         public int? Modifyed { get; set; }
         public string CurrentModify { get; set; }
-
+        public int? ExamineStatus { get; set; }
         /// <summary>
         /// 是否上传附件
         /// </summary>

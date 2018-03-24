@@ -133,6 +133,20 @@ namespace XYHContractPlugin.Managers
             Response.PageIndex = condition.pageIndex;
             Response.PageSize = condition.pageSize;
             Response.Extension = _mapper.Map<List<ContractInfoResponse>>(query);
+
+            foreach (var item in Response.Extension)
+            {
+                if (item.CurrentModify != null)
+                {
+                    var moinf = await _icontractInfoStore.GetModifyAsync(a => a.Where(b => b.ID == item.CurrentModify));
+                    if (moinf != null)
+                    {
+                        item.ExamineStatus = moinf.ExamineStatus;
+                    }
+                    
+                }
+            }
+
             return Response;
         }
     }
