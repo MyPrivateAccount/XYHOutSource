@@ -102,10 +102,19 @@ reducerMap[actionTypes.CONTRACT_BASIC_EDIT] = (state, action) => {
   // 基本信息查看
 reducerMap[actionTypes.CONTRACT_BASIC_VIEW] = (state, action) => {
 
-    //let contractInfo = Object.assign({}, state.contractInfo, {baseInfo:action.payload.baseInfo, modifyInfo:action.payload.modifyInfo});
-    
     let operInfo = Object.assign({}, state.operInfo, { basicOperType: 'view' });
-    let newState = Object.assign({}, state, { operInfo: operInfo/*, contractInfo: contractInfo*/ });
+    let contractInfo = {};
+    let newState = {};
+    if(action.payload.baseInfo){
+        contractInfo = Object.assign({}, state.contractInfo, {baseInfo:action.payload.baseInfo});
+        newState = Object.assign({}, state, { operInfo: operInfo, contractInfo: contractInfo});
+    }
+    else{
+        newState = Object.assign({}, state, { operInfo: operInfo/*, contractInfo: contractInfo*/ });
+    }
+    
+    
+    
     //console.log('newstate:', newState);
     return newState;
   }
@@ -243,7 +252,10 @@ reducerMap[actionTypes.CONTRACT_PIC_EDIT] = (state, action) => {
         }
       })
     }
-
+    if(type === 'save')
+    {
+        oldFileList = action.payload.filelist;
+    }
     attachInfo = Object.assign({}, state.contractInfo.attachInfo, { fileList: oldFileList })
     contractInfo = Object.assign({}, contractInfo, {attachInfo: attachInfo});
     let newState = Object.assign({}, state, { operInfo: operInfo, contractInfo: contractInfo});
@@ -285,8 +297,10 @@ reducerMap[actionTypes.LOADING_END_ATTACH] = function (state, action) {
 }
 
 reducerMap[actionTypes.OPEN_ATTACHMENT] = function(state, action){
+   
+    let contractInfo = Object.assign({}, {...state.contractInfo }, {baseInfo: action.payload.record})
     let operInfo = { ...state.operInfo, attachPicOperType: 'add' };
-    return Object.assign({}, state, {operInfo: operInfo,  isCurShowContractDetail: false});
+    return Object.assign({}, state, {operInfo: operInfo,  isCurShowContractDetail: false, contractInfo:contractInfo});
 }
 
 reducerMap[actionTypes.CLOSE_ATTACHMENT] = function(state,action){

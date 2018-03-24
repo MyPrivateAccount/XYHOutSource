@@ -96,6 +96,13 @@ class ContractManagementIndex extends Component {
         }
         return <ContentPage curMenuID={this.state.activeMenu.menuID} />
     }
+    isShowChooseDepartMent = () =>{
+        let navigator = this.props.navigator;
+        if(navigator.length == 0){
+            return true;
+        }
+        return false;
+    }
     //获取当前选中部门的完整层级路径
     getActiveOrgFullPath() {
         let activeOrg = this.props.activeOrg || {};
@@ -161,9 +168,13 @@ class ContractManagementIndex extends Component {
                         inlineCollapsed={this.state.collapsed}
                         selectedKeys={[this.state.activeMenu.menuID]}
                         defaultSelectedKeys={["menu_index"]}>
-                        <Menu.Item key='menu_org_select' style={{borderBottom: '1px solid #fff'}}>
-                            <span style={homeStyle.curOrgStype} title={fullPath}>当前部门：{fullPath}></span>
-                        </Menu.Item>
+                        {
+                            this.isShowChooseDepartMent() ? 
+                            <Menu.Item key='menu_org_select' style={{borderBottom: '1px solid #fff'}}>
+                                <span style={homeStyle.curOrgStype} title={fullPath}>当前部门：{fullPath}></span>
+                            </Menu.Item>
+                            : null
+                        }
                         {menuDefine.map((menu, i) =>
 
                             <Menu.Item key={menu.menuID} style={{borderBottom: menu.menuID === "menu_invalid" ? '1px solid #fff' : 'none'}}>

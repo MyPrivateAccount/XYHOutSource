@@ -21,17 +21,16 @@ export function* saveContractBasicAsync(state) {
      let method = state.payload.method;
      let body = state.payload.entity;
      //body.follow = "1";
-     body.relation = "1";
-     const modifyId = NewGuid();
-     let baseInfo = Object.assign({}, {baseInfo:body, modifyInfo: [{iD:modifyId, contractID:body.id}]});
+     body.relation = 1;
+    let baseInfo = Object.assign({}, {baseInfo:body /*, modifyInfo:[{iD:modifyId, contractID:body.id}]*/});
     try {
         console.log(`合同基础信息保存url:${url},baseInfo:${JSON.stringify(baseInfo)}`);
         const saveResult = yield call(ApiClient.post, url, baseInfo, null, "POST");
         getApiResult(saveResult, result);
-         console.log("保存结果", saveResult);
+         console.log("保存结果", result);
         if (result.isOk) {
             result.msg = "合同基础信息保存成功";
-            yield put({ type: actionUtils.getActionType(actionTypes.CONTRACT_BASIC_VIEW), payload: /*result.extension */baseInfo });
+            yield put({ type: actionUtils.getActionType(actionTypes.CONTRACT_BASIC_VIEW), payload: {baseInfo: result.extension || baseInfo} });
             //yield put({ type: actionUtils.getActionType(actionTypes.GET_ADD_CONTRACT), payload: city  });
         }
         yield put(actionUtils.action(basicLoadingEnd));
@@ -99,8 +98,10 @@ export function* savePictureAsync(action) {
     let id = action.payload.id;
     
     let url = WebApiConfig.attach.savePicUrl+ id;
+   
     try {
         let body = action.payload.fileInfo;
+        console.log(`上传图片url:${url},body:${JSON.stringify(body)}`);
         // yield put({ type: actionUtils.getActionType(actionTypes.CONTRACT_PIC_VIEW), payload: { filelist: action.payload.completeFileList, type: 'add' } });
         //     yield put(actionUtils.action(attchLoadingEnd));
         // return;
@@ -110,7 +111,7 @@ export function* savePictureAsync(action) {
         console.log(res, body, 'res')
         if (result.isOk) {
             result.msg = '图片保存成功！';
-            yield put({ type: actionUtils.getActionType(actionTypes.CONTRACT_PIC_VIEW), payload: { filelist: action.payload.completeFileList, type: 'add' } });
+            yield put({ type: actionUtils.getActionType(actionTypes.CONTRACT_PIC_VIEW), payload: { filelist: action.payload.completeFileList, type: 'save' } });
             //这个地方关联合同信息使其可以成为一个完整的合同信息
             //yield put({ type: actionUtils.getActionType(actionTypes.GET_ADD_BUILDING), payload: city  });
         }
