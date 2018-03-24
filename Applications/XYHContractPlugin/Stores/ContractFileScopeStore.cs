@@ -59,9 +59,9 @@ namespace XYHContractPlugin.Stores
             {
                 await Context.SaveChangesAsync(cancellationToken);
             }
-            catch (DbUpdateConcurrencyException)
+            catch (DbUpdateConcurrencyException e)
             {
-                throw;
+                throw e;
             }
         }
         public Task<List<TResult>> ListAsync<TResult>(Func<IQueryable<AnnexInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken))

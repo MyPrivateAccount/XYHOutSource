@@ -145,9 +145,35 @@ namespace XYHContractPlugin.Controllers
             return Response;
         }
 
+        [HttpGet("getcurrentmodifybyid/{contractId}")]
+        [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
+        public async Task<ResponseMessage<ContractModifyResponse>> GetCurrentModifyByid(UserInfo user, [FromRoute] string contractId)
+        {
+            var Response = new ResponseMessage<ContractModifyResponse>();
+            if (string.IsNullOrEmpty(contractId))
+            {
+                Response.Code = ResponseCodeDefines.ModelStateInvalid;
+                Response.Message = "请求参数不正确";
+                Logger.Error("error GetContractByid");
+                return Response;
+            }
+            try
+            {
+                Response.Extension = await _contractInfoManager.GetCurrentModifyInfo(contractId, HttpContext.RequestAborted);
+                Response.Message = $"getmodifyhistorybyid {contractId} sucess";
+            }
+            catch (Exception e)
+            {
+                Response.Code = ResponseCodeDefines.ServiceError;
+                Response.Message = "服务器错误：" + e.ToString();
+                Logger.Error("error");
+            }
+            return Response;
+        }
+
         [HttpGet("getmodifyhistorybyid/{contractId}")]
         [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
-        public async Task<ResponseMessage<List<ContractModifyResponse>>> GetHistoryByid(UserInfo user, [FromRoute] string contractId)
+        public async Task<ResponseMessage<List<ContractModifyResponse>>> GetModifyHistoryByid(UserInfo user, [FromRoute] string contractId)
         {
             var Response = new ResponseMessage<List<ContractModifyResponse>>();
             if (string.IsNullOrEmpty(contractId))

@@ -121,9 +121,25 @@ namespace XYHContractPlugin.Managers
             return _mapper.Map<List<ContractModifyResponse>>(data);
         }
 
+        public virtual async Task<ContractModifyResponse> GetCurrentModifyInfo(string id, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (id == null)
+            {
+                throw new ArgumentNullException(nameof(id));
+            }
+
+            var contract = await Store.GetAsync(a => a.Where(b => b.ID == id));
+            var data = await Store.GetModifyAsync(a => a.Where(b => b.ID == contract.CurrentModify), cancellationToken);
+            return _mapper.Map<ContractModifyResponse>(data);
+        }
+
         public virtual async Task<ContractInfoResponse> FindByIdAsync(string id, CancellationToken cancellationToken = default(CancellationToken))
         {
             var baseinfo = await Store.GetAsync(a => a.Where(b => b.ID == id), cancellationToken);
+            if (baseinfo == null)
+            {
+                throw new ArgumentNullException("无合同");
+            }
             if (baseinfo.IsDelete)
             {
                 throw new ArgumentNullException("已被删除");

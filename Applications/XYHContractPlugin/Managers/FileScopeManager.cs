@@ -56,11 +56,15 @@ namespace XYHContractPlugin.Managers
                 throw new ArgumentNullException(nameof(fileInfoRequest));
             }
 
-                var contractfile = _mapper.Map<AnnexInfo>(fileInfoRequest);
-                contractfile.IsDeleted = false;
-                contractfile.ContractID = contractId;
+            var contractfile = _mapper.Map<AnnexInfo>(fileInfoRequest);
+            contractfile.IsDeleted = false;
+            contractfile.ContractID = contractId;
+            if (contractfile.ID == null)
+            {
+                contractfile.ID = Guid.NewGuid().ToString();
+            }
 
-                await _contractFileScopeStore.SaveAsync(_mapper.Map<SimpleUser>(user), contractId, new List<AnnexInfo>() { contractfile }, cancellationToken);
+            await _contractFileScopeStore.SaveAsync(_mapper.Map<SimpleUser>(user), contractId, new List<AnnexInfo>() { contractfile }, cancellationToken);
 
         }
         public virtual async Task DeleteContractFileListAsync(string userId, string contractId, List<string> fileGuids, CancellationToken cancellationToken = default(CancellationToken))
