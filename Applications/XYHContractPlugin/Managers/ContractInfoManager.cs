@@ -12,6 +12,7 @@ using ApplicationCore.Dto;
 using ApplicationCore.Models;
 using ContractInfoRequest = XYHContractPlugin.Dto.Response.ContractInfoResponse;
 using ContractContentInfoRequest = XYHContractPlugin.Dto.Response.ContractContentResponse;
+using ApplicationCore;
 
 namespace XYHContractPlugin.Managers
 {
@@ -38,16 +39,56 @@ namespace XYHContractPlugin.Managers
         public virtual async Task<ContractInfoResponse> AddContractAsync(UserInfo userinfo, ContractContentInfoRequest buildingBaseInfoRequest, CancellationToken cancellationToken = default(CancellationToken))
         {
 
-            if (buildingBaseInfoRequest == null || buildingBaseInfoRequest.Modifyinfo.Count < 1)
+            if (buildingBaseInfoRequest == null)
             {
                 throw new ArgumentNullException(nameof(buildingBaseInfoRequest));
             }
 
-            await Store.CreateAsync(_mapper.Map<SimpleUser>(userinfo), _mapper.Map<List<AnnexInfo>>(buildingBaseInfoRequest.AnnexInfo), cancellationToken);
-            await Store.CreateAsync(_mapper.Map<SimpleUser>(userinfo), _mapper.Map<List<ComplementInfo>>(buildingBaseInfoRequest.ComplementInfo), cancellationToken);
+            if (buildingBaseInfoRequest.AnnexInfo != null && buildingBaseInfoRequest.AnnexInfo.Count > 0)
+            {
+                await Store.CreateAsync(_mapper.Map<SimpleUser>(userinfo), _mapper.Map<List<AnnexInfo>>(buildingBaseInfoRequest.AnnexInfo), cancellationToken);
+            }
 
-            var baseinfo = await Store.CreateAsync(_mapper.Map<SimpleUser>(userinfo), _mapper.Map<ContractInfo>(buildingBaseInfoRequest), buildingBaseInfoRequest.Modifyinfo.ElementAt(0).ID, cancellationToken);
+            if (buildingBaseInfoRequest.ComplementInfo != null && buildingBaseInfoRequest.ComplementInfo.Count >0)
+            {
+                await Store.CreateAsync(_mapper.Map<SimpleUser>(userinfo), _mapper.Map<List<ComplementInfo>>(buildingBaseInfoRequest.ComplementInfo), cancellationToken);
+            }
+
+            var baseinfo = await Store.CreateAsync(_mapper.Map<SimpleUser>(userinfo), _mapper.Map<ContractInfo>(buildingBaseInfoRequest), 
+                (buildingBaseInfoRequest.Modifyinfo!=null&&buildingBaseInfoRequest.Modifyinfo.Count>0)?buildingBaseInfoRequest.Modifyinfo.ElementAt(0).ID:null, cancellationToken);
             return _mapper.Map<ContractInfoResponse>(baseinfo);
+        }
+
+        public virtual async Task<string> ModifyContractBeforCheckAsync(UserInfo userinfo, ContractContentInfoRequest buildingBaseInfoRequest, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (buildingBaseInfoRequest == null)
+            {
+                throw new ArgumentNullException(nameof(buildingBaseInfoRequest));
+            }
+
+            //if (buildingBaseInfoRequest.AnnexInfo != null&&buildingBaseInfoRequest.AnnexInfo.Count > 0)
+            //    await Store.UpdateListAsync(_mapper.Map<List<AnnexInfo>>(buildingBaseInfoRequest.AnnexInfo), cancellationToken);
+
+            //if (buildingBaseInfoRequest.ComplementInfo != null && buildingBaseInfoRequest.ComplementInfo.Count > 0)
+            //    await Store.UpdateListAsync(_mapper.Map<List<ComplementInfo>>(buildingBaseInfoRequest.ComplementInfo), cancellationToken);
+
+            var ct = _mapper.Map<ContractInfo>(buildingBaseInfoRequest);
+            ct.CurrentModify = Guid.NewGuid().ToString();
+            //await Store.UpdateAsync(ct, cancellationToken);
+            await Store.CreateModifyAsync(_mapper.Map<SimpleUser>(userinfo), ct.ID, ct.CurrentModify, 2, true, JsonHelper.ToJson(ct), null, cancellationToken);//2是修改
+
+            return ct.CurrentModify;
+        }
+
+        public virtual async Task<List<ContractModifyResponse>> GetAllModifyInfo(string id, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (id == null)
+            {
+                throw new ArgumentNullException(nameof(id));
+            }
+
+            var data = await Store.GetListModifyAsync(a => a.Where(b => b.ContractID == id), cancellationToken);
+            return _mapper.Map<List<ContractModifyResponse>>(data);
         }
 
         public virtual async Task<ContractInfoResponse> FindByIdAsync(string id, CancellationToken cancellationToken = default(CancellationToken))

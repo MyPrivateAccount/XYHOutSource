@@ -99,14 +99,13 @@ export function* savePictureAsync(action) {
     console.log(action, '上传图片')
     let id = action.payload.id;
     //let city = action.payload.ownCity; // 自己所在城市
-    //let url = WebApiConfig.buildingAttachInfo.PicUpload.replace("{dest}", action.payload.type) + id;
+    let url = WebApiConfig.buildingAttachInfo.PicUpload.replace("{dest}", action.payload.type) + id;
     try {
         let body = action.payload.fileInfo;
         yield put({ type: actionUtils.getActionType(actionTypes.CONTRACT_PIC_VIEW), payload: { filelist: action.payload.completeFileList, type: 'add' } });
             yield put(actionUtils.action(attchLoadingEnd));
-        return;
-        //let res = yield call(ApiClient.post, url, body);
-        //getApiResult(res, result);
+        let res = yield call(ApiClient.post, url, body);
+        getApiResult(res, result);
         //console.log(`上传图片url:${url},body:${JSON.stringify(body)}，result：${res}`);
         //console.log(res, body, 'res')
         if (result.isOk) {

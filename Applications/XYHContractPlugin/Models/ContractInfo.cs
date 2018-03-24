@@ -49,6 +49,8 @@ namespace XYHContractPlugin.Models
         [MaxLength(127)]
         public string CreateDepartment { get; set; }
         [MaxLength(127)]
+        public string CreateDepartmentID { get; set; }
+        [MaxLength(127)]
         public string Organizete { get; set; }
         public bool IsDelete { get; set; }
         [MaxLength(127)]

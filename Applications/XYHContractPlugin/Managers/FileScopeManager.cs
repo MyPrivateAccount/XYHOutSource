@@ -58,7 +58,7 @@ namespace XYHContractPlugin.Managers
 
                 var contractfile = _mapper.Map<AnnexInfo>(fileInfoRequest);
                 contractfile.IsDeleted = false;
-                contractfile.ContractID = fileInfoRequest.SourceId;
+                contractfile.ContractID = contractId;
 
                 await _contractFileScopeStore.SaveAsync(_mapper.Map<SimpleUser>(user), contractId, new List<AnnexInfo>() { contractfile }, cancellationToken);
 

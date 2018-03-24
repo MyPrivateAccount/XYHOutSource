@@ -8,7 +8,7 @@ using XYHContractPlugin.Dto.Request;
 using XYHContractPlugin.Models;
 using XYHContractPlugin.Stores;
 
-namespace XYHShopsPlugin.Managers
+namespace XYHContractPlugin.Managers
 {
     public class FileInfoManager
     {

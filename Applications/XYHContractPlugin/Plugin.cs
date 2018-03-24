@@ -42,9 +42,15 @@ namespace XYHContractPlugin
         {
             context.Services.AddDbContext<ContractDbContext>(options => options.UseMySql(context.ConnectionString), ServiceLifetime.Scoped);
             context.Services.AddScoped<IContractInfoStore, ContractInfoStore>();
+            context.Services.AddScoped<IContractFileScopeStore, ContractFileScopeStore>();
+            context.Services.AddScoped<IFileInfoStore, FileInfoStore>();
             context.Services.AddScoped<ContractListManager>();
             context.Services.AddScoped<ContractInfoManager>();
             context.Services.AddScoped<PermissionExpansionManager>();
+            context.Services.AddScoped<XYHContractPlugin.Managers.FileScopeManager>();
+            context.Services.AddScoped<FileInfoManager>();
+
+
             return base.Init(context);
         }
 

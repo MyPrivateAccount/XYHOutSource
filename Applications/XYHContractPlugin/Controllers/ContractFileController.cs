@@ -17,7 +17,6 @@ using XYHContractPlugin.Dto.Request;
 using XYHContractPlugin.Dto.Response;
 using XYHContractPlugin.Managers;
 using XYHContractPlugin.Models;
-using XYHShopsPlugin.Managers;
 
 namespace XYHContractPlugin.Controllers
 {
@@ -86,6 +85,7 @@ namespace XYHContractPlugin.Controllers
                     Logger.Info("nwf协议：\r\n{0}", JsonHelper.ToJson(nwf));
                     string response2 = await _restClient.Post(ApplicationContext.Current.NWFUrl, nwf, "POST", nameValueCollection);
                     Logger.Info("返回：\r\n{0}", response2);
+                    response.Message = response2;
                 }
                 catch (Exception e)
                 {

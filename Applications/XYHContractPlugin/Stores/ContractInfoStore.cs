@@ -34,6 +34,12 @@ namespace XYHContractPlugin.Stores
             {
                 throw new ArgumentNullException(nameof(buildingBaseInfo));
             }
+
+            if (string.IsNullOrEmpty(modifyid))
+            {
+                modifyid = Guid.NewGuid().ToString();
+            }
+
             var modify = new ModifyInfo();
             modify.ID = modifyid;
             modify.Type = 1;//创建
@@ -54,6 +60,43 @@ namespace XYHContractPlugin.Stores
             Context.Add(modify);
             await Context.SaveChangesAsync(cancellationToken);
             return buildingBaseInfo;
+        }
+
+        public async Task CreateModifyAsync(SimpleUser userinfo, string contractid, string modifyid, int ntype, 
+            bool updatetocontract = true, string ext1 = null, string ext2= null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (contractid != null)
+            {
+                if (string.IsNullOrEmpty(modifyid))
+                {
+                    modifyid = Guid.NewGuid().ToString();
+                }
+
+                var tmodify = new ModifyInfo();
+                tmodify.ID = modifyid;
+                tmodify.ContractID = contractid;
+                tmodify.ModifyStartTime = DateTime.Now;
+                tmodify.ExamineTime = tmodify.ModifyStartTime;
+                tmodify.Type = ntype;
+                tmodify.ModifyPepole = userinfo.Id;
+                tmodify.ExamineStatus = (int)ExamineStatusEnum.UnSubmit;
+                tmodify.Ext1 = ext1;
+                tmodify.Ext2 = ext2;
+
+                if (updatetocontract)
+                {
+                    ContractInfo info = new ContractInfo()
+                    {
+                        ID = contractid,
+                        CurrentModify = modifyid
+                    };
+                    var entry = Context.Attach(info);
+                    entry.Property(x => x.CurrentModify).IsModified = true;
+                }
+               
+                Context.Add(tmodify);
+                await Context.SaveChangesAsync(cancellationToken);
+            }
         }
 
         public async Task<bool> CreateAsync(SimpleUser userinfo, List<AnnexInfo> annexinfo, CancellationToken cancle = default(CancellationToken))
@@ -114,7 +157,7 @@ namespace XYHContractPlugin.Stores
         }
 
         public async Task DeleteListAsync(List<ContractInfo> areaDefineList, CancellationToken cancellationToken = default(CancellationToken))
-        {
+        {           
             if (areaDefineList == null)
             {
                 throw new ArgumentNullException(nameof(areaDefineList));
@@ -192,6 +235,36 @@ namespace XYHContractPlugin.Stores
             }
             Context.ContractInfos.Attach(areaDefine);
             Context.ContractInfos.Update(areaDefine);
+            try
+            {
+                await Context.SaveChangesAsync(cancellationToken);
+            }
+            catch (DbUpdateConcurrencyException) { throw; }
+        }
+
+        public async Task UpdateListAsync(List<AnnexInfo> areaDefine, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (areaDefine == null)
+            {
+                throw new ArgumentNullException(nameof(areaDefine));
+            }
+            //Context.AnnexInfos.Attach(areaDefine);
+            Context.AnnexInfos.UpdateRange(areaDefine);
+            try
+            {
+                await Context.SaveChangesAsync(cancellationToken);
+            }
+            catch (DbUpdateConcurrencyException) { throw; }
+        }
+
+        public async Task UpdateListAsync(List<ComplementInfo> areaDefine, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (areaDefine == null)
+            {
+                throw new ArgumentNullException(nameof(areaDefine));
+            }
+            //Context.ComplementInfos.Attach(areaDefine);
+            Context.ComplementInfos.UpdateRange(areaDefine);
             try
             {
                 await Context.SaveChangesAsync(cancellationToken);

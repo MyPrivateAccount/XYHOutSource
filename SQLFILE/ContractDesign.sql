@@ -32,6 +32,7 @@ CREATE TABLE `XYH_DT_CONTRACTINFO` (
   `CreateUser` varchar(127) NOT NULL DEFAULT '',/*申请人*/
   `CreateTime` datetime DEFAULT NULL,/*申请时间*/
   `CreateDepartment` varchar(127) DEFAULT '',/*申请部门*/
+  `CreateDepartmentID` varchar(127) DEFAULT '',/*申请部门id*/
   `Organizete` varchar(127) DEFAULT '',/*归属组织*/
   `IsDelete` BOOLEAN DEFAULT FALSE,/*是否删除*/
   `DeleteUser` varchar(127) DEFAULT '',/*删除人*/
@@ -141,5 +142,7 @@ CREATE TABLE `XYH_DT_MODIFY` (
   `ModifyPepole` varchar(127) NOT NULL DEFAULT '',
   `ModifyStartTime` datetime DEFAULT NULL,
   `ModifyCheck` varchar(127) NOT NULL DEFAULT '',/*审核流程*/
+  `Ext1` varchar(3000) DEFAULT '',/**/
+  `Ext2` varchar(3000) DEFAULT '',/**/
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
