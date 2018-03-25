@@ -122,5 +122,11 @@ reducerMap[actionTypes.SAVE_SEARCH_CONDITION] = function (state, action) {
     return Object.assign({}, state, {searchCondition: action.payload});
 }
 
+// 获取合同详情开始
+reducerMap[actionTypes.GOTO_THIS_CONTRACT_START] = (state, action) => {
+    console.log('pppppaction', action);
+    let navigator = [action.payload];
+    return Object.assign({}, state, {navigator: [{id: 0, name: '录入', type: 'record'}], showContractRecord: true});
+}
 
 export default handleActions(reducerMap, initState);

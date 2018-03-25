@@ -25,13 +25,19 @@ const WebApiConfig = {
         getCustomerByUserID: basicDataBaseApiUrl + 'customerInfo/salesmancustomer/',//根据用户ID获取客户列表
         getAuditHistory: basicDataBaseApiUrl + "examines/",//获取审核历史详细
     },
+    contract:{
+        GetContractInfo: basicDataBaseApiUrl + "contractinfo/"
+    },
     contractBasic: {
         Base: basicDataBaseApiUrl + "contractinfo/addsimplecontract",//
+        Modify: basicDataBaseApiUrl + "contractinfo/modifysimplecontract",
         Submit: basicDataBaseApiUrl + "contractinfo/checksimplecontract",//
     },
     attach: {
+        GetAttachInfo: basicDataBaseApiUrl + "contractfiles/GetFileListByContractId/",
         uploadUrl: `${UploadUrl}/file/upload/`,
-        savePicUrl: basicDataBaseApiUrl + 'contractfiles/contract/uploadmore/'
+        savePicUrl: basicDataBaseApiUrl + 'contractfiles/contract/uploadmore/',
+        deletePicUrl: basicDataBaseApiUrl + "contractfiles/deletecontractfile/"
     },
 }
 export default WebApiConfig;

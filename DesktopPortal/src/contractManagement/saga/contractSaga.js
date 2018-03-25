@@ -10,6 +10,7 @@ import moment from 'moment';
 import { 
     basicLoadingEnd, gotoThisContractStart, gotoThisContractFinish,
     submitContractStart,submitContractFinish,attchLoadingStart, attchLoadingEnd,
+    openAttachMentStart, openAttachMentFinish,
 } from '../actions/actionCreator';
 
 const actionUtils = appAction(actionTypes.ACTION_ROUTE);
@@ -17,9 +18,10 @@ const actionUtils = appAction(actionTypes.ACTION_ROUTE);
 export function* saveContractBasicAsync(state) {
     console.log('state.payload.entity:', state.payload.entity);
     let result = { isOk: false, msg: '合同基础信息保存失败！' };
-     let url = WebApiConfig.contractBasic.Base
-     let method = state.payload.method;
-     let body = state.payload.entity;
+    let method = state.payload.method;
+    let url = method === 'POST' ?  WebApiConfig.contractBasic.Base : WebApiConfig.contractBasic.Modify;
+     
+    let body = state.payload.entity;
      //body.follow = "1";
      body.relation = 1;
     let baseInfo = Object.assign({}, {baseInfo:body /*, modifyInfo:[{iD:modifyId, contractID:body.id}]*/});
@@ -45,23 +47,37 @@ export function* saveContractBasicAsync(state) {
     });
 }
 
-// 编辑楼盘
+//获取合同详情
 export function* gotoThisContract(action) {
-    // console.log(action, '点击楼盘')
-    let url = WebApiConfig.buildings.GetThisBuildings + action.payload.id;
+    console.log(action, '合同详情')
+    let id  = action.payload.record.id;
+    let url = WebApiConfig.contract.GetContractInfo + id;
     let res;
-    yield put(actionUtils.action(gotoThisContractStart))
+    yield put({ type: actionUtils.getActionType(actionTypes.GOTO_THIS_CONTRACT_START), payload: {id:0}});
     try {
+        console.log(`获取合同详情url:${url}`);
         res = yield call(ApiClient.get, url);
+        console.log('获取合同详情结果:', JSON.stringify(res));
         yield put(actionUtils.action(gotoThisContractFinish, res));
-        if (!action.payload.type) { // type==>dynamic 说明是在动态房源哪里掉的接口，不能进行页面跳转步骤
-           // yield put(actionUtils.action(gotoChangeMyAdd));
-           // yield put(actionUtils.action(changeShowGroup, {type: 2}));
-        } else {
-            //yield put(actionUtils.action(changeShowGroup, {type: 1}));
-        }
+
     } catch (e) {
         yield put(actionUtils.action(gotoThisContractFinish, { code: '1', message: '失败' }));
+    }
+}
+
+export function* openAttachUpload(action){
+    let url = WebApiConfig.attach.GetAttachInfo + action.payload.record.id;
+    let res;
+    yield put(actionUtils.action(openAttachMentStart))
+    try {
+        console.log('attachmentUrl:', url);
+        res = yield call(ApiClient.get, url);
+
+        console.log('attachment:', res);
+        yield put(actionUtils.action(openAttachMentFinish, res));
+
+    } catch (e) {
+        yield put(actionUtils.action(openAttachMentFinish, { code: '1', message: '失败' }));
     }
 }
 
@@ -154,6 +170,7 @@ export function* deletePicAsync(action) {
 
 export function* watchContractAllAsync() {
     yield takeLatest(actionUtils.getActionType(actionTypes.CONTRACT_BASIC_SAVE), saveContractBasicAsync);
+    yield takeLatest(actionUtils.getActionType(actionTypes.OPEN_ATTACHMENT), openAttachUpload);
     // yield takeLatest(actionUtils.getActionType(actionTypes.BUILDING_SUPPORT_SAVE), saveSupportInfoAsync);
     // yield takeLatest(actionUtils.getActionType(actionTypes.BUILDING_RELSHOP_SAVE), saveRelshopsAsync);
     // yield takeLatest(actionUtils.getActionType(actionTypes.BUILDING_PROJECT_SAVE), saveProjectAsync);

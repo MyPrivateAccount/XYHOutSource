@@ -193,7 +193,7 @@ class BasicEdit extends Component {
                 <Col span={12}>
                     <FormItem {...formItemLayout} label={<span>甲方类型</span>}>
                     {getFieldDecorator('companyAT', {
-                                    initialValue: basicInfo.companyAT,
+                                    initialValue: basicInfo.companyAT ? basicInfo.companyAT.toString() : "",
                                     rules: [{ required: true, message: '请选择甲方类型!' }],
                                 })(
                                     <Select>
@@ -348,7 +348,7 @@ class BasicEdit extends Component {
             <Col span={12}>
                  <FormItem {...formItemLayout} label={<span>返回原件</span>}>
                   {getFieldDecorator('returnOrigin', {
-                                  initialValue: basicInfo.returnOrigin == null ? (basicInfo.returnOrigin === 1 ? '是' :'否') : null ,
+                                  initialValue: basicInfo.returnOrigin !== null ? (basicInfo.returnOrigin === 1 ? 1 :2) : null ,
                                   rules:[{required:true, message:'请选择是否返还原件!'}]
                                   })(
                                     <RadioGroup >

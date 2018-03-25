@@ -134,13 +134,9 @@ reducerMap[actionTypes.CONTRACT_INFO_SUBMIT_FINISH] = function (state, action) {
 }
 
 
-// 点击进入这个合同（用于在保存后编辑，然后准备阶段）
-reducerMap[actionTypes.GOTO_THIS_CONTRACT_START] = (state, action) => {
-    let newState = state;
-    return newState;
-}
+
 reducerMap[actionTypes.GOTO_THIS_CONTRACT_FINISH] = (state, action) => {
-    // console.log(state.buildInfo, '旧值', action)
+    console.log('action.payload.data', action.payload.data);
     let contractInfo = { ...state.contractInfo };
     let operInfo = { ...state.operInfo };
     let res = action.payload.data
@@ -148,35 +144,14 @@ reducerMap[actionTypes.GOTO_THIS_CONTRACT_FINISH] = (state, action) => {
     if (res.code === '0') {
         contractInfo = res.extension
         contractInfo.baseInfo = contractInfo.baseInfo
-        contractInfo.buildingBasic.location = [contractInfo.basicInfo.city, contractInfo.basicInfo.district, contractInfo.basicInfo.area]
-        contractInfo.supportInfo = contractInfo.facilitiesInfo
-        contractInfo.relShopInfo = contractInfo.shopInfo
-        contractInfo.projectInfo = { summary: contractInfo.summary };
-        contractInfo.attachInfo = { fileList: contractInfo.fileList, attachmentList: contractInfo.attachmentList }
-        if ([1, 8].includes(res.extension.examineStatus)) {
-            operInfo = {
-                basicOperType: 'view',
-                supportOperType: 'view',
-                relShopOperType: 'view',
-                projectOperType: 'view',
-                attachPicOperType: 'view',
-                attachFileOperType: 'view',
-                batchBuildOperType: 'view',
-                rulesOperType: 'view',
-                rulesTemplateOperType: 'view',
-                commissionOperType: 'view',
-            }
-        } else {
-            operInfo = {
-                basicOperType: 'edit',
-                attachPicOperType: 'edit',
-                attachFileOperType: 'edit',
-                batchBuildOperType: 'edit',
-                rulesOperType: 'edit',
-                rulesTemplateOperType: 'edit',
-                commissionOperType: 'edit',
-            }
+        contractInfo.attachInfo = { fileList: contractInfo.fileList }
+       
+        operInfo = {
+            basicOperType: 'view',
+            attachPicOperType: 'view',
+   
         }
+        
 
     }
     let newState = Object.assign({}, state, { contractInfo: contractInfo, operInfo: operInfo, buildDisplay: 'block' });
@@ -303,6 +278,11 @@ reducerMap[actionTypes.OPEN_ATTACHMENT] = function(state, action){
     return Object.assign({}, state, {operInfo: operInfo,  isCurShowContractDetail: false, contractInfo:contractInfo});
 }
 
+reducerMap[actionTypes.OPEN_ATTACHMENT_FINISH] = function(state, action){
+    let contractInfo = Object.assign({}, {...state.contractInfo }, {baseInfo: action.payload.record})
+    let operInfo = { ...state.operInfo, attachPicOperType: 'add' };
+    return Object.assign({}, state, {operInfo: operInfo,  isCurShowContractDetail: false, contractInfo:contractInfo});
+}
 reducerMap[actionTypes.CLOSE_ATTACHMENT] = function(state,action){
     return Object.assign({}, state, {attachFileOperType: 'view'})
 }

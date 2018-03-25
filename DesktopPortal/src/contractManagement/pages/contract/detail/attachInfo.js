@@ -81,7 +81,7 @@ class AttachInfo extends Component {
     render() {
         let { contractAttachInfo } = this.props;
         let { previewVisible, previewImage, fileList, group } = this.state;
-        console.log('===========state:', this.state);
+        
         let propsPic = {
             multiple: true,
             listType: "picture-card",
