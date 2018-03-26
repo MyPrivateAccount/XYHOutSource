@@ -136,6 +136,7 @@ namespace XYHContractPlugin.Managers
 
             foreach (var item in Response.Extension)
             {
+                item.ExamineStatus = 0;
                 if (item.CurrentModify != null)
                 {
                     var moinf = await _icontractInfoStore.GetModifyAsync(a => a.Where(b => b.ID == item.CurrentModify));

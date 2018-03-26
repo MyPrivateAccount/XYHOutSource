@@ -17,7 +17,7 @@
   "AuthUrl": "https://testauth.xinyaohangdc.com",
   "ClientID": "apigateway",
   "ClientSecret": "123456",
-  "NWFUrl": "http://localhost:7100/api/task/nwf",
+  "NWFUrl": "http://120.77.152.254:7100/api/task/nwf",
   "MessageServerUrl": "http://120.77.152.254:9000",
   "FileServerRoot": "http://120.77.152.254:5100/image",
   "ExamineUrl": "http://120.77.152.254:7000/api/examines/submit",

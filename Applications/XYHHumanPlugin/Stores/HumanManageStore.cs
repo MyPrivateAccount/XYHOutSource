@@ -1,19 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
+using XYHHumanPlugin.Stores;
 using System.Threading;
 using System.Threading.Tasks;
 using XYHHumanPlugin.Models;
 using XYHHumanPlugin.Dto.Response;
+using System.Linq;
 
 namespace XYHHumanPlugin.Stores
 {
-    public interface IHumanManageStore
+    public class HumanManageStore : IHumanManageStore
     {
         IQueryable<HumanInfo> HumanInfos { get; set; }
 
-        Task<HumanInfo> CreateAsync(HumanInfo userinfo, CancellationToken cancellationToken = default(CancellationToken));
+        Task<HumanInfo> CreateAsync(HumanInfo userinfo, CancellationToken cancellationToken = default(CancellationToken))
+        { }
 
         Task DeleteAsync(HumanInfo userinfo, string contractid, CancellationToken cancellationToken = default(CancellationToken));
 
@@ -32,6 +34,5 @@ namespace XYHHumanPlugin.Stores
 
         Task SaveAsync(HumanInfo user, ContractInfo buildingBaseInfo, CancellationToken cancellationToken = default(CancellationToken));
         Task UpdateExamineStatus(string modifyId, ExamineStatusEnum status, CancellationToken cancellationToken = default(CancellationToken));
-
     }
 }

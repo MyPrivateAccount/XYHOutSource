@@ -58,7 +58,7 @@ namespace XYHContractPlugin.Controllers
             return Response;
         }
 
-        [HttpGet("{getcontractbyid}")]
+        [HttpGet("{contractId}")]
         [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
         public async Task<ResponseMessage<ContractContentResponse>> GetContractByid(UserInfo user, [FromRoute] string contractId)
         {
@@ -83,7 +83,7 @@ namespace XYHContractPlugin.Controllers
             return Response;
         }
 
-        [HttpGet("{getallcontractbyuser}")]
+        [HttpGet("allcontractinfo/{contractId}")]
         [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
         public async Task<ResponseMessage<List<ContractContentResponse>>> GetAllContractByUser(UserInfo user, [FromRoute] string contractId)
         {
@@ -145,7 +145,7 @@ namespace XYHContractPlugin.Controllers
             return Response;
         }
 
-        [HttpGet("getcurrentmodifybyid/{contractId}")]
+        [HttpGet("currentmodifybyid/{contractId}")]
         [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
         public async Task<ResponseMessage<ContractModifyResponse>> GetCurrentModifyByid(UserInfo user, [FromRoute] string contractId)
         {
@@ -171,7 +171,7 @@ namespace XYHContractPlugin.Controllers
             return Response;
         }
 
-        [HttpGet("getmodifyhistorybyid/{contractId}")]
+        [HttpGet("modifyhistorybyid/{contractId}")]
         [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
         public async Task<ResponseMessage<List<ContractModifyResponse>>> GetModifyHistoryByid(UserInfo user, [FromRoute] string contractId)
         {
@@ -368,7 +368,7 @@ namespace XYHContractPlugin.Controllers
             return response;
         }
 
-        [HttpGet("getcontractcurcheck/{contractId}")]
+        [HttpGet("contractcurcheck/{contractId}")]
         [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
         public async Task<ResponseMessage<ContractModifyResponse>> GetContractCurCheck(UserInfo user, [FromRoute] string contractId)
         {
