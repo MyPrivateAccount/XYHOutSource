@@ -28,7 +28,7 @@ namespace XYHContractPlugin.Stores
             return Context.Database.GetDbConnection().Query<T>(sql);
         }
 
-        public async Task<ContractInfo> CreateAsync(SimpleUser userinfo, ContractInfo buildingBaseInfo, string modifyid, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ContractInfo> CreateAsync(SimpleUser userinfo, ContractInfo buildingBaseInfo, string modifyid, string checkaction, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (buildingBaseInfo == null)
             {
@@ -48,7 +48,7 @@ namespace XYHContractPlugin.Stores
             modify.ModifyStartTime = DateTime.Now;
             modify.ExamineStatus = (int)ExamineStatusEnum.UnSubmit;
             modify.ExamineTime = modify.ModifyStartTime;
-            modify.ModifyCheck = "0";
+            modify.ModifyCheck = checkaction;
 
             buildingBaseInfo.IsDelete = false;
             buildingBaseInfo.CreateUser = userinfo.Id;
@@ -62,7 +62,7 @@ namespace XYHContractPlugin.Stores
             return buildingBaseInfo;
         }
 
-        public async Task CreateModifyAsync(SimpleUser userinfo, string contractid, string modifyid, int ntype, 
+        public async Task CreateModifyAsync(SimpleUser userinfo, string contractid, string modifyid, int ntype, string checkaction,
             bool updatetocontract = true, string ext1 = null, string ext2= null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (contractid != null)
@@ -82,6 +82,7 @@ namespace XYHContractPlugin.Stores
                 tmodify.ExamineStatus = (int)ExamineStatusEnum.UnSubmit;
                 tmodify.Ext1 = ext1;
                 tmodify.Ext2 = ext2;
+                tmodify.ModifyCheck = checkaction;
 
                 if (updatetocontract)
                 {

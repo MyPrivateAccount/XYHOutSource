@@ -48,6 +48,8 @@ export const saveDeletePicList = createAction(actionTypes.SAVE_DELETE_PIC_LIST);
 
 //文件上传
 export const openAttachMent = createAction(actionTypes.OPEN_ATTACHMENT);
+export const openAttachMentStart = createAction(actionTypes.OPEN_ATTACHMENT_START);
+export const openAttachMentFinish = createAction(actionTypes.OPEN_ATTACHMENT_FINISH);
 export const closeAttachMent = createAction(actionTypes.CLOSE_ATTACHMENT);
 export const uploadAttachMentList = createAction(actionTypes.UPLOAD_ATTCHMENT_LIST);
 export const uploadAttachMentListComplete = createAction(actionTypes.UPLOAD_ATTCHMENT_LIST_COMPLETE);

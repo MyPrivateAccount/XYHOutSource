@@ -28,17 +28,17 @@ namespace XYHContractPlugin.Managers
         protected IContractInfoStore Store { get; }
         protected IMapper _mapper { get; }
 
-        public virtual async Task<ContractInfoResponse> CreateAsync(UserInfo userinfo, ContractInfoRequest buildingBaseInfoRequest, string modifyid, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual async Task<ContractInfoResponse> CreateAsync(UserInfo userinfo, ContractInfoRequest buildingBaseInfoRequest, string modifyid, string checkaction, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (buildingBaseInfoRequest == null)
             {
                 throw new ArgumentNullException(nameof(buildingBaseInfoRequest));
             }
-            var baseinfo = await Store.CreateAsync(_mapper.Map<SimpleUser>(userinfo), _mapper.Map<ContractInfo>(buildingBaseInfoRequest), modifyid,cancellationToken);
+            var baseinfo = await Store.CreateAsync(_mapper.Map<SimpleUser>(userinfo), _mapper.Map<ContractInfo>(buildingBaseInfoRequest), modifyid, checkaction, cancellationToken);
             return _mapper.Map<ContractInfoResponse>(baseinfo);
         }
 
-        public virtual async Task<ContractInfoResponse> AddContractAsync(UserInfo userinfo, ContractContentInfoRequest buildingBaseInfoRequest, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual async Task<ContractInfoResponse> AddContractAsync(UserInfo userinfo, ContractContentInfoRequest buildingBaseInfoRequest, string checkaction, CancellationToken cancellationToken = default(CancellationToken))
         {
 
             if (buildingBaseInfoRequest == null)
@@ -56,12 +56,12 @@ namespace XYHContractPlugin.Managers
                 await Store.CreateAsync(_mapper.Map<SimpleUser>(userinfo), _mapper.Map<List<ComplementInfo>>(buildingBaseInfoRequest.ComplementInfo), cancellationToken);
             }
 
-            var baseinfo = await Store.CreateAsync(_mapper.Map<SimpleUser>(userinfo), _mapper.Map<ContractInfo>(buildingBaseInfoRequest), 
-                (buildingBaseInfoRequest.Modifyinfo!=null&&buildingBaseInfoRequest.Modifyinfo.Count>0)?buildingBaseInfoRequest.Modifyinfo.ElementAt(0).ID:null, cancellationToken);
+            var baseinfo = await Store.CreateAsync(_mapper.Map<SimpleUser>(userinfo), _mapper.Map<ContractInfo>(buildingBaseInfoRequest),
+                (buildingBaseInfoRequest.Modifyinfo!=null&&buildingBaseInfoRequest.Modifyinfo.Count>0)?buildingBaseInfoRequest.Modifyinfo.ElementAt(0).ID:null, checkaction, cancellationToken);
             return _mapper.Map<ContractInfoResponse>(baseinfo);
         }
 
-        public virtual async Task<string> ModifyContractBeforCheckAsync(UserInfo userinfo, ContractContentInfoRequest buildingBaseInfoRequest, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual async Task<string> ModifyContractBeforCheckAsync(UserInfo userinfo, ContractContentInfoRequest buildingBaseInfoRequest, string checkaction, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (buildingBaseInfoRequest == null)
             {
@@ -71,8 +71,8 @@ namespace XYHContractPlugin.Managers
             string guid = Guid.NewGuid().ToString();
             await Store.CreateModifyAsync(_mapper.Map<SimpleUser>(userinfo),
                 buildingBaseInfoRequest.BaseInfo.ID,
-                guid, ModifyContract, true,
-                JsonHelper.ToJson(buildingBaseInfoRequest), null, cancellationToken);//2是修改
+                guid, ModifyContract, checkaction, true,
+                JsonHelper.ToJson(buildingBaseInfoRequest),null, cancellationToken);//2是修改
 
             return guid;
         }

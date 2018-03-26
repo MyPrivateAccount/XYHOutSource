@@ -5,7 +5,7 @@ import LoadableLoading from '../../components/LoadableLoading';
 
 const LoadableIndexPage = Loadable({
     loader: () => import('./mainIndex'),
-    loading: () => null//<LoadableLoading />,
+    loading: () => <LoadableLoading />,
 });
 
 const LoadAttatchMentPage = Loadable({

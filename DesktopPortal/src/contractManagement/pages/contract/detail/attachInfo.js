@@ -24,6 +24,7 @@ class AttachInfo extends Component {
         if (this.props.contractAttachInfo.fileList) {
             this.getGroup(this.props.contractAttachInfo.fileList)
         }
+        console.log('fileList:', fileList);
         this.setState({ fileList: fileList });
         
         
@@ -31,6 +32,7 @@ class AttachInfo extends Component {
 
     componentWillReceiveProps(newProps) {
         let fileList = [];
+        console.log('newProps.contractAttachInfo.fileList:', newProps.contractAttachInfo.fileList);
         if (newProps.contractAttachInfo.fileList) {
             this.getGroup(newProps.contractAttachInfo.fileList)
         }    
@@ -79,6 +81,7 @@ class AttachInfo extends Component {
     render() {
         let { contractAttachInfo } = this.props;
         let { previewVisible, previewImage, fileList, group } = this.state;
+        
         let propsPic = {
             multiple: true,
             listType: "picture-card",
@@ -171,7 +174,7 @@ class AttachInfo extends Component {
 function mapStateToProps(state) {
     // console.log(state.shop.shopsInfo.attachInfo, state.building.buildInfo.attachInfo, '图片展示列表' )
     return {
-        contractAttachInfo: state.contractData.contractInfo.annexInfo,
+        contractAttachInfo: state.contractData.contractInfo.attachInfo,
         basicData: state.basicData
     }
 }

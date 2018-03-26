@@ -1,5 +1,5 @@
 import {connect} from 'react-redux';
-import { getContractDetail, searchStart, saveSearchCondition, setLoadingVisible,openAttachMent, openContractRecord, openContractDetail} from '../actions/actionCreator';
+import { getContractDetail, searchStart, saveSearchCondition, setLoadingVisible,openAttachMent, openContractRecord, gotoThisContract} from '../actions/actionCreator';
 import React, {Component} from 'react';
 import {Button, Row, Col, Table} from 'antd';
 import moment from 'moment';
@@ -280,12 +280,13 @@ class SearchResult extends Component {
     }
     //文件上传
     onClickUploadFile = (record)=>{
+        //console.log('====record:' , record);
         this.props.dispatch(openAttachMent({'record':record}));
     }
 
     onClickContractDetail = (record) =>{
         //console.log('record:', record);
-        this.props.dispatch(openContractRecord({'record':record}));
+        this.props.dispatch(gotoThisContract({'record':record}));
     }
     dateTimeRender = (text, record) => {
         let newText = text;
@@ -491,6 +492,7 @@ class SearchResult extends Component {
                 dataIndex: button.buttonID,
                 key: button.buttonID,
                 render: (text, record) => (
+                    
                     <Button key = {i} id= {button.buttonID}  icon={button.icon} size={button.size} type={button.type} onClick={button.buttonID === 'export' ? (e) => this.onClickExPort(record) : (e) => this.onClickUploadFile(record)}>{button.buttonName}</Button>
                 )
             

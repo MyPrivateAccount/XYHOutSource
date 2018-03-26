@@ -27,10 +27,12 @@ namespace XYHContractPlugin.Controllers
     {
         private readonly ILogger Logger = LoggerManager.GetLogger("Contractinfo");
         private readonly ContractInfoManager _contractInfoManager;
+        private readonly RestClient _restClient;
 
-        public ContractInfoController(ContractInfoManager contractManager)
+        public ContractInfoController(ContractInfoManager contractManager, RestClient rsc)
         {
             _contractInfoManager = contractManager;
+            _restClient = rsc;
         }
 
 
@@ -203,17 +205,6 @@ namespace XYHContractPlugin.Controllers
         {
             Logger.Trace($"用户{User?.UserName ?? ""}({User?.Id ?? ""})保存合同基础信息(PutBuildingBaseInfo)：\r\n请求参数为：\r\n" + (request != null ? JsonHelper.ToJson(request) : ""));
 
-            //if (User.Id == null)
-            //{
-            //    {
-            //        User.Id = "66df64cb-67c5-4645-904f-704ff92b3e81";
-            //        User.UserName = "wqtest";
-            //        User.KeyWord = "";
-            //        User.OrganizationId = "270";
-            //        User.PhoneNumber = "18122132334";
-            //    };
-            //}
-
             var response = new ResponseMessage<ContractInfoResponse>();
             if (!ModelState.IsValid)
             {
@@ -225,7 +216,10 @@ namespace XYHContractPlugin.Controllers
             try
             {
                 //写发送成功后的表
-                response.Extension = await _contractInfoManager.AddContractAsync(User, request, HttpContext.RequestAborted);
+                var resp = await _restClient.Get<ResponseMessage<string>>($"http://localhost:7000/api/Organization/{User.OrganizationId}", null);
+                request.BaseInfo.CreateDepartment = resp.Extension;
+
+                response.Extension = await _contractInfoManager.AddContractAsync(User, request, "TEST", HttpContext.RequestAborted);
                 response.Message = "add simple ok";
             }
             catch (Exception e)
@@ -255,7 +249,7 @@ namespace XYHContractPlugin.Controllers
             try
             {
                 //写发送成功后的表
-                var guid = await _contractInfoManager.ModifyContractBeforCheckAsync(User, request, HttpContext.RequestAborted);
+                var guid = await _contractInfoManager.ModifyContractBeforCheckAsync(User, request, "TEST", HttpContext.RequestAborted);
 
                 //审核提交
                 GatewayInterface.Dto.ExamineSubmitRequest exarequest = new GatewayInterface.Dto.ExamineSubmitRequest();
@@ -450,7 +444,7 @@ namespace XYHContractPlugin.Controllers
                 }
 
                 //写发送成功后的表
-                await _contractInfoManager.CreateAsync(User,request, exarequest.SubmitDefineId, HttpContext.RequestAborted);
+                await _contractInfoManager.CreateAsync(User,request, exarequest.SubmitDefineId, "TEST",HttpContext.RequestAborted);
             }
             catch (Exception e)
             {

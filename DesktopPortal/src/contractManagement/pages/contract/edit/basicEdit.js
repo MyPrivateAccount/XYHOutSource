@@ -12,7 +12,11 @@ const RadioGroup = Radio.Group;
 const { RangePicker } = DatePicker;
 const { TextArea } = Input;
 class BasicEdit extends Component {
-
+    state = {
+        createDepartmentID: '0',
+        departMentFullName:'',
+        departmentFullId:"",
+    }
     handleCancel = () => {
         this.props.dispatch(viewContractBasic())
     }
@@ -41,6 +45,9 @@ class BasicEdit extends Component {
                 delete newBasicInfo.startAndEndTime;
     
                 newBasicInfo.id = this.props.contractInfo.baseInfo.id;
+                newBasicInfo.organizete = this.state.departMentFullName;
+                newBasicInfo.createDepartmentID = this.state.createDepartmentID;
+                newBasicInfo.relation = this.state.departmentFullId;
                 if(basicOperType === 'add')
                 {
                     newBasicInfo.createTime = moment().format("YYYY-MM-DD");
@@ -50,11 +57,7 @@ class BasicEdit extends Component {
                 if (basicOperType != 'add') {
                     newBasicInfo = Object.assign({}, this.props.basicInfo, values);
                 }
-                // newBasicInfo.city = values.location[0];
-                // newBasicInfo.district = values.location[1];
-                // newBasicInfo.area = values.location[2];
-                // newBasicInfo.areaFullName = this.state.areaFullName
-                //console.log('newBasicInfo:', newBasicInfo);
+   
                 let method = (basicOperType === 'add' ? 'POST' : "PUT");
      
                 this.props.dispatch(saveContractBasic({ 
@@ -80,7 +83,20 @@ class BasicEdit extends Component {
             callback();
         }
     }
+    handleChooseDepartmentChange =  (v, selectedOptions) => {
+        let createDepartmentID = (v ||v != []) ? v[v.length -1].toString() : 0;
+        let departmentFullId = v? v.join('*'): '';
+
+        let text = selectedOptions.map(item => {
+            return item.label
+        })
+        this.setState({departMentFullName: text.join('-'), createDepartmentID: createDepartmentID, departmentFullId:departmentFullId})
+    }
+    displayRender = (label) => {
+        return label[label.length - 1];
+    }
     render(){
+
         //console.log("this.props.contractChooseVisible:", this.props.contractChooseVisible);
         console.log('this.props.curFollowContract:', this.props.curFollowContract);
         let curFollowContract = this.props.curFollowContract || {};
@@ -88,7 +104,11 @@ class BasicEdit extends Component {
         //let contractTypes = '1';
         let basicOperType = this.props.basicOperType;
         let basicInfo = this.props.basicInfo;
-  
+        let departMentInit = [];
+        if(basicInfo.createDepartmentID)
+        {
+            departMentInit.push(basicInfo.createDepartmentID);
+        }
         const formItemLayout = {
           labelCol: { span: 6 },
           wrapperCol: { span: 14 },
@@ -173,7 +193,7 @@ class BasicEdit extends Component {
                 <Col span={12}>
                     <FormItem {...formItemLayout} label={<span>甲方类型</span>}>
                     {getFieldDecorator('companyAT', {
-                                    initialValue: basicInfo.companyAT,
+                                    initialValue: basicInfo.companyAT ? basicInfo.companyAT.toString() : "",
                                     rules: [{ required: true, message: '请选择甲方类型!' }],
                                 })(
                                     <Select>
@@ -328,7 +348,7 @@ class BasicEdit extends Component {
             <Col span={12}>
                  <FormItem {...formItemLayout} label={<span>返回原件</span>}>
                   {getFieldDecorator('returnOrigin', {
-                                  initialValue: basicInfo.returnOrigin == null ? (basicInfo.returnOrigin === 1 ? '是' :'否') : null ,
+                                  initialValue: basicInfo.returnOrigin !== null ? (basicInfo.returnOrigin === 1 ? 1 :2) : null ,
                                   rules:[{required:true, message:'请选择是否返还原件!'}]
                                   })(
                                     <RadioGroup >
@@ -357,7 +377,7 @@ class BasicEdit extends Component {
 
             </Row>
 			<Row type="flex" style={{marginTop:"25px"}}>
-                {
+                {/*
   
                     <Col span={12}>
                         <FormItem {...formItemLayout} label={<span>归属部门</span>}>
@@ -371,7 +391,19 @@ class BasicEdit extends Component {
                         }
                         </FormItem>
                     </Col>
-                }
+                */}
+                <Col span={12}>
+                        <FormItem {...formItemLayout} label={<span>归属部门</span>}>
+                        {getFieldDecorator('organizete', {
+                                        initialValue:  departMentInit,//basicInfo.relation ? basicInfo.relation.split('*') : [],//["1", "1385f04d-3ac8-49c6-a310-fe759814a685", "120"],//basicInfo.organizete ? basicInfo.organizete.split('-') : [],
+                                        rules:[{required:true, message:'请选择归属部门!'}]
+                                        })(
+                                            <Cascader options={this.props.basicData.orgInfo.orgList} displayRender={this.displayRender} onChange={this.handleChooseDepartmentChange } changeOnSelect placeholder="归属部门"/>
+                                        )
+                                        
+                        }
+                        </FormItem>
+                    </Col>
             </Row>
             <Row type="flex" style={{marginTop:"25px"}}>
                 {

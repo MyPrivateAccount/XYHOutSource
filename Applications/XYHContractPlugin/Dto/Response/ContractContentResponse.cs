@@ -14,6 +14,7 @@ namespace XYHContractPlugin.Dto.Response
         public string Commission { get; set; }
         public int? Relation { get; set; }
         public string Name { get; set; }
+        public string CurrentModify { get; set; }
         /// <summary>
         /// 是否续签
         /// </summary>

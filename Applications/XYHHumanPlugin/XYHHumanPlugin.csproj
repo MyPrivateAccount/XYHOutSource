@@ -25,7 +25,4 @@
       <HintPath>..\dll\XYH.Core.dll</HintPath>
     </Reference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Managers\" />
-  </ItemGroup>
 </Project>
