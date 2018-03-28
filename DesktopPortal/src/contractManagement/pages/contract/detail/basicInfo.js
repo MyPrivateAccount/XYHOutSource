@@ -79,12 +79,12 @@ class BasicInfo extends Component {
                         <Col span={12}>项目负责人:{basicInfo.proprincipalPepole}</Col>
                     </Row>
                     <Row className='viewRow'>
-                        <Col span={12}>甲方类型:{this.getTextByCode(this.props.basicData.firstPartyCatogories, basicInfo.companyAType)}</Col>
+                        <Col span={12}>甲方类型:{this.getTextByCode(this.props.basicData.firstPartyCatogories, basicInfo.companyAT)}</Col>
                         <Col span={12}>甲方公司全称:{basicInfo.companyA}</Col>
                     </Row>
                     <Row className='viewRow'>
                         <Col span={12}>甲方负责人:{basicInfo.principalpepoleA}</Col>
-                        <Col span={12}>乙方负责人:{basicInfo.PrincipalpepoleB}</Col>
+                        <Col span={12}>乙方负责人:{basicInfo.principalpepoleB}</Col>
                     </Row>
                     <Row className='viewRow'>
                         <Col span={12}>合同开始时间:{basicInfo.startTime}</Col>
@@ -106,10 +106,12 @@ class BasicInfo extends Component {
                         <Col span={12}>结算方式:{basicInfo.settleaccounts}</Col>
                         <Col span={12}>佣金方案:{basicInfo.commission}</Col>
                     </Row>
+                    {/*
                     <Row className='viewRow'>
                         <Col span={12}>审核人:{basicInfo.checkPeople}</Col>
                         <Col span={12}>审核状态:{basicInfo.checkState}</Col>
                     </Row>
+                    */}
                     <Row className='viewRow'>
                         <Col span={12}>是否作废:{(basicInfo.discard && basicInfo.discard === '1') ? "是" : "否"}</Col>
                         <Col span={12} onClick={this.handleViewHistory} style={{color:'blue'}} title="点击获取更改记录">更改记录</Col>
@@ -134,6 +136,7 @@ function mapStateToProps(state) {
         contractInfo: state.contractData.contractInfo,
         basicData: state.basicData,
         complementInfo: state.contractData.contractInfo.complementInfo,
+        
     }
 }
 

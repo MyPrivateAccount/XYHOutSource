@@ -17,7 +17,7 @@ const actionUtils = appAction(actionTypes.ACTION_ROUTE);
 //合同基础信息保存
 export function* saveContractBasicAsync(state) {
     console.log('state.payload.entity:', state.payload.entity);
-    let result = { isOk: false, msg: '合同基础信息保存失败！' };
+    let result = { isOk: false, msg: '合同基础信息提交失败！' };
     let method = state.payload.method;
     let url = method === 'POST' ?  WebApiConfig.contractBasic.Base : WebApiConfig.contractBasic.Modify;
      
@@ -26,19 +26,20 @@ export function* saveContractBasicAsync(state) {
      body.relation = 1;
     let baseInfo = Object.assign({}, {baseInfo:body /*, modifyInfo:[{iD:modifyId, contractID:body.id}]*/});
     try {
-        console.log(`合同基础信息保存url:${url},baseInfo:${JSON.stringify(baseInfo)}`);
+        console.log(`合同基础信息提交url:${url},baseInfo:${JSON.stringify(baseInfo)}`);
         const saveResult = yield call(ApiClient.post, url, baseInfo, null, "POST");
         getApiResult(saveResult, result);
          console.log("保存结果", result);
         if (result.isOk) {
-            result.msg = "合同基础信息保存成功";
-            yield put({ type: actionUtils.getActionType(actionTypes.CONTRACT_BASIC_VIEW), payload: {baseInfo: result.extension || baseInfo} });
-            //yield put({ type: actionUtils.getActionType(actionTypes.GET_ADD_CONTRACT), payload: city  });
+            result.msg = "合同基础信息提交成功";
+           // yield put({ type: actionUtils.getActionType(actionTypes.CONTRACT_BASIC_VIEW), payload: {baseInfo: result.extension || baseInfo} });
+            yield put({ type: actionUtils.getActionType(actionTypes.BASIC_SUBMIT_END) });
+            yield put({ type: actionUtils.getActionType(actionTypes.CLOSE_RECORD)});
         }
-        yield put(actionUtils.action(basicLoadingEnd));
+        //yield put(actionUtils.action(basicLoadingEnd));
     } catch (e) {
-        result.msg = "合同基础信息保存接口调用异常!";
-        yield put(actionUtils.action(basicLoadingEnd));
+        result.msg = "合同基础信息提交接口调用异常!";
+        //yield put(actionUtils.action(basicLoadingEnd));
     }
     
     notification[result.isOk ? 'success' : 'error']({
@@ -49,32 +50,55 @@ export function* saveContractBasicAsync(state) {
 
 //获取合同详情
 export function* gotoThisContract(action) {
-    console.log(action, '合同详情')
+
+    let result = { isOk: false, msg: '获取合同详情失败！' };
     let id  = action.payload.record.id;
     let url = WebApiConfig.contract.GetContractInfo + id;
     let res;
-    yield put({ type: actionUtils.getActionType(actionTypes.GOTO_THIS_CONTRACT_START), payload: {id:0}});
+    //
     try {
-        console.log(`获取合同详情url:${url}`);
         res = yield call(ApiClient.get, url);
-        console.log('获取合同详情结果:', JSON.stringify(res));
-        yield put(actionUtils.action(gotoThisContractFinish, res));
+        getApiResult(res, result);
+       if (result.isOk) {
+            result.msg = "获取合同详情成功";
+            
+            yield put({ type: actionUtils.getActionType(actionTypes.GOTO_THIS_CONTRACT_START), payload: {id:0}});
+            console.log('获取合同详情结果:', JSON.stringify(res));
+            yield put(actionUtils.action(gotoThisContractFinish, res));
+       }
 
     } catch (e) {
-        yield put(actionUtils.action(gotoThisContractFinish, { code: '1', message: '失败' }));
+       // yield put(actionUtils.action(gotoThisContractFinish, { code: '1', message: '失败' }));
     }
+    console.log("resultppp:", result);
+    if(result.isOk === false)
+    {
+        notification[ 'error']({
+            message: result.msg,
+            duration: 3
+        });
+    }
+
 }
 
 export function* openAttachUpload(action){
-    let url = WebApiConfig.attach.GetAttachInfo + action.payload.record.id;
+    let url = WebApiConfig.contract.GetContractInfo + action.payload.record.id;
+    let baseInfo = action.payload.record;
     let res;
     yield put(actionUtils.action(openAttachMentStart))
     try {
-        console.log('attachmentUrl:', url);
+       
         res = yield call(ApiClient.get, url);
-
-        console.log('attachment:', res);
-        yield put(actionUtils.action(openAttachMentFinish, res));
+        let fileList = [];
+        if (res.data.code === '0') {
+            // yield put({ type: actionUtils.getActionType(actionTypes.GET_ADD_BUILDING) });
+            if(res.data.extension && res.data.extension.fileList)
+            {
+                fileList = res.data.extension;
+            }
+         }
+        
+        yield put(actionUtils.action(openAttachMentFinish, {baseInfo: res.data.extension.baseInfo, fileList:fileList, code: '0'}));
 
     } catch (e) {
         yield put(actionUtils.action(openAttachMentFinish, { code: '1', message: '失败' }));
@@ -109,15 +133,15 @@ export function* submitContractInfo(action) {
 
 // 上传图片
 export function* savePictureAsync(action) {
-    let result = { isOk: false, msg: '图片保存失败！' };
-    console.log(action, '上传图片')
+    let result = { isOk: false, msg: '图片提交失败！' };
+    //console.log(action, '上传图片')
     let id = action.payload.id;
     
     let url = WebApiConfig.attach.savePicUrl+ id;
    
     try {
         let body = action.payload.fileInfo;
-        console.log(`上传图片url:${url},body:${JSON.stringify(body)}`);
+        //console.log(`上传图片url:${url},body:${JSON.stringify(body)}`);
         // yield put({ type: actionUtils.getActionType(actionTypes.CONTRACT_PIC_VIEW), payload: { filelist: action.payload.completeFileList, type: 'add' } });
         //     yield put(actionUtils.action(attchLoadingEnd));
         // return;
@@ -126,14 +150,16 @@ export function* savePictureAsync(action) {
         console.log(`上传图片url:${url},body:${JSON.stringify(body)}，result：${res}`);
         console.log(res, body, 'res')
         if (result.isOk) {
-            result.msg = '图片保存成功！';
-            yield put({ type: actionUtils.getActionType(actionTypes.CONTRACT_PIC_VIEW), payload: { filelist: action.payload.completeFileList, type: 'save' } });
+            result.msg = '图片提交成功！';
+           // yield put({ type: actionUtils.getActionType(actionTypes.CONTRACT_PIC_VIEW), payload: { filelist: action.payload.completeFileList, type: 'save' } });
+            yield put({ type: actionUtils.getActionType(actionTypes.ATTACH_SUBMIT_END) });
+            yield put({ type: actionUtils.getActionType(actionTypes.CLOSE_RECORD)});
             //这个地方关联合同信息使其可以成为一个完整的合同信息
             //yield put({ type: actionUtils.getActionType(actionTypes.GET_ADD_BUILDING), payload: city  });
         }
-        yield put(actionUtils.action(attchLoadingEnd))
+        //yield put(actionUtils.action(attchLoadingEnd))
     } catch (e) {
-        result.msg = '图片保存失败！';
+        result.msg = '图片提交失败！';
     }
     notification[result.isOk ? 'success' : 'error']({
         message: result.msg,

@@ -23,7 +23,7 @@ class MainIndex extends Component {
                 this.props.dispatch(getDicParList(['CONTRACT_CATEGORIES', 'FIRST_PARTT_CATEGORIES', 'COMMISSION_CATEGORIES', 'XK_SELLER_TYPE', 'CONTRACT_ATTACHMENT_CATEGORIES']));
             }
             
-        //this.props.dispatch(setLoadingVisible(true));//后面打开
+        this.props.dispatch(setLoadingVisible(true));//后面打开
     }
 
        //是否有权限

@@ -99,7 +99,7 @@ class ContractRecord extends Component{
                         <Row id="basicInfo">
                             {
                                 
-                                <Col span={24}>{basicOperType === 'view' ? <BasicInfo /> : <BasicEdit />}</Col>
+                                <Col span={24}>{basicOperType === 'view' ? <BasicInfo /> : ((attachPicOperType === "add" || additionOperType === "edit") ? null : <BasicEdit />)}</Col>
 
                             }
 
@@ -131,7 +131,7 @@ class ContractRecord extends Component{
 
                             */}
                             {
-                                <Col span={24}>{(attachPicOperType === 'view') ? <AttachInfo /> : <AttachEdit />}</Col>
+                                <Col span={24}>{(attachPicOperType === 'view') ? <AttachInfo /> : ((basicOperType === "add" || basicOperType === "edit" ) ?  null : <AttachEdit /> )}</Col>
                             }
 
                         </Row>
@@ -155,16 +155,19 @@ class ContractRecord extends Component{
                         <div>
                             <BackTop visibilityHeight={400} />
                         </div>
-                        <Row type="flex" justify="space-between">
-                            <Col  span={24} style={{ textAlign: 'center' }} className='BtnTop'>
-                                    <Button type="primary" size='large'
-                                    style={{ width: "10rem", display: this.props.contractDisplay }}
-                                    onClick={this.handleReturn} loading={this.props.submitLoading}>返回</Button>
+                        {
+                            <Row type="flex" justify="space-between">
+                                <Col  span={24} style={{ textAlign: 'center' }} className='BtnTop'>
+                                        <Button type="primary" size='large'
+                                        style={{ width: "10rem", display: this.props.contractDisplay }}
+                                        onClick={this.handleReturn} loading={this.props.submitLoading}>返回</Button>
+    
+    
+                                    
+                                </Col>
+                            </Row>
+                        }
 
-
-                                
-                            </Col>
-                        </Row>
                     </Content>
                 </Layout>
             </div>

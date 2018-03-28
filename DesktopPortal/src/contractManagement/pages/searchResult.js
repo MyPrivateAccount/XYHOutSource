@@ -21,6 +21,14 @@ class SearchResult extends Component {
         checkList: []//
     }
     
+    componentWillReceiveProps(newProps) {
+        console.log("newProps.searchInfo.searchResul", newProps.searchInfo.searchResult);
+        let {pageIndex, pageSize, validityContractCount} = newProps.searchInfo.searchResult;
+        console.log("validityContractCount:", validityContractCount);
+        if (newProps.searchInfo.searchResult && pageIndex) {
+            this.setState({pagination: {current: pageIndex, pageSize: pageSize, total: validityContractCount}});
+        }
+    }
     hasPermission(buttonInfo) {
         let hasPermission = false;
         if (this.props.judgePermissions && buttonInfo.requirePermission) {
@@ -537,13 +545,6 @@ class SearchResult extends Component {
         return columns;
     }
 
-    componentWillReceiveProps(newProps) {
-        //console.log("newProps.searchInfo.searchResul", newProps.searchInfo.searchResult);
-        let {pageIndex, pageSize, totalCount} = newProps.searchInfo.searchResult;
-        if (newProps.searchInfo.searchResult && pageIndex) {
-            this.setState({pagination: {current: pageIndex, pageSize: pageSize, total: totalCount}});
-        }
-    }
 
     handleChangePage = (pagination) => {
         console.log("分页信息:", pagination);

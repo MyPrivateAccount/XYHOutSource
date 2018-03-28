@@ -76,7 +76,7 @@ reducerMap[actionTypes.OPEN_RECORD] = function(state, action){
     }
     let operInfo = {
         basicOperType: 'add',
-        attachPicOperType: 'add',
+       // attachPicOperType: 'add',
     }
 
     let newState = Object.assign({}, state, { contractInfo: contractInfo, basicloading: false,operInfo: operInfo, contractDisplay: 'block' , isCurShowContractDetail: false,curFollowContract:{} });
@@ -271,21 +271,63 @@ reducerMap[actionTypes.LOADING_END_ATTACH] = function (state, action) {
     return Object.assign({}, state, { attachloading: false });
 }
 
-reducerMap[actionTypes.OPEN_ATTACHMENT] = function(state, action){
+// reducerMap[actionTypes.OPEN_ATTACHMENT] = function(state, action){
    
-    let contractInfo = Object.assign({}, {...state.contractInfo }, {baseInfo: action.payload.record})
-    let operInfo = { ...state.operInfo, attachPicOperType: 'add' };
-    return Object.assign({}, state, {operInfo: operInfo,  isCurShowContractDetail: false, contractInfo:contractInfo});
-}
+//     let contractInfo = Object.assign({}, {...state.contractInfo }, {baseInfo: action.payload.record})
+//     let operInfo = { ...state.operInfo, attachPicOperType: 'add' };
+//     return Object.assign({}, state, {operInfo: operInfo,  isCurShowContractDetail: false, contractInfo:contractInfo});
+// }
 
 reducerMap[actionTypes.OPEN_ATTACHMENT_FINISH] = function(state, action){
-    let contractInfo = Object.assign({}, {...state.contractInfo }, {baseInfo: action.payload.record})
-    let operInfo = { ...state.operInfo, attachPicOperType: 'add' };
+   
+    let fileList = action.payload.fileList
+    let attachInfo = Object.assign({}, {fileList:fileList });
+    let contractInfo = Object.assign({}, {...state.contractInfo }, {baseInfo: action.payload.baseInfo, attachInfo:attachInfo});
+    let attachPicOperType  = "add";
+    if(fileList.length > 0)
+    {
+        attachPicOperType = "edit";
+    }
+    let operInfo = { ...state.operInfo, attachPicOperType: attachPicOperType };
     return Object.assign({}, state, {operInfo: operInfo,  isCurShowContractDetail: false, contractInfo:contractInfo});
 }
 reducerMap[actionTypes.CLOSE_ATTACHMENT] = function(state,action){
     return Object.assign({}, state, {attachFileOperType: 'view'})
 }
+
+reducerMap[actionTypes.BASIC_SUBMIT_END] = function(state, action){
+    let operInfo = {attachPicOperType: "", basicOperType:""};
+    let contractInfo={//合同信息
+            id: "",
+            baseInfo:{},
+            attachInfo:{},
+            additionalInfo:{},
+            modifyInfo:{},
+            complementInfo:{},//补充协议
+            discard:false,
+            annexInfo:{},
+    
+        }
+    return Object.assign({}, state, {operInfo:operInfo, contractInfo:contractInfo});
+}
+
+reducerMap[actionTypes.ATTACH_SUBMIT_END] = function(state, action){
+    let operInfo = {attachPicOperType: "", basicOperType:""};
+    let contractInfo={//合同信息
+            id: "",
+            baseInfo:{},
+            attachInfo:{},
+            additionalInfo:{},
+            modifyInfo:{},
+            complementInfo:{},//补充协议
+            discard:false,
+            annexInfo:{},
+    
+        }
+    return Object.assign({}, state, {operInfo:operInfo, contractInfo:contractInfo});
+}
+
+
 export default handleActions(reducerMap, initState);
 
 
