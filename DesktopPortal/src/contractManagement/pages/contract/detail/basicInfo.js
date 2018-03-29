@@ -14,6 +14,7 @@ class BasicInfo extends Component {
     }
 
     handleEdit = (e) => {
+        e.preventDefault();
         this.props.dispatch(editContractBasic());
     }
     getTextByCode(dic, code) {
@@ -47,6 +48,9 @@ class BasicInfo extends Component {
         if (basicInfo.endTime && basicInfo.endTime !== "") {
             basicInfo.endTime = moment(basicInfo.endTime).format("YYYY-MM-DD");
         }
+        if (basicInfo.createTime && basicInfo.createTime !== "") {
+            basicInfo.createTime = moment(basicInfo.createTime).format("YYYY-MM-DD");
+        }
         const contractId = basicInfo.id;
         return (
             <div style={{ marginTop: '25px', backgroundColor: "#ECECEC" }}>
@@ -64,7 +68,11 @@ class BasicInfo extends Component {
                     </Row>
                     <Row className='viewRow'>
                         <Col span={12}>合同编号:{contractId}</Col>
+                        
+                    </Row>
+                    <Row className='viewRow'>
                         <Col span={12}>合同类型:{this.getTextByCode(this.props.basicData.contractCategories, basicInfo.type) }</Col>
+                        <Col span={12}>申请人:{basicInfo.createUserName}</Col>
                     </Row>
                     <Row className='viewRow'>
                         <Col span={12}>申请时间:{basicInfo.createTime}</Col>
@@ -117,7 +125,7 @@ class BasicInfo extends Component {
                         <Col span={12} onClick={this.handleViewHistory} style={{color:'blue'}} title="点击获取更改记录">更改记录</Col>
                     </Row>
                     <Row className='viewRow'>
-                        <Col span={12}>归属部门:{basicInfo.Organizete}</Col>
+                        <Col span={12}>归属部门:{basicInfo.organizete}</Col>
                         <Col span={12}>备注:{basicInfo.remark}</Col>   
                     </Row>
                     <Row className='viewRow'>

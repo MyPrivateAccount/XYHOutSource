@@ -14,6 +14,8 @@ const modelStyle = {
         whiteSpace: 'nowrap',
       },
 }
+
+
 class ModifyHistory extends Component{
     lastSearchInfo = {};
     componentWillMount(){
@@ -28,6 +30,14 @@ class ModifyHistory extends Component{
         //this.props.dispatch(closeAdjustCustomer());
         this.props.dispatch(closeModifyHistory());
     }
+    getModifyType = (type) => {
+        switch (type) {
+          case 1: return '创建合同';
+          case 2: return '修改合同';
+          default:
+            return type;
+        }
+      }
     getTableColumns = () =>{
         let columns = [
             {
@@ -36,12 +46,17 @@ class ModifyHistory extends Component{
                 dataIndex: 'modifyStartTime',
                 key: 'modifyStartTime',
                 render: (record, text) =>{
-                    let newText = text;
-                    if (text) {
-                        newText = moment(text).format('YYYY-MM-DD');
+                    
+                    let newText = record;
+                    if (record) {
+                        newText = moment(record).format('YYYY-MM-DD hh:mm:ss');
                     }
                     return (<span>{newText}</span>);
-                }
+                },
+  
+                sorter: (a, b)=>{
+                    return (moment(a.modifyStartTime).isSameOrBefore(moment(b.modifyStartTime)) ? -1: 1);
+                },
             },
             {
                 title: '修改人',
@@ -54,22 +69,29 @@ class ModifyHistory extends Component{
                 title:'操作类型',
                 dataIndex: 'type',
                 key: "type",
-                
+                render:(record, text) =>{
+                    let newText = record;
+                    if (record) {
+                        newText = this.getModifyType(record);
+                    }
+                    return (<span>{newText}</span>);
+                }
             }
         ]
         return columns;
     }
-
+   
 
     render(){
-
-        let dataSource = this.props.modifyinfo;
+    
+        let dataSource = this.props.modifyinfo.sort((a, b) => {return (moment(a.modifyStartTime).isSameOrBefore(moment(b.modifyStartTime)) ? -1: 1) }) ? this.props.modifyinfo: [];
+        console.log('dataSource:', dataSource);
         return(
             <Modal 
                 title="修改历史"  wrapClassName="vertical-center-modal" confirmLoading={this.props.showLoading} className='contractChoose' footer={null} maskClosable={false} visible={this.props.modifyHistoryVisible} 
                 onCancel={this.handleCancel}
             >
-                <Table rowKey={record => record.uid} scroll={{ y: 240 }} columns={this.getTableColumns()} pagination={{ pageSize: 5 }}  size="middle" dataSource={dataSource}  />  
+                <Table rowKey={record => record.uid} scroll={{ y: 240 }} columns={this.getTableColumns()} pagination={{ pageSize: 5 }}  size="middle" dataSource={dataSource}   />  
             </Modal>
         )
     }

@@ -8,6 +8,7 @@ const initState = {
     firstPartyCatogories:[],//甲方类型
     commissionCatogories:[],
     contractProjectCatogories:[],
+    settleAccountsCatogories:[],
 
     saleStatus: [],
     saleModel: [],
@@ -35,6 +36,7 @@ reducerMap[actionTypes.DIC_GET_PARLIST_COMPLETE] = function (state, action) {
     let firstPartyCatogories = [...state.firstPartyCatogories];
     let commissionCatogories = [...state.commissionCatogories];
     let contractProjectCatogories = [...state.contractProjectCatogories];
+    let contractSettleAccountTypes = [...state.settleAccountsCatogories];
 
     let saleStatus = [...state.saleStatus], saleModel = [...state.saleModel], shopsTypes = [...state.shopsTypes], tradePlannings = [...state.tradePlannings];
     let customerSource = [...state.customerSource], businessTypes = [...state.businessTypes], customerLevels = [...state.customerLevels];
@@ -67,7 +69,11 @@ reducerMap[actionTypes.DIC_GET_PARLIST_COMPLETE] = function (state, action) {
             contractProjectCatogories = group.dictionaryDefines;
 
         }
-
+        else if(group.groupId === "CONTRACT_SETTLEACCOUNTS"){
+            group.dictionaryDefines = group.dictionaryDefines.sort((aItem, bItem) => aItem.order - bItem.order);
+            contractSettleAccountTypes = group.dictionaryDefines;
+        }
+        
         
         else if (group.groupId === "CUSTOMER_SOURCE") {
             group.dictionaryDefines = group.dictionaryDefines.sort((aItem, bItem) => aItem.order - bItem.order);
@@ -117,6 +123,7 @@ reducerMap[actionTypes.DIC_GET_PARLIST_COMPLETE] = function (state, action) {
             group.dictionaryDefines = group.dictionaryDefines.sort((aItem, bItem) => aItem.order - bItem.order);
             requirementType = group.dictionaryDefines;
         }
+
     });
     return Object.assign({}, state, {
         contractAttachTypes:contractAttachTypes,
@@ -124,6 +131,8 @@ reducerMap[actionTypes.DIC_GET_PARLIST_COMPLETE] = function (state, action) {
         firstPartyCatogories:firstPartyCatogories,
         commissionCatogories:commissionCatogories,
         contractProjectCatogories:contractProjectCatogories,
+        settleAccountsCatogories:contractSettleAccountTypes,
+
 
         customerSource: customerSource,
         businessTypes: businessTypes,

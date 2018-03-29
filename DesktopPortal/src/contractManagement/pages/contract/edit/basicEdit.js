@@ -296,15 +296,22 @@ class BasicEdit extends Component {
                 <Col span={12}>
                         <FormItem {...formItemLayout} label={<span>结算方式</span>}>
                         {getFieldDecorator('settleaccounts', {
-                                    initialValue: basicInfo.settleaccounts,
-                                    rules:[{required:true, message:'请输入结算方式!'}]
-                                    })(
-                                        <Input placeholder="结算方式" />
-                                    )
-                                    
-                            }
+                                initialValue: basicInfo.settleaccounts,
+                                rules:[{required:true, message:'请选择结算方式!'}]
+                                })(
+                                    <Select>
+                                    {
+                                        this.props.basicData.settleAccountsCatogories.map((item) =>
+                                            <Option key={item.value}>{item.key}</Option>
+                                        )
+                                    }
+                                    </Select>
+                                )
+                                
+                        }
                         </FormItem>
                     </Col>
+
                 <Col span={12}>
                     <FormItem {...formItemLayout} label={<span>佣金方案</span>}>
                     {getFieldDecorator('commission', {

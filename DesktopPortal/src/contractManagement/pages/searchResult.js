@@ -464,21 +464,38 @@ class SearchResult extends Component {
     isTrueOrFalse = (text, record) =>{
         return <span>{text ? '是' : '否'}</span>
     }
+    getExamineValueByType = (type) =>{
+        switch(type){
+            case 0: return "未提交";
+            case 1: return "审核中";
+            case 8: return "审核通过";
+            case 16: return "驳回";
+       
+        }
 
-    getDealInfoColumns() {
+    }
+    getExamineInfoColumns() {
         let columns = {
             title: '审核信息',
-            children: [{        
-                title: '审核人',
-                // width: 80,
-                dataIndex: 'CheckPeople',
-                key: 'CheckPeople'
-            },
+            children: [
+            //     {        
+            //     title: '审核人',
+            //     // width: 80,
+            //     dataIndex: 'CheckPeople',
+            //     key: 'CheckPeople'
+            // },
             {
                 title: '审核状态',
                 // width: 80,
-                dataIndex: 'CheckState',
-                key: 'CheckState'
+                dataIndex: 'examineStatus',
+                key: 'examineStatus',
+                render: (status) =>{
+                    let newText = status;
+                    //if(newText){
+                        newText = this.getExamineValueByType(status);
+                    //}
+                    return <span>{newText}</span>
+                }
             }, /*{
                 title: '提交审核时间',
                 dataIndex: 'CheckTime',
@@ -538,7 +555,7 @@ class SearchResult extends Component {
 
         let activeMenu = this.props.searchInfo.activeMenu;
         if (activeMenu === "menu_index" || activeMenu === "menu_have_deal") {
-            //columns.push(this.getDealInfoColumns());
+            columns.push(this.getExamineInfoColumns());
         }
         columns.push(this.getOtherInfoColumns());
         console.log('columns:', columns);
