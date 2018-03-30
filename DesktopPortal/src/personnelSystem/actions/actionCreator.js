@@ -34,3 +34,4 @@ export const searchCustomer = createAction(actionTypes.SEARCH_CUSTOMER);
 export const saveSearchCondition = createAction(actionTypes.SAVE_SEARCH_CONDITION);
 export const getRepeatJudgeInfo = createAction(actionTypes.GET_REPEAT_JUDGE_INFO);
 export const removeAdjustItem = createAction(actionTypes.REMOVE_ADJUST_REQUEST_ITEM);
+export const expandSearchbox = createAction(actionTypes.SEARCH_BOX_EXPAND);

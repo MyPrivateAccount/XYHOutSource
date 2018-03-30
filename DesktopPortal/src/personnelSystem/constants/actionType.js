@@ -1,5 +1,8 @@
 export const ACTION_ROUTE = "CustomerIndex";
 
+//人事获取
+export const GET_ALLHUMANINFO = 'GET_ALLHUMANINFO';
+
 //字典项获取
 export const DIC_GET_PARLIST = 'DIC_GET_PARLIST';
 export const DIC_GET_PARLIST_COMPLETE = 'DIC_GET_PARLIST_COMPLETE';
@@ -31,6 +34,7 @@ export const GET_REPEAT_JUDGE_INFO = 'GET_REPEAT_JUDGE_INFO';//客户去重信�
 export const GET_REPEAT_JUDGE_INFO_COMPLETE = 'GET_REPEAT_JUDGE_INFO_COMPLETE';//客户去重信息获取完成
 //页面切换
 export const CHANGE_MENU = 'CHANGE_MENU';//菜单切换
+export const SEARCH_BOX_EXPAND = 'SEARCH_BOX_EXPAND';//搜索条件展开
 //搜索处理
 export const SAVE_SEARCH_CONDITION = 'SAVE_SEARCH_CONDITION';//保存查询条件
 export const CHANGE_KEYWORD = 'CHANGE_KEYWORD';

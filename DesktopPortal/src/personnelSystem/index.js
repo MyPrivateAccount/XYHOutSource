@@ -137,8 +137,9 @@ const homeStyle = {
 function mapStateToProps(state, props) {
     //console.log("权限管理mapStateToProps:" + JSON.stringify(props));
     return {
-        navigator: state.search.navigator,
-        judgePermissions: state.judgePermissions
+        oidc: state.oidc,
+        router: state.router,
+        basicData: state.basicData
     }
 }
 export default withReducer(reducers, 'PersonnelSystemIndex', {mapExtraState: (state, rootState) => ({oidc: rootState.oidc})})(connect(mapStateToProps)(PersonnelSystemIndex));

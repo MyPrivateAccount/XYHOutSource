@@ -12,6 +12,7 @@ using ApplicationCore.Dto;
 using ApplicationCore.Models;
 using ContractInfoRequest = XYHContractPlugin.Dto.Response.ContractInfoResponse;
 using ContractContentInfoRequest = XYHContractPlugin.Dto.Response.ContractContentResponse;
+using ContractComplementRequest = XYHContractPlugin.Dto.Response.ContractComplementResponse;
 using ApplicationCore;
 
 namespace XYHContractPlugin.Managers
@@ -20,6 +21,9 @@ namespace XYHContractPlugin.Managers
     {
         public static int CreateContract = 1;
         public static int ModifyContract = 2;
+        public static int AddAnnexContract = 3;
+        public static int AddComplementContract = 4;
+
         public ContractInfoManager(IContractInfoStore contractStore, IMapper mapper)
         {
             Store = contractStore ?? throw new ArgumentNullException(nameof(contractStore));
@@ -61,6 +65,24 @@ namespace XYHContractPlugin.Managers
             return _mapper.Map<ContractInfoResponse>(baseinfo);
         }
 
+        public virtual async Task<bool> AddComplementAsync(UserInfo userinfo, string strcontractid, string strCheck, string strModify, List<ContractComplementRequest> buildingBaseInfoRequest, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (buildingBaseInfoRequest == null)
+            {
+                throw new ArgumentNullException(nameof(buildingBaseInfoRequest));
+            }
+
+            bool ret= false;
+            if (buildingBaseInfoRequest != null && buildingBaseInfoRequest.Count > 0)
+            {
+                ret = await Store.CreateAsync(_mapper.Map<SimpleUser>(userinfo), _mapper.Map<List<ComplementInfo>>(buildingBaseInfoRequest), cancellationToken);
+            }
+
+            await Store.CreateModifyAsync(_mapper.Map<SimpleUser>(userinfo), strcontractid, strModify, AddComplementContract, strCheck, ExamineStatusEnum.Auditing);
+
+            return ret;
+        }
+
         public virtual async Task<string> ModifyContractBeforCheckAsync(UserInfo userinfo, ContractContentInfoRequest buildingBaseInfoRequest, string checkaction, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (buildingBaseInfoRequest == null)
@@ -71,7 +93,7 @@ namespace XYHContractPlugin.Managers
             string guid = Guid.NewGuid().ToString();
             await Store.CreateModifyAsync(_mapper.Map<SimpleUser>(userinfo),
                 buildingBaseInfoRequest.BaseInfo.ID,
-                guid, ModifyContract, checkaction, true,
+                guid, ModifyContract, checkaction, ExamineStatusEnum.UnSubmit, true,
                 JsonHelper.ToJson(buildingBaseInfoRequest),null, cancellationToken);//2是修改
 
             return guid;

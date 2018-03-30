@@ -15,6 +15,7 @@ namespace XYHContractPlugin.Dto.Response
         public int? Relation { get; set; }
         public string Name { get; set; }
         public string CurrentModify { get; set; }
+        public int ExamineStatus { get; set; }
         /// <summary>
         /// 是否续签
         /// </summary>
@@ -28,6 +29,7 @@ namespace XYHContractPlugin.Dto.Response
         public string PrincipalpepoleB { get; set; }
         public string ProprincipalPepole { get; set; }
         public string CreateUser { get; set; }
+        public string CreateUserName { get; set; }
         public DateTime? CreateTime { get; set; }
         public string CreateDepartment { get; set; }
         public string CreateDepartmentID { get; set; }

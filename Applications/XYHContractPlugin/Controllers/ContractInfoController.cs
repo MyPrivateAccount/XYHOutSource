@@ -16,6 +16,7 @@ using XYHContractPlugin.Managers;
 using ContractInfoRequest = XYHContractPlugin.Dto.Response.ContractInfoResponse;
 using ContractContentInfoRequest = XYHContractPlugin.Dto.Response.ContractContentResponse;
 using ContractAnnexInfoRequest = XYHContractPlugin.Dto.Response.ContractAnnexResponse;
+using ContractComplementRequest = XYHContractPlugin.Dto.Response.ContractComplementResponse;
 using AspNet.Security.OAuth.Validation;
 
 namespace XYHContractPlugin.Controllers
@@ -74,7 +75,23 @@ namespace XYHContractPlugin.Controllers
             }
             try
             {
-                Response.Extension = await _contractInfoManager.GetAllinfoByIdAsync(contractId, HttpContext.RequestAborted);
+                var ret = await _contractInfoManager.GetAllinfoByIdAsync(contractId, HttpContext.RequestAborted);
+                Response.Extension = ret;
+
+                foreach (var item in ret.Modifyinfo)
+                {
+                    if (item.ID == ret.BaseInfo.CurrentModify)
+                    {
+                        ret.BaseInfo.ExamineStatus = (int)item.ExamineStatus;
+                        break;
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(Response.Extension.BaseInfo.CreateUser))
+                {
+                    var resp = await _restClient.Get<ResponseMessage<string>>($"http://localhost:5000/api/user/{Response.Extension.BaseInfo.CreateUser}", null);
+                    Response.Extension.BaseInfo.CreateUserName = resp.Extension;
+                }
             }
             catch (Exception e)
             {
@@ -216,11 +233,75 @@ namespace XYHContractPlugin.Controllers
             try
             {
                 //写发送成功后的表
-                var resp = await _restClient.Get<ResponseMessage<string>>($"http://localhost:7000/api/Organization/{User.OrganizationId}", null);
-                request.BaseInfo.CreateDepartment = resp.Extension;
+                if (!string.IsNullOrEmpty(User.OrganizationId))
+                {
+                    var resp = await _restClient.Get<ResponseMessage<string>>($"http://localhost:5000/api/Organization/{User.OrganizationId}", null);
+                    request.BaseInfo.CreateDepartment = resp.Extension;
+                }
 
                 response.Extension = await _contractInfoManager.AddContractAsync(User, request, "TEST", HttpContext.RequestAborted);
                 response.Message = "add simple ok";
+            }
+            catch (Exception e)
+            {
+                response.Code = ResponseCodeDefines.ServiceError;
+                response.Message = e.ToString();
+                Logger.Error($"用户{User?.UserName ?? ""}({User?.Id ?? ""})合同动态提交审核(UpdateRecordSubmit)报错：\r\n{e.ToString()},\r\n请求参数为：\r\n" + (request != null ? JsonHelper.ToJson(request) : ""));
+            }
+
+            return response;
+        }
+
+        [HttpPost("addcomplement/{contract}")]
+        [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
+        public async Task<ResponseMessage<bool>> AddComplementContract(UserInfo User, [FromBody]List<ContractComplementRequest> request, [FromRoute]string contract)
+        {
+            Logger.Trace($"用户{User?.UserName ?? ""}({User?.Id ?? ""})添加补充协议基础信息(PutBuildingBaseInfo)：\r\n请求参数为：\r\n" + (request != null ? JsonHelper.ToJson(request) : ""));
+
+            var response = new ResponseMessage<bool>();
+            if (!ModelState.IsValid)
+            {
+                response.Code = ResponseCodeDefines.ModelStateInvalid;
+                response.Message = ModelState.GetAllErrors();
+                return response;
+            }
+
+            try
+            {
+                string strModifyGuid = Guid.NewGuid().ToString();
+                string strCheckGuid = Guid.NewGuid().ToString();
+
+                GatewayInterface.Dto.ExamineSubmitRequest exarequest = new GatewayInterface.Dto.ExamineSubmitRequest();
+                exarequest.ContentId = contract;
+                exarequest.ContentType = "ContractCommit";
+                exarequest.ContentName = "AddComplement";
+                exarequest.SubmitDefineId = strModifyGuid;
+                exarequest.Source = "";
+                exarequest.CallbackUrl = ApplicationContext.Current.UpdateExamineCallbackUrl;
+                exarequest.Action = "TEST";/* exarequest.ContentType*/;
+                exarequest.TaskName = $"{User.UserName}添加合同补充协议{exarequest.ContentName}的动态{exarequest.ContentType}";
+
+                GatewayInterface.Dto.UserInfo userinfo = new GatewayInterface.Dto.UserInfo()
+                {
+                    Id = User.Id,
+                    KeyWord = User.KeyWord,
+                    OrganizationId = User.OrganizationId,
+                    OrganizationName = User.OrganizationName,
+                    UserName = User.UserName
+                };
+
+                var examineInterface = ApplicationContext.Current.Provider.GetRequiredService<IExamineInterface>();
+                var reponse = await examineInterface.Submit(userinfo, exarequest);
+                if (reponse.Code != ResponseCodeDefines.SuccessCode)
+                {
+                    response.Code = ResponseCodeDefines.ServiceError;
+                    response.Message = "向审核中心发起审核请求失败：" + reponse.Message;
+                    return response;
+                }
+
+                //写发送成功后的表
+                response.Extension = await _contractInfoManager.AddComplementAsync(User, contract, strModifyGuid, strCheckGuid, request, HttpContext.RequestAborted);
+                response.Message = "addcomplement ok";
             }
             catch (Exception e)
             {

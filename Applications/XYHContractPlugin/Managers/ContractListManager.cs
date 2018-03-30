@@ -125,14 +125,22 @@ namespace XYHContractPlugin.Managers
                 sql += @" ORDER BY a.`ID`";
             }
 
-            sql += @" limit " + condition.pageIndex * condition.pageSize + "," + condition.pageSize + "";
-
             var query = _icontractInfoStore.DapperSelect<ContractInfo>(sql).ToList();
-
             Response.ValidityContractCount = query.Count;
+            Response.TotalCount = query.Count;
+
+            List<ContractInfo> result = new List<ContractInfo>();
+            var begin = (condition.pageIndex) * condition.pageSize;
+            var end = (begin + condition.pageSize)>query.Count ? query.Count: (begin+condition.pageSize);
+
+            for (; begin < end; begin++)
+            {
+                result.Add(query.ElementAt(begin));
+            }
+            
             Response.PageIndex = condition.pageIndex;
             Response.PageSize = condition.pageSize;
-            Response.Extension = _mapper.Map<List<ContractInfoResponse>>(query);
+            Response.Extension = _mapper.Map<List<ContractInfoResponse>>(result);
 
             foreach (var item in Response.Extension)
             {
@@ -144,11 +152,36 @@ namespace XYHContractPlugin.Managers
                     {
                         item.ExamineStatus = moinf.ExamineStatus;
                     }
-                    
                 }
             }
 
             return Response;
+
+
+            //sql += @" limit " + condition.pageIndex * condition.pageSize + "," + condition.pageSize + "";
+
+            //var query = _icontractInfoStore.DapperSelect<ContractInfo>(sql).ToList();
+
+            //Response.ValidityContractCount = query.Count;
+            //Response.PageIndex = condition.pageIndex;
+            //Response.PageSize = condition.pageSize;
+            //Response.Extension = _mapper.Map<List<ContractInfoResponse>>(query);
+
+            //foreach (var item in Response.Extension)
+            //{
+            //    item.ExamineStatus = 0;
+            //    if (item.CurrentModify != null)
+            //    {
+            //        var moinf = await _icontractInfoStore.GetModifyAsync(a => a.Where(b => b.ID == item.CurrentModify));
+            //        if (moinf != null)
+            //        {
+            //            item.ExamineStatus = moinf.ExamineStatus;
+            //        }
+
+            //    }
+            //}
+
+            //return Response;
         }
     }
 }

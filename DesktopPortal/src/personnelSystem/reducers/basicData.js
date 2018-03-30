@@ -172,4 +172,9 @@ reducerMap[actionTypes.CHANGE_SOURCE_ORG] = function (state, action) {
 reducerMap[actionTypes.CHANGE_TARGET_ORG] = function (state, action) {
     return Object.assign({}, state, {targetUserList: []});
 }
+
+reducerMap[actionTypes.GET_ALLHUMANINFO] = function (state, action) {
+    return Object.assign({}, state, {humanList: action.data});
+}
+
 export default handleActions(reducerMap, initState);
