@@ -14,6 +14,7 @@ class BasicInfo extends Component {
     }
 
     handleEdit = (e) => {
+        e.preventDefault();
         this.props.dispatch(editContractBasic());
     }
     getTextByCode(dic, code) {
@@ -47,6 +48,9 @@ class BasicInfo extends Component {
         if (basicInfo.endTime && basicInfo.endTime !== "") {
             basicInfo.endTime = moment(basicInfo.endTime).format("YYYY-MM-DD");
         }
+        if (basicInfo.createTime && basicInfo.createTime !== "") {
+            basicInfo.createTime = moment(basicInfo.createTime).format("YYYY-MM-DD");
+        }
         const contractId = basicInfo.id;
         return (
             <div style={{ marginTop: '25px', backgroundColor: "#ECECEC" }}>
@@ -57,14 +61,18 @@ class BasicInfo extends Component {
                         </Col>
                         <Col span={4}>
                             {
-                                //[1, 8].includes(this.props.buildInfo.examineStatus) ? null : <Button type="primary" shape="circle" icon="edit" onClick={this.handleEdit} />
-                                <Button type="primary" shape="circle" icon="edit" onClick={this.handleEdit} />
+                                [1, 8].includes(this.props.basicInfo.examineStatus) ? null : <Button type="primary" shape="circle" icon="edit" onClick={this.handleEdit} />
+                                //<Button type="primary" shape="circle" icon="edit" onClick={this.handleEdit} />
                             }
                         </Col>
                     </Row>
                     <Row className='viewRow'>
                         <Col span={12}>合同编号:{contractId}</Col>
+                        
+                    </Row>
+                    <Row className='viewRow'>
                         <Col span={12}>合同类型:{this.getTextByCode(this.props.basicData.contractCategories, basicInfo.type) }</Col>
+                        <Col span={12}>申请人:{basicInfo.createUserName}</Col>
                     </Row>
                     <Row className='viewRow'>
                         <Col span={12}>申请时间:{basicInfo.createTime}</Col>
@@ -79,12 +87,12 @@ class BasicInfo extends Component {
                         <Col span={12}>项目负责人:{basicInfo.proprincipalPepole}</Col>
                     </Row>
                     <Row className='viewRow'>
-                        <Col span={12}>甲方类型:{this.getTextByCode(this.props.basicData.firstPartyCatogories, basicInfo.companyAType)}</Col>
+                        <Col span={12}>甲方类型:{this.getTextByCode(this.props.basicData.firstPartyCatogories, basicInfo.companyAT)}</Col>
                         <Col span={12}>甲方公司全称:{basicInfo.companyA}</Col>
                     </Row>
                     <Row className='viewRow'>
                         <Col span={12}>甲方负责人:{basicInfo.principalpepoleA}</Col>
-                        <Col span={12}>乙方负责人:{basicInfo.PrincipalpepoleB}</Col>
+                        <Col span={12}>乙方负责人:{basicInfo.principalpepoleB}</Col>
                     </Row>
                     <Row className='viewRow'>
                         <Col span={12}>合同开始时间:{basicInfo.startTime}</Col>
@@ -106,16 +114,18 @@ class BasicInfo extends Component {
                         <Col span={12}>结算方式:{basicInfo.settleaccounts}</Col>
                         <Col span={12}>佣金方案:{basicInfo.commission}</Col>
                     </Row>
+                    {/*
                     <Row className='viewRow'>
                         <Col span={12}>审核人:{basicInfo.checkPeople}</Col>
                         <Col span={12}>审核状态:{basicInfo.checkState}</Col>
                     </Row>
+                    */}
                     <Row className='viewRow'>
                         <Col span={12}>是否作废:{(basicInfo.discard && basicInfo.discard === '1') ? "是" : "否"}</Col>
                         <Col span={12} onClick={this.handleViewHistory} style={{color:'blue'}} title="点击获取更改记录">更改记录</Col>
                     </Row>
                     <Row className='viewRow'>
-                        <Col span={12}>归属部门:{basicInfo.Organizete}</Col>
+                        <Col span={12}>归属部门:{basicInfo.organizete}</Col>
                         <Col span={12}>备注:{basicInfo.remark}</Col>   
                     </Row>
                     <Row className='viewRow'>
@@ -134,6 +144,7 @@ function mapStateToProps(state) {
         contractInfo: state.contractData.contractInfo,
         basicData: state.basicData,
         complementInfo: state.contractData.contractInfo.complementInfo,
+        
     }
 }
 

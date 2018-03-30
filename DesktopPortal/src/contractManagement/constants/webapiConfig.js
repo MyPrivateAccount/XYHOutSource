@@ -33,6 +33,9 @@ const WebApiConfig = {
         Modify: basicDataBaseApiUrl + "contractinfo/modifysimplecontract",
         Submit: basicDataBaseApiUrl + "contractinfo/checksimplecontract",//
     },
+    complement:{
+        GetComplement: basicDataBaseApiUrl + "",
+    },
     attach: {
         GetAttachInfo: basicDataBaseApiUrl + "contractfiles/GetFileListByContractId/",
         uploadUrl: `${UploadUrl}/file/upload/`,

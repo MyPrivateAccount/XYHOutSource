@@ -69,13 +69,13 @@ const tools = [
         cache: null,
         icon: <Icon type="like-o" className="icon" />
     },
-    {
-        id:'personnelSystem',//人事系统
-        mutipleInstance:false,
-        component: ()=>createLoadableComponent(import('./personnelSystem')),//() => createLoadableComponent(import('./personnelSystem')),
-        cache: null,
-        icon: <Icon type="user" className="icon"/>
-    },
+    // {
+    //     id:'personnelSystem',//人事系统
+    //     mutipleInstance:false,
+    //     component: ()=>createLoadableComponent(import('./personnelSystem')),//() => createLoadableComponent(import('./personnelSystem')),
+    //     cache: null,
+    //     icon: <Icon type="user" className="icon"/>
+    // },
     {
         id:'contractManagement',//合同管理
         mutipleInstance:false,

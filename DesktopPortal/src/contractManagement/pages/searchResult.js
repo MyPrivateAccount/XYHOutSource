@@ -21,6 +21,14 @@ class SearchResult extends Component {
         checkList: []//
     }
     
+    componentWillReceiveProps(newProps) {
+        console.log("newProps.searchInfo.searchResul", newProps.searchInfo.searchResult);
+        let {pageIndex, pageSize, validityContractCount} = newProps.searchInfo.searchResult;
+        console.log("validityContractCount:", validityContractCount);
+        if (newProps.searchInfo.searchResult && pageIndex) {
+            this.setState({pagination: {current: pageIndex, pageSize: pageSize, total: validityContractCount}});
+        }
+    }
     hasPermission(buttonInfo) {
         let hasPermission = false;
         if (this.props.judgePermissions && buttonInfo.requirePermission) {
@@ -456,21 +464,38 @@ class SearchResult extends Component {
     isTrueOrFalse = (text, record) =>{
         return <span>{text ? '是' : '否'}</span>
     }
+    getExamineValueByType = (type) =>{
+        switch(type){
+            case 0: return "未提交";
+            case 1: return "审核中";
+            case 8: return "审核通过";
+            case 16: return "驳回";
+        default:
+            return type;
+        }
 
-    getDealInfoColumns() {
+    }
+    getExamineInfoColumns() {
         let columns = {
             title: '审核信息',
-            children: [{        
-                title: '审核人',
-                // width: 80,
-                dataIndex: 'CheckPeople',
-                key: 'CheckPeople'
-            },
+            children: [
+            //     {        
+            //     title: '审核人',
+            //     // width: 80,
+            //     dataIndex: 'CheckPeople',
+            //     key: 'CheckPeople'
+            // },
             {
                 title: '审核状态',
                 // width: 80,
-                dataIndex: 'CheckState',
-                key: 'CheckState'
+                dataIndex: 'examineStatus',
+                key: 'examineStatus',
+                render: (status) =>{
+                    let newText = status;
+                    newText = this.getExamineValueByType(status);
+             
+                    return <span>{newText}</span>
+                }
             }, /*{
                 title: '提交审核时间',
                 dataIndex: 'CheckTime',
@@ -511,7 +536,14 @@ class SearchResult extends Component {
                         <Button type="primary" size='small' onClick={(e) => this.onClickContractDetail(record)}>合同详情</Button>
                     )
                 },
-
+                {
+                    title: '补充协议',
+                    dataIndex: 'complement',
+                    key: 'complement',
+                    render: (text, record) => (
+                        <Button type="primary" size='small' onClick={(e) => this.onClickComplement(record)}>补充协议</Button>
+                    )
+                },
             ]
         };
         buttonDef.map((button, i) =>{
@@ -530,20 +562,13 @@ class SearchResult extends Component {
 
         let activeMenu = this.props.searchInfo.activeMenu;
         if (activeMenu === "menu_index" || activeMenu === "menu_have_deal") {
-            //columns.push(this.getDealInfoColumns());
+            columns.push(this.getExamineInfoColumns());
         }
         columns.push(this.getOtherInfoColumns());
         console.log('columns:', columns);
         return columns;
     }
 
-    componentWillReceiveProps(newProps) {
-        //console.log("newProps.searchInfo.searchResul", newProps.searchInfo.searchResult);
-        let {pageIndex, pageSize, totalCount} = newProps.searchInfo.searchResult;
-        if (newProps.searchInfo.searchResult && pageIndex) {
-            this.setState({pagination: {current: pageIndex, pageSize: pageSize, total: totalCount}});
-        }
-    }
 
     handleChangePage = (pagination) => {
         console.log("分页信息:", pagination);
@@ -555,9 +580,9 @@ class SearchResult extends Component {
         this.props.dispatch(searchStart(condition));
     }
     //查看合同详情
-    handleContractDetail = (record) => {
-        this.props.dispatch(getContractDetail(record));
-    }
+    // handleContractDetail = (record) => {
+    //     this.props.dispatch(getContractDetail(record));
+    // }
     handleMultiExport = () =>{
         let header = [{v:"序号", position:'A1', key: 'num'}];
         let columns = this.getContractInfoExportColumns();
@@ -590,6 +615,9 @@ class SearchResult extends Component {
          console.log('录入');
          this.props.dispatch(openContractRecord({id:0}));
      }
+     onClickComplement = (record) =>{
+
+     }
     handleClickFucButton = (buttonID) =>{
         switch(buttonID){
             case 'record':
@@ -598,6 +626,7 @@ class SearchResult extends Component {
                 return this.handleMultiExport;
             case 'uploadFile':
                 return this.onClickUploadFile;
+         
             default:
                 return null;
         }

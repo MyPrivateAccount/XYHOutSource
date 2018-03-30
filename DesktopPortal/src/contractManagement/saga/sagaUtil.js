@@ -3,7 +3,7 @@ export default function getApiResult(apiResult, defaultResult = { isOk: false, m
 
     if (apiResult) {
         defaultResult.code = apiResult.data.code;
-        if (apiResult.data.code == '0') {
+        if (apiResult.data.code === '0') {
             defaultResult.isOk = true;
             if (apiResult.data.pageIndex != undefined) {
                 defaultResult.pageIndex = (apiResult.data.pageIndex + 1);

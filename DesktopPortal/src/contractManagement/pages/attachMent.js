@@ -8,7 +8,7 @@ class AttachMent extends Component{
 
     render(){
         let attachPicOperType = this.props.attachPicOperType;
-        console.log("attachPicOperType:", attachPicOperType);
+        //console.log("attachPicOperType:", attachPicOperType);
         return(
             <div>
                 {attachPicOperType === 'add' ? <AttachEdit/> : <AttachInfo/>}

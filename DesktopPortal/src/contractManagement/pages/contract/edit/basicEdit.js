@@ -30,7 +30,10 @@ class BasicEdit extends Component {
         let contractName = curFollowContract.Name ? curFollowContract.Name : '';
         this.props.dispatch(openContractChoose({contractName: contractName}));
     }
-    //不要保存取消
+    
+    getUserOrgName = () =>{
+
+    }
     handleSave = (e) => {
         e.preventDefault();
         let { basicOperType } = this.props.operInfo;
@@ -42,28 +45,33 @@ class BasicEdit extends Component {
                 let StartTime = moment(values.startAndEndTime[0]).format("YYYY-MM-DD");
                 let EndTime = moment(values.startAndEndTime[1]).format("YYYY-MM-DD");
                 let newBasicInfo = Object.assign({},values, {startTime:StartTime, endTime:EndTime});
-                delete newBasicInfo.startAndEndTime;
+                
     
                 newBasicInfo.id = this.props.contractInfo.baseInfo.id;
-                newBasicInfo.organizete = this.state.departMentFullName;
-                newBasicInfo.createDepartmentID = this.state.createDepartmentID;
-                newBasicInfo.relation = this.state.departmentFullId;
+
+               // newBasicInfo.relation = this.state.departmentFullId;
                 if(basicOperType === 'add')
                 {
                     newBasicInfo.createTime = moment().format("YYYY-MM-DD");
-                    newBasicInfo.createDepartment = this.props.activeOrg.organizationName;
+                    //newBasicInfo.createDepartment = this.props.activeOrg.organizationName;
                 }
  
                 if (basicOperType != 'add') {
                     newBasicInfo = Object.assign({}, this.props.basicInfo, values);
                 }
-   
+                newBasicInfo.isSubmmitShop = 1;
+                newBasicInfo.isSubmmitRelation = 1;
+                newBasicInfo.createDepartment = this.props.activeOrg.organizationName = "";
+                newBasicInfo.organizete = this.state.departMentFullName;
+                newBasicInfo.createDepartmentID = this.state.createDepartmentID;
+                
+                delete newBasicInfo.startAndEndTime;
                 let method = (basicOperType === 'add' ? 'POST' : "PUT");
-     
+    
                 this.props.dispatch(saveContractBasic({ 
                     method: method, 
                     entity: newBasicInfo, 
-                    //ownCity: this.props.user.City 
+        
                 }));
             }
         });
@@ -90,6 +98,7 @@ class BasicEdit extends Component {
         let text = selectedOptions.map(item => {
             return item.label
         })
+     
         this.setState({departMentFullName: text.join('-'), createDepartmentID: createDepartmentID, departmentFullId:departmentFullId})
     }
     displayRender = (label) => {
@@ -287,15 +296,22 @@ class BasicEdit extends Component {
                 <Col span={12}>
                         <FormItem {...formItemLayout} label={<span>结算方式</span>}>
                         {getFieldDecorator('settleaccounts', {
-                                    initialValue: basicInfo.settleaccounts,
-                                    rules:[{required:true, message:'请输入结算方式!'}]
-                                    })(
-                                        <Input placeholder="结算方式" />
-                                    )
-                                    
-                            }
+                                initialValue: basicInfo.settleaccounts,
+                                rules:[{required:true, message:'请选择结算方式!'}]
+                                })(
+                                    <Select>
+                                    {
+                                        this.props.basicData.settleAccountsCatogories.map((item) =>
+                                            <Option key={item.value}>{item.key}</Option>
+                                        )
+                                    }
+                                    </Select>
+                                )
+                                
+                        }
                         </FormItem>
                     </Col>
+
                 <Col span={12}>
                     <FormItem {...formItemLayout} label={<span>佣金方案</span>}>
                     {getFieldDecorator('commission', {
@@ -492,6 +508,7 @@ function mapStateToProps(state) {
     //   buildingList: state.shop.buildingList,
     //   operInfo: state.shop.operInfo,
     //   shopsInfo: state.shop.shopsInfo,
+
         basicData: state.basicData,
         loadingState: state.contractData.basicloading,
         contractInfo: state.contractData.contractInfo,
