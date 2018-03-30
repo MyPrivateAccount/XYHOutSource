@@ -87,6 +87,12 @@ export const LOADING_END_BASIC = 'LOADING_END_BASIC';
 
 
 
+//补充协议
+export const OPEN_COMPLEMENT = 'OPEN_COMPLEMENT'; //打开合同上传页
+export const OPEN_COMPLEMENT_START = 'OPEN_COMPLEMENT_START';
+export const OPEN_COMPLEMENT_FINISH = 'OPEN_COMPLEMENT_FINISH';
+export const CLOSE_COMPLEMENT = 'CLOSE_COMPLEMENT';//关闭合同上传页
+
 //遮罩层
 export const SET_SEARCH_LOADING = 'SET_SEARCH_LOADING';//获取待审核列表
 

@@ -11,7 +11,7 @@ const initState = {
         attachInfo:{},
         additionalInfo:{},
         modifyInfo:{},
-        complementInfo:{},//补充协议
+        complementInfos:{},//补充协议
         discard:false,
         annexInfo:{},
 
@@ -20,6 +20,7 @@ const initState = {
         basicOperType: 'add',
         attachFileOperType: 'add',
         attachPicOperType: 'add',
+        complementOperType: 'add',
     },
     curFollowContract:{},
     completeFileList: [],
@@ -291,6 +292,21 @@ reducerMap[actionTypes.OPEN_ATTACHMENT_FINISH] = function(state, action){
     let operInfo = { ...state.operInfo, attachPicOperType: attachPicOperType };
     return Object.assign({}, state, {operInfo: operInfo,  isCurShowContractDetail: false, contractInfo:contractInfo});
 }
+
+reducerMap[actionTypes.OPEN_COMPLEMENT_FINISH] = function(state, action){
+   
+    let complementInfo = action.payload.complementInfo
+    let complementInfos = Object.assign({}, {complementInfo:complementInfo });
+    let contractInfo = Object.assign({}, {...state.contractInfo }, {baseInfo: action.payload.baseInfo, complementInfos:complementInfos});
+    let complementOperType  = "add";
+    if(complementInfo.length > 0)
+    {
+        complementOperType = "edit";
+    }
+    let operInfo = { ...state.operInfo, complementOperType: complementOperType };
+    return Object.assign({}, state, {operInfo: operInfo,  isCurShowContractDetail: false, contractInfo:contractInfo});
+}
+
 reducerMap[actionTypes.CLOSE_ATTACHMENT] = function(state,action){
     return Object.assign({}, state, {attachFileOperType: 'view'})
 }

@@ -470,7 +470,8 @@ class SearchResult extends Component {
             case 1: return "审核中";
             case 8: return "审核通过";
             case 16: return "驳回";
-       
+        default:
+            return type;
         }
 
     }
@@ -491,9 +492,8 @@ class SearchResult extends Component {
                 key: 'examineStatus',
                 render: (status) =>{
                     let newText = status;
-                    //if(newText){
-                        newText = this.getExamineValueByType(status);
-                    //}
+                    newText = this.getExamineValueByType(status);
+             
                     return <span>{newText}</span>
                 }
             }, /*{
@@ -536,7 +536,14 @@ class SearchResult extends Component {
                         <Button type="primary" size='small' onClick={(e) => this.onClickContractDetail(record)}>合同详情</Button>
                     )
                 },
-
+                {
+                    title: '补充协议',
+                    dataIndex: 'complement',
+                    key: 'complement',
+                    render: (text, record) => (
+                        <Button type="primary" size='small' onClick={(e) => this.onClickComplement(record)}>补充协议</Button>
+                    )
+                },
             ]
         };
         buttonDef.map((button, i) =>{
@@ -573,9 +580,9 @@ class SearchResult extends Component {
         this.props.dispatch(searchStart(condition));
     }
     //查看合同详情
-    handleContractDetail = (record) => {
-        this.props.dispatch(getContractDetail(record));
-    }
+    // handleContractDetail = (record) => {
+    //     this.props.dispatch(getContractDetail(record));
+    // }
     handleMultiExport = () =>{
         let header = [{v:"序号", position:'A1', key: 'num'}];
         let columns = this.getContractInfoExportColumns();
@@ -608,6 +615,9 @@ class SearchResult extends Component {
          console.log('录入');
          this.props.dispatch(openContractRecord({id:0}));
      }
+     onClickComplement = (record) =>{
+
+     }
     handleClickFucButton = (buttonID) =>{
         switch(buttonID){
             case 'record':
@@ -616,6 +626,7 @@ class SearchResult extends Component {
                 return this.handleMultiExport;
             case 'uploadFile':
                 return this.onClickUploadFile;
+         
             default:
                 return null;
         }

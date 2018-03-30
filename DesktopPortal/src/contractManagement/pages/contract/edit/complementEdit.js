@@ -57,6 +57,7 @@ class ComplementEdit extends Component {
     }
 
     render(){
+        const { getFieldDecorator, getFieldsError, getFieldError, isFieldTouched } = this.props.form;
         const formItemLayout = {
           labelCol: { span: 6 },
           wrapperCol: { span: 14 },
@@ -105,7 +106,7 @@ class ComplementEdit extends Component {
             
             }
           </Form>
-          <ContractChoose/> 
+        
          </div>
         
                         

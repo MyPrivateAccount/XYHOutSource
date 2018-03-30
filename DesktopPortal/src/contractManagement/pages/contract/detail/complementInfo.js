@@ -12,7 +12,6 @@ class ComplementInfo extends Component {
     }
     render(){
 
-        const contractId = basicInfo.id;
         return (
             <div style={{ marginTop: '25px', backgroundColor: "#ECECEC" }}>
                 <Form layout="horizontal">

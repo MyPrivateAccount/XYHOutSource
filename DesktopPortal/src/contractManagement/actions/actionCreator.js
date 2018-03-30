@@ -83,7 +83,11 @@ export const openModifyHistory = createAction(actionTypes.OPEN_MODIFY_HISTORY);
 export const closeModifyHistory = createAction(actionTypes.CLOSE_MODIFY_HISTORY);
 
 
-
+//补充协议
+export const openComplement = createAction(actionTypes.OPEN_COMPLEMENT);
+export const openComplementStart = createAction(actionTypes.OPEN_COMPLEMENT_START);
+export const openComplementFinish = createAction(actionTypes.OPEN_COMPLEMENT_FINISH);
+export const closeComplement = createAction(actionTypes.CLOSE_COMPLEMENT);
 
 
 

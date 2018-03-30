@@ -10,7 +10,7 @@ import moment from 'moment';
 import { 
     basicLoadingEnd, gotoThisContractStart, gotoThisContractFinish,
     submitContractStart,submitContractFinish,attchLoadingStart, attchLoadingEnd,
-    openAttachMentStart, openAttachMentFinish,
+    openAttachMentStart, openAttachMentFinish,openComplementStart, openComplementFinish,
 } from '../actions/actionCreator';
 
 const actionUtils = appAction(actionTypes.ACTION_ROUTE);
@@ -102,6 +102,30 @@ export function* openAttachUpload(action){
 
     } catch (e) {
         yield put(actionUtils.action(openAttachMentFinish, { code: '1', message: '失败' }));
+    }
+}
+
+export function* openComplement(action){
+    let url = WebApiConfig.complement.GetComplement + action.payload.record.id;
+    let baseInfo = action.payload.record;
+    let res;
+    //yield put(actionUtils.action(openComplementStart))
+    try {
+       
+        res = yield call(ApiClient.get, url);
+        let complementInfo = [];
+        if (res.data.code === '0') {
+            // yield put({ type: actionUtils.getActionType(actionTypes.GET_ADD_BUILDING) });
+            if(res.data.extension && res.data.extension.complementInfo)
+            {
+                complementInfo = res.data.extension.complementInfo;
+            }
+         }
+        
+        yield put(actionUtils.action(openComplementFinish, {baseInfo: res.data.extension.baseInfo, complementInfo:complementInfo, code: '0'}));
+
+    } catch (e) {
+        //yield put(actionUtils.action(openComplementFinish, { code: '1', message: '失败' }));
     }
 }
 
