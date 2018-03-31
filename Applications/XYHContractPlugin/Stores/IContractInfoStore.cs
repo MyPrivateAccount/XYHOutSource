@@ -20,7 +20,7 @@ namespace XYHContractPlugin.Stores
         Task<ContractInfo> CreateAsync(SimpleUser userinfo, ContractInfo buildingBaseInfo, string modifyid, string checkaction, CancellationToken cancellationToken = default(CancellationToken));
         Task<bool> CreateAsync(SimpleUser userinfo, List<AnnexInfo> annexinfo, CancellationToken cancle = default(CancellationToken));
         Task<bool> CreateAsync(SimpleUser userinfo, List<ComplementInfo> compleinfo, CancellationToken cancle = default(CancellationToken));
-        Task CreateModifyAsync(SimpleUser userinfo, string contractid, string modifyid, int ntype, string checkaction, bool updatetocontract = true, string ext1 = null, string ext2 = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task CreateModifyAsync(SimpleUser userinfo, string contractid, string modifyid, int ntype, string checkaction, ExamineStatusEnum exa = ExamineStatusEnum.UnSubmit, bool updatetocontract = true, string ext1 = null, string ext2 = null, CancellationToken cancellationToken = default(CancellationToken));
 
         Task DeleteAsync(SimpleUser userinfo, string contractid, CancellationToken cancellationToken = default(CancellationToken));
 

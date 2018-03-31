@@ -43,7 +43,7 @@ namespace XYHContractPlugin.Stores
                     return;
                 }
                 //附件基本信息
-                if (!Context.AnnexInfos.Any(x => x.FileGuid == file.FileGuid))
+                if (!Context.AnnexInfos.Any(x => x.ID == file.ID))
                 {
                     file.CreateTime = DateTime.Now;
                     file.CreateUser = user.Id;

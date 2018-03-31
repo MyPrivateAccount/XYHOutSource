@@ -62,7 +62,7 @@ namespace XYHContractPlugin.Stores
             return buildingBaseInfo;
         }
 
-        public async Task CreateModifyAsync(SimpleUser userinfo, string contractid, string modifyid, int ntype, string checkaction,
+        public async Task CreateModifyAsync(SimpleUser userinfo, string contractid, string modifyid, int ntype, string checkaction, ExamineStatusEnum exa = ExamineStatusEnum.UnSubmit,
             bool updatetocontract = true, string ext1 = null, string ext2= null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (contractid != null)
@@ -79,7 +79,7 @@ namespace XYHContractPlugin.Stores
                 tmodify.ExamineTime = tmodify.ModifyStartTime;
                 tmodify.Type = ntype;
                 tmodify.ModifyPepole = userinfo.Id;
-                tmodify.ExamineStatus = (int)ExamineStatusEnum.UnSubmit;
+                tmodify.ExamineStatus = (int)exa;
                 tmodify.Ext1 = ext1;
                 tmodify.Ext2 = ext2;
                 tmodify.ModifyCheck = checkaction;
