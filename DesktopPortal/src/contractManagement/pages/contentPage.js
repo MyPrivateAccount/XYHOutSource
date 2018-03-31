@@ -24,6 +24,15 @@ const LoadableSelectOrgPage = Loadable({
     loading: () => <LoadableLoading />,
 });
 
+const LoadContractDetailPage = Loadable({
+    loader: () => import('./contractDetail'),
+    loading: () => null//<LoadableLoading />
+});
+
+const LoadComplementPage = Loadable({
+    loader: () => import('./complement'),
+    loading: () => null//<LoadableLoading />
+});
 
 function ContentPage(props) {
     const { curMenuID } = props;
@@ -39,6 +48,12 @@ function ContentPage(props) {
     }
     else if (curMenuID === "menu_attachMent") {
         return <LoadAttatchMentPage />;
+    }
+    else if (curMenuID === "menu_contractDetail") {
+        return <LoadContractDetailPage />; 
+    }
+    else if (curMenuID === "menu_complement") {
+        return <LoadComplementPage />;
     }
     else {
         return <LoadableIndexPage />;

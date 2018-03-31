@@ -5,7 +5,9 @@ import moment from 'moment';
 const initState = {
     showLoading: false,
     showContractRecord: false,//合同录入
+    showContractInfo:false,//合同详情
     showAttachMent: false,//附件上传
+    showComplement: false,
     navigator: [],//导航记录
 
     activeOrg: {id: '0', organizationName: '不限'},//当前部门
@@ -31,10 +33,12 @@ reducerMap[actionTypes.SET_SEARCH_LOADING] = function (state, action) {
 }
 
 //打开合同附件上传页面
-reducerMap[actionTypes.OPEN_ATTACHMENT] = function (state, action) {
+reducerMap[actionTypes.OPEN_ATTACHMENT_START] = function (state, action) {
+
     let navigator = [action.payload];
     return Object.assign({}, state, {navigator: [{id: action.payload.id, name: '附件上传', type: 'attachMent'}], showAttachMent: true});
 }
+
 //关闭合同附件上传页面
 reducerMap[actionTypes.CLOSE_ATTACHMENT] = function (state, action) {
     return Object.assign({}, state, {navigator: [], showAttachMent: false});
@@ -44,7 +48,7 @@ reducerMap[actionTypes.UPLOAD_ATTCHMENT_LIST_COMPLETE] = function(state, action)
     return Object.assign({}, state, {navigator: [], showAttachMent: false});
 }
 //打开合同录入页面
-reducerMap[actionTypes.OPEN_RECORD] = function (state, action) {
+reducerMap[actionTypes.OPEN_RECORD_NAVIGATOR] = function (state, action) {
     let navigator = [action.payload];
     return Object.assign({}, state, {navigator: [{id: action.payload.id, name: '录入', type: 'record'}], showContractRecord: true});
 }
@@ -52,6 +56,35 @@ reducerMap[actionTypes.OPEN_RECORD] = function (state, action) {
 reducerMap[actionTypes.CLOSE_RECORD] = function (state, action) {
     return Object.assign({}, state, {navigator: [], showContractRecord: false});
 }
+
+// 打开合同详情
+reducerMap[actionTypes.OPEN_CONTRACT_DETAIL] = (state, action) => {
+    let navigator = [action.payload];
+    return Object.assign({}, state, {navigator: [{id: action.payload.id, name: '合同详情页', type: 'contractDetail'}], showContractInfo: true});
+}
+
+// 关闭合同详情
+reducerMap[actionTypes.CLOSE_CONTRACT_DETAIL] = (state, action) => {
+    let navigator = [action.payload];
+    return Object.assign({}, state, {navigator: [], showContractInfo: false});
+}
+
+// 打开补充协议
+reducerMap[actionTypes.OPEN_COMPLEMENT_START] = (state, action) => {
+    let navigator = [action.payload];
+    return Object.assign({}, state, {navigator: [{id: action.payload.id, name: '补充协议', type: 'complement'}], showComplement: true});
+}
+
+// 关闭补充协议
+reducerMap[actionTypes.CLOSE_COMPLEMENT] = (state, action) => {
+    let navigator = [action.payload];
+    return Object.assign({}, state, {navigator: [], showComplement: false});
+}
+
+
+
+
+
 
 //个人所在部门数据获取完成
 reducerMap[actionTypes.DIC_GET_ORG_DETAIL_COMPLETE] = function (state, action) {
@@ -122,10 +155,6 @@ reducerMap[actionTypes.SAVE_SEARCH_CONDITION] = function (state, action) {
     return Object.assign({}, state, {searchCondition: action.payload});
 }
 
-// 获取合同详情开始
-reducerMap[actionTypes.GOTO_THIS_CONTRACT_START] = (state, action) => {
-    let navigator = [action.payload];
-    return Object.assign({}, state, {navigator: [{id: 0, name: '录入', type: 'record'}], showContractRecord: true});
-}
+
 
 export default handleActions(reducerMap, initState);

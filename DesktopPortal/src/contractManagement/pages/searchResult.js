@@ -1,5 +1,5 @@
 import {connect} from 'react-redux';
-import { getContractDetail, searchStart, saveSearchCondition, setLoadingVisible,openAttachMent, openContractRecord, gotoThisContract} from '../actions/actionCreator';
+import { openComplement, searchStart, saveSearchCondition, setLoadingVisible,openAttachMent, openContractRecord, gotoThisContract, openContractRecordNavigator} from '../actions/actionCreator';
 import React, {Component} from 'react';
 import {Button, Row, Col, Table} from 'antd';
 import moment from 'moment';
@@ -613,10 +613,11 @@ class SearchResult extends Component {
     }
      onClickRecord = (e) =>{
          console.log('录入');
-         this.props.dispatch(openContractRecord({id:0}));
+         this.props.dispatch(openContractRecord({record:null}));
+         this.props.dispatch(openContractRecordNavigator({id:0}));
      }
      onClickComplement = (record) =>{
-
+        this.props.dispatch(openComplement({record: record}));
      }
     handleClickFucButton = (buttonID) =>{
         switch(buttonID){

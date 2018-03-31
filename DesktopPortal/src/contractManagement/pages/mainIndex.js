@@ -55,18 +55,18 @@ class MainIndex extends Component {
     // onClickUploadFile = (e)=>{
     //     this.props.dispatch(openAttachMent({id:1}));
     // }
-    handleClickFucButton = (buttonID) =>{
-        switch(buttonID){
-            case 'record':
-                return this.onClickRecord;
-            case 'export':
-                return this.onClickExPort;
-            case 'uploadFile':
-                return this.onClickUploadFile;
-            default:
-                return null;
-        }
-    }
+        // handleClickFucButton = (buttonID) =>{
+        //     switch(buttonID){
+        //         case 'record':
+        //             return this.onClickRecord;
+        //         case 'export':
+        //             return this.onClickExPort;
+        //         case 'uploadFile':
+        //             return this.onClickUploadFile;
+        //         default:
+        //             return null;
+        //     }
+        // }
     render() {
         let showLoading = this.props.showLoading;
         return (
