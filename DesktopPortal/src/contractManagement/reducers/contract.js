@@ -40,15 +40,8 @@ const initState = {
 
 let reducerMap = {};
 
-reducerMap[actionTypes.OPEN_MODIFY_HISTORY] = function(state,action){
-    return Object.assign({}, state, { modifyHistoryVisible: true });
-}
-
-reducerMap[actionTypes.CLOSE_MODIFY_HISTORY] = function(state,action){
-    return Object.assign({}, state, { modifyHistoryVisible: false });
-}
 reducerMap[actionTypes.OPEN_RECORD] = function(state, action){
-    if(action.payload.record){
+    if(action.payload.record){//此处代码不在作为合同详情页
         let operInfo = {
             basicOperType: 'view',
             attachPicOperType: 'view',
@@ -77,12 +70,23 @@ reducerMap[actionTypes.OPEN_RECORD] = function(state, action){
     }
     let operInfo = {
         basicOperType: 'add',
-       // attachPicOperType: 'add',
+        //attachPicOperType: 'add',
+
     }
 
     let newState = Object.assign({}, state, { contractInfo: contractInfo, basicloading: false,operInfo: operInfo, contractDisplay: 'block' , isCurShowContractDetail: false,curFollowContract:{} });
     return newState; 
 }
+
+
+reducerMap[actionTypes.OPEN_MODIFY_HISTORY] = function(state,action){
+    return Object.assign({}, state, { modifyHistoryVisible: true });
+}
+
+reducerMap[actionTypes.CLOSE_MODIFY_HISTORY] = function(state,action){
+    return Object.assign({}, state, { modifyHistoryVisible: false });
+}
+
 
 // 保存各个模板的loading
 reducerMap[actionTypes.LOADING_START_BASIC] = function (state, action) {
@@ -143,14 +147,14 @@ reducerMap[actionTypes.GOTO_THIS_CONTRACT_FINISH] = (state, action) => {
     let res = action.payload.data
 
     if (res.code === '0') {
-        contractInfo = res.extension
-        contractInfo.baseInfo = contractInfo.baseInfo
-        contractInfo.attachInfo = { fileList: contractInfo.fileList }
-       
+        contractInfo = res.extension;
+        contractInfo.baseInfo = contractInfo.baseInfo;
+        contractInfo.attachInfo = { fileList: contractInfo.fileList };
+        contractInfo.complementInfos = contractInfo.complementInfo;
         operInfo = {
             basicOperType: 'view',
             attachPicOperType: 'view',
-   
+            complementOperType: 'view',
         }
         
 
@@ -307,9 +311,18 @@ reducerMap[actionTypes.OPEN_COMPLEMENT_FINISH] = function(state, action){
     return Object.assign({}, state, {operInfo: operInfo,  isCurShowContractDetail: false, contractInfo:contractInfo});
 }
 
-reducerMap[actionTypes.CLOSE_ATTACHMENT] = function(state,action){
-    return Object.assign({}, state, {attachFileOperType: 'view'})
-}
+
+//图片信息编辑  //此时的情况是应该已经拿到了当前的合同id
+reducerMap[actionTypes.CONTRACT_COMPLEMENT_EDIT] = (state, action) => {
+    let contractInfo = { ...state.contractInfo };
+    let operInfo = Object.assign({}, state.operInfo, { complementOperType: 'edit' });
+    let newState = Object.assign({}, state, { operInfo: operInfo, contractInfo: contractInfo });
+    return newState;
+  }
+//现在是提交直接跳转
+// reducerMap[actionTypes.CLOSE_ATTACHMENT] = function(state,action){
+//     return Object.assign({}, state, {attachFileOperType: 'view'})
+// }
 
 reducerMap[actionTypes.BASIC_SUBMIT_END] = function(state, action){
     let operInfo = {attachPicOperType: "", basicOperType:""};

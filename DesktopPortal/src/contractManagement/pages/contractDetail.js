@@ -9,10 +9,12 @@ import BasicEdit from './contract/edit/basicEdit';
 import BasicInfo from './contract/detail/basicInfo';
 import AttachEdit from './contract/edit/attachEdit';
 import AttachInfo from './contract/detail/attachInfo';
+import ComplementInfo  from './contract/detail/complementInfo';
+import ComplementEdit  from './contract/edit/complementEdit';
 import { isNullOrUndefined } from 'util';
 
 const { Header, Sider, Content } = Layout;
-class ContractRecord extends Component{
+class ContractDetail extends Component{
     state = {
         isBasicNeedSubmit:true,
         isAdditionNeesSubmit:true,
@@ -59,25 +61,14 @@ class ContractRecord extends Component{
     render(){
         let basicOperType = this.props.operInfo.basicOperType;
         let attachPicOperType = this.props.operInfo.attachPicOperType;
-        let additionOperType = this.props.operInfo.additionOperType;
+        let complementOperType = this.props.operInfo.complementOperType;
+        let isEdit = false;
         let infoGroup = [];
-        contractInfoGroup.forEach((item) =>{
-            if( basicOperType === "add"){
-                if(item.id === "basicInfo"){
-                    infoGroup.push(item);
-                }
-            }else{
-                infoGroup.push(item);
-            }
-            
-            // console.log('item:', item);
-            // if(item.id  === 'additionalInfo' && isNullOrUndefined(additionOperType)){
+        if(basicOperType === "edit" || complementOperType ==="edit" || complementOperType ==="edit" ){
+            isEdit = true;
+        }
 
-            // } else{
-            //     infoGroup.push(item);
-            // }
-        });
-        infoGroup = [   {id:'basicInfo', name:'基本信息'},];
+
         return(
             <div className="relative">
                 <Layout>
@@ -91,69 +82,44 @@ class ContractRecord extends Component{
                                 } */}
                             </Col>
                             <Col span={20} style={{ textAlign: 'right' }}>
+                            {
+                                isEdit? null :
                                 <Radio.Group defaultValue='basicInfo' onChange={this.handleAnchorChange} size='large'>
                                     {
                                         infoGroup.map((info) => <Radio.Button value={info.id} key={info.id}>{info.name}<Icon type="check" /></Radio.Button>)
                                     }
                                 </Radio.Group>
+                            }
                             </Col>
                         </Row>
                         <Row id="basicInfo">
                             {
                                 
-                                <Col span={24}>{basicOperType === 'view' ? <BasicInfo /> : ((attachPicOperType === "add" || additionOperType === "edit") ? null : <BasicEdit />)}</Col>
-
+                                //<Col span={24}>{basicOperType === 'view' ? <BasicInfo /> : ((attachPicOperType === "add" || additionOperType === "edit") ? null : <BasicEdit />)}</Col>
+                                <Col span={24}>{(basicOperType === 'edit') ? <BasicEdit/> : (isEdit ? null : <BasicInfo />)}</Col>
                             }
 
                         </Row>
-                    
-                         
-                         <div>
-                             {/*
-                                [8, 1].includes(this.props.basicInfo.examineStatus)  ? null :
-                                <div>
-                                    <Row type="flex" justify="space-between">
-                                        <Col  span={24} style={{ textAlign: 'right' }} className='BtnTop'>
-                                            <BackTop visibilityHeight={400} />
-                                            <Button type="primary" size='large' className="oprationBtn"
-                                                style={{ width: "10rem", display: this.props.contractDisplay }}
-                                                onClick={this.handleSubmit("basicInfo")} loading={this.props.submitLoading}>提交</Button>
-                                        </Col>
-                                    </Row>
-                                </div>
+                        <Row id="additionalInfo">
+                            {
                                 
-                             */}
-                        </div>
-                         
+                                //<Col span={24}>{basicOperType === 'view' ? <BasicInfo /> : ((attachPicOperType === "add" || additionOperType === "edit") ? null : <BasicEdit />)}</Col>
+                                <Col span={24}>{(complementOperType === 'edit') ? <ComplementEdit/> : (isEdit ? null : <ComplementInfo />)}</Col>
+                            }
+
+                        </Row>
+
                     
                         <Row id="attachInfo">
-                            {/*
-                                basicOperType  === 'add' ? null :
-                                <Col span={24}>{(attachPicOperType === 'view') ? <AttachInfo /> : <AttachEdit />}</Col>
-
-                            */}
+      
                             {
-                                <Col span={24}>{(attachPicOperType === 'view') ? <AttachInfo /> : ((basicOperType === "add" || basicOperType === "edit" ) ?  null : <AttachEdit /> )}</Col>
+                                //<Col span={24}>{(attachPicOperType === 'view') ? <AttachInfo /> : ((basicOperType === "add" || basicOperType === "edit" ) ?  null : <AttachEdit /> )}</Col>
+                                <Col span={24}>{(attachPicOperType === 'edit') ? <AttachInfo /> : (isEdit ? null : <AttachInfo />)}</Col>
                             }
 
                         </Row>
                                                  
-                        <div>
-                             {/*
-                                ((basicOperType  === 'add')  || [8, 1].includes(this.props.attachInfo.examineStatus))  ? null :
-                                <div>
-                                    <Row type="flex" justify="space-between">
-                                        <Col  span={24} style={{ textAlign: 'right' }} className='BtnTop'>
-                                            <BackTop visibilityHeight={400} />
-                                            <Button type="primary" size='large' className="oprationBtn"
-                                                style={{ width: "10rem", display: this.props.contractDisplay }}
-                                                onClick={this.handleSubmit("attachInfo")} loading={this.props.submitLoading}>提交</Button>
-                                        </Col>
-                                    </Row>
-                                </div>
-                                
-                             */}
-                        </div>
+
                         <div>
                             <BackTop visibilityHeight={400} />
                         </div>
@@ -162,7 +128,7 @@ class ContractRecord extends Component{
                                 <Col  span={24} style={{ textAlign: 'center' }} className='BtnTop'>
                                         <Button type="primary" size='large'
                                         style={{ width: "10rem", display: this.props.contractDisplay }}
-                                        onClick={this.handleReturn} loading={this.props.submitLoading}>返回</Button>
+                                        onClick={this.handleReturn} loading={this.props.submitLoading}>返回主页</Button>
     
     
                                     
@@ -195,4 +161,4 @@ function mapDispathToProps(dispatch){
         dispatch
     };
 }
-export default connect(mapStateToProps, mapDispathToProps)(ContractRecord);
+export default connect(mapStateToProps, mapDispathToProps)(ContractDetail);

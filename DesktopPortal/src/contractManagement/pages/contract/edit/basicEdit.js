@@ -455,7 +455,7 @@ class BasicEdit extends Component {
                 </Col>
   
             </Row>
-            <Row type="flex" style={{marginTop:"25px"}}>
+            {/* <Row type="flex" style={{marginTop:"25px"}}>
                 <Col span={12}>
                     <FormItem {...formItemLayout} label={<span>补充协议</span>}>
                         {getFieldDecorator('contentInfo', {
@@ -468,7 +468,7 @@ class BasicEdit extends Component {
                             }
                     </FormItem>
                 </Col>
-            </Row>
+            </Row> */}
             {/*
             <Row>
                     <Col span={24} style={{ textAlign: 'center' }} className='BtnTop'>
@@ -483,7 +483,7 @@ class BasicEdit extends Component {
                     <Row type="flex" justify="space-between">
                         <Col  span={24} style={{ textAlign: 'center' }} className='BtnTop'>
 
-                            <Button type="primary" size='large' className="oprationBtn"
+                            <Button type="primary" size='default' className="oprationBtn"
                                 style={{ width: "10rem", display: this.props.contractDisplay }}
                                 onClick={this.handleSave} loading={this.props.submitLoading}>提交</Button>
                         </Col>
