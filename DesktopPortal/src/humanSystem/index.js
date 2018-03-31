@@ -20,7 +20,7 @@ const menuDefine = [
     {menuID: "menu_statistics", displayName: "统计报表", menuIcon: 'global'},
     {menuID: "menu_black", displayName: "黑名单管理", menuIcon: 'lock'/*, requirePermission: ['PermissionItemCreate']*/},
     {menuID: "menu_station", displayName: "职位和岗位配置", menuIcon: 'solution'},
-    {menuID: "menu_achievement", displayName: "薪酬管理", menuIcon: 'database'},
+    {menuID: "menu_achievement", displayName: "职位薪酬管理", menuIcon: 'database'},
     {menuID: "menu_organization", displayName: "组织架构管理", menuIcon: 'layout'},
     {menuID: "menu_set", displayName: "设置", menuIcon: 'setting'},
     //{menuID: "menu_app", displayName: "应用管理", menuIcon: 'appstore', requirePermission: ['ApplicationCreate']}
@@ -75,7 +75,7 @@ const homeStyle = {
         }
         //当前页面区域替换
         getContentPage() {
-            let navigator = this.props.navigator;
+            let navigator = this.props.basicData.navigator;
             if (navigator.length > 0) {
                 if (navigator[navigator.length - 1].type === "customerDetail") {
                     return <CustomerDetail />;
@@ -84,7 +84,7 @@ const homeStyle = {
            return <ContentPage curMenuID={this.state.activeMenu.menuID} />
         }
     render() {
-        let navigator = this.props.navigator;
+        let navigator = this.props.basicData.navigator;
         //let showHeaderMenuIDs = menuDefine.map((menu)=> {return menu.menuID});//[menuDefine[0].menuID,menuDefine[1].menuID, menuDefine[2].menuID,menuDefine[0].menuID];
         //let isShowHeader = (showHeaderMenuIDs.find((menuID) => menuID == this.state.activeMenu.menuID) != undefined);
         //let className = isShowHeader ? 'content' : '';
@@ -137,8 +137,10 @@ const homeStyle = {
 function mapStateToProps(state, props) {
     //console.log("权限管理mapStateToProps:" + JSON.stringify(props));
     return {
-        navigator: state.search.navigator,
-        judgePermissions: state.judgePermissions
+        oidc: state.oidc,
+        router: state.router,
+        search: state.search,
+        basicData: state.basicData
     }
 }
 export default withReducer(reducers, 'PersonnelSystemIndex', {mapExtraState: (state, rootState) => ({oidc: rootState.oidc})})(connect(mapStateToProps)(PersonnelSystemIndex));

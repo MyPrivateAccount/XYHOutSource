@@ -1,5 +1,10 @@
 
 const SearchCondition = {
+    topteninfo: {
+        searchWord: '',
+        pageIndex: 0,
+        pageSize: 10
+    },
     mySubmit: {//我提交的
         examineStatus: [1],
         contentTypes: ['TransferCustomer'],

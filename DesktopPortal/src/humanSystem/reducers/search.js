@@ -5,21 +5,14 @@ import moment from 'moment';
 const initState = {
     showLoading: false,
     showOrgSelect: false,//部门选择
-    showAdjustCustomer: false,//调客
-    showCustomerDetail: false,//客户详情
     navigator: [],//导航记录
     activeOrg: {id: '0', organizationName: '不限'},//当前部门
     activeMenu: 'menu_index',//当前菜单
-    activeCustomers: [],//选中客户信息
     searchKeyWord: '',//搜索关键词
     searchCondition: {},//完整搜索条件
+    agesCondition:0,
     searchResult: {extension: [], pageIndex: 0, pageSize: 10, totalCount: 0},//搜索结果
-    auditList: {extension: [], pageIndex: 0, pageSize: 10, totalCount: 0},//调客审核列表
-    repeatJudgeInfo: {},//客户判重信息
-    sourceCustomerList: [],
-    targetCustomerList: [],
-    showAuditDetail: false,//显示调客审核
-    activeAuditHistory: {}//调客审核详细
+    expandSearchBox: true
 };
 let reducerMap = {};
 
@@ -131,53 +124,10 @@ reducerMap[actionTypes.GET_CUSTOMER_ALL_PHONE_COMPLETE] = function (state, actio
     activeCustomers[0].phoneList = action.payload || [];
     return Object.assign({}, state, {activeCustomers: activeCustomers});
 }
-//调客审核列表
-reducerMap[actionTypes.GET_AUDIT_LIST_COMPLETE] = function (state, action) {
-    let auditList = {...state.auditList};
-    if (action.payload) {
-        auditList = action.payload;
-    }
-    return Object.assign({}, state, {auditList: auditList});
-}
+
 //客户判重信息
 reducerMap[actionTypes.GET_REPEAT_JUDGE_INFO_COMPLETE] = function (state, action) {
     return Object.assign({}, state, {repeatJudgeInfo: action.payload});
 }
-//客户列表
-reducerMap[actionTypes.GET_CUSTOMER_OF_USERID_COMPLETE] = function (state, action) {
-    let sourceCustomerList = [...state.sourceCustomerList];
-    let targetCustomerList = [...state.targetCustomerList];
-    if (action.payload.type === "source") {
-        sourceCustomerList = action.payload.extension;
-    } else {
-        targetCustomerList = action.payload.extension;
-    }
-    return Object.assign({}, state, {sourceCustomerList: sourceCustomerList, targetCustomerList: targetCustomerList});
-}
-//打开调客审核详细
-reducerMap[actionTypes.OPEN_CUSTOMER_AUDIT_INFO] = function (state, action) {
-    return Object.assign({}, state, {showAuditDetail: true, navigator: [{id: action.payload.id, name: '审核详情', type: 'auditInfo'}]});
-}
-//获取当前审核记录的历史
-reducerMap[actionTypes.GET_AUDIT_HISTORY_COMPLETE] = function (state, action) {
-    return Object.assign({}, state, {activeAuditHistory: action.payload});
-}
-//移除调客请求中的指定客户
-reducerMap[actionTypes.REMOVE_ADJUST_REQUEST_ITEM] = function (state, action) {
-    let activeAuditHistory = {...state.activeAuditHistory};
-    if (activeAuditHistory.content) {
-        try {
-            let jsonObj = JSON.parse(activeAuditHistory.content);
-            jsonObj.customers = jsonObj.customers || [];
-            for (let i = jsonObj.customers.length - 1; i > -1; i--) {
-                if (jsonObj.customers[i].id === action.payload) {
-                    jsonObj.customers.splice(i, 1);
-                    break;
-                }
-            }
-            activeAuditHistory.content = JSON.stringify(jsonObj);
-        } catch (e) {}
-    }
-    return Object.assign({}, state, {activeAuditHistory: activeAuditHistory});
-}
+
 export default handleActions(reducerMap, initState);

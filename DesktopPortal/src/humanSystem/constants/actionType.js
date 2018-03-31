@@ -1,4 +1,7 @@
-export const ACTION_ROUTE = "CustomerIndex";
+export const ACTION_ROUTE = "HumanIndex";
+
+//人事获取
+export const GET_ALLHUMANINFO = 'GET_ALLHUMANINFO';
 
 //字典项获取
 export const DIC_GET_PARLIST = 'DIC_GET_PARLIST';
@@ -31,19 +34,11 @@ export const GET_REPEAT_JUDGE_INFO = 'GET_REPEAT_JUDGE_INFO';//客户去重信�
 export const GET_REPEAT_JUDGE_INFO_COMPLETE = 'GET_REPEAT_JUDGE_INFO_COMPLETE';//客户去重信息获取完成
 //页面切换
 export const CHANGE_MENU = 'CHANGE_MENU';//菜单切换
+export const SEARCH_BOX_EXPAND = 'SEARCH_BOX_EXPAND';//搜索条件展开
 //搜索处理
+export const SEARCH_BUILDING = 'SEARCH_BUILDING';
 export const SAVE_SEARCH_CONDITION = 'SAVE_SEARCH_CONDITION';//保存查询条件
 export const CHANGE_KEYWORD = 'CHANGE_KEYWORD';
+export const SEARCH_KEYWORD = 'SEARCH_KEYWORD';
 export const SEARCH_CUSTOMER = 'SEARCH_CUSTOMER';
 export const SEARCH_CUSTOMER_COMPLETE = 'SEARCH_CUSTOMER_COMPLETE';
-//调客审核列表
-export const GET_AUDIT_LIST = 'GET_AUDIT_LIST';//获取调客审核列表
-export const GET_AUDIT_LIST_COMPLETE = 'GET_AUDIT_LIST_COMPLETE';//获取调客审核完成
-export const GET_CUSTOMER_OF_USERID = 'GET_CUSTOMER_BY_USERID';//根据用户获取客户列表
-export const GET_CUSTOMER_OF_USERID_COMPLETE = 'GET_CUSTOMER_BY_USERID';//获取完成
-export const CHANGE_SOURCE_ORG = 'CHANGE_SOURCE_ORG';//切换调客单位
-export const CHANGE_TARGET_ORG = 'CHANGE_TARGET_ORG';//切换接收单位
-export const OPEN_CUSTOMER_AUDIT_INFO = 'OPEN_CUSTOMER_AUDIT_INFO';//打开调客审核详细
-export const GET_AUDIT_HISTORY = 'GET_AUDIT_HISTORY';//获取当前记录的审核历史
-export const GET_AUDIT_HISTORY_COMPLETE = 'GET_AUDIT_HISTORY_COMPLETE';//获取当前记录的审核历史
-export const REMOVE_ADJUST_REQUEST_ITEM = 'REMOVE_ADJUST_REQUEST_ITEM';//移除单个调客请求中的客户

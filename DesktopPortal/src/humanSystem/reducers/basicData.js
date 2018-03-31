@@ -3,23 +3,9 @@ import * as actionTypes from '../constants/actionType';
 import appAction from '../../utils/appUtils';
 
 const initState = {
-    saleStatus: [],
-    saleModel: [],
-    shopsTypes: [],
-    tradePlannings: [],//业态规划
-    customerSource: [],//客户来源
-    businessTypes: [],//商业类型
-    customerLevels: [],//客户等级
-    requirementLevels: [],//需求等级
-    invalidResions: [],//失效原因
-    followUpTypes: [],//跟进方式
-    areaList: [],
-    orgInfo: {orgList: [], levelCount: 0},
-    userList: [],//部门用户
-    sourceUserList: [],//调客业务员
-    targetUserList: [],//收客业务员
-    rateProgress: [],//商机阶段
-    requirementType: []
+    humanList: [],
+    showLoading: true,
+    navigator: [],//导航记录
 };
 let reducerMap = {};
 //字典数据
@@ -128,22 +114,6 @@ reducerMap[actionTypes.DIC_GET_ORG_LIST_COMPLETE] = function (state, action) {
     // console.log("格式化后的部门:", orgInfo.orgList);
     return Object.assign({}, state, {orgInfo: {orgList: orgInfo.orgList || [], levelCount: orgInfo.levelCount || 0}});
 }
-//部门用户获取完成
-reducerMap[actionTypes.GET_ORG_USERLIST_COMPLETE] = function (state, action) {
-    let sourceUserList = [...state.sourceUserList]; //调客业务员
-    let targetUserList = [...state.targetUserList];//收客业务员
-    let userList = [...state.userList];
-    if (action.payload.type) {
-        if (action.payload.type === "source") {
-            sourceUserList = action.payload.extension || [];
-        } else {
-            targetUserList = action.payload.extension || [];
-        }
-    } else {
-        userList = action.payload.extension || [];
-    }
-    return Object.assign({}, state, {userList: userList, targetUserList: targetUserList, sourceUserList: sourceUserList});
-}
 
 function formatOrgData(originalData, parentId, levelCount) {
     let curLevelOrgs = [];
@@ -166,10 +136,12 @@ function formatOrgData(originalData, parentId, levelCount) {
     return {orgList: curLevelOrgs, levelCount: level};
 }
 
-reducerMap[actionTypes.CHANGE_SOURCE_ORG] = function (state, action) {
-    return Object.assign({}, state, {sourceUserList: []});
+reducerMap[actionTypes.GET_ALLHUMANINFO] = function (state, action) {
+    return Object.assign({}, state, {humanList: action.data});
 }
-reducerMap[actionTypes.CHANGE_TARGET_ORG] = function (state, action) {
-    return Object.assign({}, state, {targetUserList: []});
+
+reducerMap[actionTypes.SET_SEARCH_LOADING] = function (state, action) {
+    return Object.assign({}, state, { showLoading: action.payload });
 }
+
 export default handleActions(reducerMap, initState);

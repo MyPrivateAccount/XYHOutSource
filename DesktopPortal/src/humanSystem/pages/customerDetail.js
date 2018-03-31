@@ -1,5 +1,5 @@
 import {connect} from 'react-redux';
-import {openAdjustCustomer, getDicParList, closeCustomerDetail, getCustomerAllPhone} from '../actions/actionCreator';
+import { getDicParList, closeCustomerDetail, getCustomerAllPhone} from '../actions/actionCreator';
 import React, {Component} from 'react';
 import {Button, Row, Col, Icon, Tag, Dropdown, Menu, Modal} from 'antd';
 import AdjustCustomer from './dialog/adjustCustomer';
@@ -32,7 +32,6 @@ class CustomerDetail extends Component {
         // window.location.href = "#" + e.target.value;//FOLLOWUP_TYPE
     }
     handleAdjustCustomer = (e) => {
-        this.props.dispatch(openAdjustCustomer());
     }
     //获取字典值
     getDicKey(dicSource, key) {

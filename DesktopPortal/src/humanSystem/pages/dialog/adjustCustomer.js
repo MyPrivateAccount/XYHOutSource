@@ -1,5 +1,5 @@
 import {connect} from 'react-redux';
-import {closeAdjustCustomer, getUserByOrg, adjustCustomer, setLoadingVisible} from '../../actions/actionCreator';
+import {getUserByOrg, setLoadingVisible} from '../../actions/actionCreator';
 import React, {Component} from 'react'
 import {Row, Col, Modal, Select, TreeSelect, Form, Table} from 'antd';
 
@@ -56,12 +56,11 @@ class AdjustCustomer extends Component {
                 };
                 // console.log("调客请求requestInfo:", requestInfo);
                 this.props.dispatch(setLoadingVisible(true));
-                this.props.dispatch(adjustCustomer(requestInfo));
             }
         });
     }
     handleCancel = () => {
-        this.props.dispatch(closeAdjustCustomer());
+        //this.props.dispatch(closeAdjustCustomer());
     }
 
     handleOrgChange = (e, label, extra) => {
