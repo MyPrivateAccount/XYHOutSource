@@ -61,8 +61,8 @@ class BasicInfo extends Component {
                         </Col>
                         <Col span={4}>
                             {
-                               // [1, 8].includes(this.props.basicInfo.examineStatus) ? null : <Button type="primary" shape="circle" icon="edit" onClick={this.handleEdit} />
-                                <Button type="primary" shape="circle" icon="edit" onClick={this.handleEdit} />
+                               [1, 8].includes(basicInfo.examineStatus) ? null : <Button type="primary" shape="circle" icon="edit" onClick={this.handleEdit} />
+                                //<Button type="primary" shape="circle" icon="edit" onClick={this.handleEdit} />
                             }
                         </Col>
                     </Row>
@@ -121,11 +121,12 @@ class BasicInfo extends Component {
                     </Row>
                     */}
                     <Row className='viewRow'>
-                        <Col span={12}>是否作废:{(basicInfo.discard && basicInfo.discard === '1') ? "是" : "否"}</Col>
+                        {/* <Col span={12}>是否作废:{(basicInfo.discard && basicInfo.discard === '1') ? "是" : "否"}</Col> */}
+                        <Col span={12}>归属部门:{basicInfo.organizete}</Col>
                         <Col span={12} onClick={this.handleViewHistory} style={{color:'blue'}} title="点击获取更改记录">更改记录</Col>
                     </Row>
                     <Row className='viewRow'>
-                        <Col span={12}>归属部门:{basicInfo.organizete}</Col>
+                        
                         <Col span={12}>备注:{basicInfo.remark}</Col>   
                     </Row>
                     {/* <Row className='viewRow'>

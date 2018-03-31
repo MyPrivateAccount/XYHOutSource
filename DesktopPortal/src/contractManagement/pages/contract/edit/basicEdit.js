@@ -422,7 +422,7 @@ class BasicEdit extends Component {
                     </Col>
             </Row>
             <Row type="flex" style={{marginTop:"25px"}}>
-                {
+                {/* {
                     basicOperType === 'edit' ? 
                     <Col span={12}>
                         <FormItem {...formItemLayout} label={<span>是否作废</span>}>
@@ -440,7 +440,7 @@ class BasicEdit extends Component {
                         </FormItem>
                     </Col>
                     : null
-                }
+                } */}
                 <Col span={12}>
                     <FormItem {...formItemLayout} label={<span>备注</span>}>
                         {getFieldDecorator('remark', {

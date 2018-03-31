@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { getDicParList, saveContractBasic, viewContractBasic,basicLoadingStart, openContractChoose } from '../../../actions/actionCreator';
+import { getDicParList, saveContractBasic, viewContractBasic,basicLoadingStart, openContractChoose,contractComplementSave } from '../../../actions/actionCreator';
 import React, { Component } from 'react';
 import { Icon, Input, InputNumber, Button, Checkbox, Row, Col, Form, DatePicker, Select, Cascader,Radio } from 'antd';
 import moment from 'moment';
@@ -45,9 +45,21 @@ class ComplementEdit extends Component {
     handleSave = (e) => {
         e.preventDefault();
         let { basicOperType } = this.props.operInfo;
+        let contractId = this.props.basicInfo.id;
+        let method = this.props.complementOperType === "add" ? 'post' : 'put';
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                
+                //console.log("handleSave:", values);
+                let newComplementInfo = [];
+                newComplementInfo = values.keys.map((item, i) =>{
+                    let complementInfo = {};
+                    console.log('item', item);
+                    complementInfo.contentID = item;
+                    complementInfo.contentInfo = values[item];
+                    return complementInfo;
+                })
+                console.log("newComplementInfo:", newComplementInfo);
+                //this.props.dispatch(contractComplementSave({entity: newComplementInfo, method: method, id:contractId}));
                 //console.log("handleSave:", values);
                 // this.setState({ loadingState: true });
                 
@@ -193,6 +205,7 @@ function mapStateToProps(state) {
         contractChooseVisible: state.contractData.contractChooseVisible,
         complementInfo: state.contractData.contractInfo.complementInfo,
         curFollowContract: state.contractData.curFollowContract,
+        complementOperType: state.contractData.operInfo.complementOperType,
     }
   }
   

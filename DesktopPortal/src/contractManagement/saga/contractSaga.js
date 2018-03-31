@@ -48,6 +48,38 @@ export function* saveContractBasicAsync(state) {
     });
 }
 
+export function* saveContractComplementAsync(state) {
+    console.log('state.payload.entity:', state.payload.entity);
+    let result = { isOk: false, msg: '合同补充信息提交失败！' };
+    let method = state.payload.method;
+    let url = method === 'POST' ?  WebApiConfig.complement.saveComplement + state.payload.id : WebApiConfig.complement.modifyComplemet;
+     
+    let body = state.payload.entity;
+
+    try {
+        console.log(`合同补充信息提交url:${url},baseInfo:${JSON.stringify(body)}`);
+        const saveResult = yield call(ApiClient.post, url, body, null, "POST");
+        getApiResult(saveResult, result);
+         console.log("保存结果", result);
+        if (result.isOk) {
+            result.msg = "合同补充信息提交成功";
+           // yield put({ type: actionUtils.getActionType(actionTypes.CONTRACT_BASIC_VIEW), payload: {baseInfo: result.extension || baseInfo} });
+            
+            yield put({ type: actionUtils.getActionType(actionTypes.CLOSE_COMPLEMENT)});
+        }
+        //yield put(actionUtils.action(basicLoadingEnd));
+    } catch (e) {
+        result.msg = "合同补充信息提交接口调用异常!";
+
+        //yield put(actionUtils.action(basicLoadingEnd));
+    }
+    
+    notification[result.isOk ? 'success' : 'error']({
+        message: result.msg,
+        duration: 3
+    });
+}
+
 //获取合同详情
 export function* gotoThisContract(action) {
 

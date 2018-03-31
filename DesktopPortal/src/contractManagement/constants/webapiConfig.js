@@ -35,6 +35,8 @@ const WebApiConfig = {
     },
     complement:{
         GetComplement: basicDataBaseApiUrl + "",
+        saveComplement: basicDataBaseApiUrl + "addcomplement/",
+        modifyComplemet: basicDataBaseApiUrl + "",
     },
     attach: {
         GetAttachInfo: basicDataBaseApiUrl + "contractfiles/GetFileListByContractId/",

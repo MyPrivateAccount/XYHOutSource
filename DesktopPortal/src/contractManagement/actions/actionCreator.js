@@ -90,7 +90,7 @@ export const openComplementStart = createAction(actionTypes.OPEN_COMPLEMENT_STAR
 export const openComplementFinish = createAction(actionTypes.OPEN_COMPLEMENT_FINISH);
 export const closeComplement = createAction(actionTypes.CLOSE_COMPLEMENT);
 export const contractComplementEdit = createAction(actionTypes.CONTRACT_COMPLEMENT_EDIT);
-
+export const contractComplementSave = createAction(actionTypes.CONTRACT_COMPLEMENT_SAVE);
 
 
 
