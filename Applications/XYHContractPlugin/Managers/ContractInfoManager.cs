@@ -75,6 +75,16 @@ namespace XYHContractPlugin.Managers
             bool ret= false;
             if (buildingBaseInfoRequest != null && buildingBaseInfoRequest.Count > 0)
             {
+                foreach (var itm in buildingBaseInfoRequest)
+                {
+                    if (string.IsNullOrEmpty(itm.ID))
+                    {
+                        itm.ID = Guid.NewGuid().ToString();
+                    }
+
+                    itm.ContractID = strcontractid;
+                }
+
                 ret = await Store.CreateAsync(_mapper.Map<SimpleUser>(userinfo), _mapper.Map<List<ComplementInfo>>(buildingBaseInfoRequest), cancellationToken);
             }
 
