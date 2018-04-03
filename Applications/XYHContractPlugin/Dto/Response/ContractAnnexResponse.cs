@@ -15,5 +15,7 @@ namespace XYHContractPlugin.Dto.Response
         public DateTime? CreateTime { get; set; }
         public string UpdateUser { get; set; }
         public DateTime? UpdateTime { get; set; }
+        public int ExamineStatus { get; set; }
+        public string CurrentModify { get; set; }
     }
 }

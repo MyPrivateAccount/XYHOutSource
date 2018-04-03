@@ -13,6 +13,8 @@ namespace XYHContractPlugin.Models
         public string ID { get; set; }
         [MaxLength(127)]
         public string ContractID { get; set; }
+        [MaxLength(127)]
+        public string CurrentModify { get; set; }
         public int? ContentID { get; set; }
         [MaxLength(255)]
         public string ContentInfo { get; set; }
@@ -27,6 +29,8 @@ namespace XYHContractPlugin.Models
         public string ContractID { get; set; }
         [MaxLength(127)]
         public string FileGuid { get; set; }
+        [MaxLength(127)]
+        public string CurrentModify { get; set; }
         [MaxLength(255)]
         public string From { get; set; }
         [MaxLength(255)]

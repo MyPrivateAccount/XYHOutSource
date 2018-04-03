@@ -33,10 +33,12 @@ namespace XYHContractPlugin.Managers
 
         public FileScopeManager(
         IContractFileScopeStore contractFileScopeStore,
+        IContractInfoStore contractInfoStore,
         IFileInfoStore fileInfoStore,
         IMapper mapper)
         {
             _contractFileScopeStore = contractFileScopeStore ?? throw new ArgumentNullException(nameof(contractFileScopeStore));      
+            _contractInfoStore = contractInfoStore ?? throw new ArgumentNullException(nameof(contractFileScopeStore));
             _fileInfoStore = fileInfoStore ?? throw new ArgumentNullException(nameof(fileInfoStore));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
            
@@ -44,12 +46,13 @@ namespace XYHContractPlugin.Managers
 
 
         protected IContractFileScopeStore _contractFileScopeStore { get; }
+        protected readonly IContractInfoStore _contractInfoStore;
   
         protected IFileInfoStore _fileInfoStore { get; }
         protected IMapper _mapper { get; }
     
 
-        public virtual async Task CreateAsync(UserInfo user, string source, string contractId, FileInfoRequest fileInfoRequest, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual async Task CreateAsync(UserInfo user, string source, string contractId, string modifyId,  string checktype, FileInfoRequest fileInfoRequest, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (fileInfoRequest == null)
             {
@@ -59,13 +62,14 @@ namespace XYHContractPlugin.Managers
             var contractfile = _mapper.Map<AnnexInfo>(fileInfoRequest);
             contractfile.IsDeleted = false;
             contractfile.ContractID = contractId;
+            contractfile.CurrentModify = modifyId;
             if (contractfile.ID == null)
             {
                 contractfile.ID = Guid.NewGuid().ToString();
             }
 
             await _contractFileScopeStore.SaveAsync(_mapper.Map<SimpleUser>(user), contractId, new List<AnnexInfo>() { contractfile }, cancellationToken);
-
+            await _contractInfoStore.CreateModifyAsync(_mapper.Map<SimpleUser>(user), contractId, modifyId, ContractInfoManager.AddAnnexContract, checktype, ExamineStatusEnum.Auditing, false);
         }
         public virtual async Task DeleteContractFileListAsync(string userId, string contractId, List<string> fileGuids, CancellationToken cancellationToken = default(CancellationToken))
         {

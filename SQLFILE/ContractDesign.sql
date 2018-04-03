@@ -53,6 +53,7 @@ CREATE TABLE `XYH_DT_CONTRACTANNEX` (
   `ID` varchar(127) NOT NULL DEFAULT '',
   `ContractID` varchar(127) NOT NULL DEFAULT '',
   `FileGuid` varchar(127) NOT NULL,
+  `CurrentModify` varchar(127) NOT NULL DEFAULT '',
   `From` varchar(255) DEFAULT NULL,
   `Group` varchar(255) DEFAULT NULL,
   `CreateUser` varchar(127) DEFAULT NULL,
@@ -97,6 +98,7 @@ DROP TABLE IF EXISTS `XYH_DT_CONTRACTCOMPLEMENT`;/*不明，未继续*/
 CREATE TABLE `XYH_DT_CONTRACTCOMPLEMENT` (
   `ID` varchar(127) NOT NULL DEFAULT '',
   `ContractID` varchar(127) NOT NULL DEFAULT '',
+  `CurrentModify` varchar(127) NOT NULL DEFAULT '',
   `ContentID` int(11) NOT NULL,
   `ContentInfo` varchar(255) DEFAULT '',
   PRIMARY KEY (`ID`)

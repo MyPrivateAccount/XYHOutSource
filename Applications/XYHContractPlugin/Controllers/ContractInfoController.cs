@@ -18,6 +18,8 @@ using ContractContentInfoRequest = XYHContractPlugin.Dto.Response.ContractConten
 using ContractAnnexInfoRequest = XYHContractPlugin.Dto.Response.ContractAnnexResponse;
 using ContractComplementRequest = XYHContractPlugin.Dto.Response.ContractComplementResponse;
 using AspNet.Security.OAuth.Validation;
+using XYHContractPlugin.Models;
+using System.Linq;
 
 namespace XYHContractPlugin.Controllers
 {
@@ -28,10 +30,12 @@ namespace XYHContractPlugin.Controllers
     {
         private readonly ILogger Logger = LoggerManager.GetLogger("Contractinfo");
         private readonly ContractInfoManager _contractInfoManager;
+        private readonly FileScopeManager _fileScopeManager;
         private readonly RestClient _restClient;
 
-        public ContractInfoController(ContractInfoManager contractManager, RestClient rsc)
+        public ContractInfoController(ContractInfoManager contractManager, FileScopeManager fim, RestClient rsc)
         {
+            _fileScopeManager = fim;
             _contractInfoManager = contractManager;
             _restClient = rsc;
         }
@@ -92,6 +96,24 @@ namespace XYHContractPlugin.Controllers
                     var resp = await _restClient.Get<ResponseMessage<string>>($"http://localhost:5000/api/user/{Response.Extension.BaseInfo.CreateUser}", null);
                     Response.Extension.BaseInfo.CreateUserName = resp.Extension;
                 }
+
+                List<FileInfo> fileInfos = new List<FileInfo>();
+                List<FileItemResponse> fileItems = new List<FileItemResponse>();
+                fileInfos = await _fileScopeManager.FindByContractIdAsync(user.Id, contractId);
+                if (fileInfos.Count() > 0)
+                {
+                    var f = fileInfos.Select(a => a.FileGuid).Distinct();
+                    foreach (var item in f)
+                    {
+                        var f1 = fileInfos.Where(a => a.Type != "Attachment" && a.FileGuid == item).ToList();
+                        if (f1?.Count > 0)
+                        {
+                            fileItems.Add(ConvertToFileItem(item, f1));
+                        }
+                    }
+
+                    Response.Extension.FileList = fileItems;
+                }
             }
             catch (Exception e)
             {
@@ -100,6 +122,37 @@ namespace XYHContractPlugin.Controllers
                 Logger.Error("error");
             }
             return Response;
+        }
+
+        private FileItemResponse ConvertToFileItem(string fileGuid, List<FileInfo> fl)
+        {
+            FileItemResponse fi = new FileItemResponse();
+            fi.FileGuid = fileGuid;
+            fi.Group = fl.FirstOrDefault()?.Group;
+            fi.Icon = fl.FirstOrDefault(x => x.Type == "ICON")?.Uri;
+            fi.Original = fl.FirstOrDefault(x => x.Type == "ORIGINAL")?.Uri;
+            fi.Medium = fl.FirstOrDefault(x => x.Type == "MEDIUM")?.Uri;
+            fi.Small = fl.FirstOrDefault(x => x.Type == "SMALL")?.Uri;
+
+            string fr = ApplicationCore.ApplicationContext.Current.FileServerRoot;
+            fr = (fr ?? "").TrimEnd('/');
+            if (!String.IsNullOrEmpty(fi.Icon))
+            {
+                fi.Icon = fr + "/" + fi.Icon.TrimStart('/');
+            }
+            if (!String.IsNullOrEmpty(fi.Original))
+            {
+                fi.Original = fr + "/" + fi.Original.TrimStart('/');
+            }
+            if (!String.IsNullOrEmpty(fi.Medium))
+            {
+                fi.Medium = fr + "/" + fi.Medium.TrimStart('/');
+            }
+            if (!String.IsNullOrEmpty(fi.Small))
+            {
+                fi.Small = fr + "/" + fi.Small.TrimStart('/');
+            }
+            return fi;
         }
 
         [HttpGet("allcontractinfo/{contractId}")]
@@ -269,7 +322,6 @@ namespace XYHContractPlugin.Controllers
             try
             {
                 string strModifyGuid = Guid.NewGuid().ToString();
-                string strCheckGuid = Guid.NewGuid().ToString();
 
                 GatewayInterface.Dto.ExamineSubmitRequest exarequest = new GatewayInterface.Dto.ExamineSubmitRequest();
                 exarequest.ContentId = contract;
@@ -300,7 +352,67 @@ namespace XYHContractPlugin.Controllers
                 }
 
                 //写发送成功后的表
-                response.Extension = await _contractInfoManager.AddComplementAsync(User, contract, strModifyGuid, strCheckGuid, request, HttpContext.RequestAborted);
+                response.Extension = await _contractInfoManager.AddComplementAsync(User, contract, strModifyGuid, "TEST", request, HttpContext.RequestAborted);
+                response.Message = "addcomplement ok";
+            }
+            catch (Exception e)
+            {
+                response.Code = ResponseCodeDefines.ServiceError;
+                response.Message = e.ToString();
+                Logger.Error($"用户{User?.UserName ?? ""}({User?.Id ?? ""})合同动态提交审核(UpdateRecordSubmit)报错：\r\n{e.ToString()},\r\n请求参数为：\r\n" + (request != null ? JsonHelper.ToJson(request) : ""));
+            }
+
+            return response;
+        }
+
+        [HttpPost("autocomplement/{contract}")]
+        [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
+        public async Task<ResponseMessage<bool>> AutoComplementContract(UserInfo User, [FromBody]List<ContractComplementRequest> request, [FromRoute]string contract)
+        {
+            Logger.Trace($"用户{User?.UserName ?? ""}({User?.Id ?? ""})添加补充协议基础信息(PutBuildingBaseInfo)：\r\n请求参数为：\r\n" + (request != null ? JsonHelper.ToJson(request) : ""));
+
+            var response = new ResponseMessage<bool>();
+            if (!ModelState.IsValid)
+            {
+                response.Code = ResponseCodeDefines.ModelStateInvalid;
+                response.Message = ModelState.GetAllErrors();
+                return response;
+            }
+
+            try
+            {
+                string strModifyGuid = Guid.NewGuid().ToString();
+
+                GatewayInterface.Dto.ExamineSubmitRequest exarequest = new GatewayInterface.Dto.ExamineSubmitRequest();
+                exarequest.ContentId = contract;
+                exarequest.ContentType = "ContractCommit";
+                exarequest.ContentName = "AddComplement";
+                exarequest.SubmitDefineId = strModifyGuid;
+                exarequest.Source = "";
+                exarequest.CallbackUrl = ApplicationContext.Current.UpdateExamineCallbackUrl;
+                exarequest.Action = "TEST";/* exarequest.ContentType*/;
+                exarequest.TaskName = $"{User.UserName}添加合同补充协议{exarequest.ContentName}的动态{exarequest.ContentType}";
+
+                GatewayInterface.Dto.UserInfo userinfo = new GatewayInterface.Dto.UserInfo()
+                {
+                    Id = User.Id,
+                    KeyWord = User.KeyWord,
+                    OrganizationId = User.OrganizationId,
+                    OrganizationName = User.OrganizationName,
+                    UserName = User.UserName
+                };
+
+                var examineInterface = ApplicationContext.Current.Provider.GetRequiredService<IExamineInterface>();
+                var reponse = await examineInterface.Submit(userinfo, exarequest);
+                if (reponse.Code != ResponseCodeDefines.SuccessCode)
+                {
+                    response.Code = ResponseCodeDefines.ServiceError;
+                    response.Message = "向审核中心发起审核请求失败：" + reponse.Message;
+                    return response;
+                }
+
+                //写发送成功后的表
+                response.Extension = await _contractInfoManager.AutoUpdateComplementAsync(User, contract, strModifyGuid, "TEST", request, HttpContext.RequestAborted);
                 response.Message = "addcomplement ok";
             }
             catch (Exception e)
@@ -330,7 +442,6 @@ namespace XYHContractPlugin.Controllers
             try
             {
                 string strModifyGuid = Guid.NewGuid().ToString();
-                string strCheckGuid = Guid.NewGuid().ToString();
 
                 GatewayInterface.Dto.ExamineSubmitRequest exarequest = new GatewayInterface.Dto.ExamineSubmitRequest();
                 exarequest.ContentId = contract;
@@ -361,7 +472,7 @@ namespace XYHContractPlugin.Controllers
                 }
 
                 //写发送成功后的表
-                response.Extension = await _contractInfoManager.ModifyComplementAsync(User, contract, strModifyGuid, strCheckGuid, request, HttpContext.RequestAborted);
+                response.Extension = await _contractInfoManager.ModifyComplementAsync(User, contract, strModifyGuid, "TEST", request, HttpContext.RequestAborted);
                 response.Message = "addcomplement ok";
             }
             catch (Exception e)

@@ -3,8 +3,10 @@ using ApplicationCore.Dto;
 using ApplicationCore.Filters;
 using AspNet.Security.OAuth.Validation;
 using AutoMapper;
+using GatewayInterface;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -20,7 +22,7 @@ using XYHContractPlugin.Models;
 
 namespace XYHContractPlugin.Controllers
 {
-    [Authorize(AuthenticationSchemes = OAuthValidationDefaults.AuthenticationScheme)]
+    //[Authorize(AuthenticationSchemes = OAuthValidationDefaults.AuthenticationScheme)]
     [Produces("application/json")]
     [Route("api/contractfiles")]
     public class ContractFileController : Controller
@@ -77,14 +79,45 @@ namespace XYHContractPlugin.Controllers
             {
                 try
                 {
-                    await _fileScopeManager.CreateAsync(user, dest, contractId, item, HttpContext.RequestAborted);
-
                     NameValueCollection nameValueCollection = new NameValueCollection();
                     nameValueCollection.Add("appToken", "app:nwf");
                     var nwf = CreateNwf(user, source, item);
                     Logger.Info("nwf协议：\r\n{0}", JsonHelper.ToJson(nwf));
                     string response2 = await _restClient.Post(ApplicationContext.Current.NWFUrl, nwf, "POST", nameValueCollection);
                     Logger.Info("返回：\r\n{0}", response2);
+
+                    string strModifyGuid = Guid.NewGuid().ToString();
+
+                    GatewayInterface.Dto.ExamineSubmitRequest exarequest = new GatewayInterface.Dto.ExamineSubmitRequest();
+                    exarequest.ContentId = contractId;
+                    exarequest.ContentType = "ContractCommit";
+                    exarequest.ContentName = "AddComplement";
+                    exarequest.SubmitDefineId = strModifyGuid;
+                    exarequest.Source = "";
+                    exarequest.CallbackUrl = ApplicationContext.Current.UpdateExamineCallbackUrl;
+                    exarequest.Action = "TEST";/* exarequest.ContentType*/;
+                    exarequest.TaskName = $"{user.UserName}添加合同附件{exarequest.ContentName}的动态{exarequest.ContentType}";
+
+                    GatewayInterface.Dto.UserInfo userinfo = new GatewayInterface.Dto.UserInfo()
+                    {
+                        Id = user.Id,
+                        KeyWord = user.KeyWord,
+                        OrganizationId = user.OrganizationId,
+                        OrganizationName = user.OrganizationName,
+                        UserName = user.UserName
+                    };
+
+                    var examineInterface = ApplicationContext.Current.Provider.GetRequiredService<IExamineInterface>();
+                    var reponse = await examineInterface.Submit(userinfo, exarequest);
+                    if (reponse.Code != ResponseCodeDefines.SuccessCode)
+                    {
+                        response.Code = ResponseCodeDefines.ServiceError;
+                        response.Message = "向审核中心发起审核请求失败：" + reponse.Message;
+                        return response;
+                    }
+
+                    await _fileScopeManager.CreateAsync(user, dest, contractId, strModifyGuid, "TEST", item, HttpContext.RequestAborted);
+
                     response.Message = response2;
                 }
                 catch (Exception e)
@@ -103,7 +136,7 @@ namespace XYHContractPlugin.Controllers
         /// <param name="userId"></param>
         /// <param name="fileInfoCallbackRequestList"></param>
         /// <returns></returns>
-        [HttpPost("callback")]
+        [HttpPost("files/callback")]
         //[TypeFilter(typeof(CheckPermission), Arguments = new object[] { "FileCallBack" })]
         public async Task<ResponseMessage> FileCallback(string userId, [FromBody] List<FileInfoCallbackRequest> fileInfoCallbackRequestList)
         {
@@ -248,7 +281,7 @@ namespace XYHContractPlugin.Controllers
 
             header.ExtraAttribute = new List<AttributeType>();
             header.ExtraAttribute.Add(new AttributeType() { Name = "UserID", Value = user.Id });
-            header.ExtraAttribute.Add(new AttributeType() { Name = "SubSystem", Value = "contract" });
+            header.ExtraAttribute.Add(new AttributeType() { Name = "SubSystem", Value = "contractfiles" });
             bodyinfo.Priority = 0;
             bodyinfo.TaskName = fileInfoRequest.Name;
             if (String.IsNullOrEmpty(bodyinfo.TaskName))
