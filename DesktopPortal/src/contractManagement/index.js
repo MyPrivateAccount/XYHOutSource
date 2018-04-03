@@ -57,13 +57,14 @@ class ContractManagementIndex extends Component {
     }
 
     handleMenuClick = (e) => {
-        // console.log("点击菜单:", e.key);
-        //if (e.key === this.state.activeMenu.menuID) return;
+        //console.log("点击菜单:", e.key);
+        if ((e.key === this.state.activeMenu.menuID) &&(this.props.navigator.length === 0) ) return;
         if (e.key === "menu_org_select") {//这个是展开组织结构的菜单后面可能会用到
             this.props.dispatch(openOrgSelect());
             return;
         }
         this.props.dispatch(changeContractMenu(e.key));
+
         for (let i in menuDefine) {
             if (menuDefine[i].menuID == e.key) {
                 this.setState({

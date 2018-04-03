@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { shopPicEdit, contractPicEdit } from '../../../actions/actionCreator';
+import { shopPicEdit, contractPicEdit,openAttachMentStart } from '../../../actions/actionCreator';
 import React, { Component } from 'react'
 import { Layout, Table, Button, Icon, Popconfirm, Tooltip, Col, Row, Modal, Upload ,Tabs } from 'antd'
 import '../edit/editCommon.less'
@@ -20,11 +20,11 @@ class AttachInfo extends Component {
     }
     componentDidMount() {
         let fileList = [];
-        console.log("进入info");
+    
         if (this.props.contractAttachInfo.fileList) {
-            this.getGroup(this.props.contractAttachInfo.fileList)
+            let curFileList = this.props.contractAttachInfo.fileList;//直接修改会改变state
+            this.getGroup(curFileList);
         }
-        console.log('fileList:', fileList);
         this.setState({ fileList: fileList });
         
         
@@ -32,15 +32,18 @@ class AttachInfo extends Component {
 
     componentWillReceiveProps(newProps) {
         let fileList = [];
-        console.log('newProps.contractAttachInfo.fileList:', newProps.contractAttachInfo.fileList);
+       // console.log('newProps.contractAttachInfo.fileList:', newProps.contractAttachInfo.fileList);
         if (newProps.contractAttachInfo.fileList) {
-            this.getGroup(newProps.contractAttachInfo.fileList)
+            let curFileList = newProps.contractAttachInfo.fileList;//直接修改会改变state
+            this.getGroup(curFileList);
+           
         }    
     }
 
 
     handleEdit = (e) => {
-        this.props.dispatch(contractPicEdit());//这里后续添加contractPicEdit()
+        this.props.dispatch(contractPicEdit());
+        this.props.dispatch(openAttachMentStart({id:3}));
     }
     handleCancel = () => this.setState({ previewVisible: false })
 
@@ -65,6 +68,7 @@ class AttachInfo extends Component {
                   })
               }
           })
+          //console.log("imgFiles:", list);
           this.setState({
               imgFiles: list
           })
@@ -172,7 +176,7 @@ class AttachInfo extends Component {
 }
 
 function mapStateToProps(state) {
-    // console.log(state.shop.shopsInfo.attachInfo, state.building.buildInfo.attachInfo, '图片展示列表' )
+    //console.log(state.contractData.contractInfo.attachInfo, '图片展示列表' )
     return {
         contractAttachInfo: state.contractData.contractInfo.attachInfo,
         basicData: state.basicData

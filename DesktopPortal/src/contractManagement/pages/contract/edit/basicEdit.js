@@ -107,7 +107,7 @@ class BasicEdit extends Component {
     render(){
 
         //console.log("this.props.contractChooseVisible:", this.props.contractChooseVisible);
-        console.log('this.props.curFollowContract:', this.props.curFollowContract);
+        //console.log('this.props.curFollowContract:', this.props.curFollowContract);
         let curFollowContract = this.props.curFollowContract || {};
         const { getFieldDecorator, getFieldsError, getFieldError, isFieldTouched } = this.props.form;
         //let contractTypes = '1';

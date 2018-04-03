@@ -22,7 +22,7 @@ class SearchResult extends Component {
     }
     
     componentWillReceiveProps(newProps) {
-        console.log("newProps.searchInfo.searchResul", newProps.searchInfo.searchResult);
+       /// console.log("newProps.searchInfo.searchResul", newProps.searchInfo.searchResult);
         let {pageIndex, pageSize, validityContractCount} = newProps.searchInfo.searchResult;
         console.log("validityContractCount:", validityContractCount);
         if (newProps.searchInfo.searchResult && pageIndex) {
@@ -304,6 +304,7 @@ class SearchResult extends Component {
         return (<span>{newText}</span>);
     }
     findKeyByValue = (dic, value) =>{
+  
         let key = '';
         dic.forEach(item => {
             if(item.value === value){
@@ -314,6 +315,7 @@ class SearchResult extends Component {
     }
     
     getNameByType = (curType) =>{
+
        return  (text, record) =>{
             if(curType === 'type'){
                 return this.findKeyByValue(this.props.basicData.contractCategories, text);
@@ -549,7 +551,7 @@ class SearchResult extends Component {
         buttonDef.map((button, i) =>{
             return this.hasPermission(button,i)&& button.buttonID != 'record' ? columns.children.push(this.getPermissonCol(button)) : null
         });
-        console.log('getOtherInfoColumns:', columns);
+        //console.log('getOtherInfoColumns:', columns);
         return columns;
     }
 
@@ -565,7 +567,7 @@ class SearchResult extends Component {
             columns.push(this.getExamineInfoColumns());
         }
         columns.push(this.getOtherInfoColumns());
-        console.log('columns:', columns);
+        //console.log('columns:', columns);
         return columns;
     }
 

@@ -11,7 +11,7 @@ class AttachMent extends Component{
         //console.log("attachPicOperType:", attachPicOperType);
         return(
             <div>
-                {attachPicOperType === 'add' ? <AttachEdit/> : <AttachInfo/>}
+                {attachPicOperType === 'view' ? <AttachInfo/> : <AttachEdit/>}
             </div>
         );
 

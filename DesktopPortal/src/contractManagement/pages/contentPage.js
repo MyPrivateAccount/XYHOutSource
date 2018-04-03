@@ -36,6 +36,7 @@ const LoadComplementPage = Loadable({
 
 function ContentPage(props) {
     const { curMenuID } = props;
+    console.log('curMenuID:', curMenuID);
     if (curMenuID == "menu_index") {
         return <LoadableIndexPage />;
     }

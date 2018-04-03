@@ -11,7 +11,7 @@ class Complement extends Component{
        
         return(
             <div>
-                {complementOperType === 'add' ? <ComplementEdit/> : <ComplementInfo/>}
+                {complementOperType === 'view'  ? <ComplementInfo/> : <ComplementEdit/> }
             </div>
         );
 

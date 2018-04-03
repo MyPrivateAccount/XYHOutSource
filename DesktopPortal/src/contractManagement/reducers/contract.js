@@ -142,15 +142,18 @@ reducerMap[actionTypes.CONTRACT_INFO_SUBMIT_FINISH] = function (state, action) {
 
 reducerMap[actionTypes.GOTO_THIS_CONTRACT_FINISH] = (state, action) => {
     console.log('action.payload.data', action.payload.data);
-    let contractInfo = { ...state.contractInfo };
-    let operInfo = { ...state.operInfo };
+    let contractInfo = {}; //{ ...state.contractInfo };
+    let operInfo = {};//{ ...state.operInfo };
     let res = action.payload.data
-
+    
     if (res.code === '0') {
-        contractInfo = res.extension;
-        contractInfo.baseInfo = contractInfo.baseInfo;
-        contractInfo.attachInfo = { fileList: contractInfo.fileList };
-        contractInfo.complementInfos = contractInfo.complementInfo;
+        let data = res.extension
+        contractInfo.baseInfo = data.baseInfo;
+        contractInfo.attachInfo = { fileList: data.fileList };
+        contractInfo.complementInfos = {complementInfo: data.complementInfo || []};
+        contractInfo.modifyInfo = data.modifyInfo || [];
+        delete contractInfo.complementInfo;
+        delete contractInfo.modifyinfo;
         operInfo = {
             basicOperType: 'view',
             attachPicOperType: 'view',
@@ -312,7 +315,7 @@ reducerMap[actionTypes.OPEN_COMPLEMENT_FINISH] = function(state, action){
 }
 
 
-//图片信息编辑  //此时的情况是应该已经拿到了当前的合同id
+
 reducerMap[actionTypes.CONTRACT_COMPLEMENT_EDIT] = (state, action) => {
     let contractInfo = { ...state.contractInfo };
     let operInfo = Object.assign({}, state.operInfo, { complementOperType: 'edit' });
@@ -331,8 +334,8 @@ reducerMap[actionTypes.BASIC_SUBMIT_END] = function(state, action){
             baseInfo:{},
             attachInfo:{},
             additionalInfo:{},
-            modifyInfo:{},
-            complementInfo:{},//补充协议
+            modifyInfo:[],
+            complementInfos:[],//补充协议
             discard:false,
             annexInfo:{},
     

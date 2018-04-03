@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { contractComplementEdit } from '../../../actions/actionCreator';
+import { contractComplementEdit,openComplementStart } from '../../../actions/actionCreator';
 import React, { Component } from 'react'
 import { Icon, Table, Button, Checkbox, Row, Col, Form } from 'antd'
 import moment from 'moment';
@@ -9,6 +9,7 @@ class ComplementInfo extends Component {
     handleEdit = (e) => {
         e.preventDefault();
         this.props.dispatch(contractComplementEdit());
+        this.props.dispatch(openComplementStart({id:2}));
     }
     render(){
         let complementInfo = this.props.complementInfo;
@@ -32,7 +33,7 @@ class ComplementInfo extends Component {
                            complementInfo.length === 0 ? <div style={{ marginLeft: '20px' }}>{'暂无信息'}</div> :
                            
                             complementInfo.map((item, i)=>{
-                                return <Col span={24}>补充内容{i}:{item.contentInfo}</Col>
+                                return <Col span={24} key= {i}>补充内容{i}:{item.contentInfo}</Col>
                             })
                             
                         }
@@ -50,7 +51,7 @@ function mapStateToProps(state) {
     return {
         contractInfo: state.contractData.contractInfo,
         basicData: state.basicData,
-        complementInfo: state.contractData.contractInfo.complementInfos,
+        complementInfo: state.contractData.contractInfo.complementInfos.complementInfo,
         
     }
 }
