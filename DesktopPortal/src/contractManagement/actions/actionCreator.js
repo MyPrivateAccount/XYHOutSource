@@ -6,6 +6,7 @@ export const getAreaList = createAction(actionTypes.DIC_GET_AREA);
 export const getOrgList = createAction(actionTypes.DIC_GET_ORG_LIST);
 export const getOrgDetail = createAction(actionTypes.DIC_GET_ORG_DETAIL);
 export const getUserByOrg = createAction(actionTypes.GET_ORG_USERLIST);
+export const getAllOrgList = createAction(actionTypes.DIC_GET_ALL_ORG_LIST);
 //设置遮罩层
 export const setLoadingVisible = createAction(actionTypes.SET_SEARCH_LOADING);
 //合同的录入

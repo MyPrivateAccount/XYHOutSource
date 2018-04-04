@@ -11,7 +11,8 @@ export const DIC_GET_ORG_DETAIL = 'DIC_GET_ORG_DETAIL';//获取部门详细数�
 export const DIC_GET_ORG_DETAIL_COMPLETE = 'DIC_GET_ORG_DETAIL_COMPLETE';
 export const GET_ORG_USERLIST = 'GET_ORG_USERLIST';//获取部门用户列表
 export const GET_ORG_USERLIST_COMPLETE = 'GET_ORG_USERLIST_COMPLETE';//获取部门用户列表
-
+export const DIC_GET_ALL_ORG_LIST = 'DIC_GET_ALL_ORG_LIST';
+export const DIC_GET_ALL_ORG_LIST_COMPLETE = 'DIC_GET_ALL_ORG_LIST_COMPLETE';
 
 
 //客户详情处理

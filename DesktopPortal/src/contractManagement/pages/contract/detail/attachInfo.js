@@ -116,8 +116,8 @@ class AttachInfo extends Component {
                             <Col span={4}>
                                 {
                                     // 下面的判断是因为在新增房源那里，1和8状态的楼盘都不可修改
-                                    //[1, 8].includes(this.props.buildInfo.examineStatus) ? null : <Button type="primary" shape="circle" icon="edit" onClick={this.handleEdit} />
-                                    <Button type="primary" shape="circle" icon="edit" onClick={this.handleEdit} />
+                                    [1, 8].includes(contractAttachInfo.examineStatus) ? null : <Button type="primary" shape="circle" icon="edit" onClick={this.handleEdit} />
+                                    //<Button type="primary" shape="circle" icon="edit" onClick={this.handleEdit} />
                             
                                 }
                             </Col>

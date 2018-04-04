@@ -122,7 +122,7 @@ class BasicEdit extends Component {
           labelCol: { span: 6 },
           wrapperCol: { span: 14 },
         };
-        //console.log('this.props.basicData.contractCategories:', this.props.basicData.contractCategories);
+        console.log('this.props.basicData.orgInfo.orgList:', this.props.basicData.orgInfo.orgList);
         return (
           <div>
           <Form layout="horizontal" style={{padding: '25px 0', marginTop: "25px"}}>

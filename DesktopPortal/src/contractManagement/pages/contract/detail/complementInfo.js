@@ -22,8 +22,8 @@ class ComplementInfo extends Component {
                         </Col>
                         <Col span={4}>
                             {
-                                //[1, 8].includes(this.props.buildInfo.examineStatus) ? null : <Button type="primary" shape="circle" icon="edit" onClick={this.handleEdit} />
-                                <Button type="primary" shape="circle" icon="edit" onClick={this.handleEdit} />
+                                [1, 8].includes(this.props.complementInfos.examineStatus) ? null : <Button type="primary" shape="circle" icon="edit" onClick={this.handleEdit} />
+                                //<Button type="primary" shape="circle" icon="edit" onClick={this.handleEdit} />
                             }
                         </Col>
                     </Row>
@@ -52,7 +52,7 @@ function mapStateToProps(state) {
         contractInfo: state.contractData.contractInfo,
         basicData: state.basicData,
         complementInfo: state.contractData.contractInfo.complementInfos.complementInfo,
-        
+        complementInfos:state.contractData.contractInfo.complementInfos,
     }
 }
 

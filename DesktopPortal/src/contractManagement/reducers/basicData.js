@@ -9,6 +9,14 @@ const initState = {
     commissionCatogories:[],
     contractProjectCatogories:[],
     settleAccountsCatogories:[],
+    orgInfo: {orgList: [], levelCount: 0},
+    permissionOrgTree:{
+        searchOrgTree:[],
+        setContractOrgTree:[],
+        levelCount: 0,
+    },
+
+
 
     saleStatus: [],
     saleModel: [],
@@ -21,7 +29,7 @@ const initState = {
     invalidResions: [],//失效原因
     followUpTypes: [],//跟进方式
     areaList: [],
-    orgInfo: {orgList: [], levelCount: 0},
+    
     userList: [],//部门用户
     sourceUserList: [],//调客业务员
     targetUserList: [],//收客业务员
@@ -198,6 +206,89 @@ reducerMap[actionTypes.GET_ORG_USERLIST_COMPLETE] = function (state, action) {
         userList = action.payload.extension || [];
     }
     return Object.assign({}, state, {userList: userList, targetUserList: targetUserList, sourceUserList: sourceUserList});
+}
+
+reducerMap[actionTypes.DIC_GET_ALL_ORG_LIST_COMPLETE] = function(state, action){
+    let type = action.payload.type;
+
+    let searchOrgTree = state.permissionOrgTree.searchOrgTree;
+    let setContractOrgTree = state.permissionOrgTree.setContractOrgTree;
+    let formatNodeList = [];
+    for (var i in action.payload.extension) {
+        var node = action.payload.extension[i];
+        var orgNode = {key: node.id, value: node.id, children: [], Original: node};
+        orgNode.name = node.organizationName;
+        orgNode.label = node.organizationName;
+        orgNode.id = node.id;
+        orgNode.organizationName = node.organizationName;
+        orgNode.parentID = node.parentID;
+
+        formatNodeList.push(orgNode);
+    }
+    let orgTreeSource = [];//顶层节点
+    let curPeakNode = {}
+    formatNodeList.map(node => {
+        let parentID = node.Original.parentId;
+        let result = formatNodeList.filter(n => n.key === parentID);
+        if (result.length == 0) {//找不到父级的部门为顶级部门
+            orgTreeSource.push(node);
+            curPeakNode = node;
+        }
+    });
+    
+    orgTreeSource.map(node => {
+        getAllChildrenNode(node, node.key, formatNodeList)
+    });
+    
+    let levelCount = 0;
+    if(type === 'ContractSearchOrg'){
+        console.log("orgTreeSource:", orgTreeSource);
+        searchOrgTree = orgTreeSource;
+        let tempTree = orgTreeSource.concat();
+        let info = formatOrgData2(tempTree, curPeakNode.parentID, 0);
+        console.log("orgTreeSource2:", orgTreeSource);
+        levelCount = info.levelCount;
+      
+    }else if(type === 'ContractSetOrg'){
+        setContractOrgTree = orgTreeSource;
+        levelCount = state.permissionOrgTree.levelCount;
+    }
+    return Object.assign({}, state, {permissionOrgTree: {searchOrgTree: searchOrgTree, setContractOrgTree: setContractOrgTree, levelCount: levelCount}});
+
+}
+
+function formatOrgData2(originalData, parentId, levelCount) {
+    let curLevelOrgs = [];
+    let level = levelCount;
+    if (originalData) {
+        curLevelOrgs = originalData.filter(o => o.parentId === parentId);
+        // console.log(curLevelOrgs, '00')
+        if (curLevelOrgs.length > 0) {
+            level++;
+            let levels = [];
+            curLevelOrgs.map(o => {
+                let result = formatOrgData2(originalData, o.id, level);
+                //o.children = result.orgList;
+                levels.push(result.levelCount);
+            })
+            // console.log(curLevelOrgs, '12')
+            level = Math.max.apply(null, levels);
+        }
+    }
+    return {levelCount:level};
+}
+
+
+function getAllChildrenNode(node, parentId, formatNodeLit) {
+    let nodeList = formatNodeLit.filter(n => n.Original.parentId === parentId);
+    if (nodeList.length === 0) {
+        return [];
+    }
+    nodeList.map(n => {
+        n.children = getAllChildrenNode(n, n.key, formatNodeLit);
+    });
+    node.children = nodeList;
+    return nodeList;
 }
 
 function formatOrgData(originalData, parentId, levelCount) {

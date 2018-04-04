@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {contractInfoGroup} from '../constants/commonDefine';
 import { Layout, Table, Button, Checkbox, Radio, Row, Col, Icon, Anchor, BackTop, Modal, notification } from 'antd'
-import { getDicParList, openContractRecord,submitContractInfo,changeContractMenu } from '../actions/actionCreator';
+import { getDicParList, openContractRecord,submitContractInfo, getAllOrgList,changeContractMenu } from '../actions/actionCreator';
 import { isEmptyObject } from '../../utils/utils'
 import './contract/edit/contract.less';
 import BasicEdit from './contract/edit/basicEdit';
@@ -19,7 +19,7 @@ class ContractRecord extends Component{
         isAttachNeedSubmit:true,
     }
     componentWillMount(){
-    
+       // this.props.dispatch(getOrgList(userInfo.Organization));
 
       }
     

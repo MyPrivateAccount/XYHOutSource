@@ -71,6 +71,7 @@ class ComplementEdit extends Component {
         });
     }
     handleDelete = (k)=>{
+        console.log("k:", k);
         let that = this;
         let isExist = false;
         if(this.props.complementOperType !== 'add')

@@ -135,7 +135,7 @@ export function* openAttachUpload(action){
             }
          }
         
-        yield put(actionUtils.action(openAttachMentFinish, {baseInfo: res.data.extension.baseInfo, fileList:fileList, code: '0'}));
+        yield put(actionUtils.action(openAttachMentFinish, {baseInfo: res.data.extension.baseInfo, fileList:fileList,annexInfo: res.data.extension.annexInfo || [], code: '0'}));
         yield put({ type: actionUtils.getActionType(actionTypes.OPEN_ATTACHMENT_START), payload: {id:3}});
          
     } catch (e) {

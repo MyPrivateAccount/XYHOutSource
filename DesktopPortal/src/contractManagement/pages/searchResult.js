@@ -248,6 +248,13 @@ class SearchResult extends Component {
                 value = this.findKeyByValue(this.props.basicData.firstPartyCatogories, value);
             }else if(key === 'commisionType'){
                 value = this.findKeyByValue(this.props.basicData.commissionCatogories, value);
+            }else if(key === 'startTime' || key === 'endTime'){
+                let newText = value;
+                if (value) {
+                    newText = moment(value).format('YYYY-MM-DD');
+                }
+                
+                value = newText;
             }
         }
         obj = Object.assign({}, {v:value,position: pos.substr(0, 1) + (num+1)}) ;  
@@ -297,10 +304,12 @@ class SearchResult extends Component {
         this.props.dispatch(gotoThisContract({'record':record}));
     }
     dateTimeRender = (text, record) => {
+        
         let newText = text;
         if (text) {
             newText = moment(text).format('YYYY-MM-DD');
         }
+        
         return (<span>{newText}</span>);
     }
     findKeyByValue = (dic, value) =>{
