@@ -414,7 +414,7 @@ class BasicEdit extends Component {
                                         initialValue:  departMentInit,//basicInfo.relation ? basicInfo.relation.split('*') : [],//["1", "1385f04d-3ac8-49c6-a310-fe759814a685", "120"],//basicInfo.organizete ? basicInfo.organizete.split('-') : [],
                                         rules:[{required:true, message:'请选择归属部门!'}]
                                         })(
-                                            <Cascader options={this.props.basicData.orgInfo.orgList} displayRender={this.displayRender} onChange={this.handleChooseDepartmentChange } changeOnSelect placeholder="归属部门"/>
+                                            <Cascader options={this.props.setContractOrgTree} displayRender={this.displayRender} onChange={this.handleChooseDepartmentChange } changeOnSelect placeholder="归属部门"/>
                                         )
                                         
                         }
@@ -518,6 +518,7 @@ function mapStateToProps(state) {
         contractChooseVisible: state.contractData.contractChooseVisible,
         complementInfo: state.contractData.contractInfo.complementInfo,
         curFollowContract: state.contractData.curFollowContract,
+        setContractOrgTree: state.basicData.permissionOrgTree.setContractOrgTree,
     }
   }
   

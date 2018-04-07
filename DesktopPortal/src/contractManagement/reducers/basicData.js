@@ -213,6 +213,7 @@ reducerMap[actionTypes.DIC_GET_ALL_ORG_LIST_COMPLETE] = function(state, action){
 
     let searchOrgTree = state.permissionOrgTree.searchOrgTree;
     let setContractOrgTree = state.permissionOrgTree.setContractOrgTree;
+    let arrOrg = action.payload.extension;
     let formatNodeList = [];
     for (var i in action.payload.extension) {
         var node = action.payload.extension[i];
@@ -221,7 +222,7 @@ reducerMap[actionTypes.DIC_GET_ALL_ORG_LIST_COMPLETE] = function(state, action){
         orgNode.label = node.organizationName;
         orgNode.id = node.id;
         orgNode.organizationName = node.organizationName;
-        orgNode.parentID = node.parentID;
+        orgNode.parentId = node.parentId;
 
         formatNodeList.push(orgNode);
     }
@@ -241,12 +242,13 @@ reducerMap[actionTypes.DIC_GET_ALL_ORG_LIST_COMPLETE] = function(state, action){
     });
     
     let levelCount = 0;
+
     if(type === 'ContractSearchOrg'){
-        console.log("orgTreeSource:", orgTreeSource);
+
         searchOrgTree = orgTreeSource;
         let tempTree = orgTreeSource.concat();
-        let info = formatOrgData2(tempTree, curPeakNode.parentID, 0);
-        console.log("orgTreeSource2:", orgTreeSource);
+        let info = formatOrgData(arrOrg, curPeakNode.parentId, 0);
+    
         levelCount = info.levelCount;
       
     }else if(type === 'ContractSetOrg'){
@@ -257,26 +259,6 @@ reducerMap[actionTypes.DIC_GET_ALL_ORG_LIST_COMPLETE] = function(state, action){
 
 }
 
-function formatOrgData2(originalData, parentId, levelCount) {
-    let curLevelOrgs = [];
-    let level = levelCount;
-    if (originalData) {
-        curLevelOrgs = originalData.filter(o => o.parentId === parentId);
-        // console.log(curLevelOrgs, '00')
-        if (curLevelOrgs.length > 0) {
-            level++;
-            let levels = [];
-            curLevelOrgs.map(o => {
-                let result = formatOrgData2(originalData, o.id, level);
-                //o.children = result.orgList;
-                levels.push(result.levelCount);
-            })
-            // console.log(curLevelOrgs, '12')
-            level = Math.max.apply(null, levels);
-        }
-    }
-    return {levelCount:level};
-}
 
 
 function getAllChildrenNode(node, parentId, formatNodeLit) {

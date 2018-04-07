@@ -28,12 +28,28 @@ class SearchBox extends Component{
     }
     handleSearch = () =>{
         let activeMenu = (this.props.searchInfo || {}).activeMenu;
+        let navigator = (this.props.searchInfo || {}).navigator || [];
+
         let condition = {...this.props.condition};
-    
+
         condition.keyWord = this.props.searchInfo.searchKeyWord;
         if (this.props.searchInfo.activeOrg.id !== "0") {
             condition.organizate = this.props.searchInfo.activeOrg.id;
         }
+       // let userInfo = this.props.oidc.user.profile;
+        console.log('navigator:', navigator);
+        if(navigator.length !== 0){//对于子页单独处理
+            
+            let setContractOrgTree = this.props.setContractOrgTree || [];
+            if(setContractOrgTree.length > 0){
+                condition.organizate = setContractOrgTree[0].id;
+            }
+        }else{
+            if (this.props.searchInfo.activeOrg.id !== "0") {
+                condition.organizate = this.props.searchInfo.activeOrg.id;
+            }
+        }
+
         //condition.searchSourceType = getSearchType(activeMenu);
         //condition.searchType = this.state.searchType;
         // console.log("格式化前的搜索条件:", condition);
@@ -53,7 +69,7 @@ class SearchBox extends Component{
                 <div className="searchBox">
                     <Row type="flex">
                         <Col span={12}>
-                            <Input placeholder={this.state.searchType === '1' ? '请输入合同编号或者名称': ''} 
+                            <Input placeholder={this.state.searchType === '1' ? '请输入合同名称': ''} 
                             value = {keyword} onChange = {this.handleKeyChangeWord}/> 
                         </Col>
                         <Col span={8}>
@@ -100,7 +116,9 @@ export function formatSearchCondition(condition) {
 }
 function mapStateToProps(state) {
     return {
-        searchInfo: state.search
+        searchInfo: state.search,
+         oidc: state.oidc,
+         setContractOrgTree:state.basicData.permissionOrgTree.setContractOrgTree,
     }
 }
 

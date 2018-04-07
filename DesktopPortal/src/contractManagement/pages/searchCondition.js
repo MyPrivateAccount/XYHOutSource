@@ -236,6 +236,7 @@ function mapStateToProps(state) {
         basicData: state.basicData,
         activeMenu: state.search.activeMenu,
         user: (state.oidc.user || {}).profile || {},
+
     }
 }
 

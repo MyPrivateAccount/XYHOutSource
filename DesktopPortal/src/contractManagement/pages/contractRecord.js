@@ -19,7 +19,7 @@ class ContractRecord extends Component{
         isAttachNeedSubmit:true,
     }
     componentWillMount(){
-       // this.props.dispatch(getOrgList(userInfo.Organization));
+        this.props.dispatch(getAllOrgList('ContractSetOrg'));
 
       }
     
@@ -186,6 +186,7 @@ function mapStateToProps(state){
         contractDisplay:state.contractData.contractInfo.contractDisplay,
         attachInfo:state.contractData.contractInfo.complementInfo,
         basicInfo: state.contractData.contractInfo.baseInfo,
+        
     }
     
 }

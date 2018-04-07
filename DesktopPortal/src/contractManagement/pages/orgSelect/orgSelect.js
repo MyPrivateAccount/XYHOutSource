@@ -51,8 +51,10 @@ class OrgSelect extends Component {
     render() {
         const orgList = this.props.permissionOrgTree.searchOrgTree;
         const levelsCount = this.props.permissionOrgTree.levelCount;
+        let level = this.props.orgInfo.levelCount;
         let span = Math.round(24 / levelsCount);
-        console.log("部门选择:", orgList, span);
+        console.log("部门选择:", orgList, Math.round( 24 / level));
+        console.log("部门选择2", this.props.orgInfo.orgList, span);
         return (
             <div style={itemStyle.itemBorder}>
                 <Row style={itemStyle.autoHeight}>
