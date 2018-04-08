@@ -105,6 +105,18 @@ export const closeOrgSelect = createAction(actionTypes.CLOSE_ORG_SELECT);
 export const changeActiveOrg = createAction(actionTypes.CHAGNE_ACTIVE_ORG);
 
 
+//临时更改设置当前用户的部门id为当前选择orgid
+export const setInitActiveOrg = createAction(actionTypes.SET_INIT_ACTIVEORG);
+
+
+
+
+
+
+
+
+
+
 
 //调客处理
 export const openAdjustCustomer = createAction(actionTypes.OPEN_ADJUST_CUSTOMER);

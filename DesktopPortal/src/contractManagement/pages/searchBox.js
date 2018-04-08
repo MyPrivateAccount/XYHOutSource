@@ -16,6 +16,9 @@ class SearchBox extends Component{
         }
     }
 
+    componentDidMount(){
+
+    }
     componentWillReceiveProps(newProps){
         //更新某些属性
     }
@@ -38,6 +41,7 @@ class SearchBox extends Component{
         }
        // let userInfo = this.props.oidc.user.profile;
         console.log('navigator:', navigator);
+        console.log('activeOrg:',this.props.searchInfo.activeOrg);
         if(navigator.length !== 0){//对于子页单独处理
             
             let setContractOrgTree = this.props.setContractOrgTree || [];
@@ -53,7 +57,7 @@ class SearchBox extends Component{
         //condition.searchSourceType = getSearchType(activeMenu);
         //condition.searchType = this.state.searchType;
         // console.log("格式化前的搜索条件:", condition);
-        let standardCondition = formatSearchCondition(condition);
+        let standardCondition = condition;//formatSearchCondition(condition);
         console.log("最终搜索条件:", standardCondition);
         this.props.dispatch(saveSearchCondition(standardCondition));//每次搜索时保存便于在此基础上更新
         this.props.dispatch(setLoadingVisible(true));

@@ -87,7 +87,8 @@ export const CONTRACT_FILE_VIEW = 'CONTRACT_PICTURE_VIEW';
 export const LOADING_START_BASIC = 'LOADING_START_BASIC';
 export const LOADING_END_BASIC = 'LOADING_END_BASIC';
 
-
+//临时更改设置当前用户的部门id为当前选择orgid
+export const SET_INIT_ACTIVEORG = 'SET_INIT_ACTIVEORG';
 
 
 //遮罩层
