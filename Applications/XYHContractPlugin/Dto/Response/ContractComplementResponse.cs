@@ -10,5 +10,7 @@ namespace XYHContractPlugin.Dto.Response
         public string ContractID { get; set; }
         public int? ContentID { get; set; }
         public string ContentInfo { get; set; }
+        public int ExamineStatus { get; set; }
+        public string CurrentModify { get; set; }
     }
 }

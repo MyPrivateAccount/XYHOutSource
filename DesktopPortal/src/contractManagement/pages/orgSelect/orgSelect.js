@@ -49,10 +49,12 @@ class OrgSelect extends Component {
     }
 
     render() {
-        const orgList = this.props.orgInfo.orgList;
-        const levelsCount = this.props.orgInfo.levelCount;
+        const orgList = this.props.permissionOrgTree.searchOrgTree;
+        const levelsCount = this.props.permissionOrgTree.levelCount;
+        let level = this.props.orgInfo.levelCount;
         let span = Math.round(24 / levelsCount);
-        //console.log("部门选择:", orgList, span);
+        console.log("部门选择:", orgList, Math.round( 24 / level));
+        console.log("部门选择2", this.props.orgInfo.orgList, span);
         return (
             <div style={itemStyle.itemBorder}>
                 <Row style={itemStyle.autoHeight}>
@@ -73,7 +75,8 @@ class OrgSelect extends Component {
 
 function mapStateToProps(state) {
     return {
-        orgInfo: state.basicData.orgInfo
+        orgInfo: state.basicData.orgInfo,
+        permissionOrgTree: state.basicData.permissionOrgTree,
     }
 }
 

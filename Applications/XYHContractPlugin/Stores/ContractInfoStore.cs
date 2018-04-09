@@ -116,6 +116,34 @@ namespace XYHContractPlugin.Stores
             return true;
         }
 
+        public async Task<bool> AutoCreateAsync(SimpleUser userinfo, List<ComplementInfo> compleinfo, CancellationToken cancle = default(CancellationToken))
+        {
+            if (compleinfo == null)
+            {
+                throw new ArgumentNullException(nameof(compleinfo));
+            }
+
+            if (compleinfo.Count > 0)
+            {
+                foreach (var item in compleinfo)
+                {
+                    if (!Context.ComplementInfos.Any(x => x.ID == item.ID))
+                    {
+                        Context.Add(item);
+                    }
+                    else
+                    {
+                        //Context.Attach(file);
+                        Context.Update(item);
+                    }
+                }
+
+                await Context.SaveChangesAsync(cancle);
+            }
+
+            return true;
+        }
+
         public async Task<bool> CreateAsync(SimpleUser userinfo, List<ComplementInfo> compleinfo, CancellationToken cancle = default(CancellationToken))
         {
             if (compleinfo == null)

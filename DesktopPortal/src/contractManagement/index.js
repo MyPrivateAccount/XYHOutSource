@@ -6,7 +6,7 @@ import reducers from './reducers';
 import ContentPage from './pages/contentPage';
 import {sagaMiddleware} from '../';
 import rootSaga from './saga/rootSaga';
-import {closeAttachMent, closeContractReord, closeComplement,closeContractDetail, getOrgList, getOrgDetail, openOrgSelect,closeOrgSelect, changeContractMenu} from './actions/actionCreator';
+import {closeAttachMent, closeContractReord, closeComplement,closeContractDetail, getOrgList, getOrgDetail,getAllOrgList, openOrgSelect,closeOrgSelect, changeContractMenu,setInitActiveOrg} from './actions/actionCreator';
 import OrgSelect from './pages/orgSelect/orgSelect';
 
 import AttchMent from './pages/attachMent';
@@ -41,9 +41,16 @@ class ContractManagementIndex extends Component {
         collapsed: false,
         activeMenu: menuDefine[0],
     }
+    
+    componentDidMount(){
+
+    }
     componentWillMount() {
         console.log("当前用户所在部门:", this.props.oidc);
+        this.props.dispatch(getAllOrgList("ContractSearchOrg"));
+        //this.props.dispatch(getAllOrgList("ContractSetOrg"));
         let userInfo = this.props.oidc.user.profile;
+        this.props.dispatch(setInitActiveOrg(userInfo.Organization));
         this.props.dispatch(getOrgList(userInfo.Organization));
         if (userInfo.Organization !== '0') {
             this.props.dispatch(getOrgDetail(userInfo.Organization));
@@ -57,13 +64,14 @@ class ContractManagementIndex extends Component {
     }
 
     handleMenuClick = (e) => {
-        // console.log("点击菜单:", e.key);
-        //if (e.key === this.state.activeMenu.menuID) return;
+        //console.log("点击菜单:", e.key);
+        if ((e.key === this.state.activeMenu.menuID) &&(this.props.navigator.length === 0) ) return;
         if (e.key === "menu_org_select") {//这个是展开组织结构的菜单后面可能会用到
             this.props.dispatch(openOrgSelect());
             return;
         }
         this.props.dispatch(changeContractMenu(e.key));
+
         for (let i in menuDefine) {
             if (menuDefine[i].menuID == e.key) {
                 this.setState({
@@ -126,11 +134,11 @@ class ContractManagementIndex extends Component {
     //获取当前选中部门的完整层级路径
     getActiveOrgFullPath() {
         let activeOrg = this.props.activeOrg || {};
-        let orgList = (this.props.orgInfo || {}).orgList || [];
+        let orgList = (this.props.permissionOrgTree || {}).searchOrgTree || [];
         let fullPath = activeOrg.organizationName;
         if (activeOrg.id !== '0' && activeOrg.parentId) {
             let parentOrg = this.getParentOrg(orgList, activeOrg.parentId);
-            console.log("parentOrgName::", parentOrg);
+            //console.log("parentOrgName::", parentOrg);
             if (parentOrg) {
                 fullPath = parentOrg.organizationName + ">" + fullPath;
             }
@@ -232,10 +240,12 @@ class ContractManagementIndex extends Component {
 function mapStateToProps(state, props) {
     return {
         navigator: state.search.navigator,
+        oidc: state.oidc,
         activeOrg: state.search.activeOrg,
         showOrgSelect: state.search.showOrgSelect,
         orgInfo: state.basicData.orgInfo,
-        oidc: state.oidc,
+        permissionOrgTree: state.basicData.permissionOrgTree,
+     
     }
 }
 export default withReducer(reducers, 'ContractManagementIndex', {mapExtraState: (state, rootState) => ({oidc: rootState.oidc,judgePermissions: rootState.app.judgePermissions})})(connect(mapStateToProps)(ContractManagementIndex));

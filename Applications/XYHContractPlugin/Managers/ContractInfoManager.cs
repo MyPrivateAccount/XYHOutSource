@@ -22,7 +22,8 @@ namespace XYHContractPlugin.Managers
         public static int CreateContract = 1;
         public static int ModifyContract = 2;
         public static int AddAnnexContract = 3;
-        public static int AddComplementContract = 4;
+        public static int UpdateComplementContract = 4;
+
 
         public ContractInfoManager(IContractInfoStore contractStore, IMapper mapper)
         {
@@ -83,12 +84,69 @@ namespace XYHContractPlugin.Managers
                     }
 
                     itm.ContractID = strcontractid;
+                    itm.CurrentModify = strModify;
                 }
 
                 ret = await Store.CreateAsync(_mapper.Map<SimpleUser>(userinfo), _mapper.Map<List<ComplementInfo>>(buildingBaseInfoRequest), cancellationToken);
             }
 
-            await Store.CreateModifyAsync(_mapper.Map<SimpleUser>(userinfo), strcontractid, strModify, AddComplementContract, strCheck, ExamineStatusEnum.Auditing);
+            await Store.CreateModifyAsync(_mapper.Map<SimpleUser>(userinfo), strcontractid, strModify, UpdateComplementContract, strCheck, ExamineStatusEnum.Auditing, false);
+
+            return ret;
+        }
+
+        public virtual async Task<bool> AutoUpdateComplementAsync(UserInfo userinfo, string strcontractid, string strCheck, string strModify, List<ContractComplementRequest> buildingBaseInfoRequest, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (buildingBaseInfoRequest == null || buildingBaseInfoRequest.Count < 1)
+            {
+                throw new ArgumentNullException(nameof(buildingBaseInfoRequest));
+            }
+
+            foreach (var itm in buildingBaseInfoRequest)
+            {
+                if (string.IsNullOrEmpty(itm.ID))
+                {
+                    itm.ID = Guid.NewGuid().ToString();
+                }
+
+                itm.ContractID = strcontractid;
+                itm.CurrentModify = strModify;
+            }
+
+            await Store.CreateModifyAsync(_mapper.Map<SimpleUser>(userinfo), strcontractid, strModify, UpdateComplementContract, strCheck, ExamineStatusEnum.Auditing, false);
+
+            return await Store.AutoCreateAsync(_mapper.Map<SimpleUser>(userinfo), _mapper.Map<List<ComplementInfo>>(buildingBaseInfoRequest), cancellationToken);
+        }
+
+        public virtual async Task<bool> ModifyComplementAsync(UserInfo userinfo, string strcontractid, string strCheck, string strModify, List<ContractComplementRequest> buildingBaseInfoRequest, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (buildingBaseInfoRequest == null)
+            {
+                throw new ArgumentNullException(nameof(buildingBaseInfoRequest));
+            }
+
+            bool ret = false;
+
+            foreach (var itm in buildingBaseInfoRequest)
+            {
+                if (string.IsNullOrEmpty(itm.ID))
+                {
+                    buildingBaseInfoRequest.Remove(itm);
+                }
+
+                if (string.IsNullOrEmpty(itm.ContractID))
+                {
+                    itm.ContractID = strcontractid;
+                }
+                itm.CurrentModify = strModify;
+            }
+            if (buildingBaseInfoRequest != null && buildingBaseInfoRequest.Count > 0)
+            {
+                await Store.UpdateListAsync(_mapper.Map<List<ComplementInfo>>(buildingBaseInfoRequest), cancellationToken);
+                ret = true;
+            }
+
+            await Store.CreateModifyAsync(_mapper.Map<SimpleUser>(userinfo), strcontractid, strModify, UpdateComplementContract, strCheck, ExamineStatusEnum.Auditing, false);
 
             return ret;
         }
@@ -249,9 +307,25 @@ namespace XYHContractPlugin.Managers
 
             var annexinfo = await Store.GetListAnnexAsync(a => a.Where(b => b.ContractID == id), cancellationToken);
             returninfo.AnnexInfo = _mapper.Map<List<ContractAnnexResponse>>(annexinfo);
+            if (annexinfo.Count > 0)
+            {
+                var modify = await Store.GetModifyAsync(a => a.Where(b => b.ID == annexinfo.ElementAt(0).CurrentModify), cancellationToken);
+                foreach (var item in returninfo.AnnexInfo)
+                {
+                    item.ExamineStatus = (int)modify.ExamineStatus;
+                }
+            }
 
             var complementinfo = await Store.GetListComplementAsync(a => a.Where(b => b.ContractID == id));
             returninfo.ComplementInfo = _mapper.Map<List<ContractComplementResponse>>(complementinfo);
+            if (complementinfo.Count > 0)
+            {
+                var modify = await Store.GetModifyAsync(a => a.Where(b => b.ID == complementinfo.ElementAt(0).CurrentModify), cancellationToken);
+                foreach (var item in returninfo.ComplementInfo)
+                {
+                    item.ExamineStatus = (int)modify.ExamineStatus;
+                }
+            }
 
             var modifyinfo = await Store.GetListModifyAsync(a => a.Where(b => b.ContractID == id));
             returninfo.Modifyinfo = _mapper.Map<List<ContractModifyResponse>>(modifyinfo);

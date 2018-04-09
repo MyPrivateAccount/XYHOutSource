@@ -130,6 +130,14 @@ reducerMap[actionTypes.CHANGE_MENU] = function (state, action) {
         //showAuditDetail: false
     });
 }
+
+//临时设置当前用户的部门id为默认查询id
+
+reducerMap[actionTypes.SET_INIT_ACTIVEORG] = function(state,action){
+    let activeOrg = {...state.activeOrg};
+    activeOrg.id = action.payload;
+    return Object.assign({}, state, {activeOrg:activeOrg})
+}
 //搜索关键字改变
 reducerMap[actionTypes.CHANGE_KEYWORD] = function (state, action) {
     return Object.assign({}, state, {searchKeyWord: action.payload});

@@ -123,12 +123,40 @@ export function* getOrgUserListAsync(state) {
         });
     }
 }
+//获取所有子部门
+export function* getAllOrgsAsync(state) {
+    // let result = { isOk: false, extension: [], msg: '部门数据获取失败！' };
+    let result = {}
+    let url = WebApiConfig.dic.permissionOrg + state.payload;
+    console.log('getAllOrgsAsync,url:', url);
+    try {
+        const orgResult = yield call(ApiClient.get, url);
+        console.log(orgResult, '获取所有可操作部门', state.payload)
+        getApiResult(orgResult, result);
+        if (result.isOk) {
+            yield put({ 
+                 type: actionUtils.getActionType(actionTypes.DIC_GET_ALL_ORG_LIST_COMPLETE),
+                 payload: { extension: result.extension, type: state.payload } 
+            });
+        } 
+    } catch (e) {
+        result.msg = "获取所有可操作部门接口调用异常!";
+    }
+    // if (!result.isOk) {
+    //     notification.error({
+    //         description: result.msg,
+    //         duration: 3
+    //     });
+    // }
+}
+
 
 export default function* watchDicAllAsync() {
     //这个只是获取最新的一个，使用时切忌在组件嵌套的情况且需要同时加载的时不要在componentWillMount中同时获取这样会导致前一次的执行被取消
     yield takeLatest(actionUtils.getActionType(actionTypes.DIC_GET_PARLIST), getParListAsync)
     yield takeLatest(actionUtils.getActionType(actionTypes.DIC_GET_AREA), getAllAreaAsync);
     yield takeLatest(actionUtils.getActionType(actionTypes.DIC_GET_ORG_LIST), getAllChildOrgsAsync);
+    yield takeLatest(actionUtils.getActionType(actionTypes.DIC_GET_ALL_ORG_LIST), getAllOrgsAsync);
     yield takeLatest(actionUtils.getActionType(actionTypes.DIC_GET_ORG_DETAIL), getUserOrgAsync);
     yield takeLatest(actionUtils.getActionType(actionTypes.GET_ORG_USERLIST), getOrgUserListAsync);
 }

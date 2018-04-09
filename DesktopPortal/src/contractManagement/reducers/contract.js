@@ -141,16 +141,31 @@ reducerMap[actionTypes.CONTRACT_INFO_SUBMIT_FINISH] = function (state, action) {
 
 
 reducerMap[actionTypes.GOTO_THIS_CONTRACT_FINISH] = (state, action) => {
-    console.log('action.payload.data', action.payload.data);
-    let contractInfo = { ...state.contractInfo };
-    let operInfo = { ...state.operInfo };
+    //console.log('action.payload.data', action.payload.data);
+    let contractInfo = {}; //{ ...state.contractInfo };
+    let operInfo = {};//{ ...state.operInfo };
     let res = action.payload.data
-
+    
     if (res.code === '0') {
-        contractInfo = res.extension;
-        contractInfo.baseInfo = contractInfo.baseInfo;
-        contractInfo.attachInfo = { fileList: contractInfo.fileList };
-        contractInfo.complementInfos = contractInfo.complementInfo;
+        let data = res.extension;
+        let attachExamineStatus = 0;
+        let complementExamineStatus = 0;
+        
+        contractInfo.baseInfo = data.baseInfo;
+        if(data.annexInfo != null && data.annexInfo.length > 0)
+        {
+            attachExamineStatus = data.annexInfo[0].examineStatus;
+        }
+        contractInfo.attachInfo = { fileList: data.fileList || [], examineStatus:attachExamineStatus };
+        
+        if(data.complementInfo != null && data.complementInfo.length > 0)
+        {
+            complementExamineStatus = data.complementInfo[0].examineStatus;
+        }
+        contractInfo.complementInfos = {complementInfo: data.complementInfo || [], examineStatus:complementExamineStatus};
+        contractInfo.modifyInfo = data.modifyinfo || [];
+        delete contractInfo.complementInfo;
+        delete contractInfo.modifyinfo;
         operInfo = {
             basicOperType: 'view',
             attachPicOperType: 'view',
@@ -285,34 +300,40 @@ reducerMap[actionTypes.LOADING_END_ATTACH] = function (state, action) {
 
 reducerMap[actionTypes.OPEN_ATTACHMENT_FINISH] = function(state, action){
    
-    let fileList = action.payload.fileList
-    let attachInfo = Object.assign({}, {fileList:fileList });
-    let contractInfo = Object.assign({}, {...state.contractInfo }, {baseInfo: action.payload.baseInfo, attachInfo:attachInfo});
+    let fileList = action.payload.fileList || [];
     let attachPicOperType  = "add";
+    let examineStatus = 0;
     if(fileList.length > 0)
     {
-        attachPicOperType = "edit";
+        attachPicOperType = "view";
+        examineStatus = action.payload.annexInfo[0].examineStatus;
     }
+    let attachInfo = Object.assign({}, {fileList:fileList, examineStatus:examineStatus });
+    let contractInfo = Object.assign({}, {...state.contractInfo }, {baseInfo: action.payload.baseInfo, attachInfo:attachInfo});
+
     let operInfo = { ...state.operInfo, attachPicOperType: attachPicOperType };
     return Object.assign({}, state, {operInfo: operInfo,  isCurShowContractDetail: false, contractInfo:contractInfo});
 }
 
 reducerMap[actionTypes.OPEN_COMPLEMENT_FINISH] = function(state, action){
    
-    let complementInfo = action.payload.complementInfo
-    let complementInfos = Object.assign({}, {complementInfo:complementInfo });
-    let contractInfo = Object.assign({}, {...state.contractInfo }, {baseInfo: action.payload.baseInfo, complementInfos:complementInfos});
+    let complementInfo = action.payload.complementInfo || [];
+    let examineStatus = 0;
     let complementOperType  = "add";
     if(complementInfo.length > 0)
     {
-        complementOperType = "edit";
+        complementOperType = "view";
+        examineStatus = action.payload.complementInfo[0].examineStatus;
     }
+    let complementInfos = Object.assign({}, {complementInfo:complementInfo, examineStatus });
+    let contractInfo = Object.assign({}, {...state.contractInfo }, {baseInfo: action.payload.baseInfo, complementInfos:complementInfos});
+
     let operInfo = { ...state.operInfo, complementOperType: complementOperType };
     return Object.assign({}, state, {operInfo: operInfo,  isCurShowContractDetail: false, contractInfo:contractInfo});
 }
 
 
-//图片信息编辑  //此时的情况是应该已经拿到了当前的合同id
+
 reducerMap[actionTypes.CONTRACT_COMPLEMENT_EDIT] = (state, action) => {
     let contractInfo = { ...state.contractInfo };
     let operInfo = Object.assign({}, state.operInfo, { complementOperType: 'edit' });
@@ -331,8 +352,8 @@ reducerMap[actionTypes.BASIC_SUBMIT_END] = function(state, action){
             baseInfo:{},
             attachInfo:{},
             additionalInfo:{},
-            modifyInfo:{},
-            complementInfo:{},//补充协议
+            modifyInfo:[],
+            complementInfos:[],//补充协议
             discard:false,
             annexInfo:{},
     

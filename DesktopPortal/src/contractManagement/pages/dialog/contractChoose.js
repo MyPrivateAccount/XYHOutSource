@@ -21,6 +21,19 @@ class ContractChoose extends Component{
             current: 0,
             total: 0
         },
+        condition: {
+            keyWord: '',
+            checkStatu: null,//审核状态
+            //organizationName: [],//
+            createDateStart: null,//录入时间
+            createDateEnd: null,
+            //IsExpire:false,
+            discard:0,
+            follow:0,
+            orderRule: 0,
+            pageIndex: 0,
+            pageSize: 5
+        },
         checkList: [],
         curSelectRecord:{},
         curSelectIndex:null
@@ -39,6 +52,21 @@ class ContractChoose extends Component{
             this.setState({pagination: {current: pageIndex, pageSize: 5, total: totalCount}});
         }
     }
+        //searchbox组件render前的回调
+    searchBoxWillMount = (searchMethod) => {
+        if (searchMethod) {
+            //setState由于是异步函数因此当前设置的值未必可以马上生效故而后面的回调函数可以在设置成功后进行的操作
+            this.setState({searchHandleMethod: searchMethod}, () => {this.handleSearch();});
+        }
+    }
+    //查询处理
+    handleSearch = () => {
+        let searchMethod = this.state.searchHandleMethod;
+        if (searchMethod) {
+            searchMethod();
+        }
+    }
+   
     handleCancel = () => {
 
         //this.props.dispatch(closeAdjustCustomer());
@@ -101,7 +129,7 @@ class ContractChoose extends Component{
                     </Button>,
                 ]}
             >
-                <SearchBox />
+                <SearchBox condition={this.state.condition} willMountCallback={this.searchBoxWillMount}/>
                 <Table rowKey={record => record.uid} columns={this.getTableColumns()} rowSelection={rowSelection} pagination={this.state.pagination} onChange={this.handleChangePage} dataSource={dataSource}  onRowClick={this.handleRowClick} />  
             </Modal>
         )
@@ -114,6 +142,7 @@ function mapStateToProps(state){
         showLoading: state.search.showLoading,
         showContractShow:state.search.showContractShow,
         contractChooseVisible: state.contractData.contractChooseVisible,
+        
     };
 }
 

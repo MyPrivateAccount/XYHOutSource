@@ -8,6 +8,7 @@ const WebApiConfig = {
         OrgList: BaseApiUrl + "Organization/sonsandmy/",//获取子部门
         OrgDetail: BaseApiUrl + "Organization/",//获取部门详细
         GetOrgUserList: BaseApiUrl + "user/list",//获取部门下的用户
+        permissionOrg: BaseApiUrl + 'Permission/'//有权限的部门,
     },
     search: {
         getContractList: basicDataBaseApiUrl+ 'contractlist/searchcontract',
@@ -35,6 +36,8 @@ const WebApiConfig = {
     },
     complement:{
         GetComplement: basicDataBaseApiUrl + "",
+        saveComplement: basicDataBaseApiUrl + "contractinfo/autocomplement/",
+        //modifyComplemet: basicDataBaseApiUrl + "contractinfo/modifycomplement/",
     },
     attach: {
         GetAttachInfo: basicDataBaseApiUrl + "contractfiles/GetFileListByContractId/",

@@ -6,6 +6,7 @@ export const getAreaList = createAction(actionTypes.DIC_GET_AREA);
 export const getOrgList = createAction(actionTypes.DIC_GET_ORG_LIST);
 export const getOrgDetail = createAction(actionTypes.DIC_GET_ORG_DETAIL);
 export const getUserByOrg = createAction(actionTypes.GET_ORG_USERLIST);
+export const getAllOrgList = createAction(actionTypes.DIC_GET_ALL_ORG_LIST);
 //设置遮罩层
 export const setLoadingVisible = createAction(actionTypes.SET_SEARCH_LOADING);
 //合同的录入
@@ -90,7 +91,7 @@ export const openComplementStart = createAction(actionTypes.OPEN_COMPLEMENT_STAR
 export const openComplementFinish = createAction(actionTypes.OPEN_COMPLEMENT_FINISH);
 export const closeComplement = createAction(actionTypes.CLOSE_COMPLEMENT);
 export const contractComplementEdit = createAction(actionTypes.CONTRACT_COMPLEMENT_EDIT);
-
+export const contractComplementSave = createAction(actionTypes.CONTRACT_COMPLEMENT_SAVE);
 
 
 
@@ -102,6 +103,18 @@ export const getAllPhone = createAction(actionTypes.GET_CUSTOMER_ALL_PHONE);
 export const openOrgSelect = createAction(actionTypes.OPEN_ORG_SELECT);
 export const closeOrgSelect = createAction(actionTypes.CLOSE_ORG_SELECT);
 export const changeActiveOrg = createAction(actionTypes.CHAGNE_ACTIVE_ORG);
+
+
+//临时更改设置当前用户的部门id为当前选择orgid
+export const setInitActiveOrg = createAction(actionTypes.SET_INIT_ACTIVEORG);
+
+
+
+
+
+
+
+
 
 
 

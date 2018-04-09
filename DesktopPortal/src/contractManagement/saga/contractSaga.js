@@ -28,9 +28,10 @@ export function* saveContractBasicAsync(state) {
         console.log(`合同基础信息提交url:${url},baseInfo:${JSON.stringify(baseInfo)}`);
         const saveResult = yield call(ApiClient.post, url, baseInfo, null, "POST");
         getApiResult(saveResult, result);
-         console.log("保存结果", result);
+         
         if (result.isOk) {
             result.msg = "合同基础信息提交成功";
+            console.log("保存结果", result);
            // yield put({ type: actionUtils.getActionType(actionTypes.CONTRACT_BASIC_VIEW), payload: {baseInfo: result.extension || baseInfo} });
             yield put({ type: actionUtils.getActionType(actionTypes.BASIC_SUBMIT_END) });
             yield put({ type: actionUtils.getActionType(actionTypes.CLOSE_RECORD)});
@@ -38,6 +39,38 @@ export function* saveContractBasicAsync(state) {
         //yield put(actionUtils.action(basicLoadingEnd));
     } catch (e) {
         result.msg = "合同基础信息提交接口调用异常!";
+
+        //yield put(actionUtils.action(basicLoadingEnd));
+    }
+    
+    notification[result.isOk ? 'success' : 'error']({
+        message: result.msg,
+        duration: 3
+    });
+}
+
+export function* saveContractComplementAsync(state) {
+    console.log('state.payload.entity:', state.payload.entity);
+    let result = { isOk: false, msg: '合同补充信息提交失败！' };
+    let method = state.payload.method;
+    let url =  WebApiConfig.complement.saveComplement + state.payload.id  ;
+     
+    let body = state.payload.entity;
+
+    try {
+        console.log(`合同补充信息提交url:${url},baseInfo:${JSON.stringify(body)}`);
+        const saveResult = yield call(ApiClient.post, url, body, null, "POST");
+        getApiResult(saveResult, result);
+         console.log("保存结果", result);
+        if (result.isOk) {
+            result.msg = "合同补充信息提交成功";
+           // yield put({ type: actionUtils.getActionType(actionTypes.CONTRACT_BASIC_VIEW), payload: {baseInfo: result.extension || baseInfo} });
+            
+            yield put({ type: actionUtils.getActionType(actionTypes.CLOSE_COMPLEMENT)});
+        }
+        //yield put(actionUtils.action(basicLoadingEnd));
+    } catch (e) {
+        result.msg = "合同补充信息提交接口调用异常!";
 
         //yield put(actionUtils.action(basicLoadingEnd));
     }
@@ -62,9 +95,9 @@ export function* gotoThisContract(action) {
        if (result.isOk) {
             result.msg = "获取合同详情成功";
             
-            yield put({ type: actionUtils.getActionType(actionTypes.OPEN_CONTRACT_DETAIL), payload: {id:1}});
-            console.log('获取合同详情结果:', JSON.stringify(res));
+            console.log('获取合同详情结果:', res);
             yield put(actionUtils.action(gotoThisContractFinish, res));
+            yield put({ type: actionUtils.getActionType(actionTypes.OPEN_CONTRACT_DETAIL), payload: {id:1}});
        }
 
     } catch (e) {
@@ -89,9 +122,9 @@ export function* openAttachUpload(action){
     let res;
     let isAccess = true;
     let msg = "附件获取异常";
-    console.log("openAttachUpload");
+
     try {
-        yield put({ type: actionUtils.getActionType(actionTypes.OPEN_ATTACHMENT_START), payload: {id:3}});
+       
         res = yield call(ApiClient.get, url);
         let fileList = [];
         if (res.data.code === '0') {
@@ -102,7 +135,8 @@ export function* openAttachUpload(action){
             }
          }
         
-        yield put(actionUtils.action(openAttachMentFinish, {baseInfo: res.data.extension.baseInfo, fileList:fileList, code: '0'}));
+        yield put(actionUtils.action(openAttachMentFinish, {baseInfo: res.data.extension.baseInfo, fileList:fileList,annexInfo: res.data.extension.annexInfo || [], code: '0'}));
+        yield put({ type: actionUtils.getActionType(actionTypes.OPEN_ATTACHMENT_START), payload: {id:3}});
          
     } catch (e) {
         isAccess = false;
@@ -129,8 +163,9 @@ export function* openComplement(action){
     let isAccess = true;
     let msg = "补充协议获取异常";
     try {
-        yield put({ type: actionUtils.getActionType(actionTypes.OPEN_COMPLEMENT_START), payload: {id:2}});
+    
         res = yield call(ApiClient.get, url);
+        console.log('补充协议详情结果:', JSON.stringify(res));
         let complementInfo = [];
         if (res.data.code === '0') {
             
@@ -141,7 +176,7 @@ export function* openComplement(action){
         }
         
         yield put(actionUtils.action(openComplementFinish, {baseInfo: res.data.extension.baseInfo || baseInfo, complementInfo:complementInfo , code: '0'}));
-
+        yield put({ type: actionUtils.getActionType(actionTypes.OPEN_COMPLEMENT_START), payload: {id:2}});
     } catch (e) {
         isAccess = false;
         yield put({ type: actionUtils.getActionType(actionTypes.CLOSE_COMPLEMENT)});
@@ -200,10 +235,13 @@ export function* deletePicAsync(action) {
     let city = action.payload.ownCity; // 自己所在城市
     try {
 
-            url = WebApiConfig.shopsAttachInfo.PicDelete + action.payload.id
+            url = WebApiConfig.attach.deletePicUrl + action.payload.id
             res = yield call(ApiClient.post, url, body)
+            console.log(`删除图片url:${url},body:${JSON.stringify(body)}，result：${res}`);
             if (res.data.code === '0') {
-                yield put({ type: actionUtils.getActionType(actionTypes.CONTRACT_PIC_VIEW), payload: { filelist: action.payload.deletePicList, type: 'delete' } });
+                yield put({ type: actionUtils.getActionType(actionTypes.ATTACH_SUBMIT_END) });
+                yield put({ type: actionUtils.getActionType(actionTypes.CLOSE_RECORD)});
+               // yield put({ type: actionUtils.getActionType(actionTypes.CONTRACT_PIC_VIEW), payload: { filelist: action.payload.deletePicList, type: 'delete' } });
                 notification.success({
                     message: '图片删除成功！',
                     duration: 3
@@ -261,6 +299,7 @@ export function* watchContractAllAsync() {
     yield takeLatest(actionUtils.getActionType(actionTypes.CONTRACT_BASIC_SAVE), saveContractBasicAsync);
     yield takeLatest(actionUtils.getActionType(actionTypes.OPEN_ATTACHMENT), openAttachUpload);
     yield takeLatest(actionUtils.getActionType(actionTypes.OPEN_COMPLEMENT), openComplement);
+    yield takeLatest(actionUtils.getActionType(actionTypes.CONTRACT_COMPLEMENT_SAVE), saveContractComplementAsync);
     // yield takeLatest(actionUtils.getActionType(actionTypes.BUILDING_SUPPORT_SAVE), saveSupportInfoAsync);
     // yield takeLatest(actionUtils.getActionType(actionTypes.BUILDING_RELSHOP_SAVE), saveRelshopsAsync);
     // yield takeLatest(actionUtils.getActionType(actionTypes.BUILDING_PROJECT_SAVE), saveProjectAsync);

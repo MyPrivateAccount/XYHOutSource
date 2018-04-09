@@ -83,8 +83,8 @@ class ModifyHistory extends Component{
    
 
     render(){
-    
-        let dataSource = this.props.modifyinfo.sort((a, b) => {return (moment(a.modifyStartTime).isSameOrBefore(moment(b.modifyStartTime)) ? -1: 1) }) ? this.props.modifyinfo: [];
+        console.log("this.props.modifyInfo:", this.props.modifyInfo);
+        let dataSource = this.props.modifyInfo.sort((a, b) => {return (moment(a.modifyStartTime).isSameOrBefore(moment(b.modifyStartTime)) ? -1: 1) }) ? this.props.modifyInfo: [];
         console.log('dataSource:', dataSource);
         return(
             <Modal 
@@ -98,8 +98,9 @@ class ModifyHistory extends Component{
 }
 
 function mapStateToProps(state){
+    
     return {
-        modifyinfo: state.contractData.contractInfo.modifyinfo,
+        modifyInfo: state.contractData.contractInfo.modifyInfo,
         modifyHistoryVisible: state.contractData.modifyHistoryVisible
     };
 }

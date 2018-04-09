@@ -36,13 +36,24 @@ class AttachEdit extends Component {
     }
   }
 
+  componentDidMount() {
+    let fileList = [];
+
+    if (this.props.attachInfo.fileList) {
+          let curFileList = this.props.attachInfo.fileList;//直接修改会改变state
+          this.getGroup(curFileList);
+    }
+    this.setState({ fileList: fileList });
+    
+  }
   componentWillReceiveProps(newProps) {
     console.log("newProps:", newProps);
     let fileList = [];
     try {
       if (newProps.attachInfo.fileList) {
+        let curFileList = newProps.attachInfo.fileList;
         if(!this.initFiles){
-          this.getGroup(newProps.attachInfo.fileList)
+          this.getGroup(curFileList)
         }
         this.initFiles=true;   // true
       }
@@ -313,7 +324,7 @@ class AttachEdit extends Component {
       }
     }
 
-    // console.log( this.props.basicData.photoCategories, '字典')
+    console.log( "imgFiles图片:", this.state.imgFiles);
 
     return (
       <div className="">

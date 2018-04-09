@@ -107,7 +107,7 @@ class BasicEdit extends Component {
     render(){
 
         //console.log("this.props.contractChooseVisible:", this.props.contractChooseVisible);
-        console.log('this.props.curFollowContract:', this.props.curFollowContract);
+        //console.log('this.props.curFollowContract:', this.props.curFollowContract);
         let curFollowContract = this.props.curFollowContract || {};
         const { getFieldDecorator, getFieldsError, getFieldError, isFieldTouched } = this.props.form;
         //let contractTypes = '1';
@@ -122,7 +122,7 @@ class BasicEdit extends Component {
           labelCol: { span: 6 },
           wrapperCol: { span: 14 },
         };
-        //console.log('this.props.basicData.contractCategories:', this.props.basicData.contractCategories);
+        console.log('this.props.basicData.orgInfo.orgList:', this.props.basicData.orgInfo.orgList);
         return (
           <div>
           <Form layout="horizontal" style={{padding: '25px 0', marginTop: "25px"}}>
@@ -414,7 +414,7 @@ class BasicEdit extends Component {
                                         initialValue:  departMentInit,//basicInfo.relation ? basicInfo.relation.split('*') : [],//["1", "1385f04d-3ac8-49c6-a310-fe759814a685", "120"],//basicInfo.organizete ? basicInfo.organizete.split('-') : [],
                                         rules:[{required:true, message:'请选择归属部门!'}]
                                         })(
-                                            <Cascader options={this.props.basicData.orgInfo.orgList} displayRender={this.displayRender} onChange={this.handleChooseDepartmentChange } changeOnSelect placeholder="归属部门"/>
+                                            <Cascader options={this.props.setContractOrgTree} displayRender={this.displayRender} onChange={this.handleChooseDepartmentChange } changeOnSelect placeholder="归属部门"/>
                                         )
                                         
                         }
@@ -422,7 +422,7 @@ class BasicEdit extends Component {
                     </Col>
             </Row>
             <Row type="flex" style={{marginTop:"25px"}}>
-                {
+                {/* {
                     basicOperType === 'edit' ? 
                     <Col span={12}>
                         <FormItem {...formItemLayout} label={<span>是否作废</span>}>
@@ -440,7 +440,7 @@ class BasicEdit extends Component {
                         </FormItem>
                     </Col>
                     : null
-                }
+                } */}
                 <Col span={12}>
                     <FormItem {...formItemLayout} label={<span>备注</span>}>
                         {getFieldDecorator('remark', {
@@ -518,6 +518,7 @@ function mapStateToProps(state) {
         contractChooseVisible: state.contractData.contractChooseVisible,
         complementInfo: state.contractData.contractInfo.complementInfo,
         curFollowContract: state.contractData.curFollowContract,
+        setContractOrgTree: state.basicData.permissionOrgTree.setContractOrgTree,
     }
   }
   

@@ -22,7 +22,7 @@ class SearchResult extends Component {
     }
     
     componentWillReceiveProps(newProps) {
-        console.log("newProps.searchInfo.searchResul", newProps.searchInfo.searchResult);
+       /// console.log("newProps.searchInfo.searchResul", newProps.searchInfo.searchResult);
         let {pageIndex, pageSize, validityContractCount} = newProps.searchInfo.searchResult;
         console.log("validityContractCount:", validityContractCount);
         if (newProps.searchInfo.searchResult && pageIndex) {
@@ -248,6 +248,13 @@ class SearchResult extends Component {
                 value = this.findKeyByValue(this.props.basicData.firstPartyCatogories, value);
             }else if(key === 'commisionType'){
                 value = this.findKeyByValue(this.props.basicData.commissionCatogories, value);
+            }else if(key === 'startTime' || key === 'endTime'){
+                let newText = value;
+                if (value) {
+                    newText = moment(value).format('YYYY-MM-DD');
+                }
+                
+                value = newText;
             }
         }
         obj = Object.assign({}, {v:value,position: pos.substr(0, 1) + (num+1)}) ;  
@@ -297,13 +304,16 @@ class SearchResult extends Component {
         this.props.dispatch(gotoThisContract({'record':record}));
     }
     dateTimeRender = (text, record) => {
+        
         let newText = text;
         if (text) {
             newText = moment(text).format('YYYY-MM-DD');
         }
+        
         return (<span>{newText}</span>);
     }
     findKeyByValue = (dic, value) =>{
+  
         let key = '';
         dic.forEach(item => {
             if(item.value === value){
@@ -314,6 +324,7 @@ class SearchResult extends Component {
     }
     
     getNameByType = (curType) =>{
+
        return  (text, record) =>{
             if(curType === 'type'){
                 return this.findKeyByValue(this.props.basicData.contractCategories, text);
@@ -549,7 +560,7 @@ class SearchResult extends Component {
         buttonDef.map((button, i) =>{
             return this.hasPermission(button,i)&& button.buttonID != 'record' ? columns.children.push(this.getPermissonCol(button)) : null
         });
-        console.log('getOtherInfoColumns:', columns);
+        //console.log('getOtherInfoColumns:', columns);
         return columns;
     }
 
@@ -565,7 +576,7 @@ class SearchResult extends Component {
             columns.push(this.getExamineInfoColumns());
         }
         columns.push(this.getOtherInfoColumns());
-        console.log('columns:', columns);
+        //console.log('columns:', columns);
         return columns;
     }
 

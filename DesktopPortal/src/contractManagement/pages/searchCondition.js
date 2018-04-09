@@ -171,10 +171,10 @@ class SearchCondition extends Component {
                     </Row>
                     <div style={{display: expandSearchCondition ? "block" : "none"}}>   
                         <Row className="normalInfo">
-                            <Col span={4}>
+                            {/* <Col span={4}>
                                 <label>已作废：</label>
                                     <Checkbox onChange={this.handleInvalid}></Checkbox>
-                            </Col>
+                            </Col> */}
                             <Col span={4}>
                                 <label>已过期：</label>
                                     <Checkbox onChange={this.handleExpire}></Checkbox>
@@ -236,6 +236,7 @@ function mapStateToProps(state) {
         basicData: state.basicData,
         activeMenu: state.search.activeMenu,
         user: (state.oidc.user || {}).profile || {},
+
     }
 }
 
