@@ -6,7 +6,7 @@ import reducers from './reducers';
 import ContentPage from './pages/contentPage';
 import {sagaMiddleware} from '../';
 import rootSaga from './saga/rootSaga';
-import {closeAttachMent, closeContractReord, getOrgList, getOrgDetail, openOrgSelect,closeOrgSelect, changeContractMenu} from './actions/actionCreator';
+import {closeAttachMent, closeContractReord, closeComplement,closeContractDetail, getOrgList, getOrgDetail, openOrgSelect,closeOrgSelect, changeContractMenu} from './actions/actionCreator';
 import OrgSelect from './pages/orgSelect/orgSelect';
 
 import AttchMent from './pages/attachMent';
@@ -81,7 +81,16 @@ class ContractManagementIndex extends Component {
             if(navigator[navigator.length -1].type === 'record'){
                 this.props.dispatch(closeContractReord());
             }else if(navigator[navigator.length -1].type === 'attachMent')
+            {
                 this.props.dispatch(closeAttachMent());
+            }else if(navigator[navigator.length - 1].type === 'contractDetail')
+            {
+                this.props.dispatch(closeContractDetail());
+            }
+            else if(navigator[navigator.length - 1].type === 'complement')
+            {
+                this.props.dispatch(closeComplement());
+            }
         }
 
     }
@@ -89,10 +98,21 @@ class ContractManagementIndex extends Component {
     getContentPage() {
         let navigator = this.props.navigator;
         if(navigator.length > 0){
+            //console.log('navigator[navigator.length -1].type:', navigator[navigator.length -1].type);
             if(navigator[navigator.length -1].type === 'record'){
                 return <ContentPage curMenuID='menu_record'/>;
+                
             }else if(navigator[navigator.length -1].type === 'attachMent')
-            return <ContentPage curMenuID='menu_attachMent'/>;
+            {
+                return <ContentPage curMenuID='menu_attachMent'/>;
+            }
+            else if(navigator[navigator.length -1].type === 'contractDetail')
+            {
+                return <ContentPage curMenuID='menu_contractDetail'/>;
+            }else if(navigator[navigator.length -1].type === 'complement')
+            {
+                return <ContentPage curMenuID='menu_complement'/>;
+            }
         }
         return <ContentPage curMenuID={this.state.activeMenu.menuID} />
     }

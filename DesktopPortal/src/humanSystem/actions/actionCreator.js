@@ -1,5 +1,6 @@
 import { createAction } from 'redux-actions';
 import * as actionTypes from '../constants/actionType';
+import { create } from 'domain';
 
 export const getHumanList = createAction(actionTypes.GET_ALLHUMANINFO);
 
@@ -11,12 +12,7 @@ export const getOrgDetail = createAction(actionTypes.DIC_GET_ORG_DETAIL);
 export const getUserByOrg = createAction(actionTypes.GET_ORG_USERLIST);
 //设置遮罩层
 export const setLoadingVisible = createAction(actionTypes.SET_SEARCH_LOADING);
-//客户详情处理
-export const openCustomerDetail = createAction(actionTypes.OPEN_CUSTOMER_DETAIL);
-export const closeCustomerDetail = createAction(actionTypes.CLOSE_CUSTOMER_DETAIL);
-export const changeCustomerMenu = createAction(actionTypes.CHANGE_MENU);
-export const getCustomerDetail = createAction(actionTypes.GET_CUSTOMER_DETAIL);
-export const getCustomerAllPhone = createAction(actionTypes.GET_CUSTOMER_ALL_PHONE);
+
 //单位选择处理
 export const openOrgSelect = createAction(actionTypes.OPEN_ORG_SELECT);
 export const closeOrgSelect = createAction(actionTypes.CLOSE_ORG_SELECT);
@@ -26,5 +22,8 @@ export const changeActiveOrg = createAction(actionTypes.CHAGNE_ACTIVE_ORG);
 export const searchKeyWord = createAction(actionTypes.SEARCH_KEYWORD);
 export const searchCustomer = createAction(actionTypes.SEARCH_CUSTOMER);
 export const saveSearchCondition = createAction(actionTypes.SAVE_SEARCH_CONDITION);
-export const getRepeatJudgeInfo = createAction(actionTypes.GET_REPEAT_JUDGE_INFO);
 export const expandSearchbox = createAction(actionTypes.SEARCH_BOX_EXPAND);
+
+//面包屑
+export const setbreadPage = createAction(actionTypes.SET_USER_BREAD);
+export const closebreadPage = createAction(actionTypes.CLOSE_USER_BREAD);

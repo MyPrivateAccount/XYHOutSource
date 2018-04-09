@@ -3,7 +3,7 @@ import * as actionTypes from '../constants/actionType';
 import appAction from '../../utils/appUtils';
 
 const initState = {
-    humanList: [],
+    humanList: [{key: '1', id: 'tt', username: 'test', idcard: 'hhee'}],
     showLoading: true,
     navigator: [],//导航记录
 };
@@ -143,5 +143,20 @@ reducerMap[actionTypes.GET_ALLHUMANINFO] = function (state, action) {
 reducerMap[actionTypes.SET_SEARCH_LOADING] = function (state, action) {
     return Object.assign({}, state, { showLoading: action.payload });
 }
+
+reducerMap[actionTypes.SET_USER_BREAD] = function(state, action) {
+    switch (action.payload)
+    {
+        case 0: {
+            return Object.assign({}, state, {navigator: [{id: action.payload, name: '入职'}]});
+        } break;
+    }
+    return state;
+}
+
+reducerMap[actionTypes.CLOSE_USER_BREAD] = function(state, action) {
+    return Object.assign({}, state, {navigator: []});
+}
+
 
 export default handleActions(reducerMap, initState);

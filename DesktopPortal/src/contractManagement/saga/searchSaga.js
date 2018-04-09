@@ -29,7 +29,7 @@ export function* getContractListAsync(state) {
     //newBody = {"keyWord": "","pageIndex":0,"pageSize":10};
     try {
         let res = yield call(ApiClient.post, url, newBody);
-        //console.log(`url:${url},body:${JSON.stringify(state.payload)},result:${JSON.stringify(res)},newBody:${JSON.stringify(newBody)}`);
+        console.log(`url:${url},body:${JSON.stringify(state.payload)},result:${JSON.stringify(res)},newBody:${JSON.stringify(newBody)}`);
        getApiResult(res, result);
        if (result.isOk) {
        if (res.data.validityContractCount) {
@@ -49,7 +49,7 @@ export function* getContractListAsync(state) {
         });
     }
 }
-//审核操作
+//
 export function* getContractDetailAsync(state) {
     let result = { isOk: false, extension: {}, msg: '加载客户详情失败！' };
     let url = WebApiConfig.search.getCustomerDetail + state.payload.id;
@@ -107,29 +107,6 @@ export function* adjustCustomerAsync(state) {
     });
 }
 
-//获取客户所有电话号码
-export function* getCustomerAllPhoneAsync(state) {
-    let result = { isOk: false, extension: {}, msg: '获取客户电话失败！' };
-    let url = WebApiConfig.search.getCustomerAllPhone + state.payload;
-    try {
-        let res = yield call(ApiClient.get, url);
-        // console.log(`加载客户电话:url:${url},result:${JSON.stringify(res)}`);
-        getApiResult(res, result);
-        if (result.isOk) {
-            result.msg = '客户电话获取成功！';
-            yield put({ type: actionUtils.getActionType(actionTypes.GET_CUSTOMER_ALL_PHONE_COMPLETE), payload: result.extension });
-        }
-        yield put({ type: actionUtils.getActionType(actionTypes.SET_SEARCH_LOADING), payload: false });
-    } catch (e) {
-        result.msg = "客户电话获取接口调用异常！";
-    }
-    if (!result.isOk) {
-        notification.error({
-            description: result.msg,
-            duration: 3
-        });
-    }
-}
 
 //获取审核记录
 export function* getWaitAuditListAsync(state) {
@@ -156,56 +133,9 @@ export function* getWaitAuditListAsync(state) {
 }
 
 
-//审核操作
-export function* getRepeatJudgeInfoAsync(state) {
-    let result = { isOk: false, extension: null, msg: '获取重客判断信息失败！' };
-    let url = WebApiConfig.search.getRepeatJudgeInfo + state.payload;
-    try {
-        let res = yield call(ApiClient.get, url);
-        getApiResult(res, result);
-        // console.log(`获取重客判断信息:url:${url},result:${JSON.stringify(result)}`);
-        if (result.isOk) {
-            result.msg = '获取重客判断信息成功！';
-            yield put({ type: actionUtils.getActionType(actionTypes.GET_REPEAT_JUDGE_INFO_COMPLETE), payload: result.extension });
-        }
-        yield put({ type: actionUtils.getActionType(actionTypes.SET_SEARCH_LOADING), payload: false });
-    } catch (e) {
-        result.msg = "获取重客判断信息接口调用异常！";
-    }
-    if (!result.isOk) {
-        notification.error({
-            description: result.msg,
-            duration: 3
-        });
-    }
-}
 
 
-//根据用户ID获取客户列表
-export function* getCustomerListByUserIDAsync(state) {
-    let result = { isOk: false, extension: [], msg: '获取客户列表失败！' };
-    let url = WebApiConfig.search.getCustomerByUserID + state.payload.userID;
-    try {
-        let res = yield call(ApiClient.post, url, state.payload);
-        // console.log(`获取客户列表:url:${url},result:${JSON.stringify(res)}`);
-        getApiResult(res, result);
-        //result.type = state.payload.type;
-        // console.log("state.payload", state.payload);
-        if (result.isOk) {
-            result.msg = '获取客户列表成功！';
-            yield put({ type: actionUtils.getActionType(actionTypes.GET_CUSTOMER_OF_USERID_COMPLETE), payload: result });
-        }
-        yield put({ type: actionUtils.getActionType(actionTypes.SET_SEARCH_LOADING), payload: false });
-    } catch (e) {
-        result.msg = "获取客户列表接口调用异常！";
-    }
-    if (!result.isOk) {
-        notification.error({
-            description: result.msg,
-            duration: 3
-        });
-    }
-}
+
 
 //获取审核历史详细
 export function* getAuditHistoryDetailAsync(state) {
@@ -222,6 +152,7 @@ export function* getAuditHistoryDetailAsync(state) {
     } catch (e) {
         result.msg = "获取核列详细接口调用异常！";
     }
+ 
     if (!result.isOk) {
         notification.error({
             description: result.msg,
@@ -236,11 +167,11 @@ export default function* watchAllSearchAsync() {
     //yield takeLatest(actionUtils.getActionType(actionTypes.OPEN_CONTRACT_DETAIL), getContractDetailAsync);
 
     
-    yield takeLatest(actionUtils.getActionType(actionTypes.ADJUST_CUSTOMER), adjustCustomerAsync);
-    yield takeLatest(actionUtils.getActionType(actionTypes.GET_CUSTOMER_ALL_PHONE), getCustomerAllPhoneAsync);
-    yield takeLatest(actionUtils.getActionType(actionTypes.GET_AUDIT_LIST), getWaitAuditListAsync);
-    yield takeLatest(actionUtils.getActionType(actionTypes.GET_REPEAT_JUDGE_INFO), getRepeatJudgeInfoAsync);
-    yield takeLatest(actionUtils.getActionType(actionTypes.GET_CUSTOMER_OF_USERID), getCustomerListByUserIDAsync);
-    yield takeLatest(actionUtils.getActionType(actionTypes.GET_AUDIT_HISTORY), getAuditHistoryDetailAsync);
+    //yield takeLatest(actionUtils.getActionType(actionTypes.ADJUST_CUSTOMER), adjustCustomerAsync);
+    //yield takeLatest(actionUtils.getActionType(actionTypes.GET_CUSTOMER_ALL_PHONE), getCustomerAllPhoneAsync);
+    //yield takeLatest(actionUtils.getActionType(actionTypes.GET_AUDIT_LIST), getWaitAuditListAsync);
+    //yield takeLatest(actionUtils.getActionType(actionTypes.GET_REPEAT_JUDGE_INFO), getRepeatJudgeInfoAsync);
+   // yield takeLatest(actionUtils.getActionType(actionTypes.GET_CUSTOMER_OF_USERID), getCustomerListByUserIDAsync);
+    //yield takeLatest(actionUtils.getActionType(actionTypes.GET_AUDIT_HISTORY), getAuditHistoryDetailAsync);
 }
 

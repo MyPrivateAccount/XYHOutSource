@@ -26,14 +26,37 @@
 
 .searchCondition {
     border: 1px solid @borderColor;
-    padding: 5px 0;
+    padding: 5px 5px;
     min-height: 50px;
     font-size: 12px;
+    margin: 5px;
+    background-color: #F5F5F6;
 
     .ant-tag {
         color: red;
     }
-
+    .saleStatusBtn{
+        margin-right: 10px;
+        border:0;
+    }
+    .statusBtnDefault{
+        opacity: 0.5;
+    }
+    .staffRangeBtn{
+        margin-top: 2px;
+        margin-bottom: 2px;
+        margin-right: 15px;
+        border:0;
+        padding:0;
+        background-color: #F5F5F6;
+    }
+    .staffBtnActive{
+        color:#ef3236;
+        font-weight: bold;
+    }
+    .ant-tag-text{
+        color:red;
+    }
     .ant-checkbox-group {
         display: inline-block;
         vertical-align: middle;
@@ -52,9 +75,8 @@
     }
 
     .normalInfo {
-        border-bottom: 1px dashed #999;
-        margin: 10px;
-        padding: 0px 12px 10px 0;
+        //border-bottom: 1px dashed #999;
+        padding: 0px 0px 5px 0;
 
         .levelBtnActive {
             margin-bottom: 10px;
@@ -87,6 +109,14 @@
     }
 }
 
+.groupButton {
+    margin-left: 5px;
+}
+.statuButton {
+    margin-right: 10px;
+    border:0;
+}
+
 #searchResult{
     margin-top:20px;
     #adjustCustomer{
@@ -117,6 +147,7 @@
     }
     .ant-btn{margin:3px;}
 }
+
 .adjustCustomer{
     .ant-row{
         padding:0;

@@ -7,6 +7,10 @@ const LoadableStaffPage = Loadable({
     loader: () => import('./staffinfo/staffinfo'),
     loading: () => <LoadableLoading />,
 });
+const LoadableOnboardPage = Loadable({
+    loader: () => import('./staffinfo/onboarding'),
+    loading: () => <LoadableLoading />,
+});
 const LoadableMonthPage = Loadable({
     loader: () => import('./mouth/mouth'),
     loading: () => <LoadableLoading />,
@@ -68,6 +72,9 @@ function ContentPage(props) {
     }
     else if (curMenuID === "menu_set") {
         return <LoadableSetPage />;
+    }
+    else if (curMenuID === "Onboarding") {
+        return <LoadableOnboardPage />;
     }
     else {
         return <LoadableStaffPage />;

@@ -16,6 +16,7 @@ using XYHContractPlugin.Managers;
 using ContractInfoRequest = XYHContractPlugin.Dto.Response.ContractInfoResponse;
 using ContractContentInfoRequest = XYHContractPlugin.Dto.Response.ContractContentResponse;
 using ContractAnnexInfoRequest = XYHContractPlugin.Dto.Response.ContractAnnexResponse;
+using ContractComplementRequest = XYHContractPlugin.Dto.Response.ContractComplementResponse;
 using AspNet.Security.OAuth.Validation;
 
 namespace XYHContractPlugin.Controllers
@@ -27,10 +28,12 @@ namespace XYHContractPlugin.Controllers
     {
         private readonly ILogger Logger = LoggerManager.GetLogger("Contractinfo");
         private readonly ContractInfoManager _contractInfoManager;
+        private readonly RestClient _restClient;
 
-        public ContractInfoController(ContractInfoManager contractManager)
+        public ContractInfoController(ContractInfoManager contractManager, RestClient rsc)
         {
             _contractInfoManager = contractManager;
+            _restClient = rsc;
         }
 
 
@@ -58,7 +61,7 @@ namespace XYHContractPlugin.Controllers
             return Response;
         }
 
-        [HttpGet("{contractid}")]
+        [HttpGet("{contractId}")]
         [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
         public async Task<ResponseMessage<ContractContentResponse>> GetContractByid(UserInfo user, [FromRoute] string contractId)
         {
@@ -72,7 +75,23 @@ namespace XYHContractPlugin.Controllers
             }
             try
             {
-                Response.Extension = await _contractInfoManager.GetAllinfoByIdAsync(contractId, HttpContext.RequestAborted);
+                var ret = await _contractInfoManager.GetAllinfoByIdAsync(contractId, HttpContext.RequestAborted);
+                Response.Extension = ret;
+
+                foreach (var item in ret.Modifyinfo)
+                {
+                    if (item.ID == ret.BaseInfo.CurrentModify)
+                    {
+                        ret.BaseInfo.ExamineStatus = (int)item.ExamineStatus;
+                        break;
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(Response.Extension.BaseInfo.CreateUser))
+                {
+                    var resp = await _restClient.Get<ResponseMessage<string>>($"http://localhost:5000/api/user/{Response.Extension.BaseInfo.CreateUser}", null);
+                    Response.Extension.BaseInfo.CreateUserName = resp.Extension;
+                }
             }
             catch (Exception e)
             {
@@ -83,21 +102,20 @@ namespace XYHContractPlugin.Controllers
             return Response;
         }
 
-
-        [HttpGet("{getallcontractbyuser}")]
+        [HttpGet("allcontractinfo/{contractId}")]
         [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
         public async Task<ResponseMessage<List<ContractContentResponse>>> GetAllContractByUser(UserInfo user, [FromRoute] string contractId)
         {
-            if (user.Id == null)
-            {
-                {
-                    user.Id = "66df64cb-67c5-4645-904f-704ff92b3e81";
-                    user.UserName = "wqtest";
-                    user.KeyWord = "";
-                    user.OrganizationId = "270";
-                    user.PhoneNumber = "18122132334";
-                };
-            }
+            //if (user.Id == null)
+            //{
+            //    {
+            //        user.Id = "66df64cb-67c5-4645-904f-704ff92b3e81";
+            //        user.UserName = "wqtest";
+            //        user.KeyWord = "";
+            //        user.OrganizationId = "270";
+            //        user.PhoneNumber = "18122132334";
+            //    };
+            //}
 
             var Response = new ResponseMessage<List<ContractContentResponse>>();
             if (string.IsNullOrEmpty(contractId))
@@ -120,7 +138,7 @@ namespace XYHContractPlugin.Controllers
             return Response;
         }
 
-        [HttpGet("discardcontract")]
+        [HttpPost("discardcontract")]
         [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
         public async Task<ResponseMessage<ContractContentResponse>> DiscardContractByid(UserInfo user, [FromRoute] string contractId)
         {
@@ -146,22 +164,63 @@ namespace XYHContractPlugin.Controllers
             return Response;
         }
 
+        [HttpGet("currentmodifybyid/{contractId}")]
+        [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
+        public async Task<ResponseMessage<ContractModifyResponse>> GetCurrentModifyByid(UserInfo user, [FromRoute] string contractId)
+        {
+            var Response = new ResponseMessage<ContractModifyResponse>();
+            if (string.IsNullOrEmpty(contractId))
+            {
+                Response.Code = ResponseCodeDefines.ModelStateInvalid;
+                Response.Message = "请求参数不正确";
+                Logger.Error("error GetContractByid");
+                return Response;
+            }
+            try
+            {
+                Response.Extension = await _contractInfoManager.GetCurrentModifyInfo(contractId, HttpContext.RequestAborted);
+                Response.Message = $"getmodifyhistorybyid {contractId} sucess";
+            }
+            catch (Exception e)
+            {
+                Response.Code = ResponseCodeDefines.ServiceError;
+                Response.Message = "服务器错误：" + e.ToString();
+                Logger.Error("error");
+            }
+            return Response;
+        }
+
+        [HttpGet("modifyhistorybyid/{contractId}")]
+        [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
+        public async Task<ResponseMessage<List<ContractModifyResponse>>> GetModifyHistoryByid(UserInfo user, [FromRoute] string contractId)
+        {
+            var Response = new ResponseMessage<List<ContractModifyResponse>>();
+            if (string.IsNullOrEmpty(contractId))
+            {
+                Response.Code = ResponseCodeDefines.ModelStateInvalid;
+                Response.Message = "请求参数不正确";
+                Logger.Error("error GetContractByid");
+                return Response;
+            }
+            try
+            {
+                Response.Extension = await _contractInfoManager.GetAllModifyInfo(contractId, HttpContext.RequestAborted);
+                Response.Message = $"getmodifyhistorybyid {contractId} sucess";
+            }
+            catch (Exception e)
+            {
+                Response.Code = ResponseCodeDefines.ServiceError;
+                Response.Message = "服务器错误：" + e.ToString();
+                Logger.Error("error");
+            }
+            return Response;
+        }
+
         [HttpPost("addsimplecontract")]
         [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
         public async Task<ResponseMessage<ContractInfoResponse>> AddSimpleContract(UserInfo User, [FromBody]ContractContentInfoRequest request)
         {
             Logger.Trace($"用户{User?.UserName ?? ""}({User?.Id ?? ""})保存合同基础信息(PutBuildingBaseInfo)：\r\n请求参数为：\r\n" + (request != null ? JsonHelper.ToJson(request) : ""));
-
-            if (User.Id == null)
-            {
-                {
-                    User.Id = "66df64cb-67c5-4645-904f-704ff92b3e81";
-                    User.UserName = "wqtest";
-                    User.KeyWord = "";
-                    User.OrganizationId = "270";
-                    User.PhoneNumber = "18122132334";
-                };
-            }
 
             var response = new ResponseMessage<ContractInfoResponse>();
             if (!ModelState.IsValid)
@@ -174,8 +233,136 @@ namespace XYHContractPlugin.Controllers
             try
             {
                 //写发送成功后的表
-                response.Extension = await _contractInfoManager.AddContractAsync(User, request, HttpContext.RequestAborted);
+                if (!string.IsNullOrEmpty(User.OrganizationId))
+                {
+                    var resp = await _restClient.Get<ResponseMessage<string>>($"http://localhost:5000/api/Organization/{User.OrganizationId}", null);
+                    request.BaseInfo.CreateDepartment = resp.Extension;
+                }
+
+                response.Extension = await _contractInfoManager.AddContractAsync(User, request, "TEST", HttpContext.RequestAborted);
                 response.Message = "add simple ok";
+            }
+            catch (Exception e)
+            {
+                response.Code = ResponseCodeDefines.ServiceError;
+                response.Message = e.ToString();
+                Logger.Error($"用户{User?.UserName ?? ""}({User?.Id ?? ""})合同动态提交审核(UpdateRecordSubmit)报错：\r\n{e.ToString()},\r\n请求参数为：\r\n" + (request != null ? JsonHelper.ToJson(request) : ""));
+            }
+
+            return response;
+        }
+
+        [HttpPost("addcomplement/{contract}")]
+        [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
+        public async Task<ResponseMessage<bool>> AddComplementContract(UserInfo User, [FromBody]List<ContractComplementRequest> request, [FromRoute]string contract)
+        {
+            Logger.Trace($"用户{User?.UserName ?? ""}({User?.Id ?? ""})添加补充协议基础信息(PutBuildingBaseInfo)：\r\n请求参数为：\r\n" + (request != null ? JsonHelper.ToJson(request) : ""));
+
+            var response = new ResponseMessage<bool>();
+            if (!ModelState.IsValid)
+            {
+                response.Code = ResponseCodeDefines.ModelStateInvalid;
+                response.Message = ModelState.GetAllErrors();
+                return response;
+            }
+
+            try
+            {
+                string strModifyGuid = Guid.NewGuid().ToString();
+                string strCheckGuid = Guid.NewGuid().ToString();
+
+                GatewayInterface.Dto.ExamineSubmitRequest exarequest = new GatewayInterface.Dto.ExamineSubmitRequest();
+                exarequest.ContentId = contract;
+                exarequest.ContentType = "ContractCommit";
+                exarequest.ContentName = "AddComplement";
+                exarequest.SubmitDefineId = strModifyGuid;
+                exarequest.Source = "";
+                exarequest.CallbackUrl = ApplicationContext.Current.UpdateExamineCallbackUrl;
+                exarequest.Action = "TEST";/* exarequest.ContentType*/;
+                exarequest.TaskName = $"{User.UserName}添加合同补充协议{exarequest.ContentName}的动态{exarequest.ContentType}";
+
+                GatewayInterface.Dto.UserInfo userinfo = new GatewayInterface.Dto.UserInfo()
+                {
+                    Id = User.Id,
+                    KeyWord = User.KeyWord,
+                    OrganizationId = User.OrganizationId,
+                    OrganizationName = User.OrganizationName,
+                    UserName = User.UserName
+                };
+
+                var examineInterface = ApplicationContext.Current.Provider.GetRequiredService<IExamineInterface>();
+                var reponse = await examineInterface.Submit(userinfo, exarequest);
+                if (reponse.Code != ResponseCodeDefines.SuccessCode)
+                {
+                    response.Code = ResponseCodeDefines.ServiceError;
+                    response.Message = "向审核中心发起审核请求失败：" + reponse.Message;
+                    return response;
+                }
+
+                //写发送成功后的表
+                response.Extension = await _contractInfoManager.AddComplementAsync(User, contract, strModifyGuid, strCheckGuid, request, HttpContext.RequestAborted);
+                response.Message = "addcomplement ok";
+            }
+            catch (Exception e)
+            {
+                response.Code = ResponseCodeDefines.ServiceError;
+                response.Message = e.ToString();
+                Logger.Error($"用户{User?.UserName ?? ""}({User?.Id ?? ""})合同动态提交审核(UpdateRecordSubmit)报错：\r\n{e.ToString()},\r\n请求参数为：\r\n" + (request != null ? JsonHelper.ToJson(request) : ""));
+            }
+
+            return response;
+        }
+
+        [HttpPost("modifysimplecontract")]
+        [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
+        public async Task<ResponseMessage<string>> ModifySimpleContract(UserInfo User, [FromBody]ContractContentInfoRequest request)
+        {
+            Logger.Trace($"用户{User?.UserName ?? ""}({User?.Id ?? ""})保存合同基础信息(PutBuildingBaseInfo)：\r\n请求参数为：\r\n" + (request != null ? JsonHelper.ToJson(request) : ""));
+
+            var response = new ResponseMessage<string>();
+            if (!ModelState.IsValid)
+            {
+                response.Code = ResponseCodeDefines.ModelStateInvalid;
+                response.Message = ModelState.GetAllErrors();
+                return response;
+            }
+
+            try
+            {
+                //写发送成功后的表
+                var guid = await _contractInfoManager.ModifyContractBeforCheckAsync(User, request, "TEST", HttpContext.RequestAborted);
+
+                //审核提交
+                GatewayInterface.Dto.ExamineSubmitRequest exarequest = new GatewayInterface.Dto.ExamineSubmitRequest();
+                exarequest.ContentId = request.BaseInfo.ID;
+                exarequest.ContentType = "ContractCommit";
+                exarequest.ContentName = "Modify";
+                exarequest.SubmitDefineId = guid;
+                exarequest.Source = "";
+                exarequest.CallbackUrl = ApplicationContext.Current.UpdateExamineCallbackUrl;
+                exarequest.Action = "TEST"/*"TEST" exarequest.ContentType*/;
+                exarequest.TaskName = $"{User.UserName}修改合同{exarequest.ContentName}的动态{exarequest.ContentType}";
+
+                GatewayInterface.Dto.UserInfo userinfo = new GatewayInterface.Dto.UserInfo()
+                {
+                    Id = User.Id,
+                    KeyWord = User.KeyWord,
+                    OrganizationId = User.OrganizationId,
+                    OrganizationName = User.OrganizationName,
+                    UserName = User.UserName
+                };
+
+                var examineInterface = ApplicationContext.Current.Provider.GetRequiredService<IExamineInterface>();
+                var reponse = await examineInterface.Submit(userinfo, exarequest);
+                if (reponse.Code != ResponseCodeDefines.SuccessCode)
+                {
+                    response.Code = ResponseCodeDefines.ServiceError;
+                    response.Message = "向审核中心发起审核请求失败：" + reponse.Message;
+                    return response;
+                }
+
+                response.Extension = guid;
+                response.Message = "modify simple ok";
             }
             catch (Exception e)
             {
@@ -256,7 +443,7 @@ namespace XYHContractPlugin.Controllers
             return response;
         }
 
-        [HttpGet("getcontractcurcheck/{contractId}")]
+        [HttpGet("contractcurcheck/{contractId}")]
         [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
         public async Task<ResponseMessage<ContractModifyResponse>> GetContractCurCheck(UserInfo user, [FromRoute] string contractId)
         {
@@ -338,7 +525,7 @@ namespace XYHContractPlugin.Controllers
                 }
 
                 //写发送成功后的表
-                await _contractInfoManager.CreateAsync(User,request, exarequest.SubmitDefineId, HttpContext.RequestAborted);
+                await _contractInfoManager.CreateAsync(User,request, exarequest.SubmitDefineId, "TEST",HttpContext.RequestAborted);
             }
             catch (Exception e)
             {
@@ -407,6 +594,7 @@ namespace XYHContractPlugin.Controllers
                 if (examineResponse.ExamineStatus == ExamineStatus.Examined)
                 {
                     await _contractInfoManager.SubmitAsync(examineResponse.SubmitDefineId, ExamineStatusEnum.Approved);
+                    await _contractInfoManager.ModifyContractAfterCheckAsync(examineResponse.SubmitDefineId, examineResponse.ContentId, ExamineStatusEnum.Approved, HttpContext.RequestAborted);
                     response.Extension = ExamineStatusEnum.Approved;
                 }
                 else if (examineResponse.ExamineStatus == ExamineStatus.Reject)

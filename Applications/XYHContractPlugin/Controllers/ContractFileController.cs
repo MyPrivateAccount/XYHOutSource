@@ -17,21 +17,32 @@ using XYHContractPlugin.Dto.Request;
 using XYHContractPlugin.Dto.Response;
 using XYHContractPlugin.Managers;
 using XYHContractPlugin.Models;
-using XYHShopsPlugin.Managers;
 
 namespace XYHContractPlugin.Controllers
 {
     [Authorize(AuthenticationSchemes = OAuthValidationDefaults.AuthenticationScheme)]
     [Produces("application/json")]
     [Route("api/contractfiles")]
-    class ContractFileController : Controller
+    public class ContractFileController : Controller
     {
         private readonly FileInfoManager _fileInfoManager;
         private readonly FileScopeManager _fileScopeManager;
         private readonly ContractInfoManager _contractInfoManager;
         private readonly RestClient _restClient;
-        private readonly IMapper _mapper;
         private readonly ILogger Logger = LoggerManager.GetLogger("XYHContractFileInfo");
+
+        public ContractFileController(
+            FileInfoManager fim,
+            FileScopeManager fsm,
+            ContractInfoManager cim,
+            RestClient rsc)
+        {
+            _fileInfoManager = fim;
+            _fileScopeManager = fsm;
+            _contractInfoManager = cim;
+            _restClient = rsc;
+        }
+
         /// <summary>
         /// 批量上传文件
         /// </summary>
@@ -74,6 +85,7 @@ namespace XYHContractPlugin.Controllers
                     Logger.Info("nwf协议：\r\n{0}", JsonHelper.ToJson(nwf));
                     string response2 = await _restClient.Post(ApplicationContext.Current.NWFUrl, nwf, "POST", nameValueCollection);
                     Logger.Info("返回：\r\n{0}", response2);
+                    response.Message = response2;
                 }
                 catch (Exception e)
                 {

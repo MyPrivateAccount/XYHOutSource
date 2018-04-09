@@ -25,7 +25,7 @@ namespace XYHContractPlugin.Dto.Response
         /// </summary>
         public int? Modifyed { get; set; }
         public string CurrentModify { get; set; }
-
+        public int? ExamineStatus { get; set; }
         /// <summary>
         /// 是否上传附件
         /// </summary>
@@ -51,6 +51,7 @@ namespace XYHContractPlugin.Dto.Response
         public string CreateUser { get; set; }
         public DateTime? CreateTime { get; set; }
         public string CreateDepartment { get; set; }
+        public string CreateDepartmentID { get; set; }
         public string Organizete { get; set; }
         public string CommisionType { get; set; }
         public DateTime? StartTime { get; set; }

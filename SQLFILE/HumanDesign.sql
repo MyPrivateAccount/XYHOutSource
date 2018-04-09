@@ -45,8 +45,13 @@ CREATE TABLE `XYH_HU_CONTRACT` (
 DROP TABLE IF EXISTS `XYH_HU_BLACKLIST`;/*黑名单*/
 CREATE TABLE `XYH_HU_BLACKLIST` (
   `IDCard` varchar(127) NOT NULL DEFAULT '',/*身份证号*/
+<<<<<<< HEAD
+  `Name` varchar(127) NOT NULL DEFAULT '',/*名字*/
+  `Reason` varchar(255) DEFAULT '',/*理由*/
+=======
   `Name` varchar(127) NOT NULL DEFAULT ''/*名字*/
   `Reason` varchar(256) DEFAULT ''/*名字*/
+>>>>>>> b4909dc96729384b48867ccdaab5a52055794838
   PRIMARY KEY (`IDCard`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -92,7 +97,10 @@ CREATE TABLE `XYH_HU_MONTH` (
   `SettleTime` datetime DEFAULT NULL,/*月结时间*/
   `OperName` varchar(127) NOT NULL DEFAULT '',/*操作人*/
   `OperTime` datetime DEFAULT NULL,/*操作时间*/
+<<<<<<< HEAD
+=======
   `AttendanceForm` varchar(127) NOT NULL DEFAULT '',/*月结考勤表-链接到XYH_HU_ATTENDANCEFORM.ID*/
+>>>>>>> b4909dc96729384b48867ccdaab5a52055794838
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -114,5 +122,12 @@ DROP TABLE IF EXISTS `XYH_HU_ATTENDANCEFORM`;/*月结考勤表*/
 CREATE TABLE `XYH_HU_ATTENDANCEFORM` (
   `ID` varchar(127) NOT NULL DEFAULT '',/*考勤表ID*/
   `MonthID` varchar(127) NOT NULL DEFAULT '',
+<<<<<<< HEAD
+  `HumanID` varchar(127) NOT NULL DEFAULT '',/*数据库和员工id*/
+  `Late` int(11) DEFAULT 0,/*迟到*/
+  `Leave` int(11) DEFAULT 0,/*旷工*/
+  PRIMARY KEY (`ID`)
+=======
   `HumanID` varchar(127) NOT NULL DEFAULT ''/*数据库和员工id*/
+>>>>>>> b4909dc96729384b48867ccdaab5a52055794838
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

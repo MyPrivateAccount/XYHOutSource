@@ -8,7 +8,7 @@ using XYHContractPlugin.Dto.Request;
 using XYHContractPlugin.Models;
 using XYHContractPlugin.Stores;
 
-namespace XYHShopsPlugin.Managers
+namespace XYHContractPlugin.Managers
 {
     public class FileInfoManager
     {
@@ -30,6 +30,7 @@ namespace XYHShopsPlugin.Managers
             var fileInfos = _mapper.Map<List<FileInfo>>(fileInfoCallbackRequestList);
             for (int i = 0; i < fileInfos.Count; i++)
             {
+                fileInfos[i].IsDeleted = false;
                 fileInfos[i].CreateTime = DateTime.Now;
                 fileInfos[i].CreateUser = userId;
                 fileInfos[i].Uri = fileInfoCallbackRequestList[i].FilePath;

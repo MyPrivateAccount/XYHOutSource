@@ -5,6 +5,8 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Threading.Tasks;
 using XYHHumanPlugin.Models;
+using XYHHumanPlugin.Stores;
+using XYHHumanPlugin.Managers;
 
 namespace XYHHumanPlugin
 {
@@ -38,7 +40,10 @@ namespace XYHHumanPlugin
         public override Task<ResponseMessage> Init(ApplicationContext context)
         {
             //context.Services.AddDbContext<BaseDataDbContext>(options => options.UseMySql("Server=server-d01;database=xinyaohang;uid=root;pwd=root;"));
-            //context.Services.AddDbContext<TestContext>(opt => opt.UseMemoryCache("ToDoList"));
+            context.Services.AddDbContext<HumanDbContext>(options => options.UseMySql(context.ConnectionString), ServiceLifetime.Scoped);
+            context.Services.AddScoped<IHumanManageStore, HumanManageStore>();
+            context.Services.AddScoped<HumanManager>();
+
             return base.Init(context);
         }
 

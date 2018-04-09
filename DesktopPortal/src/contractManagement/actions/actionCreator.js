@@ -57,6 +57,7 @@ export const uploadAttachMentListComplete = createAction(actionTypes.UPLOAD_ATTC
 
 //合同录入
 export const openContractRecord = createAction(actionTypes.OPEN_RECORD);
+export const openContractRecordNavigator = createAction(actionTypes.OPEN_RECORD_NAVIGATOR);
 export const closeContractReord = createAction(actionTypes.CLOSE_RECORD);
 
 //export const subMitContractInfo = createAction(actionTypes.SUBMIT_CONTRACT_INFO);
@@ -83,8 +84,12 @@ export const openModifyHistory = createAction(actionTypes.OPEN_MODIFY_HISTORY);
 export const closeModifyHistory = createAction(actionTypes.CLOSE_MODIFY_HISTORY);
 
 
-
-
+//补充协议
+export const openComplement = createAction(actionTypes.OPEN_COMPLEMENT);
+export const openComplementStart = createAction(actionTypes.OPEN_COMPLEMENT_START);
+export const openComplementFinish = createAction(actionTypes.OPEN_COMPLEMENT_FINISH);
+export const closeComplement = createAction(actionTypes.CLOSE_COMPLEMENT);
+export const contractComplementEdit = createAction(actionTypes.CONTRACT_COMPLEMENT_EDIT);
 
 
 
@@ -119,3 +124,7 @@ export const basicLoadingStart = createAction(actionTypes.LOADING_START_BASIC);
 export const basicLoadingEnd = createAction(actionTypes.LOADING_END_BASIC);
 export const attchLoadingStart = createAction(actionTypes.LOADING_START_ATTACH);
 export const attchLoadingEnd = createAction(actionTypes.LOADING_END_ATTACH);
+
+
+export const basicSubmitEnd = createAction(actionTypes.BASIC_SUBMIT_END);
+export const attachSubmitEnd = createAction(actionTypes.ATTACH_SUBMIT_END);

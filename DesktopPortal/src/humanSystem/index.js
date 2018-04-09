@@ -6,9 +6,8 @@ import reducers from './reducers';
 import ContentPage from './pages/contentPage';
 import {sagaMiddleware} from '../';
 import rootSaga from './saga/rootSaga';
-import {closeCustomerDetail, getOrgList, getOrgDetail, openOrgSelect, changeCustomerMenu} from './actions/actionCreator';
+import {getOrgList, getOrgDetail, openOrgSelect, changeCustomerMenu,closebreadPage} from './actions/actionCreator';
 import OrgSelect from './pages/orgSelect/orgSelect';
-import CustomerDetail from './pages/customerDetail';
 sagaMiddleware.run(rootSaga);
 const {Header, Sider, Content} = Layout;
 
@@ -77,12 +76,22 @@ const homeStyle = {
         getContentPage() {
             let navigator = this.props.basicData.navigator;
             if (navigator.length > 0) {
-                if (navigator[navigator.length - 1].type === "customerDetail") {
-                    return <CustomerDetail />;
+                if (navigator[navigator.length - 1].id === 0) {
+                    return <ContentPage curMenuID='Onboarding' />;
                 }
             }
-           return <ContentPage curMenuID={this.state.activeMenu.menuID} />
+           return <ContentPage curMenuID={this.state.activeMenu.menuID} />;
         }
+
+        handleNavClick() {
+            let navigator = this.props.basicData.navigator;
+            if(navigator.length > 0) {
+                if(navigator[navigator.length -1].id === 0) {
+                    this.props.dispatch(closebreadPage(0));
+                }
+            }
+        }
+
     render() {
         let navigator = this.props.basicData.navigator;
         //let showHeaderMenuIDs = menuDefine.map((menu)=> {return menu.menuID});//[menuDefine[0].menuID,menuDefine[1].menuID, menuDefine[2].menuID,menuDefine[0].menuID];
@@ -114,7 +123,7 @@ const homeStyle = {
                         <Layout>
                             <Header>
                                 <Breadcrumb separator=">" style={{fontSize: '1.2rem'}}>
-                                    <Breadcrumb.Item onClick={this.handleNavClick} key='home' style={homeStyle.navigator}>{this.state.activeMenu.displayName}</Breadcrumb.Item>
+                                    <Breadcrumb.Item onClick={this.handleNavClick.bind(this)} key='home' style={homeStyle.navigator}>{this.state.activeMenu.displayName}</Breadcrumb.Item>
                                     {
                                         navigator.map(nav => <Breadcrumb.Item key={nav.id}>{nav.name}</Breadcrumb.Item>)
                                     }

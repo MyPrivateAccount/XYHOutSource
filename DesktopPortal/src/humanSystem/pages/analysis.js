@@ -1,5 +1,4 @@
 import { connect } from 'react-redux';
-import { openCustomerDetail } from '../actions/actionCreator';
 import React, { Component } from 'react'
 import { Button, Row, Col, DatePicker, Table } from 'antd'
 import echarts from 'echarts'

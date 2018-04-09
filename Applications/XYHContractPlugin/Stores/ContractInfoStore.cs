@@ -28,12 +28,18 @@ namespace XYHContractPlugin.Stores
             return Context.Database.GetDbConnection().Query<T>(sql);
         }
 
-        public async Task<ContractInfo> CreateAsync(SimpleUser userinfo, ContractInfo buildingBaseInfo, string modifyid, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ContractInfo> CreateAsync(SimpleUser userinfo, ContractInfo buildingBaseInfo, string modifyid, string checkaction, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (buildingBaseInfo == null)
             {
                 throw new ArgumentNullException(nameof(buildingBaseInfo));
             }
+
+            if (string.IsNullOrEmpty(modifyid))
+            {
+                modifyid = Guid.NewGuid().ToString();
+            }
+
             var modify = new ModifyInfo();
             modify.ID = modifyid;
             modify.Type = 1;//创建
@@ -42,7 +48,7 @@ namespace XYHContractPlugin.Stores
             modify.ModifyStartTime = DateTime.Now;
             modify.ExamineStatus = (int)ExamineStatusEnum.UnSubmit;
             modify.ExamineTime = modify.ModifyStartTime;
-            modify.ModifyCheck = "0";
+            modify.ModifyCheck = checkaction;
 
             buildingBaseInfo.IsDelete = false;
             buildingBaseInfo.CreateUser = userinfo.Id;
@@ -54,6 +60,76 @@ namespace XYHContractPlugin.Stores
             Context.Add(modify);
             await Context.SaveChangesAsync(cancellationToken);
             return buildingBaseInfo;
+        }
+
+        public async Task CreateModifyAsync(SimpleUser userinfo, string contractid, string modifyid, int ntype, string checkaction, ExamineStatusEnum exa = ExamineStatusEnum.UnSubmit,
+            bool updatetocontract = true, string ext1 = null, string ext2= null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (contractid != null)
+            {
+                if (string.IsNullOrEmpty(modifyid))
+                {
+                    modifyid = Guid.NewGuid().ToString();
+                }
+
+                var tmodify = new ModifyInfo();
+                tmodify.ID = modifyid;
+                tmodify.ContractID = contractid;
+                tmodify.ModifyStartTime = DateTime.Now;
+                tmodify.ExamineTime = tmodify.ModifyStartTime;
+                tmodify.Type = ntype;
+                tmodify.ModifyPepole = userinfo.Id;
+                tmodify.ExamineStatus = (int)exa;
+                tmodify.Ext1 = ext1;
+                tmodify.Ext2 = ext2;
+                tmodify.ModifyCheck = checkaction;
+
+                if (updatetocontract)
+                {
+                    ContractInfo info = new ContractInfo()
+                    {
+                        ID = contractid,
+                        CurrentModify = modifyid
+                    };
+                    var entry = Context.Attach(info);
+                    entry.Property(x => x.CurrentModify).IsModified = true;
+                }
+               
+                Context.Add(tmodify);
+                await Context.SaveChangesAsync(cancellationToken);
+            }
+        }
+
+        public async Task<bool> CreateAsync(SimpleUser userinfo, List<AnnexInfo> annexinfo, CancellationToken cancle = default(CancellationToken))
+        {
+            if (annexinfo == null)
+            {
+                throw new ArgumentNullException(nameof(annexinfo));
+            }
+
+            if (annexinfo.Count > 0)
+            {
+                Context.AddRange(annexinfo);
+                await Context.SaveChangesAsync(cancle);
+            }
+            
+            return true;
+        }
+
+        public async Task<bool> CreateAsync(SimpleUser userinfo, List<ComplementInfo> compleinfo, CancellationToken cancle = default(CancellationToken))
+        {
+            if (compleinfo == null)
+            {
+                throw new ArgumentNullException(nameof(compleinfo));
+            }
+
+            if (compleinfo.Count > 0)
+            {
+                Context.AddRange(compleinfo);
+                await Context.SaveChangesAsync(cancle);
+            }
+            
+            return true;
         }
 
         public async Task DeleteAsync(SimpleUser userinfo, string contractid, CancellationToken cancellationToken = default(CancellationToken))
@@ -82,7 +158,7 @@ namespace XYHContractPlugin.Stores
         }
 
         public async Task DeleteListAsync(List<ContractInfo> areaDefineList, CancellationToken cancellationToken = default(CancellationToken))
-        {
+        {           
             if (areaDefineList == null)
             {
                 throw new ArgumentNullException(nameof(areaDefineList));
@@ -125,13 +201,31 @@ namespace XYHContractPlugin.Stores
             return query.Invoke(Context.ModifyInfos.AsNoTracking()).SingleOrDefaultAsync(cancellationToken);
         }
 
-        public Task<List<TResult>> ListModifyAsync<TResult>(Func<IQueryable<ModifyInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<List<TResult>> GetListModifyAsync<TResult>(Func<IQueryable<ModifyInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (query == null)
             {
                 throw new ArgumentNullException(nameof(query));
             }
             return query.Invoke(Context.ModifyInfos.AsNoTracking()).ToListAsync(cancellationToken);
+        }
+
+       public Task<List<TResult>> GetListAnnexAsync<TResult>(Func<IQueryable<AnnexInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (query == null)
+            {
+                throw new ArgumentNullException(nameof(query));
+            }
+            return query.Invoke(Context.AnnexInfos.AsNoTracking()).ToListAsync(cancellationToken);
+        }
+
+        public Task<List<TResult>> GetListComplementAsync<TResult>(Func<IQueryable<ComplementInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (query == null)
+            {
+                throw new ArgumentNullException(nameof(query));
+            }
+            return query.Invoke(Context.ComplementInfos.AsNoTracking()).ToListAsync(cancellationToken);
         }
 
         public async Task UpdateAsync(ContractInfo areaDefine, CancellationToken cancellationToken = default(CancellationToken))
@@ -142,6 +236,36 @@ namespace XYHContractPlugin.Stores
             }
             Context.ContractInfos.Attach(areaDefine);
             Context.ContractInfos.Update(areaDefine);
+            try
+            {
+                await Context.SaveChangesAsync(cancellationToken);
+            }
+            catch (DbUpdateConcurrencyException) { throw; }
+        }
+
+        public async Task UpdateListAsync(List<AnnexInfo> areaDefine, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (areaDefine == null)
+            {
+                throw new ArgumentNullException(nameof(areaDefine));
+            }
+            //Context.AnnexInfos.Attach(areaDefine);
+            Context.AnnexInfos.UpdateRange(areaDefine);
+            try
+            {
+                await Context.SaveChangesAsync(cancellationToken);
+            }
+            catch (DbUpdateConcurrencyException) { throw; }
+        }
+
+        public async Task UpdateListAsync(List<ComplementInfo> areaDefine, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (areaDefine == null)
+            {
+                throw new ArgumentNullException(nameof(areaDefine));
+            }
+            //Context.ComplementInfos.Attach(areaDefine);
+            Context.ComplementInfos.UpdateRange(areaDefine);
             try
             {
                 await Context.SaveChangesAsync(cancellationToken);

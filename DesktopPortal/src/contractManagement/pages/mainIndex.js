@@ -19,11 +19,12 @@ class MainIndex extends Component {
     }
     componentWillMount() {
         if(this.props.basicData.contractCategories.length === 0 || this.props.basicData.firstPartyCatogories.length === 0
-            || this.props.basicData.commissionCatogories.length === 0 || this.props.basicData.contractProjectCatogories.length === 0){
-                this.props.dispatch(getDicParList(['CONTRACT_CATEGORIES', 'FIRST_PARTT_CATEGORIES', 'COMMISSION_CATEGORIES', 'XK_SELLER_TYPE', 'CONTRACT_ATTACHMENT_CATEGORIES']));
+            || this.props.basicData.commissionCatogories.length === 0 || this.props.basicData.contractProjectCatogories.length === 0
+            || this.props.basicData.settleAccountsCatogories.length === 0){
+                this.props.dispatch(getDicParList(['CONTRACT_CATEGORIES', 'FIRST_PARTT_CATEGORIES', 'COMMISSION_CATEGORIES', 'XK_SELLER_TYPE', 'CONTRACT_ATTACHMENT_CATEGORIES', 'CONTRACT_SETTLEACCOUNTS']));
             }
             
-        //this.props.dispatch(setLoadingVisible(true));//后面打开
+        this.props.dispatch(setLoadingVisible(true));//后面打开
     }
 
        //是否有权限
@@ -54,18 +55,18 @@ class MainIndex extends Component {
     // onClickUploadFile = (e)=>{
     //     this.props.dispatch(openAttachMent({id:1}));
     // }
-    handleClickFucButton = (buttonID) =>{
-        switch(buttonID){
-            case 'record':
-                return this.onClickRecord;
-            case 'export':
-                return this.onClickExPort;
-            case 'uploadFile':
-                return this.onClickUploadFile;
-            default:
-                return null;
-        }
-    }
+        // handleClickFucButton = (buttonID) =>{
+        //     switch(buttonID){
+        //         case 'record':
+        //             return this.onClickRecord;
+        //         case 'export':
+        //             return this.onClickExPort;
+        //         case 'uploadFile':
+        //             return this.onClickUploadFile;
+        //         default:
+        //             return null;
+        //     }
+        // }
     render() {
         let showLoading = this.props.showLoading;
         return (

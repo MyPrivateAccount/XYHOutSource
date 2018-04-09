@@ -24,7 +24,7 @@ namespace XYHContractPlugin
             CreateMap<ContractModifyResponse, ModifyInfo>();
             CreateMap<ModifyInfo, ContractModifyResponse>();
 
-            CreateMap<FileInfoRequest, ContractFileScope>();
+            CreateMap<FileInfoRequest, AnnexInfo>();
 
             CreateMap<FileInfoCallbackRequest, FileInfo>();
             CreateMap<FileInfo, FileInfoCallbackRequest>();
@@ -46,6 +46,7 @@ namespace XYHContractPlugin
                 .ForMember(d => d.Name, m => m.MapFrom(src => src.BaseInfo.Name))
                 .ForMember(d => d.ContractEstate, m => m.MapFrom(src => src.EstateInfo.ID))
                 .ForMember(d => d.Modify, m => m.MapFrom(src => src.Modifyinfo==null?0: src.Modifyinfo.Count))
+                .ForMember(d => d.CurrentModify, m => m.MapFrom(src => src.BaseInfo.CurrentModify))
                 .ForMember(d => d.Annex, m => m.MapFrom(src => src.AnnexInfo==null?0: src.AnnexInfo.Count))
                 .ForMember(d => d.Complement, m => m.MapFrom(src => src.ComplementInfo==null?0: src.ComplementInfo.Count))
                 .ForMember(d => d.Follow, m => m.MapFrom(src => src.BaseInfo.Follow))
@@ -79,6 +80,7 @@ namespace XYHContractPlugin
                     Commission = src.Commission,
                     Relation = src.Relation,
                     Name = src.Name,
+                    CurrentModify = src.CurrentModify,
                     Follow = src.Follow,
                     Remark = src.Remark,
                     ProjectName = src.ProjectName,
