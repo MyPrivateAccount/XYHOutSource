@@ -13,5 +13,9 @@ namespace XYHHumanPlugin.Managers
         }
 
         protected IHumanManageStore _Store { get; }
+
+        public virtual async Task<string> CreateJobNumberAsync()
+        {
+        }
     }
 }
