@@ -356,11 +356,11 @@ class SearchResult extends Component {
                 dataIndex: 'createDepartment',
                 key: 'createDepartment'
             },
-            {
-                title: '申请人',
-                dataIndex:'createUser',
-                key: 'createUser',
-            },
+            // {
+            //     title: '申请人',
+            //     dataIndex:'createUser',
+            //     key: 'createUser',
+            // },
             {
                 title: '合同编号',
                 dataIndex: 'id',
@@ -405,70 +405,70 @@ class SearchResult extends Component {
                 dataIndex: 'principalpepoleA',
                 key: 'principalpepoleA'
             },
-            {
-                title: '签约时间',
-                children: [
-                    {
-                        title: '签订起始时间',
-                        dataIndex:'startTime',
-                        key:'startTime',
-                        render: this.dateTimeRender,
-                    },
-                    {
-                        title: '签订止时间',
-                        dataIndex:'endTime',
-                        key:'endTime',
-                        render: this.dateTimeRender,
-                    },
+            // {
+            //     title: '签约时间',
+            //     children: [
+            //         {
+            //             title: '签订起始时间',
+            //             dataIndex:'startTime',
+            //             key:'startTime',
+            //             render: this.dateTimeRender,
+            //         },
+            //         {
+            //             title: '签订止时间',
+            //             dataIndex:'endTime',
+            //             key:'endTime',
+            //             render: this.dateTimeRender,
+            //         },
                     
-                ],
-            },
+            //     ],
+            // },
             
-            {
-                title: '包销方/开发商',
-                children: [
-                    {
-                        title: '包销方/开发商',
-                        dataIndex:'companyAT',
-                        key:'companyAT',
-                        render: this.getNameByType('companyAT'),
-                    },
-                    {
-                        title: '是否提供关系证明',
-                        dataIndex:'isSubmmitRelation',
-                        key:'isSubmmitRelation',
-                        render: this.isTrueOrFalse,
-                    },
+            // {
+            //     title: '包销方/开发商',
+            //     children: [
+            //         {
+            //             title: '包销方/开发商',
+            //             dataIndex:'companyAT',
+            //             key:'companyAT',
+            //             render: this.getNameByType('companyAT'),
+            //         },
+            //         {
+            //             title: '是否提供关系证明',
+            //             dataIndex:'isSubmmitRelation',
+            //             key:'isSubmmitRelation',
+            //             render: this.isTrueOrFalse,
+            //         },
                     
-                ],
-            },
-            {
-                title: '是否提供铺号(销控明细)',
-                dataIndex:'isSubmmitShop',
-                key:'isSubmmitShop',
-                render: this.isTrueOrFalse,
-            },
-            {
-                title: '佣金方案',
-                dataIndex:'commisionType',
-                key:'commisionType',
-                render: this.getNameByType('commisionType'),
-            },
-            {
-                title: '结算方式',
-                dataIndex:'settleaccounts',
-                key:'settleaccounts',
-            },
+            //     ],
+            // },
+            // {
+            //     title: '是否提供铺号(销控明细)',
+            //     dataIndex:'isSubmmitShop',
+            //     key:'isSubmmitShop',
+            //     render: this.isTrueOrFalse,
+            // },
+            // {
+            //     title: '佣金方案',
+            //     dataIndex:'commisionType',
+            //     key:'commisionType',
+            //     render: this.getNameByType('commisionType'),
+            // },
+            // {
+            //     title: '结算方式',
+            //     dataIndex:'settleaccounts',
+            //     key:'settleaccounts',
+            // },
             {
                 title: '新签/续签',
                 dataIndex:'follow',
                 key:'follow',
             },
-            {
-                title: '备注',
-                dataIndex:'remark',
-                key:'remark',
-            },
+            // {
+            //     title: '备注',
+            //     dataIndex:'remark',
+            //     key:'remark',
+            // },
         ];
         return columns;
     };
