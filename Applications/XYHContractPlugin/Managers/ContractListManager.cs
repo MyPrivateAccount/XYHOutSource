@@ -111,12 +111,12 @@ namespace XYHContractPlugin.Managers
 
             if (!string.IsNullOrEmpty(condition?.Organizate))
             {
-                sql += connectstr + @"a.`CreateDepartment`='" + condition.Organizate + "'";
+                sql += connectstr + @"a.`Organizete`='" + condition.Organizate + "'";
                 connectstr = " and ";
             }
 
 
-            if (condition?.OrderRule == 0)
+            if (condition?.OrderRule == 0 || condition?.OrderRule == null)
             {
                 sql += @" ORDER BY a.`StartTime`";
             }

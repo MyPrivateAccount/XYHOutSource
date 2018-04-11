@@ -13,7 +13,7 @@ namespace XYHContractInterfacePlugin
         public ContractInterfaceMappingProfile()
         {
             CreateMap<XYHContractPlugin.Dto.Response.ExamineResponse, GatewayInterface.Dto.ExamineResponse>();
-            CreateMap<GatewayInterface.Dto.ExamineSubmitRequest, XYHContractPlugin.Dto.Response.ExamineResponse>();
+            CreateMap<GatewayInterface.Dto.ExamineResponse, XYHContractPlugin.Dto.Response.ExamineResponse>();
 
             CreateMap<ApplicationCore.Dto.UserInfo, GatewayInterface.Dto.UserInfo>();
             CreateMap<GatewayInterface.Dto.UserInfo, ApplicationCore.Dto.UserInfo>();

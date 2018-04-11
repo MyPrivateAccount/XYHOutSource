@@ -25,11 +25,13 @@ namespace XYHContractPlugin.Controllers
         private readonly ContractListManager _contractListManager;
         private readonly XYH.Core.Log.ILogger Logger = LoggerManager.GetLogger("ContractListInfo");
         protected PermissionExpansionManager _permissionExpansionManager { get; }
+        private readonly RestClient _restClient;
 
-        public ContractListController(ContractListManager listmanager, PermissionExpansionManager permissionExpansionManager)
+        public ContractListController(ContractListManager listmanager, PermissionExpansionManager permissionExpansionManager, RestClient rsc)
         {
             _contractListManager = listmanager;
             _permissionExpansionManager = permissionExpansionManager;
+            _restClient = rsc;
         }
 
         [HttpPost("searchcontract")]
