@@ -10,22 +10,18 @@ namespace XYHContractPlugin.Dto.Response
         /// <summary>
         /// 审核流程Id
         /// </summary>
-        [MaxLength(127)]
         public string FlowId { get; set; }
         /// <summary>
         /// 审核内容Id
         /// </summary>
-        [MaxLength(127)]
         public string ContentId { get; set; }
 
-        [MaxLength(255)]
         public string ContentType { get; set; }
 
         public string Content { get; set; }
         /// <summary>
         /// 供提交者回调时使用的Id
         /// </summary>
-        [MaxLength(127)]
         public string SubmitDefineId { get; set; }
         /// <summary>
         /// 审核状态

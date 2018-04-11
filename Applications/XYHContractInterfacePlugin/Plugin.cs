@@ -25,7 +25,7 @@ namespace XYHContractInterfacePlugin
             //context.Services.AddScoped<ShopsController>();
             //context.Services.AddScoped<UpdateRecordController>();
             context.Services.AddScoped<IContractInterface, ContractInterfaceImplement>();
-            //context.Services.AddScoped<ContractInfoController>();
+            context.Services.AddScoped<ContractInfoController>();
             return base.Init(context);
         }
 
