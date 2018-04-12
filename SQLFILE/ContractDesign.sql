@@ -25,7 +25,7 @@ CREATE TABLE `XYH_DT_CONTRACTINFO` (
   `ProjectName` varchar(64) NOT NULL DEFAULT '',/*项目名称*/
   `ProjectType` varchar(64) NOT NULL DEFAULT '',/*项目类型*/
   `CompanyA` varchar(64) NOT NULL DEFAULT '',/*甲方公司全称*/
-  `CompanyAT` int(11) NOT NULL,/*甲方公司类型*/
+  `CompanyAT` varchar(64) NOT NULL DEFAULT '',/*甲方公司类型*/
   `PrincipalpepoleA` varchar(127) NOT NULL DEFAULT '',/*甲方负责人*/
   `PrincipalpepoleB` varchar(127) NOT NULL DEFAULT '',/*乙方负责人*/
   `ProprincipalPepole` varchar(127) NOT NULL DEFAULT '',/*项目负责人*/

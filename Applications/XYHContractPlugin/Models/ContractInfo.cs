@@ -36,7 +36,7 @@ namespace XYHContractPlugin.Models
         public string ProjectType { get; set; }
         [MaxLength(64)]
         public string CompanyA { get; set; }
-        public int? CompanyAT { get; set; }
+        public string CompanyAT { get; set; }
         [MaxLength(127)]
         public string PrincipalpepoleA { get; set; }
         [MaxLength(127)]

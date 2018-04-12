@@ -44,7 +44,7 @@ namespace XYHContractPlugin.Dto.Response
         public string ProjectName { get; set; }
         public string ProjectType { get; set; }
         public string CompanyA { get; set; }
-        public int? CompanyAT { get; set; }
+        public string CompanyAT { get; set; }
         public string PrincipalpepoleA { get; set; }
         public string PrincipalpepoleB { get; set; }
         public string ProprincipalPepole { get; set; }

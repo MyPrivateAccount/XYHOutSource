@@ -100,7 +100,9 @@ namespace XYHContractPlugin.Managers
             List<FileInfo> list = new List<FileInfo>();
             foreach (var item in contractFiles)
             {
-                list.AddRange(_mapper.Map<List<FileInfo>>(await _fileInfoStore.ListAsync(a => a.Where(b => b.FileGuid == item.FileGuid))));
+                var tfile = await _fileInfoStore.ListAsync(a => a.Where(b => b.FileGuid == item.FileGuid));
+                tfile.ElementAt(0).Group = item.Group;
+                list.AddRange(_mapper.Map<List<FileInfo>>(tfile));
             }
             return list;
         }

@@ -46,7 +46,7 @@ namespace XYHContractPlugin.Stores
             modify.ContractID = buildingBaseInfo.ID;
             modify.ModifyPepole = userinfo.Id;
             modify.ModifyStartTime = DateTime.Now;
-            modify.ExamineStatus = (int)ExamineStatusEnum.UnSubmit;
+            modify.ExamineStatus = (int)ExamineStatusEnum.Auditing;
             modify.ExamineTime = modify.ModifyStartTime;
             modify.ModifyCheck = checkaction;
 
@@ -359,8 +359,8 @@ namespace XYHContractPlugin.Stores
                 ExamineTime = DateTime.Now,
                 ExamineStatus = (int)status
             };
-            var entry = Context.Attach(buildings);
-            //var entry = Context.Entry(buildings);
+            Context.Attach(buildings);
+            var entry = Context.Entry(buildings);
             entry.Property(x => x.ExamineStatus).IsModified = true;
             entry.Property(x => x.ExamineTime).IsModified = true;
             try

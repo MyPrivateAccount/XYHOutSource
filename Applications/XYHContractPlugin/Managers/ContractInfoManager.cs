@@ -151,20 +151,19 @@ namespace XYHContractPlugin.Managers
             return ret;
         }
 
-        public virtual async Task<string> ModifyContractBeforCheckAsync(UserInfo userinfo, ContractContentInfoRequest buildingBaseInfoRequest, string checkaction, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual async Task<string> ModifyContractBeforCheckAsync(UserInfo userinfo, ContractContentInfoRequest buildingBaseInfoRequest, string strmodify, string checkaction, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (buildingBaseInfoRequest == null)
             {
                 throw new ArgumentNullException(nameof(buildingBaseInfoRequest));
             }
 
-            string guid = Guid.NewGuid().ToString();
             await Store.CreateModifyAsync(_mapper.Map<SimpleUser>(userinfo),
                 buildingBaseInfoRequest.BaseInfo.ID,
-                guid, ModifyContract, checkaction, ExamineStatusEnum.UnSubmit, true,
+                strmodify, ModifyContract, checkaction, ExamineStatusEnum.Auditing, true,
                 JsonHelper.ToJson(buildingBaseInfoRequest),null, cancellationToken);//2是修改
 
-            return guid;
+            return strmodify;
         }
 
         public virtual async Task ModifyContractAsync(ContractContentInfoRequest buildingBaseInfoRequest, CancellationToken cancellationToken = default(CancellationToken))

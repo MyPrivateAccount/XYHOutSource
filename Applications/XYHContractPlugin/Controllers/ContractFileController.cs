@@ -75,6 +75,37 @@ namespace XYHContractPlugin.Controllers
                 Logger.Error($"合同文件上传失败：合同不存在，\r\n请求参数为：\r\n" + (fileInfoRequests != null ? JsonHelper.ToJson(fileInfoRequests) : ""));
                 return response;
             }
+
+            string strModifyGuid = Guid.NewGuid().ToString();
+
+            GatewayInterface.Dto.ExamineSubmitRequest exarequest = new GatewayInterface.Dto.ExamineSubmitRequest();
+            exarequest.ContentId = contractId;
+            exarequest.ContentType = "ContractCommit";
+            exarequest.ContentName = "AddComplement";
+            exarequest.SubmitDefineId = strModifyGuid;
+            exarequest.Source = "";
+            exarequest.CallbackUrl = ApplicationContext.Current.UpdateExamineCallbackUrl;
+            exarequest.Action = "TEST";/* exarequest.ContentType*/;
+            exarequest.TaskName = $"{user.UserName}添加合同附件{exarequest.ContentName}的动态{exarequest.ContentType}";
+
+            GatewayInterface.Dto.UserInfo userinfo = new GatewayInterface.Dto.UserInfo()
+            {
+                Id = user.Id,
+                KeyWord = user.KeyWord,
+                OrganizationId = user.OrganizationId,
+                OrganizationName = user.OrganizationName,
+                UserName = user.UserName
+            };
+
+            var examineInterface = ApplicationContext.Current.Provider.GetRequiredService<IExamineInterface>();
+            var reponse = await examineInterface.Submit(userinfo, exarequest);
+            if (reponse.Code != ResponseCodeDefines.SuccessCode)
+            {
+                response.Code = ResponseCodeDefines.ServiceError;
+                response.Message = "向审核中心发起审核请求失败：" + reponse.Message;
+                return response;
+            }
+
             foreach (var item in fileInfoRequests)
             {
                 try
@@ -85,36 +116,6 @@ namespace XYHContractPlugin.Controllers
                     Logger.Info("nwf协议：\r\n{0}", JsonHelper.ToJson(nwf));
                     string response2 = await _restClient.Post(ApplicationContext.Current.NWFUrl, nwf, "POST", nameValueCollection);
                     Logger.Info("返回：\r\n{0}", response2);
-
-                    string strModifyGuid = Guid.NewGuid().ToString();
-
-                    GatewayInterface.Dto.ExamineSubmitRequest exarequest = new GatewayInterface.Dto.ExamineSubmitRequest();
-                    exarequest.ContentId = contractId;
-                    exarequest.ContentType = "ContractCommit";
-                    exarequest.ContentName = "AddComplement";
-                    exarequest.SubmitDefineId = strModifyGuid;
-                    exarequest.Source = "";
-                    exarequest.CallbackUrl = ApplicationContext.Current.UpdateExamineCallbackUrl;
-                    exarequest.Action = "TEST";/* exarequest.ContentType*/;
-                    exarequest.TaskName = $"{user.UserName}添加合同附件{exarequest.ContentName}的动态{exarequest.ContentType}";
-
-                    GatewayInterface.Dto.UserInfo userinfo = new GatewayInterface.Dto.UserInfo()
-                    {
-                        Id = user.Id,
-                        KeyWord = user.KeyWord,
-                        OrganizationId = user.OrganizationId,
-                        OrganizationName = user.OrganizationName,
-                        UserName = user.UserName
-                    };
-
-                    var examineInterface = ApplicationContext.Current.Provider.GetRequiredService<IExamineInterface>();
-                    var reponse = await examineInterface.Submit(userinfo, exarequest);
-                    if (reponse.Code != ResponseCodeDefines.SuccessCode)
-                    {
-                        response.Code = ResponseCodeDefines.ServiceError;
-                        response.Message = "向审核中心发起审核请求失败：" + reponse.Message;
-                        return response;
-                    }
 
                     await _fileScopeManager.CreateAsync(user, dest, contractId, strModifyGuid, "TEST", item, HttpContext.RequestAborted);
 
