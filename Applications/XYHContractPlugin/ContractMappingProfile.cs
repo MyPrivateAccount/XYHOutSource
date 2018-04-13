@@ -61,12 +61,15 @@ namespace XYHContractPlugin
                 .ForMember(d => d.CreateUser, m => m.MapFrom(src => src.BaseInfo.CreateUser))
                 .ForMember(d => d.CreateTime, m => m.MapFrom(src => src.BaseInfo.CreateTime))
                 .ForMember(d => d.CreateDepartment, m => m.MapFrom(src => src.BaseInfo.CreateDepartment))
-                .ForMember(d => d.Organizete, m => m.MapFrom(src => src.BaseInfo.Organizete))
+                .ForMember(d => d.Organizate, m => m.MapFrom(src => src.BaseInfo.Organizate))
+                .ForMember(d => d.OrganizateID, m => m.MapFrom(src => src.BaseInfo.OrganizateID))
                 .ForMember(d => d.CommisionType, m => m.MapFrom(src => src.BaseInfo.CommisionType))
                 .ForMember(d => d.StartTime, m => m.MapFrom(src => src.BaseInfo.StartTime))
                 .ForMember(d => d.EndTime, m => m.MapFrom(src => src.BaseInfo.EndTime))
                 .ForMember(d => d.Count, m => m.MapFrom(src => src.BaseInfo.Count))
-                .ForMember(d => d.ReturnOrigin, m => m.MapFrom(src => src.BaseInfo.ReturnOrigin));
+                .ForMember(d => d.ReturnOrigin, m => m.MapFrom(src => src.BaseInfo.ReturnOrigin))
+                .ForMember(d => d.Ext1, m => m.MapFrom(src => src.BaseInfo.Ext1))
+                .ForMember(d => d.Ext2, m => m.MapFrom(src => src.BaseInfo.Ext2));
 
             CreateMap<ContractInfo, ContractContentResponse>()
                 .ForMember(d => d.Discard, m => m.MapFrom(src => src.IsDelete))
@@ -93,12 +96,15 @@ namespace XYHContractPlugin
                     CreateUser = src.CreateUser,
                     CreateTime = src.CreateTime,
                     CreateDepartment = src.CreateDepartment,
-                    Organizete = src.Organizete,
+                    Organizate = src.Organizate,
+                    OrganizateID = src.OrganizateID,
                     CommisionType = src.CommisionType,
                     StartTime = src.StartTime,
                     EndTime = src.EndTime,
                     Count = src.Count,
-                    ReturnOrigin = src.ReturnOrigin
+                    ReturnOrigin = src.ReturnOrigin,
+                    Ext1 = src.Ext1,
+                    Ext2 = src.Ext2
                 }));
         }
     }

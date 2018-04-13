@@ -51,7 +51,9 @@ namespace XYHContractPlugin.Models
         [MaxLength(127)]
         public string CreateDepartmentID { get; set; }
         [MaxLength(127)]
-        public string Organizete { get; set; }
+        public string Organizate { get; set; }
+        [MaxLength(127)]
+        public string OrganizateID { get; set; }
         public bool IsDelete { get; set; }
         [MaxLength(127)]
         public string DeleteUser { get; set; }
@@ -62,5 +64,9 @@ namespace XYHContractPlugin.Models
         public DateTime? EndTime { get; set; }
         public int? Count { get; set; }
         public int? ReturnOrigin { get; set; }
+        [MaxLength(256)]
+        public string Ext1 { get; set; }
+        [MaxLength(256)]
+        public string Ext2 { get; set; }
     }
 }

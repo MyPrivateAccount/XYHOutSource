@@ -118,6 +118,11 @@ namespace XYHContractPlugin.Managers
             return await Store.AutoCreateAsync(_mapper.Map<SimpleUser>(userinfo), _mapper.Map<List<ComplementInfo>>(buildingBaseInfoRequest), cancellationToken);
         }
 
+        public virtual async Task CreateComplementModifyAsync(UserInfo userinfo, string strcontractid, string strCheck, string strModify, string ext1, string ext2, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            await Store.CreateModifyAsync(_mapper.Map<SimpleUser>(userinfo), strcontractid, strModify, UpdateComplementContract, strCheck, ExamineStatusEnum.Auditing, false, ext1, ext2);
+        }
+
         public virtual async Task<bool> ModifyComplementAsync(UserInfo userinfo, string strcontractid, string strCheck, string strModify, List<ContractComplementRequest> buildingBaseInfoRequest, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (buildingBaseInfoRequest == null)
@@ -161,7 +166,7 @@ namespace XYHContractPlugin.Managers
             await Store.CreateModifyAsync(_mapper.Map<SimpleUser>(userinfo),
                 buildingBaseInfoRequest.BaseInfo.ID,
                 strmodify, ModifyContract, checkaction, ExamineStatusEnum.Auditing, true,
-                JsonHelper.ToJson(buildingBaseInfoRequest),null, cancellationToken);//2是修改
+                JsonHelper.ToJson(buildingBaseInfoRequest),null);//2是修改
 
             return strmodify;
         }
@@ -182,19 +187,18 @@ namespace XYHContractPlugin.Managers
             await Store.UpdateAsync(_mapper.Map<ContractInfo>(buildingBaseInfoRequest), cancellationToken);
         }
 
-        public virtual async Task ModifyContractAfterCheckAsync(string modifyid, string contractid, ExamineStatusEnum ext, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual async Task ModifyContractAfterCheckAsync(string modifyid, string contractid, string ext1, ExamineStatusEnum ext, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (modifyid == null)
             {
                 throw new ArgumentNullException(nameof(modifyid));
             }
-
-            var tv = await Store.GetModifyAsync(a => a.Where(b=> b.ID == modifyid), cancellationToken);
+            
             var tc = await Store.GetAsync(a => a.Where(b => b.ID==contractid));
 
-            if (ext == ExamineStatusEnum.Approved && tv.Type == ModifyContract && tc.CurrentModify == tv.ID)//当前修改的审核，批准才能修改数据
+            if (ext == ExamineStatusEnum.Approved && tc.CurrentModify == modifyid)//当前修改的审核，批准才能修改数据
             {
-                var modifyedinfo = JsonHelper.ToObject<ContractContentInfoRequest>(tv.Ext1);
+                var modifyedinfo = JsonHelper.ToObject<ContractContentInfoRequest>(ext1);
                 await ModifyContractAsync(modifyedinfo, cancellationToken);
             }
         }
@@ -356,6 +360,20 @@ namespace XYHContractPlugin.Managers
 
 
             await Store.SaveAsync(_mapper.Map<SimpleUser>(user), _mapper.Map<ContractInfo>(buildingBaseInfoRequest), cancellationToken);
+        }
+
+        public virtual async Task<ModifyInfo> OperModifyInfoAsync(string modifyid, string contractid, ExamineStatusEnum ext, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (modifyid == null)
+            {
+                throw new ArgumentNullException(nameof(modifyid));
+            }
+
+            var modify = await Store.GetModifyAsync(a => a.Where(b => b.ID == modifyid));
+            
+            await Store.UpdateExamineStatus(modifyid, ext, cancellationToken);
+
+            return (modify);
         }
 
         public virtual async Task SubmitAsync(string modifyid , ExamineStatusEnum ext, CancellationToken cancellationToken = default(CancellationToken))

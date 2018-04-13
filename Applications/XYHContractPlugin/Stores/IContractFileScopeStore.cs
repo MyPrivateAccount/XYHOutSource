@@ -24,7 +24,7 @@ namespace XYHContractPlugin.Stores
         Task<List<TResult>> ListAsync<TResult>(Func<IQueryable<AnnexInfo> , IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken));
 
         //Task UpdateAsync(ContractFileScope buildingFileScope, CancellationToken cancellationToken = default(CancellationToken));
-
+        Task<TResult> GetAsync<TResult>(Func<IQueryable<AnnexInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken));
         Task UpdateListAsync(List<AnnexInfo> contractFileScopeList, CancellationToken cancellationToken = default(CancellationToken));
 
         Task SaveAsync(SimpleUser user, string buildingId, List<AnnexInfo> shopsFileScopeList, CancellationToken cancellationToken = default(CancellationToken));

@@ -52,7 +52,7 @@ namespace XYHContractPlugin.Managers
         protected IMapper _mapper { get; }
     
 
-        public virtual async Task CreateAsync(UserInfo user, string source, string contractId, string modifyId,  string checktype, FileInfoRequest fileInfoRequest, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual async Task CreateAsync(UserInfo user, string source, string contractId, string modifyId, FileInfoRequest fileInfoRequest, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (fileInfoRequest == null)
             {
@@ -69,8 +69,14 @@ namespace XYHContractPlugin.Managers
             }
 
             await _contractFileScopeStore.SaveAsync(_mapper.Map<SimpleUser>(user), contractId, new List<AnnexInfo>() { contractfile }, cancellationToken);
-            await _contractInfoStore.CreateModifyAsync(_mapper.Map<SimpleUser>(user), contractId, modifyId, ContractInfoManager.AddAnnexContract, checktype, ExamineStatusEnum.Auditing, false);
+            
         }
+
+        public virtual async Task CreateModifyAsync(UserInfo user, string contractId, string modifyId, string checktype , string ext1, string ext2, string ext3, string ext4, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            await _contractInfoStore.CreateModifyAsync(_mapper.Map<SimpleUser>(user), contractId, modifyId, ContractInfoManager.AddAnnexContract, checktype, ExamineStatusEnum.Auditing, false, ext1, ext2, ext3, ext4,cancellationToken);
+        }
+
         public virtual async Task DeleteContractFileListAsync(string userId, string contractId, List<string> fileGuids, CancellationToken cancellationToken = default(CancellationToken))
         {
             var contractFiles = await _contractFileScopeStore.ListAsync(a => a.Where(b => b.ContractID == contractId && fileGuids.Contains(b.FileGuid) && !b.IsDeleted));
@@ -105,6 +111,12 @@ namespace XYHContractPlugin.Managers
                 list.AddRange(_mapper.Map<List<FileInfo>>(tfile));
             }
             return list;
+        }
+
+        public virtual async Task<string> FindContractIdByFileIdAsync(string fileId, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var scopeinfo = await _contractFileScopeStore.GetAsync(a => a.Where(b => b.FileGuid == fileId));
+            return scopeinfo.ContractID;
         }
 
 

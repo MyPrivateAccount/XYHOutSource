@@ -33,7 +33,8 @@ CREATE TABLE `XYH_DT_CONTRACTINFO` (
   `CreateTime` datetime DEFAULT NULL,/*申请时间*/
   `CreateDepartment` varchar(127) DEFAULT '',/*申请部门*/
   `CreateDepartmentID` varchar(127) DEFAULT '',/*申请部门id*/
-  `Organizete` varchar(127) DEFAULT '',/*归属组织*/
+  `Organizate` varchar(127) DEFAULT '',/*归属组织*/
+  `OrganizateID` varchar(127) DEFAULT '',/*归属组织id*/
   `IsDelete` BOOLEAN DEFAULT FALSE,/*是否删除*/
   `DeleteUser` varchar(127) DEFAULT '',/*删除人*/
   `DeleteTime` datetime DEFAULT NULL,/*删除时间*/
@@ -42,6 +43,8 @@ CREATE TABLE `XYH_DT_CONTRACTINFO` (
   `EndTime` datetime NOT NULL,/*合同结束时间*/
   `Count` int(11) NOT NULL,/*份数*/
   `ReturnOrigin` int(11) NOT NULL DEFAULT '0',/*返回原件*/
+  `Ext1` varchar(256) DEFAULT '',/*额外数据*/
+  `Ext2` varchar(256) DEFAULT '',/*额外数据*/
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -146,5 +149,7 @@ CREATE TABLE `XYH_DT_MODIFY` (
   `ModifyCheck` varchar(127) NOT NULL DEFAULT '',/*审核流程*/
   `Ext1` varchar(3000) DEFAULT '',/**/
   `Ext2` varchar(3000) DEFAULT '',/**/
+  `Ext3` varchar(1000) DEFAULT '',/**/
+  `Ext4` varchar(1000) DEFAULT '',/**/
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

@@ -72,6 +72,16 @@ namespace XYHContractPlugin.Stores
             }
             return query.Invoke(Context.AnnexInfos).ToListAsync(cancellationToken);
         }
+
+        public Task<TResult> GetAsync<TResult>(Func<IQueryable<AnnexInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (query == null)
+            {
+                throw new ArgumentNullException(nameof(query));
+            }
+            return query.Invoke(Context.AnnexInfos.AsNoTracking()).SingleOrDefaultAsync(cancellationToken);
+        }
+
         public async Task UpdateListAsync(List<AnnexInfo> contractFileScopeList, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (contractFileScopeList == null)

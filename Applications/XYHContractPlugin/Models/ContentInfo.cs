@@ -97,5 +97,9 @@ namespace XYHContractPlugin.Models
         public string Ext1 { get; set; }
         [MaxLength(3000)]
         public string Ext2 { get; set; }
+        [MaxLength(1000)]
+        public string Ext3 { get; set; }
+        [MaxLength(1000)]
+        public string Ext4 { get; set; }
     }
 }

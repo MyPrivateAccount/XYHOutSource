@@ -78,6 +78,12 @@ namespace XYHContractPlugin.Controllers
 
             string strModifyGuid = Guid.NewGuid().ToString();
 
+            List<NWF> nf = new List<NWF>();
+            foreach (var item in fileInfoRequests)
+            {
+                nf.Add(CreateNwf(user, source, item));
+            }
+
             GatewayInterface.Dto.ExamineSubmitRequest exarequest = new GatewayInterface.Dto.ExamineSubmitRequest();
             exarequest.ContentId = contractId;
             exarequest.ContentType = "ContractCommit";
@@ -106,28 +112,9 @@ namespace XYHContractPlugin.Controllers
                 return response;
             }
 
-            foreach (var item in fileInfoRequests)
-            {
-                try
-                {
-                    NameValueCollection nameValueCollection = new NameValueCollection();
-                    nameValueCollection.Add("appToken", "app:nwf");
-                    var nwf = CreateNwf(user, source, item);
-                    Logger.Info("nwf协议：\r\n{0}", JsonHelper.ToJson(nwf));
-                    string response2 = await _restClient.Post(ApplicationContext.Current.NWFUrl, nwf, "POST", nameValueCollection);
-                    Logger.Info("返回：\r\n{0}", response2);
+            await _fileScopeManager.CreateModifyAsync(user, contractId, strModifyGuid, "TEST", JsonHelper.ToJson(fileInfoRequests),
+                JsonHelper.ToJson(nf), JsonHelper.ToJson(user), dest, HttpContext.RequestAborted);//添加修改历史
 
-                    await _fileScopeManager.CreateAsync(user, dest, contractId, strModifyGuid, "TEST", item, HttpContext.RequestAborted);
-
-                    response.Message = response2;
-                }
-                catch (Exception e)
-                {
-                    response.Code = ResponseCodeDefines.PartialFailure;
-                    response.Message += $"文件：{item.FileGuid}处理出错，错误信息：{e.ToString()}。\r\n";
-                    Logger.Error($"用户{user?.UserName ?? ""}({user?.Id ?? ""})批量上传文件信息(UploadFiles)报错：\r\n{e.ToString()},请求参数为：\r\n(source){source ?? ""},(dest){dest ?? ""},(contractId){contractId ?? ""}," + (fileInfoRequests != null ? JsonHelper.ToJson(fileInfoRequests) : ""));
-                }
-            }
             return response;
         }
 

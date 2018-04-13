@@ -53,10 +53,13 @@ namespace XYHContractPlugin.Dto.Response
         public string CreateDepartment { get; set; }
         public string CreateDepartmentID { get; set; }
         public string Organizete { get; set; }
+        public string OrganizateID { get; set; }
         public string CommisionType { get; set; }
         public DateTime? StartTime { get; set; }
         public DateTime? EndTime { get; set; }
         public int? Count { get; set; }
         public int? ReturnOrigin { get; set; }
+        public string Ext1 { get; set; }
+        public string Ext2 { get; set; }
     }
 }

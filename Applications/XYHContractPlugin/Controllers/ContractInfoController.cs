@@ -20,6 +20,9 @@ using ContractComplementRequest = XYHContractPlugin.Dto.Response.ContractComplem
 using AspNet.Security.OAuth.Validation;
 using XYHContractPlugin.Models;
 using System.Linq;
+using XYHContractPlugin.Dto.Request;
+using System.Collections.Specialized;
+using XYHContractPlugin.Dto;
 
 namespace XYHContractPlugin.Controllers
 {
@@ -392,7 +395,8 @@ namespace XYHContractPlugin.Controllers
                 }
 
                 //写发送成功后的表
-                response.Extension = await _contractInfoManager.AddComplementAsync(User, contract, strModifyGuid, "TEST", request, HttpContext.RequestAborted);
+                //response.Extension = await _contractInfoManager.AddComplementAsync(User, contract, strModifyGuid, "TEST", request, HttpContext.RequestAborted);
+                await _contractInfoManager.CreateComplementModifyAsync(User, contract, strModifyGuid, "TEST", JsonHelper.ToJson(User), JsonHelper.ToJson(request),HttpContext.RequestAborted);
                 response.Message = "addcomplement ok";
             }
             catch (Exception e)
@@ -811,12 +815,49 @@ namespace XYHContractPlugin.Controllers
                     return response;
                 }
 
-
                 if (examineResponse.ExamineStatus == ExamineStatus.Examined)
                 {
-                    await _contractInfoManager.SubmitAsync(examineResponse.SubmitDefineId, ExamineStatusEnum.Approved);
+                    var modifyre = await _contractInfoManager.OperModifyInfoAsync(examineResponse.SubmitDefineId, examineResponse.ContentId, ExamineStatusEnum.Approved);
 
-                    await _contractInfoManager.ModifyContractAfterCheckAsync(examineResponse.SubmitDefineId, examineResponse.ContentId, ExamineStatusEnum.Approved);
+                    if (modifyre.Type == ContractInfoManager.ModifyContract)
+                    {
+                        await _contractInfoManager.ModifyContractAfterCheckAsync(modifyre.ID, modifyre.ContractID, modifyre.Ext1, ExamineStatusEnum.Approved);
+                    }
+                    else if (modifyre.Type == ContractInfoManager.AddAnnexContract)
+                    {
+                        List<FileInfoRequest> fileInfoRequests = JsonHelper.ToObject<List<FileInfoRequest>>(modifyre.Ext1);
+                        List<NWF> listnf = JsonHelper.ToObject<List<NWF>>(modifyre.Ext2);
+                        UserInfo user = JsonHelper.ToObject<UserInfo>(modifyre.Ext3);
+
+                        int nindex = 0;
+                        foreach (var item in fileInfoRequests)
+                        {
+                            try
+                            {
+                                NameValueCollection nameValueCollection = new NameValueCollection();
+                                nameValueCollection.Add("appToken", "app:nwf");
+                                Logger.Info("nwf协议");
+                                string response2 = await _restClient.Post(ApplicationContext.Current.NWFUrl, listnf.ElementAt(nindex++), "POST", nameValueCollection);
+                                Logger.Info("返回：\r\n{0}", response2);
+
+                                await _fileScopeManager.CreateAsync(user, modifyre.Ext4, modifyre.ContractID, modifyre.ID, item, HttpContext.RequestAborted);
+
+                                response.Message = response2;
+                            }
+                            catch (Exception e)
+                            {
+                                response.Code = ResponseCodeDefines.PartialFailure;
+                                response.Message += $"文件：{item.FileGuid}处理出错，错误信息：{e.ToString()}。\r\n";
+                                Logger.Error($"用户{user?.UserName ?? ""}({user?.Id ?? ""})批量上传文件信息(UploadFiles)报错：\r\n{e.ToString()},请求参数为：\r\n,(dest){modifyre.Ext4 ?? ""},(contractId){ modifyre.ContractID ?? ""}," + (fileInfoRequests != null ? JsonHelper.ToJson(fileInfoRequests) : ""));
+                            }
+                        }
+                    }
+                    else if (modifyre.Type == ContractInfoManager.UpdateComplementContract)
+                    {
+                        UserInfo User = JsonHelper.ToObject<UserInfo>(modifyre.Ext1);
+                        List<ContractComplementRequest> request = JsonHelper.ToObject<List<ContractComplementRequest>>(modifyre.Ext2);
+                        await _contractInfoManager.AddComplementAsync(User, modifyre.ContractID, modifyre.ID, "TEST", request);
+                    }
                 }
                 else if (examineResponse.ExamineStatus == ExamineStatus.Reject)
                 {
