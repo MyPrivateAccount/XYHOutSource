@@ -10,6 +10,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
+using System.Threading.Tasks;
 using XYH.Core.Log;
 using XYHContractPlugin.Dto.Response;
 using XYHContractPlugin.Models;
@@ -17,105 +18,120 @@ using XYHContractPlugin.Stores;
 
 namespace XYHContractPlugin.Controllers
 {
-    class ContractNoticeController : Controller
+    [Produces("application/json")]
+    [Route("api/contractnotice")]
+    public class ContractNoticeController : Controller
     {
         private readonly ILogger Logger = LoggerManager.GetLogger("ContractNoticeController");
         private readonly RestClient _restClient;
         private readonly PermissionExpansionManager permissionExpansionManager;
         private readonly ILogger MessageLogger = LoggerManager.GetLogger("SendMessageServerError");
 
-        public ContractNoticeController(IContractInfoStore icontractstore, IMapper mapper)
+        public ContractNoticeController(IContractInfoStore icontractstore, PermissionExpansionManager pr, RestClient rt, IMapper mapper)
         {
-            {
-                _icontractInfoStore = icontractstore;
-                _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-
-            }
+            _icontractInfoStore = icontractstore;
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            permissionExpansionManager = pr;
+            _restClient = rt;
         }
 
         protected IContractInfoStore _icontractInfoStore { get; }
         protected IMapper _mapper { get; }
-    
 
-        public async void NoticeUserByMsgType(string sql, string msgType)
+
+
+        private async Task NoticeUserByMsgType(string sql, string msgType)
         {
-            List<ContractInfo> contractList = new List<ContractInfo>();
-            contractList = _icontractInfoStore.DapperSelect<ContractInfo>(sql).ToList();
-            SendMessageRequest sendMessageRequest = new SendMessageRequest();
-
-            List<string> recordUserList = new List<string>();
-            recordUserList = await permissionExpansionManager.GetPermissionUserIds("RECORD_FUC");
-            for (int i = 0; i < contractList.Count; i++)
+            try
             {
 
-                ContractInfo info = contractList[i];
-                //驻场经理
-                List<string> magrUseList = new List<string>();//GetUseridsHaveOrganPermission(string organizationId, string permissionId)
-                //未判断是否作废
-                if (info.EndTime.HasValue)
+
+                List<ContractInfo> contractList = new List<ContractInfo>();
+                contractList = _icontractInfoStore.DapperSelect<ContractInfo>(sql).ToList();
+                SendMessageRequest sendMessageRequest = new SendMessageRequest();
+                sendMessageRequest.MessageList = new List<MessageItem>();
+                List<string> recordUserList = new List<string>();
+                recordUserList = await permissionExpansionManager.GetPermissionUserIds("RECORD_FUC");
+                for (int i = 0; i < contractList.Count; i++)
                 {
-                    DateTime now = DateTime.Now;
-                    int nSpanDay = (info.EndTime.Value - now).Days;
-                    if(msgType == "ContractHaveNoOriginal")
+
+                    ContractInfo info = contractList[i];
+                    //驻场经理
+                    List<string> magrUseList = await permissionExpansionManager.GetUseridsHaveOrganPermission(info.Organizete, "MyManagerContracts");
+                                                                  //未判断是否作废
+                    if (info.EndTime.HasValue)
                     {
-                        if (info.ReturnOrigin == 0)
+                        DateTime now = DateTime.Now;
+                        int nSpanDay = (info.EndTime.Value - now).Days;
+                        if (msgType == "ContractHaveNoOriginal")
                         {
-
-
-                            if (nSpanDay > 0 && nSpanDay < 15)
+                            if (info.ReturnOrigin == 2)
                             {
-                                MessageItem messageItem = new MessageItem();
-                                sendMessageRequest.MessageTypeCode = "ContractHaveNoOriginal";
 
-                                List<string> userList = recordUserList.Union(magrUseList).ToList<string>();
-                                messageItem.UserIds = userList;
-                                messageItem.MessageTypeItems = new List<TypeItem> {
+
+                                if (nSpanDay > 0 && nSpanDay < 15)
+                                {
+                                    MessageItem messageItem = new MessageItem();
+                                    sendMessageRequest.MessageTypeCode = "ContractHaveNoOriginal";
+
+                                    List<string> userList = recordUserList.Union(magrUseList).ToList<string>();
+                                    messageItem.UserIds = userList;
+                                    messageItem.MessageTypeItems = new List<TypeItem> {
                                 new TypeItem{ Key="NOTICETYPE",Value= "ContractNotice" },
                                 new TypeItem { Key="NAME",Value=info.Name},
                                 new TypeItem{ Key="TIME",Value=DateTime.Now.ToString("MM-dd hh:mm")}
                             };
-                                sendMessageRequest.MessageList.Add(messageItem);
+                                    sendMessageRequest.MessageList.Add(messageItem);
 
+                                }
                             }
                         }
-                    }
 
 
-                    if (msgType == "ContractWillEexpire")
-                    {
-                        if (nSpanDay > 0 && nSpanDay > 5)
+                        if (msgType == "ContractWillEexpire")
                         {
-                            MessageItem messageItem = new MessageItem();
-                            sendMessageRequest.MessageTypeCode = "ContractWillEexpire";
-                            messageItem.UserIds = recordUserList;
-                            messageItem.MessageTypeItems = new List<TypeItem> {
+                            if (nSpanDay > 0 && nSpanDay < 15)
+                            {
+                                MessageItem messageItem = new MessageItem();
+                                sendMessageRequest.MessageTypeCode = "ContractWillEexpire";
+                                messageItem.UserIds = recordUserList;
+                                messageItem.MessageTypeItems = new List<TypeItem> {
                                 new TypeItem{ Key="NOTICETYPE",Value= "ContractNotice" },
                                 new TypeItem { Key="NAME",Value=info.Name},
                                 new TypeItem{ Key="TIME",Value=DateTime.Now.ToString("MM-dd hh:mm")}
                                 };
-                            sendMessageRequest.MessageList.Add(messageItem);
+                                sendMessageRequest.MessageList.Add(messageItem);
+                            }
+                        }
+
+                    }
+
+                    if (sendMessageRequest.MessageList.Count > 0)
+                    {
+                        try
+                        {
+                            MessageLogger.Info("发送通知消息协议：\r\n{0}", JsonHelper.ToJson(sendMessageRequest));
+                            await _restClient.Post(ApplicationContext.Current.MessageServerUrl, sendMessageRequest, "POST", new NameValueCollection());
+                        }
+                        catch (Exception e)
+                        {
+                            MessageLogger.Error("发送通知消息出错：\r\n{0}", e.ToString());
                         }
                     }
 
                 }
-                
-                if (sendMessageRequest.MessageList.Count > 0)
-                {
-                    try
-                    {
-                        MessageLogger.Info("发送通知消息协议：\r\n{0}", JsonHelper.ToJson(sendMessageRequest));
-                        await _restClient.Post(ApplicationContext.Current.MessageServerUrl, sendMessageRequest, "POST", new NameValueCollection());
-                    }
-                    catch (Exception e)
-                    {
-                        MessageLogger.Error("发送通知消息出错：\r\n{0}", e.ToString());
-                    }
-                }
+            }catch(Exception e)
+            {
 
             }
+            return;
         }
-        public async void NoticeUserContractInfo()
+
+
+        [HttpGet("basicinfo")]
+        public async Task<ResponseMessage> NoticeUserContractInfo(UserInfo user)
         {
+            var response = new ResponseMessage();
             try
             {
                 Dictionary<string, string> msyTypeCodeList = new Dictionary<string, string>();
@@ -123,21 +139,25 @@ namespace XYHContractPlugin.Controllers
 
                 string sql = "";
                 DateTime now = DateTime.Now;
-                sql = string.Format("select * from XYH_DT_CONTRACTINFO as a where ReturnOrigin=1 and DATEDIFF(DAY, a.EndTime, {0}) > 0 and  DATEDIFF(DAY, a.EndTime, {1}) < 15", now, now);
+                sql = string.Format("select * from XYH_DT_CONTRACTINFO as a where ReturnOrigin=2 and TIMESTAMPDIFF(DAY,  '{0}',a.EndTime) > 0 and  TIMESTAMPDIFF(DAY, '{1}',a.EndTime) < 15", now, now);
                 msyTypeCodeList.Add("ContractHaveNoOriginal", sql);
-                sql = string.Format("select * from XYH_DT_CONTRACTINFO as a where  DATEDIFF(DAY, a.EndTime, {0}) > 0 and  DATEDIFF(DAY, a.EndTime, {1}) < 5", now, now);
+                sql = string.Format("select * from XYH_DT_CONTRACTINFO as a where  TIMESTAMPDIFF(DAY,'{0}', a.EndTime) > 0 and  TIMESTAMPDIFF(DAY, '{1}',a.EndTime) < 5", now, now);
                 msyTypeCodeList.Add("ContractWillEexpire", sql);
 
                 foreach (KeyValuePair<string, string> kvp in msyTypeCodeList)
                 {
-                    NoticeUserByMsgType(kvp.Value, kvp.Key);
+                    await NoticeUserByMsgType(kvp.Value, kvp.Key);
                 }
+                response.Code = "0";
+                response.Message = "通知发送完毕";
             }
-            catch(Exception e)
+            catch (Exception e)
             {
+                response.Code = "1";
+                response.Message = "通知发送异常，异常信息:" + e.ToString();
                 Logger.Error("发送合同通知消息出错:\r\n{0}", e.ToString());
             }
-
+            return response;
         }
     }
 }

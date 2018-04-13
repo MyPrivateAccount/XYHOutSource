@@ -61,7 +61,7 @@ class BasicEdit extends Component {
                 }
                 newBasicInfo.isSubmmitShop = 1;
                 newBasicInfo.isSubmmitRelation = 1;
-                newBasicInfo.createDepartment = this.props.activeOrg.organizationName = "";
+                newBasicInfo.createDepartment = this.props.activeOrg.organizationName || "";
                 newBasicInfo.organizete = this.state.departMentFullName;
                 newBasicInfo.createDepartmentID = this.state.createDepartmentID;
                 
