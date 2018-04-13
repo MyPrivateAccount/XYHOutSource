@@ -42,12 +42,12 @@ class SearchBox extends Component{
        // let userInfo = this.props.oidc.user.profile;
         console.log('navigator:', navigator);
         console.log('activeOrg:',this.props.searchInfo.activeOrg);
-        if(navigator.length !== 0){//对于子页单独处理
+        if(navigator.length !== 0){//对于子页单独处理,当为续签合同时可以查询到可操作的全部
             
-            let setContractOrgTree = this.props.setContractOrgTree || [];
-            if(setContractOrgTree.length > 0){
-                condition.organizate = setContractOrgTree[0].id;
-            }
+            // let setContractOrgTree = this.props.setContractOrgTree || [];
+            // if(setContractOrgTree.length > 0){
+            //     condition.organizate = setContractOrgTree[0].id;
+            // }
         }else{
             if (this.props.searchInfo.activeOrg.id !== "0") {
                 condition.organizate = this.props.searchInfo.activeOrg.id;

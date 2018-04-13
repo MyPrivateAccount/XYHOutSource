@@ -349,6 +349,10 @@ class SearchResult extends Component {
                 dataIndex: 'createTime',
                 key: 'createTime',
                 render: this.dateTimeRender,
+                sorter: (a, b)=>{
+                    return (moment(a.createTime).isSameOrBefore(moment(b.createTime)) ? -1: 1);
+                },
+                //sortOrder:'ascend',
             },
             {
                 title: '部门',
@@ -655,7 +659,7 @@ class SearchResult extends Component {
         }
     }
     render() {
-        let dataSource = this.props.searchInfo.searchResult.extension;
+        let dataSource = (this.props.searchInfo.searchResult.extension || []).sort((a, b) => {return (moment(a.createTime).isSameOrBefore(moment(b.createTime)) ? 1: -1) }) ;
         const rowSelection = {
             onChange: (selectedRowKeys, selectedRows) => {
                 console.log('checkList:', selectedRows);
