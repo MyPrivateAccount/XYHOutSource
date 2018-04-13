@@ -31,7 +31,7 @@
     "is-wsl": "^1.1.0",
     "jest": "20.0.4",
     "js-base64": "^2.3.2",
-    "js-xlsx": "^0.8.22",
+ 
     "lodash.keys": "^4.2.0",
     "object-assign": "4.1.1",
     "oidc-client": "^1.4.1",

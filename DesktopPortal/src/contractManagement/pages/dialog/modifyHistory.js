@@ -34,6 +34,8 @@ class ModifyHistory extends Component{
         switch (type) {
           case 1: return '创建合同';
           case 2: return '修改合同';
+          case 3: return '添加附件';
+          case 4: return '更新附加协议';
           default:
             return type;
         }
