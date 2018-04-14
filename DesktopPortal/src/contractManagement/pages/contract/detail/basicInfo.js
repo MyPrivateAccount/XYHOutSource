@@ -61,7 +61,7 @@ class BasicInfo extends Component {
                         </Col>
                         <Col span={4}>
                             {
-                               [1, 8].includes(basicInfo.examineStatus) ? null : <Button type="primary" shape="circle" icon="edit" onClick={this.handleEdit} />
+                               [1].includes(basicInfo.examineStatus) ? null : <Button type="primary" shape="circle" icon="edit" onClick={this.handleEdit} />
                                 //<Button type="primary" shape="circle" icon="edit" onClick={this.handleEdit} />
                             }
                         </Col>
