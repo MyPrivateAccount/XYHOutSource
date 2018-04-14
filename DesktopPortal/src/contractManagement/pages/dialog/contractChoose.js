@@ -70,6 +70,32 @@ class ContractChoose extends Component{
     handleCancel = () => {
 
         //this.props.dispatch(closeAdjustCustomer());
+        let initState = {
+            
+                pagination: {
+                    pageSize: 5,
+                    current: 0,
+                    total: 0
+                },
+                condition: {
+                    keyWord: '',
+                    checkStatu: null,//审核状态
+                    //organizationName: [],//
+                    createDateStart: null,//录入时间
+                    createDateEnd: null,
+                    //IsExpire:false,
+                    discard:0,
+                    follow:0,
+                    orderRule: 0,
+                    pageIndex: 0,
+                    pageSize: 5
+                },
+                checkList: [],
+                curSelectRecord:{},
+                curSelectIndex:null
+            
+        }
+        this.setState({pagination:initState.pagination, condition:initState.condition, curSelectRecord:{}, curSelectIndex:null});
         this.props.dispatch(closeContractChoose());
     }
     getTableColumns = () =>{
@@ -109,8 +135,8 @@ class ContractChoose extends Component{
         }
     }
     render(){
-        let dataSource = this.props.searchInfo.searchResult.extension;
-        console.log("contractChooseVisible:", this.props.contractChooseVisible);
+        let dataSource = this.props.searchInfo.searchResult.extension ;
+        //console.log("contractChooseVisible:", this.props.contractChooseVisible);
         const rowSelection = {
             type:"radio",
             onChange: (selectedRowKeys, selectedRows) => {

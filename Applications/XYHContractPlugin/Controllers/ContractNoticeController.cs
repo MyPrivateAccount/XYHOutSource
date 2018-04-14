@@ -57,8 +57,8 @@ namespace XYHContractPlugin.Controllers
 
                     ContractInfo info = contractList[i];
                     //驻场经理
-                    List<string> magrUseList = await permissionExpansionManager.GetUseridsHaveOrganPermission(info.Organizete, "MyManagerContracts");
-                                                                  //未判断是否作废
+                    List<string> magrUseList = await permissionExpansionManager.GetUseridsHaveOrganPermission(info.OrganizateID, "MyManagerContracts");
+                  //未判断是否作废
                     if (info.EndTime.HasValue)
                     {
                         DateTime now = DateTime.Now;
