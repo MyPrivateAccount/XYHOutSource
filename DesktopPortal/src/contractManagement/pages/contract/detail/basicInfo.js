@@ -100,7 +100,7 @@ class BasicInfo extends Component {
                     </Row>
                     <Row className='viewRow'>
                         <Col span={12}>份数:{basicInfo.count}</Col>
-                        <Col span={12}>返回原件:{basicInfo.returnOrigin}</Col>
+                        <Col span={12}>返回原件:{basicInfo.returnOrigin === 1 ? "是" : '否'}</Col>
                     </Row>
                     <Row className='viewRow'>
                         <Col span={12}>佣金方式:{this.getTextByCode(this.props.basicData.commissionCatogories, basicInfo.commisionType)}</Col>
