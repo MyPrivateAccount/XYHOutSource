@@ -18,10 +18,7 @@ class ContractRecord extends Component{
         isAdditionNeesSubmit:true,
         isAttachNeedSubmit:true,
     }
-    componentWillMount(){
-        this.props.dispatch(getAllOrgList('ContractSetOrg'));
 
-      }
     
     
 

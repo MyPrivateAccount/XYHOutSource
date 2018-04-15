@@ -12,7 +12,7 @@ class ComplementInfo extends Component {
         this.props.dispatch(openComplementStart({id:2}));
     }
     render(){
-        let complementInfo = this.props.complementInfo;
+        let complementInfo = this.props.complementInfo || [];
         return (
             <div style={{ marginTop: '25px', backgroundColor: "#ECECEC" }}>
                 <Form layout="horizontal">
