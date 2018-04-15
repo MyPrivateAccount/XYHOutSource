@@ -482,7 +482,7 @@ class BasicEdit extends Component {
             </Row>
             */}
             {
-                [8, 1].includes(this.props.basicInfo.examineStatus)  ? null :
+                [1].includes(this.props.basicInfo.examineStatus)  ? null :
                 <div>
                     <Row type="flex" justify="space-between">
                         <Col  span={24} style={{ textAlign: 'center' }} className='BtnTop'>
