@@ -102,17 +102,17 @@ namespace XYHContractPlugin.Controllers
                 OrganizationName = user.OrganizationName,
                 UserName = user.UserName
             };
-
-            var examineInterface = ApplicationContext.Current.Provider.GetRequiredService<IExamineInterface>();
-            var reponse = await examineInterface.Submit(userinfo, exarequest);
-            if (reponse.Code != ResponseCodeDefines.SuccessCode)
-            {
-                response.Code = ResponseCodeDefines.ServiceError;
-                response.Message = "向审核中心发起审核请求失败：" + reponse.Message;
-                return response;
-            }
+            
             try
             {
+                var examineInterface = ApplicationContext.Current.Provider.GetRequiredService<IExamineInterface>();
+                var reponse = await examineInterface.Submit(userinfo, exarequest);
+                if (reponse.Code != ResponseCodeDefines.SuccessCode)
+                {
+                    response.Code = ResponseCodeDefines.ServiceError;
+                    response.Message = "向审核中心发起审核请求失败：" + reponse.Message;
+                    return response;
+                }
 
                 await _fileScopeManager.CreateModifyAsync(user, contractId, strModifyGuid, "TEST", JsonHelper.ToJson(fileInfoRequests),
                     JsonHelper.ToJson(nf), JsonHelper.ToJson(user), dest, HttpContext.RequestAborted);//添加修改历史

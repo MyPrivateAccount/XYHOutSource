@@ -63,7 +63,7 @@ namespace XYHContractPlugin.Managers
             contractfile.IsDeleted = false;
             contractfile.ContractID = contractId;
             contractfile.CurrentModify = modifyId;
-            if (contractfile.ID == null)
+            if (string.IsNullOrEmpty(contractfile.ID))
             {
                 contractfile.ID = Guid.NewGuid().ToString();
             }
@@ -107,8 +107,11 @@ namespace XYHContractPlugin.Managers
             foreach (var item in contractFiles)
             {
                 var tfile = await _fileInfoStore.ListAsync(a => a.Where(b => b.FileGuid == item.FileGuid));
-                tfile.ElementAt(0).Group = item.Group;
-                list.AddRange(_mapper.Map<List<FileInfo>>(tfile));
+                if (tfile.Count > 0)
+                {
+                    tfile.ElementAt(0).Group = item.Group;
+                    list.AddRange(_mapper.Map<List<FileInfo>>(tfile));
+                }
             }
             return list;
         }

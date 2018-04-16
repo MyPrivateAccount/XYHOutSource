@@ -324,10 +324,14 @@ namespace XYHContractPlugin.Managers
             if (complementinfo.Count > 0)
             {
                 var modify = await Store.GetModifyAsync(a => a.Where(b => b.ID == complementinfo.ElementAt(0).CurrentModify), cancellationToken);
-                foreach (var item in returninfo.ComplementInfo)
+                if (modify != null)
                 {
-                    item.ExamineStatus = (int)modify.ExamineStatus;
+                    foreach (var item in returninfo.ComplementInfo)
+                    {
+                        item.ExamineStatus = (int)modify.ExamineStatus;
+                    }
                 }
+                
             }
 
             var modifyinfo = await Store.GetListModifyAsync(a => a.Where(b => b.ContractID == id));

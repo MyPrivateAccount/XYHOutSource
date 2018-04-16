@@ -145,8 +145,8 @@ CREATE TABLE `XYH_DT_MODIFY` (
   `ModifyPepole` varchar(127) NOT NULL DEFAULT '',
   `ModifyStartTime` datetime DEFAULT NULL,
   `ModifyCheck` varchar(127) NOT NULL DEFAULT '',/*审核流程*/
-  `Ext1` varchar(3000) DEFAULT '',/**/
-  `Ext2` varchar(3000) DEFAULT '',/**/
+  `Ext1` varchar(4000) DEFAULT '',/**/
+  `Ext2` varchar(4000) DEFAULT '',/**/
   `Ext3` varchar(1000) DEFAULT '',/**/
   `Ext4` varchar(1000) DEFAULT '',/**/
   PRIMARY KEY (`ID`)
