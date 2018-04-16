@@ -149,6 +149,7 @@ reducerMap[actionTypes.SEARCH_COMPLETE] = function (state, action) {
     if (!action.payload) {
         result = {extension: [], pageIndex: 0, pageSize: 10, totalCount: 0};
     }
+    (result.extension || []).sort((a, b) => {return (moment(a.createTime).isSameOrBefore(moment(b.createTime)) ? 1: -1) });
     result.extension.map(c => {
         if (c.createTime) {
             c.createTime = moment(c.createTime).format("YYYY-MM-DD HH:mm:ss");

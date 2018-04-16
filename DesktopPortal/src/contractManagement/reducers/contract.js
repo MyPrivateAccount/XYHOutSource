@@ -368,11 +368,10 @@ reducerMap[actionTypes.ATTACH_SUBMIT_END] = function(state, action){
             baseInfo:{},
             attachInfo:{},
             additionalInfo:{},
-            modifyInfo:{},
-            complementInfo:{},//补充协议
+            modifyInfo:[],
+            complementInfos:[],//补充协议
             discard:false,
             annexInfo:{},
-    
         }
     return Object.assign({}, state, {operInfo:operInfo, contractInfo:contractInfo});
 }

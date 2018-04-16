@@ -59,13 +59,16 @@ class BasicEdit extends Component {
                 if (basicOperType != 'add') {
                     newBasicInfo = Object.assign({}, this.props.basicInfo, values);
                 }
+                
                 newBasicInfo.isSubmmitShop = 1;
                 newBasicInfo.isSubmmitRelation = 1;
                 newBasicInfo.createDepartment = this.props.activeOrg.organizationName || "";
-                if(this.state.departMentFullName !='' || this.state.organizateID !='')
+                newBasicInfo.organizate = this.props.basicInfo.organizate;
+                if(this.state.departMentFullName !='' || this.state.organizateID !='' || this.state.departmentFullId)
                 {
                     newBasicInfo.organizate = this.state.departMentFullName ;
                     newBasicInfo.organizateID = this.state.organizateID ;
+                    newBasicInfo.ext1 = this.state.departmentFullId;
                 }
 
                 
@@ -117,11 +120,12 @@ class BasicEdit extends Component {
         //let contractTypes = '1';
         let basicOperType = this.props.basicOperType;
         let basicInfo = this.props.basicInfo;
-        let departMentInit = [];
-        if(basicInfo.createDepartmentID)
+        const departMentInit = [];
+        if(basicInfo.organizateID)
         {
-            departMentInit.push(basicInfo.createDepartmentID);
+            departMentInit.push(basicInfo.organizateID);
         }
+        console.log('departMentInit:', departMentInit);
         const formItemLayout = {
           labelCol: { span: 6 },
           wrapperCol: { span: 14 },
@@ -415,10 +419,10 @@ class BasicEdit extends Component {
                 <Col span={12}>
                         <FormItem {...formItemLayout} label={<span>归属部门</span>}>
                         {getFieldDecorator('organizate', {
-                                        initialValue:  departMentInit,//basicInfo.relation ? basicInfo.relation.split('*') : [],//["1", "1385f04d-3ac8-49c6-a310-fe759814a685", "120"],//basicInfo.organizete ? basicInfo.organizete.split('-') : [],
+                                        initialValue: basicInfo.ext1 ? basicInfo.ext1.split('*') : [],//departMentInit,//basicInfo.relation ? basicInfo.relation.split('*') : [],//["1", "1385f04d-3ac8-49c6-a310-fe759814a685", "120"],//basicInfo.organizete ? basicInfo.organizete.split('-') : [],
                                         rules:[{required:true, message:'请选择归属部门!'}]
                                         })(
-                                            <Cascader options={this.props.setContractOrgTree} displayRender={this.displayRender} onChange={this.handleChooseDepartmentChange } changeOnSelect placeholder="归属部门"/>
+                                            <Cascader options={this.props.setContractOrgTree}  onChange={this.handleChooseDepartmentChange } changeOnSelect placeholder="归属部门"/>
                                         )
                                         
                         }
@@ -448,7 +452,7 @@ class BasicEdit extends Component {
                 <Col span={12}>
                     <FormItem {...formItemLayout} label={<span>备注</span>}>
                         {getFieldDecorator('remark', {
-                                    initialValue: basicInfo.Remark,
+                                    initialValue: basicInfo.remark,
                                     //rules:[{required:true, message:'续签合同'}]
                                     })(
                                         <TextArea placeholder="备注" autosize />
@@ -482,7 +486,7 @@ class BasicEdit extends Component {
             </Row>
             */}
             {
-                [8, 1].includes(this.props.basicInfo.examineStatus)  ? null :
+                [1].includes(this.props.basicInfo.examineStatus)  ? null :
                 <div>
                     <Row type="flex" justify="space-between">
                         <Col  span={24} style={{ textAlign: 'center' }} className='BtnTop'>

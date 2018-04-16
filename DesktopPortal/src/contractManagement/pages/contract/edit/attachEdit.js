@@ -95,6 +95,7 @@ class AttachEdit extends Component {
         for(let i in list) {
           if (list[i]){
             myObj[i] = myObj[i].concat(list[i])
+             
           }
         }
         this.setState({
@@ -389,7 +390,7 @@ class AttachEdit extends Component {
             */}
               <Row type="flex" justify="space-between" className='BtnTop'>
                     {
-                      (this.props.isCurShowContractDetail  || [8, 1].includes(this.props.attachInfo.examineStatus))  ? null :
+                      (this.props.isCurShowContractDetail  || [ 1].includes(this.props.attachInfo.examineStatus))  ? null :
                       <Col  span={24} style={{ textAlign: 'center' }} className='BtnTop'>
                         <Button type="primary" size='default'
                           style={{ width: "8rem" }}

@@ -12,7 +12,8 @@ class ComplementInfo extends Component {
         this.props.dispatch(openComplementStart({id:2}));
     }
     render(){
-        let complementInfo = this.props.complementInfo;
+        console.log('this.props.complementInfos.examineStatus:', this.props.complementInfos.examineStatus);
+        let complementInfo = this.props.complementInfo || [];
         return (
             <div style={{ marginTop: '25px', backgroundColor: "#ECECEC" }}>
                 <Form layout="horizontal">
@@ -22,7 +23,7 @@ class ComplementInfo extends Component {
                         </Col>
                         <Col span={4}>
                             {
-                                [1, 8].includes(this.props.complementInfos.examineStatus) ? null : <Button type="primary" shape="circle" icon="edit" onClick={this.handleEdit} />
+                                [1].includes(this.props.complementInfos.examineStatus) ? null : <Button type="primary" shape="circle" icon="edit" onClick={this.handleEdit} />
                                 //<Button type="primary" shape="circle" icon="edit" onClick={this.handleEdit} />
                             }
                         </Col>
