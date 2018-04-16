@@ -111,7 +111,7 @@ namespace XYHContractPlugin.Managers
 
             if (!string.IsNullOrEmpty(condition?.Organizate))
             {
-                sql += connectstr + @"a.`Organizate`='" + condition.Organizate + "'";
+                sql += connectstr + @"a.`OrganizateID`='" + condition.Organizate + "'";
                 connectstr = " and ";
             }
 

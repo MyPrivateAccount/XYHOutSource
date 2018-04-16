@@ -13,9 +13,9 @@ const { RangePicker } = DatePicker;
 const { TextArea } = Input;
 class BasicEdit extends Component {
     state = {
-        createDepartmentID: '0',
+        organizateID: '',
         departMentFullName:'',
-        departmentFullId:"",
+        departmentFullId:'',
     }
     handleCancel = () => {
         this.props.dispatch(viewContractBasic())
@@ -62,8 +62,12 @@ class BasicEdit extends Component {
                 newBasicInfo.isSubmmitShop = 1;
                 newBasicInfo.isSubmmitRelation = 1;
                 newBasicInfo.createDepartment = this.props.activeOrg.organizationName || "";
-                newBasicInfo.organizete = this.state.departMentFullName;
-                newBasicInfo.createDepartmentID = this.state.createDepartmentID;
+                if(this.state.departMentFullName !='' || this.state.organizateID !='')
+                {
+                    newBasicInfo.organizate = this.state.departMentFullName ;
+                    newBasicInfo.organizateID = this.state.organizateID ;
+                }
+
                 
                 delete newBasicInfo.startAndEndTime;
                 let method = (basicOperType === 'add' ? 'POST' : "PUT");
@@ -92,14 +96,14 @@ class BasicEdit extends Component {
         }
     }
     handleChooseDepartmentChange =  (v, selectedOptions) => {
-        let createDepartmentID = (v ||v != []) ? v[v.length -1].toString() : 0;
+        let organizateID = (v ||v != []) ? v[v.length -1].toString() : 0;
         let departmentFullId = v? v.join('*'): '';
 
         let text = selectedOptions.map(item => {
             return item.label
         })
      
-        this.setState({departMentFullName: text.join('-'), createDepartmentID: createDepartmentID, departmentFullId:departmentFullId})
+        this.setState({departMentFullName: text.join('-'), organizateID: organizateID, departmentFullId:departmentFullId})
     }
     displayRender = (label) => {
         return label[label.length - 1];
@@ -410,7 +414,7 @@ class BasicEdit extends Component {
                 */}
                 <Col span={12}>
                         <FormItem {...formItemLayout} label={<span>归属部门</span>}>
-                        {getFieldDecorator('organizete', {
+                        {getFieldDecorator('organizate', {
                                         initialValue:  departMentInit,//basicInfo.relation ? basicInfo.relation.split('*') : [],//["1", "1385f04d-3ac8-49c6-a310-fe759814a685", "120"],//basicInfo.organizete ? basicInfo.organizete.split('-') : [],
                                         rules:[{required:true, message:'请选择归属部门!'}]
                                         })(

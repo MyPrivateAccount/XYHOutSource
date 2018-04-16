@@ -122,7 +122,7 @@ class BasicInfo extends Component {
                     */}
                     <Row className='viewRow'>
                         {/* <Col span={12}>是否作废:{(basicInfo.discard && basicInfo.discard === '1') ? "是" : "否"}</Col> */}
-                        <Col span={12}>归属部门:{basicInfo.organizete}</Col>
+                        <Col span={12}>归属部门:{basicInfo.organizate}</Col>
                         <Col span={12} onClick={this.handleViewHistory} style={{color:'blue'}} title="点击获取更改记录">更改记录</Col>
                     </Row>
                     <Row className='viewRow'>

@@ -9,8 +9,10 @@ namespace XYHContractPlugin.Dto.Response
         public string ID { get; set; }
         public string Type { get; set; }
         public string Settleaccounts { get; set; }
-        public bool IsSubmmitShop { get; set; }
+        public bool IsSubmmitContractScan { get; set; }
+        public bool IsSubmmitContractAnnex { get; set; }
         public bool IsSubmmitRelation { get; set; }
+        public bool IsSubmmitNet { get; set; }
         public string Commission { get; set; }
         public int? Relation { get; set; }
         public string Name { get; set; }
@@ -49,6 +51,7 @@ namespace XYHContractPlugin.Dto.Response
         /// 是否废弃
         /// </summary>
         public bool Discard { get; set; }
+        //public int AnnexGroupType { get; set; }//分组类型 合同扫描(a&0x1) 合同附件(a&0x2) 关系证明(a&0x8) 网签表(a&0x10)
         public BaseInfoResponse BaseInfo { get; set; }
         public ContractEstateResponse EstateInfo { get; set; }
         public List<ContractAnnexResponse> AnnexInfo { get; set; }

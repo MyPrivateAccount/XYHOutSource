@@ -39,8 +39,6 @@ namespace XYHContractPlugin
                 .ForMember(d => d.ID, m=>m.MapFrom(src => src.BaseInfo.ID))
                 .ForMember(d => d.Type, m => m.MapFrom(src => src.BaseInfo.Type))
                 .ForMember(d => d.Settleaccounts, m => m.MapFrom(src => src.BaseInfo.Settleaccounts))
-                .ForMember(d => d.IsSubmmitShop, m => m.MapFrom(src => src.BaseInfo.IsSubmmitShop))
-                .ForMember(d => d.IsSubmmitRelation, m => m.MapFrom(src => src.BaseInfo.IsSubmmitRelation))
                 .ForMember(d => d.Commission, m => m.MapFrom(src => src.BaseInfo.Commission))
                 .ForMember(d => d.Relation, m => m.MapFrom(src => src.BaseInfo.Relation))
                 .ForMember(d => d.Name, m => m.MapFrom(src => src.BaseInfo.Name))
@@ -78,8 +76,6 @@ namespace XYHContractPlugin
                     ID = src.ID,
                     Type = src.Type,
                     Settleaccounts = src.Settleaccounts,
-                    IsSubmmitShop = src.IsSubmmitShop,
-                    IsSubmmitRelation = src.IsSubmmitRelation,
                     Commission = src.Commission,
                     Relation = src.Relation,
                     Name = src.Name,
