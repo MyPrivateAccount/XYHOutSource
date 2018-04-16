@@ -95,6 +95,7 @@ class AttachEdit extends Component {
         for(let i in list) {
           if (list[i]){
             myObj[i] = myObj[i].concat(list[i])
+             
           }
         }
         this.setState({
