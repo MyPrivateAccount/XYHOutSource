@@ -78,7 +78,7 @@ namespace XYHContractPlugin.Controllers
                                     List<string> userList = recordUserList.Union(magrUseList).ToList<string>();
                                     messageItem.UserIds = userList;
                                     messageItem.MessageTypeItems = new List<TypeItem> {
-                                new TypeItem{ Key="NOTICETYPE",Value= "ContractNotice" },
+                                //new TypeItem{ Key="NOTICETYPE",Value= "ContractNotice" },
                                 new TypeItem { Key="NAME",Value=info.Name},
                                 new TypeItem{ Key="TIME",Value=DateTime.Now.ToString("MM-dd hh:mm")}
                             };
@@ -89,15 +89,15 @@ namespace XYHContractPlugin.Controllers
                         }
 
 
-                        if (msgType == "ContractWillEexpire")
+                        if (msgType == "ContractWillExpire")
                         {
                             if (nSpanDay > 0 && nSpanDay < 15)
                             {
                                 MessageItem messageItem = new MessageItem();
-                                sendMessageRequest.MessageTypeCode = "ContractWillEexpire";
+                                sendMessageRequest.MessageTypeCode = "ContractWillExpire";
                                 messageItem.UserIds = recordUserList;
                                 messageItem.MessageTypeItems = new List<TypeItem> {
-                                new TypeItem{ Key="NOTICETYPE",Value= "ContractNotice" },
+                               // new TypeItem{ Key="NOTICETYPE",Value= "ContractNotice" },
                                 new TypeItem { Key="NAME",Value=info.Name},
                                 new TypeItem{ Key="TIME",Value=DateTime.Now.ToString("MM-dd hh:mm")}
                                 };
@@ -147,7 +147,7 @@ namespace XYHContractPlugin.Controllers
                 sql = string.Format("select * from XYH_DT_CONTRACTINFO as a where ReturnOrigin=2 and TIMESTAMPDIFF(DAY,  '{0}',a.EndTime) > 0 and  TIMESTAMPDIFF(DAY, '{1}',a.EndTime) < 15", now, now);
                 msyTypeCodeList.Add("ContractHaveNoOriginal", sql);
                 sql = string.Format("select * from XYH_DT_CONTRACTINFO as a where  TIMESTAMPDIFF(DAY,'{0}', a.EndTime) > 0 and  TIMESTAMPDIFF(DAY, '{1}',a.EndTime) < 5", now, now);
-                msyTypeCodeList.Add("ContractWillEexpire", sql);
+                msyTypeCodeList.Add("ContractWillExpire", sql);
 
                 foreach (KeyValuePair<string, string> kvp in msyTypeCodeList)
                 {
