@@ -9,6 +9,7 @@ import {
 } from 'antd'
 import { NewGuid } from '../../../../utils/appUtils';
 import WebApiConfig from '../../../constants/webapiConfig'
+import myAuditListPage from '../../../../auditCenter/pages/myAuditListPage';
 
 
 const { Header, Sider, Content } = Layout;
@@ -89,13 +90,29 @@ class AttachEdit extends Component {
               })
           }
       })
-      // console.log(this.state.imgFiles, list, 'hahahahh') // list 是reducer的，imgFiles 是才传的
+      console.log(this.state.imgFiles, list, 'hahahahh') // list 是reducer的，imgFiles 是才传的
       let myObj = Object.assign({}, this.state.imgFiles)
       if (Object.keys(myObj).length !== 0){
         for(let i in list) {
           if (list[i]){
-            myObj[i] = myObj[i].concat(list[i])
-             
+            let temp = [];
+            let myTemp = myObj[i] || [];
+            list[i].forEach((item, index)=>{//去重操作保证传入的列表key唯一
+                let isSame = false;
+                for(let j =0;j < myTemp.length; j ++){
+                  if(item.uid === myTemp[j].uid){
+                    isSame = true;
+                  }
+                }
+                if(!isSame){
+                  temp.push(item);
+                }
+             }
+          
+            );
+            myObj[i] = myObj[i].concat(temp);
+          
+            
           }
         }
         this.setState({
