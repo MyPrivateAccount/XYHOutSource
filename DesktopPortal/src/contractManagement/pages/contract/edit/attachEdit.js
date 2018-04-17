@@ -42,6 +42,7 @@ class AttachEdit extends Component {
 
     if (this.props.attachInfo.fileList) {
           let curFileList = this.props.attachInfo.fileList;//直接修改会改变state
+
           this.getGroup(curFileList);
     }
     this.setState({ fileList: fileList });
@@ -54,6 +55,15 @@ class AttachEdit extends Component {
       if (newProps.attachInfo.fileList) {
         let curFileList = newProps.attachInfo.fileList;
         if(!this.initFiles){
+          if(this.state.deleteIdArr.length > 0)
+          {
+            this.state.deleteIdArr.forEach((item, index)=>{
+              curFileList.forEach((_item, i) =>{
+                console.log('需要去掉的uid:', item);
+                _item.filter(o=> o.fileGuid === item);
+              })
+            });
+          }
           this.getGroup(curFileList)
         }
         this.initFiles=true;   // true
@@ -90,7 +100,7 @@ class AttachEdit extends Component {
               })
           }
       })
-      console.log(this.state.imgFiles, list, 'hahahahh') // list 是reducer的，imgFiles 是才传的
+      //console.log(this.state.imgFiles, list, 'hahahahh') // list 是reducer的，imgFiles 是才传的
       let myObj = Object.assign({}, this.state.imgFiles)
       if (Object.keys(myObj).length !== 0){
         for(let i in list) {

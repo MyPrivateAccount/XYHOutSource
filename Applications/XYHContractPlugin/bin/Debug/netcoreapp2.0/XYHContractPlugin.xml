@@ -39,6 +39,12 @@
             <param name="contractId"></param>
             <returns></returns>
         </member>
+        <member name="M:XYHContractPlugin.Controllers.ContractNoticeController.NoticeUserContractInfo">
+            <summary>
+            合同通知定时任务
+            </summary>
+            <returns></returns>
+        </member>
         <member name="P:XYHContractPlugin.Dto.Request.ContractSearchRequest.SearchType">
             <summary>
             用户条件

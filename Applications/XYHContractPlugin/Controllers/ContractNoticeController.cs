@@ -52,6 +52,7 @@ namespace XYHContractPlugin.Controllers
                 sendMessageRequest.MessageList = new List<MessageItem>();
                 List<string> recordUserList = new List<string>();
                 recordUserList = await permissionExpansionManager.GetPermissionUserIds("RECORD_FUC");
+                Logger.Trace("查询到符合条件的合同信息的个数为" + contractList.Count.ToString());
                 for (int i = 0; i < contractList.Count; i++)
                 {
 
@@ -122,7 +123,7 @@ namespace XYHContractPlugin.Controllers
                 }
             }catch(Exception e)
             {
-
+                Logger.Error("发送合同通知消息出错:\r\n{0}", e.ToString());
             }
             return;
         }
@@ -134,6 +135,7 @@ namespace XYHContractPlugin.Controllers
         [HttpGet("basicinfo")]
         public async Task<ResponseMessage> NoticeUserContractInfo()
         {
+            Logger.Trace("Recv notice command!");
             var response = new ResponseMessage();
             try
             {
