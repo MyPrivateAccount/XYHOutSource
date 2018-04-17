@@ -94,6 +94,27 @@ namespace XYHContractPlugin.Controllers
                     }
                 }
 
+                foreach (var itm in ret.AnnexInfo)
+                {
+                    int annextype = int.Parse(itm.Group);
+                    if (annextype == 1)
+                    {
+                        ret.BaseInfo.IsSubmmitContractScan = true;
+                    }
+                    else if (annextype == 2)
+                    {
+                        ret.BaseInfo.IsSubmmitContractAnnex = true;
+                    }
+                    else if (annextype == 3)
+                    {
+                        ret.BaseInfo.IsSubmmitRelation = true;
+                    }
+                    else if (annextype == 4)
+                    {
+                        ret.BaseInfo.IsSubmmitNet = true;
+                    }
+                }
+
                 if (!string.IsNullOrEmpty(Response.Extension.BaseInfo.CreateUser))
                 {
                     var resp = await _restClient.Get<ResponseMessage<string>>($"http://localhost:5000/api/user/{Response.Extension.BaseInfo.CreateUser}", null);
@@ -158,9 +179,9 @@ namespace XYHContractPlugin.Controllers
             return fi;
         }
 
-        [HttpGet("allcontractinfo/{contractId}")]
+        [HttpGet("allcontractinfo")]
         [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
-        public async Task<ResponseMessage<List<ContractContentResponse>>> GetAllContractByUser(UserInfo user, [FromRoute] string contractId)
+        public async Task<ResponseMessage<List<ContractContentResponse>>> GetAllContractByUser(UserInfo user)
         {
             //if (user.Id == null)
             //{
@@ -174,13 +195,7 @@ namespace XYHContractPlugin.Controllers
             //}
 
             var Response = new ResponseMessage<List<ContractContentResponse>>();
-            if (string.IsNullOrEmpty(contractId))
-            {
-                Response.Code = ResponseCodeDefines.ModelStateInvalid;
-                Response.Message = "请求参数不正确";
-                Logger.Error("error GetContractByid");
-                return Response;
-            }
+            
             try
             {
                 Response.Extension = await _contractInfoManager.GetAllListinfoByUserIdAsync(user.Id, HttpContext.RequestAborted);
@@ -456,7 +471,7 @@ namespace XYHContractPlugin.Controllers
                 }
 
                 //写发送成功后的表
-                response.Extension = await _contractInfoManager.AutoUpdateComplementAsync(User, contract, strModifyGuid, "TEST", request, HttpContext.RequestAborted);
+                response.Extension = await _contractInfoManager.AutoUpdateComplementAsync(User, contract, "TEST", strModifyGuid, request, HttpContext.RequestAborted);
                 response.Message = "addcomplement ok";
             }
             catch (Exception e)
@@ -840,7 +855,7 @@ namespace XYHContractPlugin.Controllers
                                 string response2 = await _restClient.Post(ApplicationContext.Current.NWFUrl, listnf.ElementAt(nindex++), "POST", nameValueCollection);
                                 Logger.Info("返回：\r\n{0}", response2);
 
-                                await _fileScopeManager.CreateAsync(user, modifyre.Ext4, modifyre.ContractID, modifyre.ID, item, HttpContext.RequestAborted);
+                                await _fileScopeManager.CreateAsync(user, modifyre.Ext4, modifyre.ContractID, modifyre.ID, item);
 
                                 response.Message = response2;
                             }

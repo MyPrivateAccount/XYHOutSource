@@ -10,8 +10,6 @@ CREATE TABLE `XYH_DT_CONTRACTINFO` (
   `ID` varchar(127) NOT NULL DEFAULT '', /*数据库和合同id*/
   `Type` varchar(64) NOT NULL DEFAULT '',/*合同类型*/
   `Settleaccounts` varchar(127) NOT NULL DEFAULT '',/*结算方式*/
-  `IsSubmmitShop` BOOLEAN DEFAULT FALSE,/*是否提交铺号*/
-  `IsSubmmitRelation` BOOLEAN DEFAULT FALSE,/*是否提交关系证明*/
   `Commission` varchar(127) DEFAULT '',/*佣金方案*/
   `Relation` int(11) NOT NULL,/*合同关系*/
   `Name` varchar(256) DEFAULT '',/*合同名称*/
@@ -147,8 +145,8 @@ CREATE TABLE `XYH_DT_MODIFY` (
   `ModifyPepole` varchar(127) NOT NULL DEFAULT '',
   `ModifyStartTime` datetime DEFAULT NULL,
   `ModifyCheck` varchar(127) NOT NULL DEFAULT '',/*审核流程*/
-  `Ext1` varchar(3000) DEFAULT '',/**/
-  `Ext2` varchar(3000) DEFAULT '',/**/
+  `Ext1` varchar(4000) DEFAULT '',/**/
+  `Ext2` varchar(4000) DEFAULT '',/**/
   `Ext3` varchar(1000) DEFAULT '',/**/
   `Ext4` varchar(1000) DEFAULT '',/**/
   PRIMARY KEY (`ID`)

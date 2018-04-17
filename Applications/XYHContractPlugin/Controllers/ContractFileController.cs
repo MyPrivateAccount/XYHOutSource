@@ -102,18 +102,29 @@ namespace XYHContractPlugin.Controllers
                 OrganizationName = user.OrganizationName,
                 UserName = user.UserName
             };
-
-            var examineInterface = ApplicationContext.Current.Provider.GetRequiredService<IExamineInterface>();
-            var reponse = await examineInterface.Submit(userinfo, exarequest);
-            if (reponse.Code != ResponseCodeDefines.SuccessCode)
+            
+            try
             {
-                response.Code = ResponseCodeDefines.ServiceError;
-                response.Message = "向审核中心发起审核请求失败：" + reponse.Message;
-                return response;
-            }
+                var examineInterface = ApplicationContext.Current.Provider.GetRequiredService<IExamineInterface>();
+                var reponse = await examineInterface.Submit(userinfo, exarequest);
+                if (reponse.Code != ResponseCodeDefines.SuccessCode)
+                {
+                    response.Code = ResponseCodeDefines.ServiceError;
+                    response.Message = "向审核中心发起审核请求失败：" + reponse.Message;
+                    return response;
+                }
 
-            await _fileScopeManager.CreateModifyAsync(user, contractId, strModifyGuid, "TEST", JsonHelper.ToJson(fileInfoRequests),
-                JsonHelper.ToJson(nf), JsonHelper.ToJson(user), dest, HttpContext.RequestAborted);//添加修改历史
+                await _fileScopeManager.CreateModifyAsync(user, contractId, strModifyGuid, "TEST", JsonHelper.ToJson(fileInfoRequests),
+                    JsonHelper.ToJson(nf), JsonHelper.ToJson(user), dest, HttpContext.RequestAborted);//添加修改历史
+            }
+            catch (Exception e)
+            {
+
+                response.Code = ResponseCodeDefines.ServiceError;
+                response.Message = e.ToString();
+                Logger.Error($"上传文件信息回调(FileCallback)模型验证失败：\r\n{e.ToString()},请求参数为：\r\n" + (fileInfoRequests != null ? JsonHelper.ToJson(fileInfoRequests) : ""));
+            }
+            
 
             return response;
         }

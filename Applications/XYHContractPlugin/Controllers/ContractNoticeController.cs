@@ -44,7 +44,7 @@ namespace XYHContractPlugin.Controllers
         {
             try
             {
-
+                 
 
                 List<ContractInfo> contractList = new List<ContractInfo>();
                 contractList = _icontractInfoStore.DapperSelect<ContractInfo>(sql).ToList();

@@ -14,8 +14,6 @@ namespace XYHContractPlugin.Models
         public string Type { get; set; }
         [MaxLength(127)]
         public string Settleaccounts { get; set; }
-        public bool IsSubmmitShop { get; set; }
-        public bool IsSubmmitRelation { get; set; }
         [MaxLength(127)]
         public string Commission { get; set; }
         public int? Relation { get; set; }
