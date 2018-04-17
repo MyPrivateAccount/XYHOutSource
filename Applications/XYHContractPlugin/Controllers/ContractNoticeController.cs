@@ -127,9 +127,12 @@ namespace XYHContractPlugin.Controllers
             return;
         }
 
-
+        /// <summary>
+        /// 合同通知定时任务
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("basicinfo")]
-        public async Task<ResponseMessage> NoticeUserContractInfo(UserInfo user)
+        public async Task<ResponseMessage> NoticeUserContractInfo()
         {
             var response = new ResponseMessage();
             try
