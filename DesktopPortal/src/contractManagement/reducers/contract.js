@@ -174,7 +174,7 @@ reducerMap[actionTypes.GOTO_THIS_CONTRACT_FINISH] = (state, action) => {
         
 
     }
-    let newState = Object.assign({}, state, { contractInfo: contractInfo, operInfo: operInfo, buildDisplay: 'block' });
+    let newState = Object.assign({}, state, { contractInfo: contractInfo, operInfo: operInfo, buildDisplay: 'block',completeFileList: [],deletePicList: [], });
     console.log(newState, '新值')
     return newState;
 }
@@ -312,7 +312,7 @@ reducerMap[actionTypes.OPEN_ATTACHMENT_FINISH] = function(state, action){
     let contractInfo = Object.assign({}, {...state.contractInfo }, {baseInfo: action.payload.baseInfo, attachInfo:attachInfo});
 
     let operInfo = { ...state.operInfo, attachPicOperType: attachPicOperType };
-    return Object.assign({}, state, {operInfo: operInfo,  isCurShowContractDetail: false, contractInfo:contractInfo});
+    return Object.assign({}, state, {operInfo: operInfo,  isCurShowContractDetail: false, contractInfo:contractInfo, completeFileList: [],deletePicList: [],});
 }
 
 reducerMap[actionTypes.OPEN_COMPLEMENT_FINISH] = function(state, action){
@@ -329,7 +329,7 @@ reducerMap[actionTypes.OPEN_COMPLEMENT_FINISH] = function(state, action){
     let contractInfo = Object.assign({}, {...state.contractInfo }, {baseInfo: action.payload.baseInfo, complementInfos:complementInfos});
 
     let operInfo = { ...state.operInfo, complementOperType: complementOperType };
-    return Object.assign({}, state, {operInfo: operInfo,  isCurShowContractDetail: false, contractInfo:contractInfo});
+    return Object.assign({}, state, {operInfo: operInfo,  isCurShowContractDetail: false, contractInfo:contractInfo,});
 }
 
 

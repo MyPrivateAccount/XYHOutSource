@@ -49,22 +49,28 @@ class AttachEdit extends Component {
     
   }
   componentWillReceiveProps(newProps) {
-    console.log("newProps:", newProps);
+   // console.log("newProps:", newProps);
+   // console.log("this.state.deleteIdArr:", this.state.deleteIdArr);
     let fileList = [];
     try {
       if (newProps.attachInfo.fileList) {
         let curFileList = newProps.attachInfo.fileList;
+        let temp = [];
         if(!this.initFiles){
           if(this.state.deleteIdArr.length > 0)
           {
             this.state.deleteIdArr.forEach((item, index)=>{
-              curFileList.forEach((_item, i) =>{
-                console.log('需要去掉的uid:', item);
-                _item.filter(o=> o.fileGuid === item);
+              
+              curFileList.forEach((_item, index) =>{
+                  if(_item.fileGuid !== item){
+                    temp.push(_item);
+                  }
               })
+                //console.log('需要去掉的uid:', item);
+
             });
           }
-          this.getGroup(curFileList)
+          this.getGroup(temp)
         }
         this.initFiles=true;   // true
       }
@@ -242,7 +248,7 @@ class AttachEdit extends Component {
         id: id,
         type: this.props.type, // shops  building  updataRecord
       });
-      return;
+      //return;
     }
     if (deletePicList.length !== 0) { // 删除图片
       console.log('进入的是删除么？？')

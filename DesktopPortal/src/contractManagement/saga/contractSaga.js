@@ -232,7 +232,7 @@ export function* savePictureAsync(action) {
 export function* deletePicAsync(action) {
     let url, res,
         body = action.payload.fileInfo;
-    let city = action.payload.ownCity; // 自己所在城市
+    console.log("deletePicAsync begin...");
     try {
 
             url = WebApiConfig.attach.deletePicUrl + action.payload.id
