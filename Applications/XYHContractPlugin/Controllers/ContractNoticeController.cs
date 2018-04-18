@@ -112,7 +112,7 @@ namespace XYHContractPlugin.Controllers
                         try
                         {
                             MessageLogger.Info("发送通知消息协议：\r\n{0}", JsonHelper.ToJson(sendMessageRequest));
-                            await _restClient.Post(ApplicationContext.Current.MessageServerUrl, sendMessageRequest, "POST", new NameValueCollection());
+                            string x = await _restClient.Post(ApplicationContext.Current.MessageServerUrl, sendMessageRequest, "POST", new NameValueCollection());
                         }
                         catch (Exception e)
                         {
