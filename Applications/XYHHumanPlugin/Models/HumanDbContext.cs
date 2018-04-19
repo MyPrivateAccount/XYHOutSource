@@ -8,7 +8,7 @@ using XYHHumanPlugin.Models;
 
 namespace XYHHumanPlugin.Models
 {
-    class HumanDbContext : DbContext
+    public class HumanDbContext : DbContext
     {
         public HumanDbContext(DbContextOptions<HumanDbContext> opt)
             : base(opt) { }
@@ -22,6 +22,9 @@ namespace XYHHumanPlugin.Models
         public DbSet<MonthInfo> MonthInfos { get; set; }
         public DbSet<SalaryFormInfo> SalaryFormInfos { get; set; }
         public DbSet<AttendanceFormInfo> AttendanceFormInfos { get; set; }
+        public DbSet<ModifyInfo> ModifyInfos { get; set; }
+        public DbSet<AnnexInfo> AnnexInfos { get; set; }
+        public DbSet<FileInfo> FileInfos { get; set; }
 
         protected internal virtual void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -62,6 +65,18 @@ namespace XYHHumanPlugin.Models
             modelBuilder.Entity<AttendanceFormInfo>(b => {
                 b.HasKey(k => k.ID);
                 b.ToTable("XYH_HU_ATTENDANCEFORM");
+            });
+            modelBuilder.Entity<ModifyInfo>(b => {
+                b.HasKey(k => k.ID);
+                b.ToTable("XYH_HU_MODIFY");
+            });
+            modelBuilder.Entity<AnnexInfo>(b => {
+                b.HasKey(k => k.ID);
+                b.ToTable("XYH_HU_ANNEX");
+            });
+            modelBuilder.Entity<FileInfo>(b => {
+                b.HasKey(k => k.FileGuid);
+                b.ToTable("XYH_HU_FILEINFOS");
             });
         }
 

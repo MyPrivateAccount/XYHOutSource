@@ -93,13 +93,13 @@ namespace XYHContractPlugin.Models
         public DateTime? ModifyStartTime { get; set; }
         [MaxLength(127)]
         public string ModifyCheck { get; set; }
-        [MaxLength(3000)]
+        [MaxLength(4000)]
         public string Ext1 { get; set; }
-        [MaxLength(3000)]
+        [MaxLength(15000)]
         public string Ext2 { get; set; }
-        [MaxLength(1000)]
+        [MaxLength(600)]
         public string Ext3 { get; set; }
-        [MaxLength(1000)]
+        [MaxLength(100)]
         public string Ext4 { get; set; }
     }
 }

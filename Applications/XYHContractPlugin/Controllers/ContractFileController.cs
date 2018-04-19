@@ -78,33 +78,27 @@ namespace XYHContractPlugin.Controllers
 
             string strModifyGuid = Guid.NewGuid().ToString();
 
-            List<NWF> nf = new List<NWF>();
-            foreach (var item in fileInfoRequests)
-            {
-                nf.Add(CreateNwf(user, source, item));
-            }
-
-            GatewayInterface.Dto.ExamineSubmitRequest exarequest = new GatewayInterface.Dto.ExamineSubmitRequest();
-            exarequest.ContentId = contractId;
-            exarequest.ContentType = "ContractCommit";
-            exarequest.ContentName = "AddComplement";
-            exarequest.SubmitDefineId = strModifyGuid;
-            exarequest.Source = "";
-            exarequest.CallbackUrl = ApplicationContext.Current.UpdateExamineCallbackUrl;
-            exarequest.Action = "TEST";/* exarequest.ContentType*/;
-            exarequest.TaskName = $"{user.UserName}添加合同附件{exarequest.ContentName}的动态{exarequest.ContentType}";
-
-            GatewayInterface.Dto.UserInfo userinfo = new GatewayInterface.Dto.UserInfo()
-            {
-                Id = user.Id,
-                KeyWord = user.KeyWord,
-                OrganizationId = user.OrganizationId,
-                OrganizationName = user.OrganizationName,
-                UserName = user.UserName
-            };
-            
             try
             {
+                GatewayInterface.Dto.ExamineSubmitRequest exarequest = new GatewayInterface.Dto.ExamineSubmitRequest();
+                exarequest.ContentId = contractId;
+                exarequest.ContentType = "ContractCommit";
+                exarequest.ContentName = "AddComplement";
+                exarequest.SubmitDefineId = strModifyGuid;
+                exarequest.Source = "";
+                exarequest.CallbackUrl = ApplicationContext.Current.UpdateExamineCallbackUrl;
+                exarequest.Action = "TEST";/* exarequest.ContentType*/;
+                exarequest.TaskName = $"{user.UserName}添加合同附件{exarequest.ContentName}的动态{exarequest.ContentType}";
+
+                GatewayInterface.Dto.UserInfo userinfo = new GatewayInterface.Dto.UserInfo()
+                {
+                    Id = user.Id,
+                    KeyWord = user.KeyWord,
+                    OrganizationId = user.OrganizationId,
+                    OrganizationName = user.OrganizationName,
+                    UserName = user.UserName
+                };
+
                 var examineInterface = ApplicationContext.Current.Provider.GetRequiredService<IExamineInterface>();
                 var reponse = await examineInterface.Submit(userinfo, exarequest);
                 if (reponse.Code != ResponseCodeDefines.SuccessCode)
@@ -114,8 +108,20 @@ namespace XYHContractPlugin.Controllers
                     return response;
                 }
 
+                response.Message = "发起审核成功";
+
+                List<NWF> nf = new List<NWF>();
+                foreach (var item in fileInfoRequests)
+                {
+                    nf.Add(CreateNwf(user, source, item));
+                }
+
+                string st = JsonHelper.ToJson(nf);
+                Logger.Trace($"all lenght {st.Length}");
                 await _fileScopeManager.CreateModifyAsync(user, contractId, strModifyGuid, "TEST", JsonHelper.ToJson(fileInfoRequests),
-                    JsonHelper.ToJson(nf), JsonHelper.ToJson(user), dest, HttpContext.RequestAborted);//添加修改历史
+                    st, JsonHelper.ToJson(user), dest, HttpContext.RequestAborted);//添加修改历史
+
+                response.Message = "添加附件修改成功";
             }
             catch (Exception e)
             {
@@ -174,6 +180,7 @@ namespace XYHContractPlugin.Controllers
         public async Task<ResponseMessage> DeleteContractFiles(UserInfo user, string contractId, [FromBody] List<string> fileGuids)
         {
             ResponseMessage response = new ResponseMessage();
+            Logger.Trace($"deletecontractfile {fileGuids.Count}");
             try
             {
                 await _fileScopeManager.DeleteContractFileListAsync(user.Id, contractId, fileGuids, HttpContext.RequestAborted);
@@ -182,7 +189,7 @@ namespace XYHContractPlugin.Controllers
             {
                 response.Code = ResponseCodeDefines.ServiceError;
                 response.Message = e.ToString();
-                Logger.Error($"用户{user?.UserName ?? ""}({user?.Id ?? ""})删除楼盘文件(DeleteBuildingFiles)报错：\r\n{e.ToString()},请求参数为：\r\n(contractId){contractId ?? ""}" + (fileGuids != null ? JsonHelper.ToJson(fileGuids) : ""));
+                Logger.Error($"用户{user?.UserName ?? ""}({user?.Id ?? ""})删除合同附件文件(DeleteBuildingFiles)报错：\r\n{e.ToString()},请求参数为：\r\n(contractId){contractId ?? ""}" + (fileGuids != null ? JsonHelper.ToJson(fileGuids) : ""));
             }
             return response;
         }

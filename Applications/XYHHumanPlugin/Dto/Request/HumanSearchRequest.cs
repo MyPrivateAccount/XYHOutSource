@@ -18,10 +18,11 @@ namespace XYHHumanPlugin.Dto.Request
         /// </summary>
         /// 
         public int Departure { get; set; }
-        public int OverTime { get; set; }
         public int CheckStatu { get; set; }
+        public int HumanType { get; set; }
         public string Organizate { get; set; }
         
+        public int SearchTimeType { get; set; }
         public DateTime? CreateDateStart { get; set; }
         public DateTime? CreateDateEnd { get; set; }
 

@@ -11,8 +11,8 @@ namespace XYHHumanPlugin
     {
         public HumanMappingProfile()
         {
-            CreateMap<ContractInfo, ContractInfoResponse>();
-            CreateMap<ContractInfoResponse, ContractInfo>();
+            CreateMap<HumanInfo, HumanInfoResponse>();
+            CreateMap<HumanInfoResponse, HumanInfo>();
 
             CreateMap<BlackInfo, BlackInfoResponse>();
             CreateMap<BlackInfoResponse, BlackInfo>();
