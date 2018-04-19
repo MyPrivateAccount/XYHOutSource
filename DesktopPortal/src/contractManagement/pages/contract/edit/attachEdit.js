@@ -9,6 +9,7 @@ import {
 } from 'antd'
 import { NewGuid } from '../../../../utils/appUtils';
 import WebApiConfig from '../../../constants/webapiConfig'
+import myAuditListPage from '../../../../auditCenter/pages/myAuditListPage';
 
 
 const { Header, Sider, Content } = Layout;
@@ -41,19 +42,35 @@ class AttachEdit extends Component {
 
     if (this.props.attachInfo.fileList) {
           let curFileList = this.props.attachInfo.fileList;//直接修改会改变state
+
           this.getGroup(curFileList);
     }
     this.setState({ fileList: fileList });
     
   }
   componentWillReceiveProps(newProps) {
-    console.log("newProps:", newProps);
+   // console.log("newProps:", newProps);
+   // console.log("this.state.deleteIdArr:", this.state.deleteIdArr);
     let fileList = [];
     try {
       if (newProps.attachInfo.fileList) {
         let curFileList = newProps.attachInfo.fileList;
+        let temp = [];
         if(!this.initFiles){
-          this.getGroup(curFileList)
+          if(this.state.deleteIdArr.length > 0)
+          {
+            this.state.deleteIdArr.forEach((item, index)=>{
+              
+              curFileList.forEach((_item, index) =>{
+                  if(_item.fileGuid !== item){
+                    temp.push(_item);
+                  }
+              })
+                //console.log('需要去掉的uid:', item);
+
+            });
+          }
+          this.getGroup(temp)
         }
         this.initFiles=true;   // true
       }
@@ -89,13 +106,29 @@ class AttachEdit extends Component {
               })
           }
       })
-      // console.log(this.state.imgFiles, list, 'hahahahh') // list 是reducer的，imgFiles 是才传的
+      //console.log(this.state.imgFiles, list, 'hahahahh') // list 是reducer的，imgFiles 是才传的
       let myObj = Object.assign({}, this.state.imgFiles)
       if (Object.keys(myObj).length !== 0){
         for(let i in list) {
           if (list[i]){
-            myObj[i] = myObj[i].concat(list[i])
-             
+            let temp = [];
+            let myTemp = myObj[i] || [];
+            list[i].forEach((item, index)=>{//去重操作保证传入的列表key唯一
+                let isSame = false;
+                for(let j =0;j < myTemp.length; j ++){
+                  if(item.uid === myTemp[j].uid){
+                    isSame = true;
+                  }
+                }
+                if(!isSame){
+                  temp.push(item);
+                }
+             }
+          
+            );
+            myObj[i] = myObj[i].concat(temp);
+          
+            
           }
         }
         this.setState({
@@ -215,7 +248,7 @@ class AttachEdit extends Component {
         id: id,
         type: this.props.type, // shops  building  updataRecord
       });
-      return;
+      //return;
     }
     if (deletePicList.length !== 0) { // 删除图片
       console.log('进入的是删除么？？')

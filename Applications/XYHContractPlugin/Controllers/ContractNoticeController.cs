@@ -52,6 +52,7 @@ namespace XYHContractPlugin.Controllers
                 sendMessageRequest.MessageList = new List<MessageItem>();
                 List<string> recordUserList = new List<string>();
                 recordUserList = await permissionExpansionManager.GetPermissionUserIds("RECORD_FUC");
+                Logger.Trace("查询到符合条件的合同信息的个数为" + contractList.Count.ToString());
                 for (int i = 0; i < contractList.Count; i++)
                 {
 
@@ -77,7 +78,7 @@ namespace XYHContractPlugin.Controllers
                                     List<string> userList = recordUserList.Union(magrUseList).ToList<string>();
                                     messageItem.UserIds = userList;
                                     messageItem.MessageTypeItems = new List<TypeItem> {
-                                new TypeItem{ Key="NOTICETYPE",Value= "ContractNotice" },
+                                //new TypeItem{ Key="NOTICETYPE",Value= "ContractNotice" },
                                 new TypeItem { Key="NAME",Value=info.Name},
                                 new TypeItem{ Key="TIME",Value=DateTime.Now.ToString("MM-dd hh:mm")}
                             };
@@ -88,15 +89,15 @@ namespace XYHContractPlugin.Controllers
                         }
 
 
-                        if (msgType == "ContractWillEexpire")
+                        if (msgType == "ContractWillExpire")
                         {
                             if (nSpanDay > 0 && nSpanDay < 15)
                             {
                                 MessageItem messageItem = new MessageItem();
-                                sendMessageRequest.MessageTypeCode = "ContractWillEexpire";
+                                sendMessageRequest.MessageTypeCode = "ContractWillExpire";
                                 messageItem.UserIds = recordUserList;
                                 messageItem.MessageTypeItems = new List<TypeItem> {
-                                new TypeItem{ Key="NOTICETYPE",Value= "ContractNotice" },
+                               // new TypeItem{ Key="NOTICETYPE",Value= "ContractNotice" },
                                 new TypeItem { Key="NAME",Value=info.Name},
                                 new TypeItem{ Key="TIME",Value=DateTime.Now.ToString("MM-dd hh:mm")}
                                 };
@@ -111,7 +112,7 @@ namespace XYHContractPlugin.Controllers
                         try
                         {
                             MessageLogger.Info("发送通知消息协议：\r\n{0}", JsonHelper.ToJson(sendMessageRequest));
-                            await _restClient.Post(ApplicationContext.Current.MessageServerUrl, sendMessageRequest, "POST", new NameValueCollection());
+                            string x = await _restClient.Post(ApplicationContext.Current.MessageServerUrl, sendMessageRequest, "POST", new NameValueCollection());
                         }
                         catch (Exception e)
                         {
@@ -122,15 +123,19 @@ namespace XYHContractPlugin.Controllers
                 }
             }catch(Exception e)
             {
-
+                Logger.Error("发送合同通知消息出错:\r\n{0}", e.ToString());
             }
             return;
         }
 
-
+        /// <summary>
+        /// 合同通知定时任务
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("basicinfo")]
-        public async Task<ResponseMessage> NoticeUserContractInfo(UserInfo user)
+        public async Task<ResponseMessage> NoticeUserContractInfo()
         {
+            Logger.Trace("Recv notice command!");
             var response = new ResponseMessage();
             try
             {
@@ -142,7 +147,7 @@ namespace XYHContractPlugin.Controllers
                 sql = string.Format("select * from XYH_DT_CONTRACTINFO as a where ReturnOrigin=2 and TIMESTAMPDIFF(DAY,  '{0}',a.EndTime) > 0 and  TIMESTAMPDIFF(DAY, '{1}',a.EndTime) < 15", now, now);
                 msyTypeCodeList.Add("ContractHaveNoOriginal", sql);
                 sql = string.Format("select * from XYH_DT_CONTRACTINFO as a where  TIMESTAMPDIFF(DAY,'{0}', a.EndTime) > 0 and  TIMESTAMPDIFF(DAY, '{1}',a.EndTime) < 5", now, now);
-                msyTypeCodeList.Add("ContractWillEexpire", sql);
+                msyTypeCodeList.Add("ContractWillExpire", sql);
 
                 foreach (KeyValuePair<string, string> kvp in msyTypeCodeList)
                 {
