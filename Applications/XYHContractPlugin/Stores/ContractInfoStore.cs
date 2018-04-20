@@ -413,7 +413,7 @@ namespace XYHContractPlugin.Stores
                             CurrentModify = b.CurrentModify,
                             Annex = b.Annex,
                             Complement = b.Complement,
-                            Follow = follow.Follow,
+                            Follow = follow.Name,
                             Remark = b.Remark,
                             ProjectName = b.ProjectName,
                             ProjectType = b.ProjectType,

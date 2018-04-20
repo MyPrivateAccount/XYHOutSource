@@ -73,6 +73,7 @@ class BasicEdit extends Component {
 
                 
                 delete newBasicInfo.startAndEndTime;
+                delete newBasicInfo.examineStatus;
                 let method = (basicOperType === 'add' ? 'POST' : "PUT");
     
                 this.props.dispatch(saveContractBasic({ 

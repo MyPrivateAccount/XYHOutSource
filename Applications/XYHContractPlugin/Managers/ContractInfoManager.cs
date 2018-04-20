@@ -509,7 +509,7 @@ namespace XYHContractPlugin.Managers
             infos.Insert(0, _mapper.Map<ContractInfoResponse>(contractinfo));
             while (contractinfo.IsFollow == true)
             {
-                string id = contractinfo.Follow;
+                string id = contractinfo.FollowId;
                 contractinfo = await Store.GetAsync(a => a.Where(b => b.ID == id), cancellationToken);
                 infos.Insert(0, _mapper.Map<ContractInfoResponse>(contractinfo));
             }
