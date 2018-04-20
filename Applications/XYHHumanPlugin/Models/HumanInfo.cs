@@ -18,6 +18,8 @@ namespace XYHHumanPlugin.Models
         public string IDCard { get; set; }
         [MaxLength(127)]
         public string Position { get; set; }
+        [MaxLength(127)]
+        public string CreateUser { get; set; }
         public int? Modify { get; set; }
         [MaxLength(127)]
         public string Picture { get; set; }
@@ -27,6 +29,7 @@ namespace XYHHumanPlugin.Models
         public string Contract { get; set; }
         public DateTime? EntryTime { get; set; }
         public DateTime? BecomeTime { get; set; }
+        public DateTime? CreateTime { get; set; }
         public bool? IsSocialInsurance { get; set; }
         [MaxLength(127)]
         public string SocialInsuranceInfo { get; set; }
