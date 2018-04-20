@@ -67,8 +67,8 @@ namespace XYHContractPlugin.Controllers
                 Logger.Warn($"用户{user?.UserName ?? ""}({user?.Id ?? ""})批量上传文件信息(UploadFiles)模型验证失败：\r\n{response.Message ?? ""},请求参数为：\r\n(source){source ?? ""},(dest){dest ?? ""},(contractId){contractId ?? ""}," + (fileInfoRequests != null ? JsonHelper.ToJson(fileInfoRequests) : ""));
                 return response;
             }
-            var building = await _contractInfoManager.FindByIdAsync(contractId, HttpContext.RequestAborted);
-            if (building == null)
+            var info = await _contractInfoManager.FindByIdAsync(contractId, HttpContext.RequestAborted);
+            if (info == null)
             {
                 response.Code = ResponseCodeDefines.NotFound;
                 response.Message = "合同不存在：" + contractId;

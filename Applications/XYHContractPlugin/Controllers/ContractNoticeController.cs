@@ -66,7 +66,7 @@ namespace XYHContractPlugin.Controllers
                         int nSpanDay = (info.EndTime.Value - now).Days;
                         if (msgType == "ContractHaveNoOriginal")
                         {
-                            if (info.ReturnOrigin == 2)
+                            if (!info.ReturnOrigin)
                             {
 
 

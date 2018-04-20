@@ -46,5 +46,7 @@ namespace XYHContractPlugin.Stores
         Task SaveAsync(SimpleUser user, ContractInfo buildingBaseInfo, CancellationToken cancellationToken = default(CancellationToken));
         Task UpdateExamineStatus(string modifyId, ExamineStatusEnum status, CancellationToken cancellationToken = default(CancellationToken));
 
+        IQueryable<ContractInfo> ContractInfoAll();
+  
     }
 }

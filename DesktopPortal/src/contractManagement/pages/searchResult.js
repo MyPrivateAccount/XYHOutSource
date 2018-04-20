@@ -355,10 +355,10 @@ class SearchResult extends Component {
                 //sortOrder:'ascend',
             },
             {
-                title: '部门',
+                title: '申请部门',
                 // width: 80,
-                dataIndex: 'createDepartment',
-                key: 'createDepartment'
+                dataIndex: 'organizate',
+                key: 'organizate'
             },
             // {
             //     title: '申请人',
@@ -367,8 +367,8 @@ class SearchResult extends Component {
             // },
             {
                 title: '合同编号',
-                dataIndex: 'id',
-                key: 'id',
+                dataIndex: 'num',
+                key: 'num',
             },
             {
                 title: '项目名称',
@@ -465,8 +465,11 @@ class SearchResult extends Component {
             // },
             {
                 title: '新签/续签',
-                dataIndex:'follow',
-                key:'follow',
+                dataIndex:'isFollow',
+                key:'isFollow',
+                render:(text, record) =>{
+                    return <span>{text ? '续签' : '新签'}</span>
+                }
             },
             // {
             //     title: '备注',

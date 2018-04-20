@@ -19,7 +19,7 @@ namespace XYHContractPlugin.Dto.Response
         public string CurrentModify { get; set; }
         public int ExamineStatus { get; set; }
         /// <summary>
-        /// 是否续签
+        /// 续签合同名
         /// </summary>
         public string Follow { get; set; }
         public string Remark { get; set; }
@@ -41,7 +41,16 @@ namespace XYHContractPlugin.Dto.Response
         public DateTime? StartTime { get; set; }
         public DateTime? EndTime { get; set; }
         public int? Count { get; set; }
-        public int? ReturnOrigin { get; set; }
+        public bool ReturnOrigin { get; set; }
+
+        public string Num { get; set; }
+
+        public bool? IsFollow { get; set; }
+        public string FollowId { get; set; }
+        public string ProjectAddress { get; set; }
+        public string OrganizateFullId { get; set; }
+        public string CompanyAId { get; set; }
+        public DateTime? FollowTime { get; set; }
         public string Ext1 { get; set; }
         public string Ext2 { get; set; }
     }

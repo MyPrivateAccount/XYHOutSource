@@ -16,7 +16,7 @@ namespace XYHContractPlugin.Models
         public string Settleaccounts { get; set; }
         [MaxLength(127)]
         public string Commission { get; set; }
-        public int? Relation { get; set; }
+        public int? Relation { get; set; }//这个字段目前没用
         [MaxLength(127)]
         public string Name { get; set; }
         public string ContractEstate { get; set; }
@@ -61,7 +61,23 @@ namespace XYHContractPlugin.Models
         public DateTime? StartTime { get; set; }
         public DateTime? EndTime { get; set; }
         public int? Count { get; set; }
-        public int? ReturnOrigin { get; set; }
+        public bool ReturnOrigin { get; set; } 
+
+        [Key]
+        [MaxLength(64)]
+        public string Num { get; set; }
+        public bool? IsFollow { get; set; }
+        [MaxLength(127)]
+        public string FollowId { get; set; }
+
+        [MaxLength(256)]
+        public string ProjectAddress { get; set; }
+        [MaxLength(256)]
+        public string CompanyAId { get; set; }
+        [MaxLength(512)]
+        public string OrganizateFullId { get; set; }
+        public int? ExamineStatus { get; set; }//不作为数据库存储字段
+        public DateTime? FollowTime { get; set; }
         [MaxLength(256)]
         public string Ext1 { get; set; }
         [MaxLength(256)]

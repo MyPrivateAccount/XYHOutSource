@@ -22,12 +22,24 @@ namespace XYHContractPlugin.Models
 
         public DbSet<FileInfo> FileInfos { get; set; }
 
+        public DbSet<CompanyAInfo> CompanyAInfo { get; set; }
+
+        /// <summary>
+        /// 员工信息
+        /// </summary>
+        public DbSet<Users> Users { get; set; }
+
+        /// <summary>
+        /// 部门信息
+        /// </summary>
+        public DbSet<Organizations> Organizations { get; set; }
+        public DbSet<OrganizationExpansion> OrganizationExpansions { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
             builder.Entity<ContractInfo>(b =>
             {
-                b.HasKey(K => new { K.ID});
+                b.HasKey(K => new { K.ID, K.Num});
                 b.ToTable("XYH_DT_CONTRACTINFO");
             });
 
@@ -65,6 +77,27 @@ namespace XYHContractPlugin.Models
             {
                 b.ToTable("XYH_DT_CONTRACTFILEINFOS");
                 b.HasKey(k => new { k.FileGuid, k.FileExt, k.Type });
+            });
+
+            builder.Entity<CompanyAInfo>(b =>
+            {
+                b.ToTable("XYH_DT_COMPANYA");
+                b.HasKey(K => new { K.ID });
+            });
+            builder.Entity<Users>(b =>
+            {
+                b.HasKey(k => new { k.Id, k.IsDeleted });
+                b.ToTable("identityuser");
+            });
+
+            builder.Entity<Organizations>(b =>
+            {
+                b.ToTable("organizations");
+            });
+            builder.Entity<OrganizationExpansion>(b =>
+            {
+                b.ToTable("organizationexpansions");
+                b.HasKey(k => new { k.OrganizationId, k.SonId });
             });
         }
 

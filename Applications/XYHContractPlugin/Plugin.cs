@@ -47,10 +47,12 @@ namespace XYHContractPlugin
             context.Services.AddScoped<ContractListManager>();
             context.Services.AddScoped<ContractInfoManager>();
             context.Services.AddScoped<PermissionExpansionManager>();
+        
             context.Services.AddScoped<XYHContractPlugin.Managers.FileScopeManager>();
             context.Services.AddScoped<FileInfoManager>();
-
-
+            context.Services.AddScoped<IExtraDataInfoStrore, ExtraDataInfoStore>();
+            context.Services.AddScoped<PermissionExpansionManager>();
+            context.Services.AddScoped<IOrganizationExpansionStore, OrganizationExpansionStore>();
             return base.Init(context);
         }
 

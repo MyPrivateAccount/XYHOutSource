@@ -13,9 +13,9 @@ namespace XYHContractPlugin.Stores
 {
     public class FileInfoStore : IFileInfoStore
     {
-        public FileInfoStore(ContractDbContext shopsDbContext)
+        public FileInfoStore(ContractDbContext DbContext)
         {
-            Context = shopsDbContext;
+            Context = DbContext;
             FileInfos = Context.FileInfos;
         }
 

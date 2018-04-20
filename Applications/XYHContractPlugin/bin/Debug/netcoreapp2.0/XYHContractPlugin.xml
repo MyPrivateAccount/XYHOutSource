@@ -61,9 +61,24 @@
             创建时间结束
             </summary>
         </member>
+        <member name="P:XYHContractPlugin.Dto.Request.CompanyASearchCondition.KeyWord">
+            <summary>
+            名称
+            </summary>
+        </member>
+        <member name="P:XYHContractPlugin.Dto.Request.CompanyASearchCondition.SearchType">
+            <summary>
+            类型
+            </summary>
+        </member>
+        <member name="P:XYHContractPlugin.Dto.Request.CompanyASearchCondition.Address">
+            <summary>
+            项目地址
+            </summary>
+        </member>
         <member name="P:XYHContractPlugin.Dto.Response.BaseInfoResponse.Follow">
             <summary>
-            是否续签
+            续签合同名
             </summary>
         </member>
         <member name="P:XYHContractPlugin.Dto.Response.ContractContentResponse.Discard">
@@ -98,7 +113,7 @@
         </member>
         <member name="P:XYHContractPlugin.Dto.Response.ContractInfoResponse.Follow">
             <summary>
-            是否续签
+            续签合同名
             </summary>
         </member>
         <member name="P:XYHContractPlugin.Dto.Response.ExamineResponse.FlowId">
@@ -135,6 +150,67 @@
             <summary>
             驳回
             </summary>
+        </member>
+        <member name="M:XYHContractPlugin.Managers.ContractInfoManager.GetContractNum(System.String,System.Threading.CancellationToken)">
+            <summary>
+            给合同分配编号
+            </summary>
+            <param name="id"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="P:XYHContractPlugin.Models.ContractDbContext.Users">
+            <summary>
+            员工信息
+            </summary>
+        </member>
+        <member name="P:XYHContractPlugin.Models.ContractDbContext.Organizations">
+            <summary>
+            部门信息
+            </summary>
+        </member>
+        <member name="T:XYHContractPlugin.Models.CompanyAInfo">
+            <summary>
+            甲方公司信息
+            </summary>
+        </member>
+        <member name="M:XYHContractPlugin.Stores.OrganizationExpansionStore.#ctor(XYHContractPlugin.Models.ContractDbContext)">
+            <summary>
+            初始化
+            </summary>
+            <param name="ContractDbContext">Context</param>
+        </member>
+        <member name="M:XYHContractPlugin.Stores.OrganizationExpansionStore.GetFullName(System.String)">
+            <summary>
+            根据部门ID获取一条部门展开信息
+            </summary>
+            <param name="departmentid"></param>
+            <returns></returns>
+        </member>
+        <member name="M:XYHContractPlugin.Stores.OrganizationExpansionStore.GetFullNameByUserId(System.String)">
+            <summary>
+            根据用户ID获取一条部门展开信息
+            </summary>
+            <param name="userid"></param>
+            <returns></returns>
+        </member>
+        <member name="M:XYHContractPlugin.Stores.OrganizationExpansionStore.GetAsync``1(System.Func{System.Linq.IQueryable{ApplicationCore.Models.OrganizationExpansion},System.Linq.IQueryable{``0}},System.Threading.CancellationToken)">
+            <summary>
+            根据某一成员获取一条部门展开信息
+            </summary>
+            <typeparam name="TResult">返回值</typeparam>
+            <param name="query">参数</param>
+            <param name="cancellationToken">验证</param>
+            <returns></returns>
+        </member>
+        <member name="M:XYHContractPlugin.Stores.OrganizationExpansionStore.ListAsync``1(System.Func{System.Linq.IQueryable{ApplicationCore.Models.OrganizationExpansion},System.Linq.IQueryable{``0}},System.Threading.CancellationToken)">
+            <summary>
+            根据某一成员获取列表部门展开信息
+            </summary>
+            <typeparam name="TResult">返回值</typeparam>
+            <param name="query">参数</param>
+            <param name="cancellationToken">验证</param>
+            <returns></returns>
         </member>
     </members>
 </doc>

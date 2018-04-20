@@ -39,6 +39,12 @@
             <param name="contractId"></param>
             <returns></returns>
         </member>
+        <member name="M:XYHContractPlugin.Controllers.ContractNoticeController.NoticeUserContractInfo">
+            <summary>
+            合同通知定时任务
+            </summary>
+            <returns></returns>
+        </member>
         <member name="P:XYHContractPlugin.Dto.Request.ContractSearchRequest.SearchType">
             <summary>
             用户条件
@@ -55,9 +61,24 @@
             创建时间结束
             </summary>
         </member>
+        <member name="P:XYHContractPlugin.Dto.Request.CompanyASearchCondition.KeyWord">
+            <summary>
+            名称
+            </summary>
+        </member>
+        <member name="P:XYHContractPlugin.Dto.Request.CompanyASearchCondition.SearchType">
+            <summary>
+            类型
+            </summary>
+        </member>
+        <member name="P:XYHContractPlugin.Dto.Request.CompanyASearchCondition.Address">
+            <summary>
+            项目地址
+            </summary>
+        </member>
         <member name="P:XYHContractPlugin.Dto.Response.BaseInfoResponse.Follow">
             <summary>
-            是否续签
+            续签合同名
             </summary>
         </member>
         <member name="P:XYHContractPlugin.Dto.Response.ContractContentResponse.Discard">
@@ -92,7 +113,7 @@
         </member>
         <member name="P:XYHContractPlugin.Dto.Response.ContractInfoResponse.Follow">
             <summary>
-            是否续签
+            续签合同名
             </summary>
         </member>
         <member name="P:XYHContractPlugin.Dto.Response.ExamineResponse.FlowId">
@@ -128,6 +149,29 @@
         <member name="F:XYHContractPlugin.Dto.Response.ExamineStatus.Reject">
             <summary>
             驳回
+            </summary>
+        </member>
+        <member name="M:XYHContractPlugin.Managers.ContractInfoManager.GetContractNum(System.String,System.Threading.CancellationToken)">
+            <summary>
+            给合同分配编号
+            </summary>
+            <param name="id"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="P:XYHContractPlugin.Models.ContractDbContext.Users">
+            <summary>
+            员工信息
+            </summary>
+        </member>
+        <member name="P:XYHContractPlugin.Models.ContractDbContext.Organizations">
+            <summary>
+            部门信息
+            </summary>
+        </member>
+        <member name="T:XYHContractPlugin.Models.CompanyAInfo">
+            <summary>
+            甲方公司信息
             </summary>
         </member>
     </members>

@@ -371,5 +371,90 @@ namespace XYHContractPlugin.Stores
             }
             catch (DbUpdateConcurrencyException) { throw; }
         }
+        public IQueryable<ContractInfo> ContractInfoAll()
+        { 
+            var a = Context.ContractInfos.AsNoTracking();
+            var query =
+                        from b in Context.ContractInfos.AsNoTracking()
+                        join x in Context.ContractInfos.AsNoTracking() on b.FollowId equals x.ID into fol
+                        from follow in fol.DefaultIfEmpty()
+
+                        //from a in Context.ContractInfos.AsNoTracking()
+                        join c in Context.CompanyAInfo.AsNoTracking() on b.CompanyAId equals c.ID into cy
+                        from acy in cy.DefaultIfEmpty()
+                            //人事和部门
+                        join cu1 in Context.Users.AsNoTracking() on b.CreateUser equals cu1.Id into cu2
+                        from cu in cu2.DefaultIfEmpty()
+
+                        join eu1 in Context.Users.AsNoTracking() on b.DeleteUser equals eu1.Id into du2
+                        from eu in du2.DefaultIfEmpty()
+
+                        join ru1a in Context.Organizations.AsNoTracking() on b.OrganizateID equals ru1a.Id into ru1b
+                        from ru1 in ru1b.DefaultIfEmpty()
+
+                        join cru1a in Context.Organizations.AsNoTracking() on b.CreateDepartmentID equals cru1a.Id into cru1b
+                        from cru1 in cru1b.DefaultIfEmpty()
+
+                        join m in Context.ModifyInfos.AsNoTracking() on b.CurrentModify equals m.ID into mod
+                        from modify in mod.DefaultIfEmpty()
+
+                        //where !b.IsDelete 
+                        //&& acy.IsDelete
+                        select new ContractInfo()
+                        {
+                            ID = b.ID,
+                            Type = b.Type,
+                            Settleaccounts = b.Settleaccounts,
+                            Commission = b.Commission,
+                            Relation = b.Relation,
+                            Name = b.Name,
+                            ContractEstate = b.ContractEstate,
+                            Modify = b.Modify,
+                            CurrentModify = b.CurrentModify,
+                            Annex = b.Annex,
+                            Complement = b.Complement,
+                            Follow = follow.Follow,
+                            Remark = b.Remark,
+                            ProjectName = b.ProjectName,
+                            ProjectType = b.ProjectType,
+                            CompanyA = acy.Name,
+                            CompanyAT = acy.Type,
+                            PrincipalpepoleA = b.PrincipalpepoleA,
+                            PrincipalpepoleB = b.PrincipalpepoleB,
+                            ProprincipalPepole = b.ProprincipalPepole,
+                            CreateUser = cu.UserName,
+                            CreateTime = b.CreateTime,
+                            FollowId = b.FollowId,
+                            ProjectAddress = b.ProjectAddress,
+                            FollowTime = b.FollowTime,
+                            Ext1 = b.Ext1,
+                            Ext2 = b.Ext2,
+                            Num = b.Num,
+                            IsFollow = b.IsFollow,
+                            ReturnOrigin = b.ReturnOrigin,
+                            Count = b.Count,
+                            StartTime = b.StartTime,
+                            EndTime = b.EndTime,
+                            CommisionType = b.CommisionType,
+                            DeleteTime = b.DeleteTime,
+                            CreateDepartmentID = b.CreateDepartmentID,
+                            CreateDepartment = cru1.OrganizationName,
+                            IsDelete = b.IsDelete,
+                            OrganizateID = ru1.Id,
+                            Organizate = b.Organizate,//这个后面处理
+                            OrganizateFullId = b.OrganizateFullId,
+                            DeleteUser = eu.UserName,
+                            CompanyAId = b.CompanyAId,
+                            ExamineStatus = modify.ExamineStatus,
+                        };
+
+      
+      
+
+            return query;
+        }
     }
+
+
+
 }

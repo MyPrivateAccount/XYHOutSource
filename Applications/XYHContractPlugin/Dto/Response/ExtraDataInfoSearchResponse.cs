@@ -5,8 +5,8 @@ using System.Text;
 
 namespace XYHContractPlugin.Dto.Response
 {
-    public class ContractSearchResponse<T>: PagingResponseMessage<T>
+    public class CompanyASearchResponse<T> : PagingResponseMessage<T>
     {
-        public long ValidityContractCount { get; set; }
+        public int ValidityContractCount { get; set; }
     }
 }

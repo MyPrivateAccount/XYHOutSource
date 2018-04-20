@@ -63,7 +63,8 @@ namespace XYHContractPlugin.Controllers
             {
                 //if (await _permissionExpansionManager.HavePermission(User.Id, "SEARCH_CONTRACT"))
                 //{
-                    pagingResponse = await _contractListManager.SearchContract(User, condition, HttpContext.RequestAborted);
+                   // pagingResponse = await _contractListManager.SearchContract(User, condition, HttpContext.RequestAborted);
+                   pagingResponse = await _contractListManager.SearchContract2(User, condition, HttpContext.RequestAborted);
                 //}
                 //else
                 //{

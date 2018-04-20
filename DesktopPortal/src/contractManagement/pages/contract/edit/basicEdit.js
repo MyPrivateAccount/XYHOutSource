@@ -66,9 +66,9 @@ class BasicEdit extends Component {
                 newBasicInfo.organizate = this.props.basicInfo.organizate;
                 if(this.state.departMentFullName !='' || this.state.organizateID !='' || this.state.departmentFullId)
                 {
-                    newBasicInfo.organizate = this.state.departMentFullName ;
+                    //newBasicInfo.organizate = this.state.departMentFullName ;
                     newBasicInfo.organizateID = this.state.organizateID ;
-                    newBasicInfo.ext1 = this.state.departmentFullId;
+                    //newBasicInfo.ext1 = this.state.departmentFullId;
                 }
 
                 
@@ -417,9 +417,9 @@ class BasicEdit extends Component {
                     </Col>
                 */}
                 <Col span={12}>
-                        <FormItem {...formItemLayout} label={<span>归属部门</span>}>
+                        <FormItem {...formItemLayout} label={<span>申请部门</span>}>
                         {getFieldDecorator('organizate', {
-                                        initialValue: basicInfo.ext1 ? basicInfo.ext1.split('*') : [],//departMentInit,//basicInfo.relation ? basicInfo.relation.split('*') : [],//["1", "1385f04d-3ac8-49c6-a310-fe759814a685", "120"],//basicInfo.organizete ? basicInfo.organizete.split('-') : [],
+                                        initialValue: basicInfo.organizateFullId ? basicInfo.organizateFullId.split('*') : [],//departMentInit,//basicInfo.relation ? basicInfo.relation.split('*') : [],//["1", "1385f04d-3ac8-49c6-a310-fe759814a685", "120"],//basicInfo.organizete ? basicInfo.organizete.split('-') : [],
                                         rules:[{required:true, message:'请选择归属部门!'}]
                                         })(
                                             <Cascader options={this.props.setContractOrgTree}  onChange={this.handleChooseDepartmentChange } changeOnSelect placeholder="归属部门"/>

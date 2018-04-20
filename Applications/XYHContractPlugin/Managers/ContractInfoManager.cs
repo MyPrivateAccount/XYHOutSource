@@ -14,6 +14,7 @@ using ContractInfoRequest = XYHContractPlugin.Dto.Response.ContractInfoResponse;
 using ContractContentInfoRequest = XYHContractPlugin.Dto.Response.ContractContentResponse;
 using ContractComplementRequest = XYHContractPlugin.Dto.Response.ContractComplementResponse;
 using ApplicationCore;
+using ApplicationCore.Managers;
 
 namespace XYHContractPlugin.Managers
 {
@@ -25,14 +26,23 @@ namespace XYHContractPlugin.Managers
         public static int UpdateComplementContract = 4;
 
 
-        public ContractInfoManager(IContractInfoStore contractStore, IMapper mapper)
+        public ContractInfoManager(
+            IContractInfoStore contractStore,
+            IMapper mapper,
+            IOrganizationExpansionStore organizationExpansionStore,
+            PermissionExpansionManager permissionExpansionManager
+            )
         {
             Store = contractStore ?? throw new ArgumentNullException(nameof(contractStore));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            _iorganizationExpansionStore = organizationExpansionStore ?? throw new ArgumentNullException(nameof(organizationExpansionStore));
+            _permissionExpansionManager = permissionExpansionManager ?? throw new ArgumentNullException(nameof(permissionExpansionManager));
         }
         protected IContractInfoStore Store { get; }
         protected IMapper _mapper { get; }
+        protected IOrganizationExpansionStore _iorganizationExpansionStore { get; }
 
+        protected PermissionExpansionManager _permissionExpansionManager { get; }
         public virtual async Task<ContractInfoResponse> CreateAsync(UserInfo userinfo, ContractInfoRequest buildingBaseInfoRequest, string modifyid, string checkaction, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (buildingBaseInfoRequest == null)
@@ -239,6 +249,37 @@ namespace XYHContractPlugin.Managers
             }
             return _mapper.Map<ContractInfoResponse>(baseinfo);
         }
+        /// <summary>
+        /// 给合同分配编号
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public virtual async Task<string> GetContractNum(string id, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var baseinfo = await Store.GetAsync(a => a.Where(b => b.ID == id), cancellationToken);
+            List<ContractInfo> baseList =  await Store.ListAsync(a => a.Where(b => true), cancellationToken);
+            string temp = baseList.Max(a => a.Num);
+            string prevTemp = "XYH" + DateTime.Now.ToString("yyyyMMdd");
+            var contractNum = "";
+            if (baseinfo == null)
+            {
+                if(temp != "" && temp.Contains(prevTemp))
+                {
+                    contractNum = string.Format("XYH{0}", int.Parse(temp.Substring(3)) + 1);
+                }
+                else
+                {
+                    contractNum = string.Format("XYH{0}{1}", DateTime.Now.ToString("yyyyMMdd"), "001");
+                }
+                
+            }
+            else
+            {
+                contractNum = baseinfo.Num; 
+            }
+            return contractNum;
+        }
 
         public virtual async Task<ContractModifyResponse> CurrentModifyByContractIdAsync(string contractid, CancellationToken cancellationToken = default(CancellationToken))
         {
@@ -339,6 +380,56 @@ namespace XYHContractPlugin.Managers
 
             return returninfo;
         }
+        public virtual async Task<ContractContentResponse> GetAllinfoByIdAsync2(string id, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var query = Store.ContractInfoAll();//.Where(x => x.ID == id);
+            var qlist = query.ToList();
+            var contractinfo = qlist.Where(x => x.ID == id).FirstOrDefault();
+            if (contractinfo != null)
+            {
+                List<string> fullId = await _permissionExpansionManager.GetParentDepartments(contractinfo.OrganizateID);
+                fullId.Remove("0");
+                contractinfo.OrganizateFullId = string.Join("*", fullId.ToArray());
+
+                contractinfo.Organizate = _iorganizationExpansionStore.GetFullName(contractinfo.OrganizateID).Replace("默认顶级-", "");
+                contractinfo.CreateDepartment = _iorganizationExpansionStore.GetFullName(contractinfo.CreateDepartmentID).Replace("默认顶级-", "");
+            }
+
+           
+ 
+            var returninfo = _mapper.Map<ContractContentResponse>(contractinfo);
+
+            var annexinfo = await Store.GetListAnnexAsync(a => a.Where(b => b.ContractID == id), cancellationToken);
+            returninfo.AnnexInfo = _mapper.Map<List<ContractAnnexResponse>>(annexinfo);
+            if (annexinfo.Count > 0)
+            {
+                var modify = await Store.GetModifyAsync(a => a.Where(b => b.ID == annexinfo.ElementAt(0).CurrentModify), cancellationToken);
+                foreach (var item in returninfo.AnnexInfo)
+                {
+                    item.ExamineStatus = (int)modify.ExamineStatus;
+                }
+            }
+
+            var complementinfo = await Store.GetListComplementAsync(a => a.Where(b => b.ContractID == id));
+            returninfo.ComplementInfo = _mapper.Map<List<ContractComplementResponse>>(complementinfo);
+            if (complementinfo.Count > 0)
+            {
+                var modify = await Store.GetModifyAsync(a => a.Where(b => b.ID == complementinfo.ElementAt(0).CurrentModify), cancellationToken);
+                if (modify != null)
+                {
+                    foreach (var item in returninfo.ComplementInfo)
+                    {
+                        item.ExamineStatus = (int)modify.ExamineStatus;
+                    }
+                }
+
+            }
+
+            var modifyinfo = await Store.GetListModifyAsync(a => a.Where(b => b.ContractID == id));
+            returninfo.Modifyinfo = _mapper.Map<List<ContractModifyResponse>>(modifyinfo);
+
+            return returninfo;
+        }
 
         public virtual async Task UpdateAsync(ContractInfoRequest buildingBaseInfoRequest, CancellationToken cancellationToken = default(CancellationToken))
         {
@@ -406,6 +497,23 @@ namespace XYHContractPlugin.Managers
             }
 
             await Store.DeleteAsync(_mapper.Map<SimpleUser>(userinfo), contractid, cancellationToken);
+        }
+        public virtual async Task<List<ContractInfoResponse>> GetFollowHistory(UserInfo userinfo, string contractid, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var contractinfo = await Store.GetAsync(a => a.Where(b => b.ID == contractid), cancellationToken);
+            if(contractinfo.IsFollow == false)
+            {
+                return null;
+            }
+            List<ContractInfoResponse> infos = new List<ContractInfoResponse>();
+            infos.Insert(0, _mapper.Map<ContractInfoResponse>(contractinfo));
+            while (contractinfo.IsFollow == true)
+            {
+                string id = contractinfo.Follow;
+                contractinfo = await Store.GetAsync(a => a.Where(b => b.ID == id), cancellationToken);
+                infos.Insert(0, _mapper.Map<ContractInfoResponse>(contractinfo));
+            }
+            return infos;
         }
     }
 

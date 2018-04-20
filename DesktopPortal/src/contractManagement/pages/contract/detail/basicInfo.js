@@ -72,11 +72,11 @@ class BasicInfo extends Component {
                     </Row>
                     <Row className='viewRow'>
                         <Col span={12}>合同类型:{this.getTextByCode(this.props.basicData.contractCategories, basicInfo.type) }</Col>
-                        <Col span={12}>申请人:{basicInfo.createUserName}</Col>
+                        <Col span={12}>申请人:{basicInfo.createUser}</Col>
                     </Row>
                     <Row className='viewRow'>
                         <Col span={12}>申请时间:{basicInfo.createTime}</Col>
-                        <Col span={12}>申请部门:{basicInfo.createDepartment}</Col>
+                        <Col span={12}>申请部门:{basicInfo.organizate}</Col>
                     </Row>
                     <Row className='viewRow'>   
                         <Col span={12}>合同名称:{basicInfo.name}</Col>
@@ -122,8 +122,9 @@ class BasicInfo extends Component {
                     */}
                     <Row className='viewRow'>
                         {/* <Col span={12}>是否作废:{(basicInfo.discard && basicInfo.discard === '1') ? "是" : "否"}</Col> */}
-                        <Col span={12}>归属部门:{basicInfo.organizate}</Col>
-                        <Col span={12} onClick={this.handleViewHistory} style={{color:'blue'}} title="点击获取更改记录">更改记录</Col>
+                        <Col span={12}>项目地址:{basicInfo.projectAddress}</Col>
+                        <Col span={1} onClick={this.handleViewHistory} style={{color:'blue'}} title="点击获取更改记录">更改记录</Col>
+                        <Col span={1} onClick={this.handleViewHistory} style={{color:'blue'}} title="点击获取续签记录">续签记录</Col>
                     </Row>
                     <Row className='viewRow'>
                         

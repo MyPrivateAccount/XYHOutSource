@@ -31,7 +31,8 @@ namespace XYHContractPlugin
 
             CreateMap<FileInfoResponse, FileInfo>();
             CreateMap<FileInfo, FileInfoResponse>();
-
+            CreateMap<CompanyAInfo, CompanyAInfoResponse>();
+            CreateMap<CompanyAInfoResponse, CompanyAInfo>();
 //            CreateMap<FileInfo, FileInfoResponse>();
 //            CreateMap<FileInfoResponse,FileInfo>();
 
@@ -67,8 +68,16 @@ namespace XYHContractPlugin
                 .ForMember(d => d.Count, m => m.MapFrom(src => src.BaseInfo.Count))
                 .ForMember(d => d.ReturnOrigin, m => m.MapFrom(src => src.BaseInfo.ReturnOrigin))
                 .ForMember(d => d.Ext1, m => m.MapFrom(src => src.BaseInfo.Ext1))
-                .ForMember(d => d.Ext2, m => m.MapFrom(src => src.BaseInfo.Ext2));
-
+                .ForMember(d => d.Ext2, m => m.MapFrom(src => src.BaseInfo.Ext2))
+                .ForMember(d => d.FollowId, m => m.MapFrom(src => src.BaseInfo.FollowId))
+                .ForMember(d => d.ProjectAddress, m => m.MapFrom(src => src.BaseInfo.ProjectAddress))
+                .ForMember(d => d.CompanyAId, m => m.MapFrom(src => src.BaseInfo.CompanyAId))
+                .ForMember(d => d.OrganizateFullId, m => m.MapFrom(src => src.BaseInfo.OrganizateFullId))
+                .ForMember(d => d.Num, m => m.MapFrom(src => src.BaseInfo.Num))
+                .ForMember(d => d.IsFollow, m => m.MapFrom(src => src.BaseInfo.IsFollow))
+                .ForMember(d => d.ExamineStatus,m =>m.MapFrom(src => src.BaseInfo.ExamineStatus))
+                ;
+               
             CreateMap<ContractInfo, ContractContentResponse>()
                 .ForMember(d => d.Discard, m => m.MapFrom(src => src.IsDelete))
                 .ForMember(d => d.BaseInfo, m => m.MapFrom(src => new BaseInfoResponse
@@ -100,7 +109,14 @@ namespace XYHContractPlugin
                     Count = src.Count,
                     ReturnOrigin = src.ReturnOrigin,
                     Ext1 = src.Ext1,
-                    Ext2 = src.Ext2
+                    Ext2 = src.Ext2,
+                    Num  = src.Num,
+                    IsFollow = src.IsFollow,
+                    FollowId = src.FollowId,
+                    ProjectAddress = src.ProjectAddress,
+                    CompanyAId = src.CompanyAId,
+                    OrganizateFullId = src.OrganizateFullId,
+                    ExamineStatus = src.ExamineStatus.Value
                 }));
         }
     }

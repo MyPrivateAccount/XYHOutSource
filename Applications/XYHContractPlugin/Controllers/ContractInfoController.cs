@@ -82,7 +82,7 @@ namespace XYHContractPlugin.Controllers
             }
             try
             {
-                var ret = await _contractInfoManager.GetAllinfoByIdAsync(contractId, HttpContext.RequestAborted);
+                var ret = await _contractInfoManager.GetAllinfoByIdAsync2(contractId, HttpContext.RequestAborted);
                 Response.Extension = ret;
 
                 foreach (var item in ret.Modifyinfo)
@@ -322,6 +322,7 @@ namespace XYHContractPlugin.Controllers
                     request.Modifyinfo.Add(new ContractModifyResponse { ID= strModifyGuid });
                 }
 
+                
                 GatewayInterface.Dto.ExamineSubmitRequest exarequest = new GatewayInterface.Dto.ExamineSubmitRequest();
                 exarequest.ContentId = request.BaseInfo.ID;
                 exarequest.ContentType = "ContractCommit";
@@ -349,7 +350,7 @@ namespace XYHContractPlugin.Controllers
                     response.Message = "向审核中心发起审核请求失败：" + reponse.Message;
                     return response;
                 }
-
+                request.BaseInfo.Num = await _contractInfoManager.GetContractNum(request.BaseInfo.ID, HttpContext.RequestAborted);
                 response.Extension = await _contractInfoManager.AddContractAsync(User, request, "TEST", HttpContext.RequestAborted);
                 response.Message = "add simple ok";
             }
@@ -593,6 +594,7 @@ namespace XYHContractPlugin.Controllers
                 }
 
                 Logger.Trace($"{exarequest.ContentId}发生审核成功");
+                request.BaseInfo.Num = await _contractInfoManager.GetContractNum(request.BaseInfo.ID, HttpContext.RequestAborted);
                 await _contractInfoManager.ModifyContractBeforCheckAsync(User, request, guid, "TEST", HttpContext.RequestAborted);
 
                 
@@ -887,6 +889,33 @@ namespace XYHContractPlugin.Controllers
             }
             return response;
         }
+        [HttpGet("getFollowHistory/{contractId}")]
+        [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
+        public async Task<ResponseMessage<List<ContractInfoResponse>>> GetFollowHistory(UserInfo user, string contractId)
+        {
+            ResponseMessage<List<ContractInfoResponse>> response = new ResponseMessage<List<ContractInfoResponse>>();
+            
+            try
+            {
+                Logger.Trace($"获取合同续签记录(GetFollowHistory)：\r\n请求参数为：\r\n" + contractId);
+                if (string.IsNullOrEmpty(contractId))
+                {
+                    response.Code = ResponseCodeDefines.ModelStateInvalid;
+                    response.Message = "请求参数不正确";
+                    Logger.Error("error GetContractByid");
+                    return response;
+                }
 
+                response.Extension = await _contractInfoManager.GetFollowHistory(user, contractId, HttpContext.RequestAborted);
+                response.Code = "0";
+            }
+            catch(Exception e)
+            {
+                response.Code = ResponseCodeDefines.ServiceError;
+                response.Message = e.ToString();
+                Logger.Trace($"获取合同续签记录(GetFollowHistory)：\r\n请求参数为：\r\n" + contractId);
+            }
+            return response;
+        }
     }
 }

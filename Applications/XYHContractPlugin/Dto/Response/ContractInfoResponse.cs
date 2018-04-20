@@ -37,7 +37,7 @@ namespace XYHContractPlugin.Dto.Response
         public int? Complement { get; set; }
 
         /// <summary>
-        /// 是否续签
+        /// 续签合同名
         /// </summary>
         public string Follow { get; set; }
         public string Remark { get; set; }
@@ -52,13 +52,24 @@ namespace XYHContractPlugin.Dto.Response
         public DateTime? CreateTime { get; set; }
         public string CreateDepartment { get; set; }
         public string CreateDepartmentID { get; set; }
-        public string Organizete { get; set; }
+        public string Organizate { get; set; }
         public string OrganizateID { get; set; }
         public string CommisionType { get; set; }
         public DateTime? StartTime { get; set; }
         public DateTime? EndTime { get; set; }
         public int? Count { get; set; }
-        public int? ReturnOrigin { get; set; }
+        public bool ReturnOrigin { get; set; }
+
+        public string Num { get; set; }
+
+        public bool? IsFollow { get; set; }
+        public string FollowId { get; set; }
+        public string ProjectAddress { get; set; }
+     
+        public string CompanyAId { get; set; }
+    
+        public string OrganizateFullId { get; set; }
+        public DateTime? FollowTime { get; set; }
         public string Ext1 { get; set; }
         public string Ext2 { get; set; }
     }
