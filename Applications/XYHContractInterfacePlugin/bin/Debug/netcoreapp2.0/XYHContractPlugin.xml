@@ -174,5 +174,43 @@
             甲方公司信息
             </summary>
         </member>
+        <member name="M:XYHContractPlugin.Stores.OrganizationExpansionStore.#ctor(XYHContractPlugin.Models.ContractDbContext)">
+            <summary>
+            初始化
+            </summary>
+            <param name="ContractDbContext">Context</param>
+        </member>
+        <member name="M:XYHContractPlugin.Stores.OrganizationExpansionStore.GetFullName(System.String)">
+            <summary>
+            根据部门ID获取一条部门展开信息
+            </summary>
+            <param name="departmentid"></param>
+            <returns></returns>
+        </member>
+        <member name="M:XYHContractPlugin.Stores.OrganizationExpansionStore.GetFullNameByUserId(System.String)">
+            <summary>
+            根据用户ID获取一条部门展开信息
+            </summary>
+            <param name="userid"></param>
+            <returns></returns>
+        </member>
+        <member name="M:XYHContractPlugin.Stores.OrganizationExpansionStore.GetAsync``1(System.Func{System.Linq.IQueryable{ApplicationCore.Models.OrganizationExpansion},System.Linq.IQueryable{``0}},System.Threading.CancellationToken)">
+            <summary>
+            根据某一成员获取一条部门展开信息
+            </summary>
+            <typeparam name="TResult">返回值</typeparam>
+            <param name="query">参数</param>
+            <param name="cancellationToken">验证</param>
+            <returns></returns>
+        </member>
+        <member name="M:XYHContractPlugin.Stores.OrganizationExpansionStore.ListAsync``1(System.Func{System.Linq.IQueryable{ApplicationCore.Models.OrganizationExpansion},System.Linq.IQueryable{``0}},System.Threading.CancellationToken)">
+            <summary>
+            根据某一成员获取列表部门展开信息
+            </summary>
+            <typeparam name="TResult">返回值</typeparam>
+            <param name="query">参数</param>
+            <param name="cancellationToken">验证</param>
+            <returns></returns>
+        </member>
     </members>
 </doc>

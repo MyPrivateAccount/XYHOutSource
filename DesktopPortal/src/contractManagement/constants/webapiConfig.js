@@ -45,5 +45,11 @@ const WebApiConfig = {
         savePicUrl: basicDataBaseApiUrl + 'contractfiles/contract/uploadmore/',
         deletePicUrl: basicDataBaseApiUrl + "contractfiles/deletecontractfile/"
     },
+    extraInfo:{
+        search: basicDataBaseApiUrl + "extrainfo/searchcompanya",
+        add: basicDataBaseApiUrl + "extrainfo/addcompanyainfo/",
+        modify: basicDataBaseApiUrl + "extrainfo/modifycompanyainfo/",
+        delete: basicDataBaseApiUrl + "extrainfo/deletecompanyainfo/"
+    }
 }
 export default WebApiConfig;

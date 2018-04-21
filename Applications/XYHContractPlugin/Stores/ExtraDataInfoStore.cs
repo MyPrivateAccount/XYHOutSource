@@ -52,6 +52,25 @@ namespace XYHContractPlugin.Stores
             }
         }
 
+        public async Task DeleteListAsync(UserInfo userInfo, List<CompanyAInfo> Infos, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (Infos == null || Infos.Count == 0)
+            {
+                throw new ArgumentException(nameof(Infos));
+
+            }
+       
+            Context.CompanyAInfo.AttachRange(Infos);
+            Context.CompanyAInfo.UpdateRange(Infos);
+            try
+            {
+                await Context.SaveChangesAsync(cancellationToken);
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
+            }
+        }
         public Task<TResult> GetAsync<TResult>(Func<IQueryable<CompanyAInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken))
         {
             if(query == null)

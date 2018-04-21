@@ -33,16 +33,19 @@ const LoadComplementPage = Loadable({
     loader: () => import('./complement'),
     loading: () => null//<LoadableLoading />
 });
-
+const LoadCompanyAPage = Loadable({
+    loader: () => import('./companyA'),
+    loading: () => null//<LoadableLoading />
+});
 function ContentPage(props) {
     const { curMenuID } = props;
     console.log('curMenuID:', curMenuID);
     if (curMenuID == "menu_index") {
         return <LoadableIndexPage />;
     }
-    else if (curMenuID == "menu_renew") {
+    else if (curMenuID == "menu_partA") {
         //return <LoadableAdjustPage />;
-        return <LoadableIndexPage />;
+        return <LoadCompanyAPage />;
     }
     else if (curMenuID === "menu_record") {
         return <LoadContractRecordPage />; 

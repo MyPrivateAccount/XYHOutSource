@@ -527,7 +527,8 @@ function mapStateToProps(state) {
         contractChooseVisible: state.contractData.contractChooseVisible,
         complementInfo: state.contractData.contractInfo.complementInfo,
         curFollowContract: state.contractData.curFollowContract,
-        setContractOrgTree: state.basicData.permissionOrgTree.setContractOrgTree,
+        //setContractOrgTree: state.basicData.permissionOrgTree.setContractOrgTree,
+        setContractOrgTree:state.basicData.permissionOrgTree.searchOrgTree
     }
   }
   

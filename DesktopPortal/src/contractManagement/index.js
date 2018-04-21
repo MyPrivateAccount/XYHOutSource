@@ -16,6 +16,7 @@ sagaMiddleware.run(rootSaga);
 const {Header, Sider, Content} = Layout;
 const menuDefine = [
     {menuID: "menu_index", displayName: "合同信息", menuIcon: 'contacts'},
+    {menuID: "menu_partA", displayName: "甲方管理", menuIcon: 'menu_partA'},
     //{menuID: "menu_renew", displayName: "合同续签", menuIcon: 'contacts'},
 
     //{ menuID: "menu_analysis", displayName: "客户业态分析", menuIcon: 'pie-chart' }//租壹屋
@@ -48,6 +49,7 @@ class ContractManagementIndex extends Component {
     componentWillMount() {
         console.log("当前用户所在部门:", this.props.oidc);
         this.props.dispatch(getAllOrgList("ContractSearchOrg"));
+        
         //this.props.dispatch(getAllOrgList("ContractSetOrg"));
         let userInfo = this.props.oidc.user.profile;
         this.props.dispatch(setInitActiveOrg(userInfo.Organization));

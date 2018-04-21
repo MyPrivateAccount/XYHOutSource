@@ -262,7 +262,7 @@ namespace XYHContractPlugin.Managers
             string temp = baseList.Max(a => a.Num);
             string prevTemp = "XYH" + DateTime.Now.ToString("yyyyMMdd");
             var contractNum = "";
-            if (baseinfo == null)
+            if (baseinfo == null || string.IsNullOrEmpty(baseinfo.Num))
             {
                 if(temp != "" && temp.Contains(prevTemp))
                 {
@@ -380,7 +380,7 @@ namespace XYHContractPlugin.Managers
 
             return returninfo;
         }
-        public virtual async Task<ContractContentResponse> GetAllinfoByIdAsync2(string id, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual async Task<ContractContentResponse> GetAllinfoByIdAsync2(UserInfo user,string id, CancellationToken cancellationToken = default(CancellationToken))
         {
             var query = Store.ContractInfoAll();//.Where(x => x.ID == id);
             var qlist = query.ToList();
@@ -395,10 +395,10 @@ namespace XYHContractPlugin.Managers
                 contractinfo.CreateDepartment = _iorganizationExpansionStore.GetFullName(contractinfo.CreateDepartmentID).Replace("默认顶级-", "");
             }
 
-           
- 
-            var returninfo = _mapper.Map<ContractContentResponse>(contractinfo);
 
+            var followHistory = await GetFollowHistory(user, id);
+            var returninfo = _mapper.Map<ContractContentResponse>(contractinfo);
+            returninfo.FollowHistory = followHistory;
             var annexinfo = await Store.GetListAnnexAsync(a => a.Where(b => b.ContractID == id), cancellationToken);
             returninfo.AnnexInfo = _mapper.Map<List<ContractAnnexResponse>>(annexinfo);
             if (annexinfo.Count > 0)
@@ -427,7 +427,7 @@ namespace XYHContractPlugin.Managers
 
             var modifyinfo = await Store.GetListModifyAsync(a => a.Where(b => b.ContractID == id));
             returninfo.Modifyinfo = _mapper.Map<List<ContractModifyResponse>>(modifyinfo);
-
+            
             return returninfo;
         }
 

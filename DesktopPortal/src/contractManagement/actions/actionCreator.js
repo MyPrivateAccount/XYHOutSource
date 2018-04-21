@@ -108,8 +108,14 @@ export const changeActiveOrg = createAction(actionTypes.CHAGNE_ACTIVE_ORG);
 //临时更改设置当前用户的部门id为当前选择orgid
 export const setInitActiveOrg = createAction(actionTypes.SET_INIT_ACTIVEORG);
 
-
-
+//甲方公司
+export const companyAEdit = createAction(actionTypes.COMPANYA_EDIT);
+export const companyAAdd = createAction(actionTypes.COMPANYA_ADD);
+export const companyASave = createAction(actionTypes.COMPANYA_SAVE);
+export const companyADelete = createAction(actionTypes.COMPANYA_DELETE);
+export const companyAListUpdate = createAction(actionTypes.COMPANYA_LIST_UPDATE);
+export const companyACloseDialog = createAction(actionTypes.COMPANYA_DIALOG_CLOSE);
+export const companyListGet = createAction(actionTypes.COMPANYA_GET_LIST);
 
 
 

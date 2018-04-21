@@ -23,7 +23,7 @@ class MainIndex extends Component {
             || this.props.basicData.settleAccountsCatogories.length === 0){
                 this.props.dispatch(getDicParList(['CONTRACT_CATEGORIES', 'FIRST_PARTT_CATEGORIES', 'COMMISSION_CATEGORIES', 'XK_SELLER_TYPE', 'CONTRACT_ATTACHMENT_CATEGORIES', 'CONTRACT_SETTLEACCOUNTS']));
             }
-        this.props.dispatch(getAllOrgList('ContractSetOrg'));
+       // this.props.dispatch(getAllOrgList('ContractSetOrg'));
         this.props.dispatch(setLoadingVisible(true));//后面打开
     }
 
