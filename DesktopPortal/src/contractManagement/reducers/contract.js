@@ -12,6 +12,7 @@ const initState = {
         additionalInfo:{},
         modifyInfo:{},
         complementInfos:{},//补充协议
+        followHistory:[],
         discard:false,
         annexInfo:{},
 
@@ -22,6 +23,7 @@ const initState = {
         attachPicOperType: 'add',
         complementOperType: 'add',
     },
+    
     curFollowContract:{},
     completeFileList: [],
     deletePicList: [],
@@ -35,10 +37,12 @@ const initState = {
     isCurShowContractDetail: false,
 
     modifyHistoryVisible:false,
-
+    followHistoryVisible:false,
+    isBeginExportAllData: false,
 }
 
 let reducerMap = {};
+
 
 reducerMap[actionTypes.OPEN_RECORD] = function(state, action){
     if(action.payload.record){//此处代码不在作为合同详情页
@@ -78,6 +82,13 @@ reducerMap[actionTypes.OPEN_RECORD] = function(state, action){
     return newState; 
 }
 
+reducerMap[actionTypes.FOLLOW_HISTORY_DIALOG_OPEN] = function(state,action){
+    return Object.assign({}, state, { followHistoryVisible: true });
+}
+
+reducerMap[actionTypes.FOLLOW_HISTORY_DIALOG_CLOSE] = function(state,action){
+    return Object.assign({}, state, { followHistoryVisible: false });
+}
 
 reducerMap[actionTypes.OPEN_MODIFY_HISTORY] = function(state,action){
     return Object.assign({}, state, { modifyHistoryVisible: true });
@@ -164,6 +175,7 @@ reducerMap[actionTypes.GOTO_THIS_CONTRACT_FINISH] = (state, action) => {
         }
         contractInfo.complementInfos = {complementInfo: data.complementInfo || [], examineStatus:complementExamineStatus};
         contractInfo.modifyInfo = data.modifyinfo || [];
+        contractInfo.followHistory = data.followHistory || [];
         delete contractInfo.complementInfo;
         delete contractInfo.modifyinfo;
         operInfo = {

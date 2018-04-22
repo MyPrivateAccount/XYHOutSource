@@ -10,7 +10,7 @@ import moment from 'moment';
 import { 
     basicLoadingEnd, gotoThisContractStart, gotoThisContractFinish,
     submitContractStart,submitContractFinish,attchLoadingStart, attchLoadingEnd,
-    openAttachMentStart, openAttachMentFinish,openComplementStart, openComplementFinish,
+    openAttachMentStart, openAttachMentFinish,openComplementStart, openComplementFinish, getAllExportData,
 } from '../actions/actionCreator';
 
 const actionUtils = appAction(actionTypes.ACTION_ROUTE);
@@ -267,7 +267,7 @@ export function* deletePicAsync(action) {
 
 
 
-// 提交楼盘
+// 提交合同
 export function* submitContractInfo(action) {
     let body = action.payload.entity;
     let url = WebApiConfig.contractBasic.Submit;
@@ -309,6 +309,6 @@ export function* watchContractAllAsync() {
     // yield takeLatest(actionUtils.getActionType(actionTypes.BATCH_BUILDING_SAVE_ASYNC), saveBatchBuildingAsync);
      yield takeLatest(actionUtils.getActionType(actionTypes.CONTRACT_SAVE_PICTURE_ASYNC), savePictureAsync);
      yield takeLatest(actionUtils.getActionType(actionTypes.DELETE_PICTURE_ASYNC), deletePicAsync);
-    // yield takeLatest(actionUtils.getActionType(actionTypes.COMMISSION_SAVE), saveCommissionInfo);
+    
     // yield takeLatest(actionUtils.getActionType(actionTypes.RULES_SAVE), saveRulesInfo);
 }

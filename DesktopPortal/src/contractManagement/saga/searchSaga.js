@@ -161,9 +161,31 @@ export function* getAuditHistoryDetailAsync(state) {
     }
 }
 
-
+export function* getAllExportDataAsync(action){
+    let result = { isOk: true, extension: [], msg: '导出失败!' };
+    let url = WebApiConfig.search.getContractList;
+    
+    
+    //let newBody = dealCondition(body);
+    let newBody = {"keyWord": "","pageIndex":-1,"pageSize":10};
+    try {
+        let res = yield call(ApiClient.post, url, newBody);
+        console.log(`查询所有合同url:${url},result:${JSON.stringify(res)},newBody:${JSON.stringify(newBody)}`);
+       getApiResult(res, result);
+       yield put({ type: actionUtils.getActionType(actionTypes.BEGIN_EXPORT_ALL_DATA), payload: result });
+    } catch (e) {
+        result.msg = "合同查询接口调用异常！";
+    }
+    if (!result.isOk) {
+        notification.error({
+            description: result.msg,
+            duration: 3
+        });
+    }
+}
 export default function* watchAllSearchAsync() {
     yield takeLatest(actionUtils.getActionType(actionTypes.SEARCH_START), getContractListAsync);
+    yield takeLatest(actionUtils.getActionType(actionTypes.GET_ALL_EXPORT_DATA), getAllExportDataAsync);
     //yield takeLatest(actionUtils.getActionType(actionTypes.OPEN_CONTRACT_DETAIL), getContractDetailAsync);
 
     

@@ -117,8 +117,9 @@ export const companyAListUpdate = createAction(actionTypes.COMPANYA_LIST_UPDATE)
 export const companyACloseDialog = createAction(actionTypes.COMPANYA_DIALOG_CLOSE);
 export const companyListGet = createAction(actionTypes.COMPANYA_GET_LIST);
 
-
-
+//续签记录
+export const closeFollowHistoryDialog = createAction(actionTypes.FOLLOW_HISTORY_DIALOG_CLOSE);
+export const openFollowHistoryDialog = createAction(actionTypes.FOLLOW_HISTORY_DIALOG_OPEN);
 
 
 
@@ -147,3 +148,7 @@ export const attchLoadingEnd = createAction(actionTypes.LOADING_END_ATTACH);
 
 export const basicSubmitEnd = createAction(actionTypes.BASIC_SUBMIT_END);
 export const attachSubmitEnd = createAction(actionTypes.ATTACH_SUBMIT_END);
+
+//导出全部数据
+export const getAllExportData = createAction(actionTypes.GET_ALL_EXPORT_DATA);
+export const endExportAllData = createAction(actionTypes.END_EXPORT_ALL_DATA);
