@@ -162,7 +162,7 @@ namespace XYHContractPlugin.Managers
             else if (condition?.CreateDateStart != null && condition?.CreateDateEnd != null)
             {
      
-                query = query.Where(x => (x.StartTime >= condition.CreateDateStart.Value && x.EndTime <= condition.CreateDateEnd.Value));
+                query = query.Where(x => (x.CreateTime >= condition.CreateDateStart.Value && x.EndTime >=  x.CreateTime));
             }
 
             if (condition.Follow == 1)

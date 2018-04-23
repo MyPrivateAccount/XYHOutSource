@@ -266,7 +266,8 @@ namespace XYHContractPlugin.Managers
             {
                 if(temp != "" && temp.Contains(prevTemp))
                 {
-                    contractNum = string.Format("XYH{0}", int.Parse(temp.Substring(3)) + 1);
+                    string nowTemp = string.Format("{0:d3}", int.Parse(temp.Substring(temp.Length - 3, 3)) + 1);
+                    contractNum = string.Format("XYH{0}{1}", DateTime.Now.ToString("yyyyMMdd"), nowTemp);
                 }
                 else
                 {
@@ -507,7 +508,7 @@ namespace XYHContractPlugin.Managers
             }
             List<ContractInfoResponse> infos = new List<ContractInfoResponse>();
             infos.Insert(0, _mapper.Map<ContractInfoResponse>(contractinfo));
-            while (contractinfo.IsFollow == true)
+            while (contractinfo.IsFollow == true && !string.IsNullOrEmpty(contractinfo.FollowId))
             {
                 string id = contractinfo.FollowId;
                 contractinfo = await Store.GetAsync(a => a.Where(b => b.ID == id), cancellationToken);
