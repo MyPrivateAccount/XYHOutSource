@@ -169,20 +169,7 @@ class OnBoarding extends Component {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                //this.props.dispatch(postHumanInfo(values, this.state.fileinfo));
-                let urlpic = WebApiConfig.server.PostHumanPicture;
-                let urlhuman = WebApiConfig.server.PostHumaninfo;
-                let fileguid = this.state.fileinfo.fileGuid;
-                ApiClient.post(urlpic, this.state.fileinfo).then(function(ret) {
-                    if (ret.data.code == 0) {
-                        values.Picture = fileguid;
-                        ApiClient.post(urlhuman, values).then(function(ret) {
-                            if (ret.data.code == 0) {
-                                
-                            }
-                        });
-                    }
-                });
+                this.props.dispatch(postHumanInfo(values, this.state.fileinfo));
             }
         });
     }

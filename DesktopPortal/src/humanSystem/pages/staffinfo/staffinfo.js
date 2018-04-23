@@ -51,17 +51,17 @@ class Staffinfo extends Component {
     };
 
     componentWillMount() {
-        //this.props.dispatch(getHumanList(SearchCondition.topteninfo));
-        let url = WebApiConfig.search.searchHumanList;
-        ApiClient.post(url, SearchCondition.topteninfo).then(function (f) {
-            if (f.data.code==0) {
-                //[{key: '1', id: 'tt', username: 'test', idcard: 'hhee'}]
-                let lv = JSON.parse(f.data.extension);
-                let data = lv.map(function(v, k) {
-                    return {key: k, id: v.userID, username: v.name, idcard: v.idCard};
-                });
-            }
-        });
+        this.props.dispatch(getHumanList(SearchCondition.topteninfo));
+        // let url = WebApiConfig.search.searchHumanList;
+        // ApiClient.post(url, SearchCondition.topteninfo).then(function (f) {
+        //     if (f.data.code==0) {
+        //         //[{key: '1', id: 'tt', username: 'test', idcard: 'hhee'}]
+        //         let lv = JSON.parse(f.data.extension);
+        //         let data = lv.map(function(v, k) {
+        //             return {key: k, id: v.userID, username: v.name, idcard: v.idCard};
+        //         });
+        //     }
+        // });
     }
 
     handleSaleStatusChange = (value, text) => {

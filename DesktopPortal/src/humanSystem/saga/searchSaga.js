@@ -99,6 +99,15 @@ export function* getHumanListAsync(state) {
     let url = WebApiConfig.search.searchHumanList;
     try {
         let res = yield call(ApiClient.post, url, state.payload);
+         if (res.data.code == 0) {
+             result.isOk = true;
+             let lv = JSON.parse(res.data.extension);
+             let data = lv.map(function(v, k) {
+                 return {key: k, id: v.userID, username: v.name, idcard: v.idCard};
+             });
+
+             yield put ({type: actionUtils.getActionType(actionTypes.UPDATE_ALLHUMANINFO), payload: data});
+         }
     } catch (e) {
         result.msg = '检索关键字接口调用异常';
     }

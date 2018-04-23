@@ -159,5 +159,8 @@ reducerMap[actionTypes.SET_HUMANINFONUMBER] = function(state, action) {
     return Object.assign({}, state, {userinfo: f});
 }
 
+reducerMap[actionTypes.UPDATE_ALLHUMANINFO] = function(state, action) {
+    return Object.assign({}, state,{humanList:action.payload} );
+}
 
 export default handleActions(reducerMap, initState);
