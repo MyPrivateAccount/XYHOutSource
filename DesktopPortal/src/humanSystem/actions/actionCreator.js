@@ -27,3 +27,8 @@ export const expandSearchbox = createAction(actionTypes.SEARCH_BOX_EXPAND);
 //面包屑
 export const setbreadPage = createAction(actionTypes.SET_USER_BREAD);
 export const closebreadPage = createAction(actionTypes.CLOSE_USER_BREAD);
+
+//
+export const getworkNumbar = createAction(actionTypes.GET_HUMANINFONUMBER);
+
+export const postHumanInfo = createAction(actionTypes.POST_HUMANINFO);

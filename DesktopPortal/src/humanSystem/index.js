@@ -35,7 +35,7 @@ const homeStyle = {
     }
 }
 
- class PersonnelSystemIndex extends Component {
+ class HumanIndex extends Component {
     
         state = {
             collapsed: false,
@@ -152,4 +152,4 @@ function mapStateToProps(state, props) {
         basicData: state.basicData
     }
 }
-export default withReducer(reducers, 'PersonnelSystemIndex', {mapExtraState: (state, rootState) => ({oidc: rootState.oidc})})(connect(mapStateToProps)(PersonnelSystemIndex));
+export default withReducer(reducers, 'HumanIndex', {mapExtraState: (state, rootState) => ({oidc: rootState.oidc})})(connect(mapStateToProps)(HumanIndex));

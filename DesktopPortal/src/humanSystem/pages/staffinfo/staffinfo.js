@@ -5,6 +5,8 @@ import {Table, Layout, Input, Select, Icon, Button, Row, Col, Checkbox, Tag, Pag
 import '../search.less'
 import SearchCondition from '../../constants/searchCondition'
 import { SearchHumanTypes, ListColums, AgeRanges} from '../../constants/tools'
+import WebApiConfig from '../../constants/webapiConfig';
+import ApiClient from '../../../utils/apiClient';
 
 const { Header, Sider, Content } = Layout;
 const CheckboxGroup = Checkbox.Group;
@@ -49,7 +51,17 @@ class Staffinfo extends Component {
     };
 
     componentWillMount() {
-        //this.props.dispatch(getHumanList(SearchCondition.topteninfo));
+        this.props.dispatch(getHumanList(SearchCondition.topteninfo));
+        // let url = WebApiConfig.search.searchHumanList;
+        // ApiClient.post(url, SearchCondition.topteninfo).then(function (f) {
+        //     if (f.data.code==0) {
+        //         //[{key: '1', id: 'tt', username: 'test', idcard: 'hhee'}]
+        //         let lv = JSON.parse(f.data.extension);
+        //         let data = lv.map(function(v, k) {
+        //             return {key: k, id: v.userID, username: v.name, idcard: v.idCard};
+        //         });
+        //     }
+        // });
     }
 
     handleSaleStatusChange = (value, text) => {
@@ -96,8 +108,8 @@ class Staffinfo extends Component {
         this.handleSearch(condition);
     }
 
-    handleOnboarding(e) {
-        this.dispatch(setbreadPage(e));
+    handleOnboarding =(e)=> {
+        this.props.dispatch(setbreadPage(e));
     }
 
     render() {
@@ -156,12 +168,12 @@ class Staffinfo extends Component {
                     </div>
                     <Row className="groupButton">
                         <Col span={24}>
-                            <Button type="primary" className="statuButton" onClick={(e) => this.handleOnboarding()}>入职</Button>
-                            <Button type="primary" className="statuButton" onClick={(e) => this.handleSearch()}>转正</Button>
-                            <Button type="primary" className="statuButton" onClick={(e) => this.handleSearch()}>异动调薪</Button>
-                            <Button type="primary" className="statuButton" onClick={(e) => this.handleSearch()}>离职</Button>
-                            <Button type="primary" className="statuButton" onClick={(e) => this.handleSearch()}>合同上传</Button>
-                            <Button type="primary" className="statuButton" onClick={(e) => this.handleSearch()}>加入黑名单</Button>
+                            <Button type="primary" className="statuButton" onClick={(e) => this.handleOnboarding(0)}>入职</Button>
+                            <Button type="primary" className="statuButton" onClick={(e) => this.handleSearch(1)}>转正</Button>
+                            <Button type="primary" className="statuButton" onClick={(e) => this.handleSearch(2)}>异动调薪</Button>
+                            <Button type="primary" className="statuButton" onClick={(e) => this.handleSearch(3)}>离职</Button>
+                            <Button type="primary" className="statuButton" onClick={(e) => this.handleSearch(4)}>合同上传</Button>
+                            <Button type="primary" className="statuButton" onClick={(e) => this.handleSearch(5)}>加入黑名单</Button>
                             <Button type="primary" className="statuButton" onClick={(e) => this.handleSearch()}>历史信息</Button>
                         </Col>
                     </Row>

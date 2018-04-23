@@ -136,10 +136,6 @@ function formatOrgData(originalData, parentId, levelCount) {
     return {orgList: curLevelOrgs, levelCount: level};
 }
 
-reducerMap[actionTypes.GET_ALLHUMANINFO] = function (state, action) {
-    return Object.assign({}, state, {humanList: action.data});
-}
-
 reducerMap[actionTypes.SET_SEARCH_LOADING] = function (state, action) {
     return Object.assign({}, state, { showLoading: action.payload });
 }
@@ -158,5 +154,13 @@ reducerMap[actionTypes.CLOSE_USER_BREAD] = function(state, action) {
     return Object.assign({}, state, {navigator: []});
 }
 
+reducerMap[actionTypes.SET_HUMANINFONUMBER] = function(state, action) {
+    let f = {...state.userinfo, worknumber: action.payload}
+    return Object.assign({}, state, {userinfo: f});
+}
+
+reducerMap[actionTypes.UPDATE_ALLHUMANINFO] = function(state, action) {
+    return Object.assign({}, state,{humanList:action.payload} );
+}
 
 export default handleActions(reducerMap, initState);

@@ -2,6 +2,14 @@ export const ACTION_ROUTE = "HumanIndex";
 
 //人事获取
 export const GET_ALLHUMANINFO = 'GET_ALLHUMANINFO';
+export const UPDATE_ALLHUMANINFO = 'UPDATE_ALLHUMANINFO';
+
+//工号
+export const GET_HUMANINFONUMBER = 'GET_HUMANINFONUMBER';
+export const SET_HUMANINFONUMBER = 'SET_HUMANINFONUMBER';
+
+//人事提交
+export const POST_HUMANINFO = 'POST_HUMANINFO';
 
 //字典项获取
 export const DIC_GET_PARLIST = 'DIC_GET_PARLIST';

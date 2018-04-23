@@ -1,4 +1,4 @@
-import { BaseApiUrl, basicDataBaseApiUrl } from '../../constants/baseConfig';
+import { BaseApiUrl, basicDataBaseApiUrl ,UploadUrl} from '../../constants/baseConfig';
 
 const WebApiConfig = {
     dic: {
@@ -9,12 +9,20 @@ const WebApiConfig = {
         OrgDetail: BaseApiUrl + "Organization/",//获取部门详细
         GetOrgUserList: BaseApiUrl + "user/list",//获取部门下的用户
     },
+    server: {
+        PostHumanPicture: basicDataBaseApiUrl + "humaninfo/humaninfo/uploadmore/",
+        PostHumaninfo: basicDataBaseApiUrl + "humaninfo/addhuman",
+        GetWorkNumber: basicDataBaseApiUrl + "humaninfo/jobnumber",
+    },
     search: {
-        searchWordHumanList: basicDataBaseApiUrl + 'humaninfo/search',// 业务员客户查询
+        searchHumanList: basicDataBaseApiUrl + 'humaninfo/searchhumaninfo',
         getAuditList: basicDataBaseApiUrl + 'examines/submitlist',//提交的调客审核列表
         getRepeatJudgeInfo: basicDataBaseApiUrl + 'customerInfo/customerheavy/',//获取重客判断信息
         getCustomerByUserID: basicDataBaseApiUrl + 'customerInfo/salesmancustomer/',//根据用户ID获取客户列表
         getAuditHistory: basicDataBaseApiUrl + "examines/",//获取审核历史详细
-    }
+    },
+    attach: {
+        uploadUrl: `${UploadUrl}/file/upload/`,
+    },
 }
 export default WebApiConfig;
