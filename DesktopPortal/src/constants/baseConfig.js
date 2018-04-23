@@ -2,7 +2,7 @@
 export const AuthorUrl = window._authUrl || 'https://testauth.xinyaohangdc.com';//"http://192.168.50.240:5000";认证地址
 // export const AuthorUrl = window._authUrl || 'https://auth.xinyaohangdc.com'; // 云上
 export const BaseApiUrl = AuthorUrl + '/api/';//"http://192.168.50.240/api/"; //api基础地址
-export const basicDataServiceUrl = window._basicDataUrl || 'https://testapi.xinyaohangdc.com';//"http://192.168.50.240:7000";认证地址
+export const basicDataServiceUrl = window._basicDataUrl || 'http://localhost:7000';//https://testapi.xinyaohangdc.com"http://192.168.50.240:7000";认证地址
 // export const basicDataServiceUrl = window._basicDataUrl || 'https://api.xinyaohangdc.com';// 云上
 export const basicDataBaseApiUrl = basicDataServiceUrl + '/api/';
 export const FlowChartUrl = window._flowChartUrl || 'https://testauth.xinyaohangdc.com';

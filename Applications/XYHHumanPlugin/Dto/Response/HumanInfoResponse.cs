@@ -11,6 +11,7 @@ namespace XYHHumanPlugin.Dto.Response
         public string Name { get; set; }
         public string IDCard { get; set; }
         public string Position { get; set; }
+        public string OrgDepartment { get; set; }
         public int? Payment { get; set; }
         public int? Modify { get; set; }
         public string Picture { get; set; }
@@ -20,5 +21,11 @@ namespace XYHHumanPlugin.Dto.Response
         public DateTime? BecomeTime { get; set; }
         public bool? IsSocialInsurance { get; set; }
         public string SocialInsuranceInfo { get; set; }
+        public int BasicSalary { get; set; }
+        public int? Subsidy { get; set; }
+        public int? ClothesBack { get; set; }
+        public int? AdministrativeBack { get; set; }
+        public int? PortBack { get; set; }
+        public int? OtherBack { get; set; }
     }
 }

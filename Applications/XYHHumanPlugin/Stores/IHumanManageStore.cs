@@ -15,7 +15,7 @@ namespace XYHHumanPlugin.Stores
         IEnumerable<T> DapperSelect<T>(string sql);
         Task<HumanInfo> CreateAsync(SimpleUser userinfo, HumanInfo humaninfo, string modifyid, string checkaction, CancellationToken cancellationToken = default(CancellationToken));
         Task CreateAsync(AnnexInfo humaninfo, CancellationToken cancellationToken = default(CancellationToken));
-        Task CreateAsync(FileInfo fileinfo, CancellationToken cancellationToken = default(CancellationToken));
+        Task CreateAsync(FileInfo fileinfo, string tt, CancellationToken cancellationToken = default(CancellationToken));
 
         Task CreateListAsync(List<FileInfo> fileInfoList, CancellationToken cancellationToken = default(CancellationToken));
 

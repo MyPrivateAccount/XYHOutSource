@@ -94,7 +94,25 @@ export function* getSearchWordListAsync(state) {
     }
 }
 
+export function* getHumanListAsync(state) {
+    let result = {isOk: false, extension: {}, msg: '检索关键字失败！'};
+    let url = WebApiConfig.search.searchHumanList;
+    try {
+        let res = yield call(ApiClient.post, url, state.payload);
+    } catch (e) {
+        result.msg = '检索关键字接口调用异常';
+    }
+
+    if (!result.isOk) {
+        notification.error({
+            description: result.msg,
+            duration: 3
+        });
+    }
+}
+
 export default function* watchAllSearchAsync() {
     yield takeLatest(actionUtils.getActionType(actionTypes.SEARCH_CUSTOMER), getCustomerListAsync);
     yield takeLatest(actionUtils.getActionType(actionTypes.SEARCH_KEYWORD), getSearchWordListAsync);
+    yield takeLatest(actionUtils.getActionType(actionTypes.GET_ALLHUMANINFO), getHumanListAsync);
 }

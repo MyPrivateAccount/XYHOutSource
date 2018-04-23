@@ -19,6 +19,8 @@ namespace XYHHumanPlugin.Models
         [MaxLength(127)]
         public string Position { get; set; }
         [MaxLength(127)]
+        public string OrgDepartment { get; set; }
+        [MaxLength(127)]
         public string CreateUser { get; set; }
         public int? Modify { get; set; }
         [MaxLength(127)]
@@ -33,7 +35,7 @@ namespace XYHHumanPlugin.Models
         public bool? IsSocialInsurance { get; set; }
         [MaxLength(127)]
         public string SocialInsuranceInfo { get; set; }
-        public int? BaseSalary { get; set; }
+        public int? BasicSalary { get; set; }
         public int? Subsidy { get; set; }
         public int? ClothesBack { get; set; }
         public int? AdministrativeBack { get; set; }

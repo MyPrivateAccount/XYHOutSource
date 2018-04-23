@@ -11,8 +11,10 @@ namespace XYHHumanPlugin.Models
         [MaxLength(127)]
         public string FileGuid { get; set; }
         public string Name { get; set; }
+
         [MaxLength(255)]
         public string Type { get; set; }
+
         [MaxLength(255)]
         public string FileExt { get; set; }
         public double Size { get; set; }

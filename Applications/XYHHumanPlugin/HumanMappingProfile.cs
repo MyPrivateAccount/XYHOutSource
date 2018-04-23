@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using XYHHumanPlugin.Models;
 using XYHHumanPlugin.Dto.Response;
+using XYHHumanPlugin.Dto.Request;
 
 namespace XYHHumanPlugin
 {
@@ -16,6 +17,9 @@ namespace XYHHumanPlugin
 
             CreateMap<BlackInfo, BlackInfoResponse>();
             CreateMap<BlackInfoResponse, BlackInfo>();
+
+            CreateMap<AnnexInfo, FileInfoRequest>();
+            CreateMap<FileInfoRequest, AnnexInfo>();
 
             CreateMap<AttendanceInfo, AttendanceInfoResponse>();
             CreateMap<AttendanceInfoResponse, AttendanceInfo>();

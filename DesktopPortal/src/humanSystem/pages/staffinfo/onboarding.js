@@ -1,10 +1,15 @@
 import React, {Component} from 'react';
 import {withReducer} from 'react-redux-dynamic-reducer';
-import {Form, Input,InputNumber,DatePicker, Select, Icon,Upload, Button, Row, Col, Checkbox,TreeSelect, Tag, Spin} from 'antd'
+import {Form,Modal, Input,InputNumber,DatePicker,notification, Select, Icon,Upload, Button, Row, Col, Checkbox,TreeSelect, Tag, Spin} from 'antd'
 import {connect} from 'react-redux';
 import reducers from '../../reducers';
 import moment from 'moment';
+import WebApiConfig from '../../constants/webapiConfig';
 import './staff.less';
+import { getworkNumbar, postHumanInfo} from '../../actions/actionCreator';
+import { NewGuid } from '../../../utils/appUtils';
+import ApiClient from '../../../utils/apiClient';
+
 const FormItem = Form.Item;
 
 const formItemLayout = {
@@ -12,8 +17,31 @@ const formItemLayout = {
     wrapperCol:{ span:8 },
 };
 
+const formItemLayout1 = {
+    labelCol:{ span:6},
+    wrapperCol:{ span:6 },
+};
+
 class OnBoarding extends Component {
 
+    state = {
+        loading: false,
+        fileList: [],
+        previewVisible: false,
+        previewImage: '',
+        fileinfo:{},
+        userinfo:{}
+    }
+
+    componentWillMount() {
+        this.state.userinfo.id = NewGuid();
+        //this.props.dispatch(getworkNumbar());
+    }
+
+    componentDidMount() {
+        this.getWorkNumber();
+    }
+    
     isCardID(rule, value, callback) {
         var reg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
         if(reg.test(value) === false)
@@ -25,16 +53,154 @@ class OnBoarding extends Component {
         return true;
     }
 
+    handleCancel = () => this.setState({ previewVisible: false })
+
+    handlePreview = (file) => {
+        this.setState({
+        previewImage: file.url || file.thumbUrl,
+        previewVisible: true,
+        });
+    }
+    handleChange = ({ fileList }) => this.setState({ fileList })
+
     hasErrors(fieldsError) {
         return !Object.keys(fieldsError).some(field => fieldsError[field]);
     }
 
-    handleSubmit(subdata) {
-
+    getWorkNumber() {
+        let tempthis = this;
+        let url = WebApiConfig.server.GetWorkNumber;
+        ApiClient.get(url).then(function (f) {
+            if (f.data.code==0) {
+                //tempthis.setState({userinfo: {...tempthis.state.userinfo, worknumber: f.data.extension}});
+                tempthis.props.form.setFieldsValue({userid:f.data.extension});
+            }
+        });
+        // var ht = new XMLHttpRequest();
+        // ht.open('GET', url, true);
+        // ht.onload = function (e) {
+        //     if (this.status === 200) {
+        //         let re = JSON.parse(this.response);
+        //         if (re.code === "0") {
+        //             tempthis.setState({userinfo: {...tempthis.state.userinfo, worknumber: re.extension}});
+        //         }
+        //     }
+        // }
+        // ht.send(null);
     }
+
+    UploadFile(file, callback) {
+        let id = this.state.userinfo.id;
+        let uploadUrl = `${WebApiConfig.attach.uploadUrl}${id}`;
+        let fileGuid = NewGuid();
+        let fd = new FormData();
+        fd.append("fileGuid", fileGuid)
+        fd.append("name", file.name)
+        fd.append("file", file);
     
+        let _this = this;
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', uploadUrl, true);
+        xhr.send(fd);
+        xhr.onload = function (e) {
+          if (this.status === 200) {
+            let r = JSON.parse(this.response);
+             console.log("返回结果：", this.response);
+            if (r.code === "0") {
+              let uf = {
+                fileGuid: fileGuid,
+                from: 'pc-upload',
+                WXPath: r.extension,
+                sourceId: id,
+                appId: 'contractManagement',
+                localUrl: file.url,
+                name: file.name
+              }
+              // console.log("pic值", uf);
+              if (callback) {
+                callback(uf);
+              }
+            } else {
+              notification.error({
+                message: '上传失败：',
+                duration: 3
+              });
+            }
+          } else {
+            notification.error({
+              message: '图片上传失败!',
+              duration: 3
+            });
+          }
+        }
+        xhr.onerror = function (e) {
+          notification.error({
+            message: '图片上传失败!',
+            duration: 3
+          });
+        }
+        xhr.onabort = function () {
+          notification.error({
+            message: '图片上传异常终止!',
+            duration: 3
+          });
+        }
+      }
+    
+    handleBeforeUpload = (uploadFile) => {
+        let reader = new FileReader();
+        let the = this;
+        reader.readAsDataURL(uploadFile);
+    
+        reader.onloadend = function () {
+        the.UploadFile(uploadFile, (ufile) => {
+            let filelist = [{
+                uid: -1,
+                name: uploadFile.name,
+                status: 'done',
+                url: reader.result,
+              }]
+            the.setState({ fileinfo: ufile, fileList: filelist});
+          });
+        }
+    }
+
+    handleSubmit = (e) => {
+        e.preventDefault();
+        this.props.form.validateFields((err, values) => {
+            if (!err) {
+                //this.props.dispatch(postHumanInfo(values, this.state.fileinfo));
+                let urlpic = WebApiConfig.server.PostHumanPicture;
+                let urlhuman = WebApiConfig.server.PostHumaninfo;
+                let fileguid = this.state.fileinfo.fileGuid;
+                ApiClient.post(urlpic, this.state.fileinfo).then(function(ret) {
+                    if (ret.data.code == 0) {
+                        values.Picture = fileguid;
+                        ApiClient.post(urlhuman, values).then(function(ret) {
+                            if (ret.data.code == 0) {
+                                
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    }
+
+    handleReset = () => {
+        this.props.form.resetFields();
+    }
+
     render() {
-        const { getFieldDecorator, getFieldsError, getFieldError, isFieldTouched } = this.props.form;
+        const { previewVisible, previewImage, fileList } = this.state;
+        const { getFieldDecorator, getFieldsError, getFieldsValue, isFieldTouched } = this.props.form;
+
+        const uploadButton = (
+            <div>
+              <Icon type='plus' />
+              <div className="ant-upload-text">Upload</div>
+            </div>
+          );
 
         return (
             <Form className="onboardContent" onSubmit={this.handleSubmit}>
@@ -50,64 +216,124 @@ class OnBoarding extends Component {
                         <Input placeholder="请输入身份证号码" />
                     )}
                 </FormItem>
-                <FormItem {...formItemLayout} label="姓名">
-                    <Input placeholder="请输入姓名" />
+                <FormItem {...formItemLayout1} label="姓名">
+                    {getFieldDecorator('name', {
+                        reules: [{
+                            required:true, message: 'please entry Name',
+                        }]
+                    })(
+                        <Input placeholder="请输入姓名" />
+                    )}
                 </FormItem>
-                <FormItem {...formItemLayout} label="年龄">
-                    <InputNumber style={{width: '100%'}} />
+                <FormItem {...formItemLayout1} label="年龄">
+                    {getFieldDecorator('age', {
+                        reules: [{
+                            required:true, message: 'please entry Age',
+                        }]
+                    })(
+                        <InputNumber style={{width: '100%'}} />
+                    )}
                 </FormItem>
-                <FormItem {...formItemLayout} label="生日">
-                    <DatePicker format='YYYY-MM-DD' style={{width: '100%'}} />
+                <FormItem {...formItemLayout1} label="生日">
+                    {getFieldDecorator('birthday', {
+                        reules: [{
+                            required:true, message: 'please entry Birthday',
+                        }]
+                    })(
+                        <DatePicker format='YYYY-MM-DD' style={{width: '100%'}} />
+                    )}
                 </FormItem>
-                <FormItem {...formItemLayout} label="工号">
-                    <Input disabled={true} />
+                <FormItem {...formItemLayout1} label="工号">
+                    {getFieldDecorator('userid', {
+                        reules: [{
+                            required:true,
+                            message: 'please entry Worknumber',
+                            initialValue: this.state.userinfo.worknumber
+                        }]
+                    })(
+                        <Input disabled={true} />
+                    )}
                 </FormItem>
                 <FormItem {...formItemLayout} label="图片">
-                    <div className="dropbox">
-                        {getFieldDecorator('dragger', {
-                        valuePropName: 'fileList',
-                        getValueFromEvent: this.normFile,
-                        })(
-                        <Upload.Dragger name="files" action="/upload.do">
-                            <p className="ant-upload-drag-icon">
-                            <Icon type="inbox" />
-                            </p>
-                            <p className="ant-upload-text">点击或拖拽头像到此区域</p>
-                        </Upload.Dragger>
-                        )}
+                    <div className="clearfix">
+                        <Upload
+                            action="//jsonplaceholder.typicode.com/posts/"
+                            listType="picture-card"
+                            fileList={fileList}
+                            onPreview={this.handlePreview}
+                            onChange={this.handleChange}
+                            beforeUpload={this.handleBeforeUpload} 
+                            >
+                            {fileList.length >= 1 ? null : uploadButton}
+                        </Upload>
+                        <Modal visible={previewVisible} footer={null} onCancel={this.handleCancel}>
+                            <img alt="example" style={{ width: '100%' }} src={previewImage} />
+                        </Modal>
                     </div>
                 </FormItem>
-                <FormItem {...formItemLayout} label="入职时间">
-                    <DatePicker format='YYYY-MM-DD' style={{width: '100%'}} defaultValue={moment()} />
+                <FormItem {...formItemLayout1} label="入职时间">
+                    {getFieldDecorator('entrytime', {
+                            reules: [{
+                                required:true,
+                                message: 'please entry Entrytime',
+                                initialValue: moment()
+                            }]
+                        })(
+                            <DatePicker format='YYYY-MM-DD' style={{width: '100%'}} />
+                        )}
                 </FormItem>
                 <FormItem {...formItemLayout} label="所属部门">
-                    <TreeSelect style={{ width: '70%' }} allowClear showSearch
+                    {getFieldDecorator('orgdepartment', {
+                                reules: [{
+                                    required:true,
+                                    message: 'please entry Orgdepartment',
+                                }]
+                            })(
+                                <TreeSelect style={{ width: '70%' }} allowClear showSearch
                                     dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
                                     treeData={this.props.organizateTree} />
+                            )}
                 </FormItem>
                 <FormItem {...formItemLayout} label="职位">
-                    <TreeSelect style={{ width: '70%' }} allowClear showSearch
-                                    dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-                                    treeData={this.props.positionTree} />
+                    {getFieldDecorator('position', {
+                                reules: [{
+                                    required:true,
+                                    message: 'please entry Position',
+                                }]
+                            })(
+                                <TreeSelect style={{ width: '70%' }} allowClear showSearch
+                                        dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+                                        treeData={this.props.positionTree} />
+                            )}
                 </FormItem>
-                <FormItem {...formItemLayout} label="基本工资">
-                    <Input />
+                <FormItem {...formItemLayout1} label="基本工资">
+                    {getFieldDecorator('basicsalary')(
+                                    <InputNumber style={{width: '100%'}} />
+                                )}
                 </FormItem>
-                <FormItem {...formItemLayout} label="岗位补贴">
-                    <Input />
+                <FormItem {...formItemLayout1} label="岗位补贴">
+                    {getFieldDecorator('subsidy')(
+                                        <InputNumber style={{width: '100%'}} />
+                                    )}
                 </FormItem>
-                <FormItem {...formItemLayout} label="工装扣款">
-                    <Input />
+                <FormItem {...formItemLayout1} label="工装扣款">
+                    {getFieldDecorator('clothesback')(
+                                    <InputNumber style={{width: '100%'}} />
+                                )}
                 </FormItem>
-                <FormItem {...formItemLayout} label="行政扣款">
-                    <Input />
+                <FormItem {...formItemLayout1} label="行政扣款">
+                    {getFieldDecorator('administrativeback')(
+                                    <InputNumber style={{width: '100%'}} />
+                                )}
                 </FormItem>
-                <FormItem {...formItemLayout} label="端口扣款">
-                    <Input />
+                <FormItem {...formItemLayout1} label="端口扣款">
+                    {getFieldDecorator('portback')(
+                                    <InputNumber style={{width: '100%'}} />
+                                )}
                 </FormItem>
                 <FormItem wrapperCol={{ span: 12, offset: 6 }}>
-                    <Col span={6}><Button type="primary" htmlType="submit" disabled={this.hasErrors(getFieldsError())} >提交</Button></Col>
-                    <Col span={6}><Button type="primary" htmlType="submit">清空</Button></Col>
+                    <Col span={6}><Button type="primary" htmlType="submit" disabled={this.hasErrors(getFieldsValue())} >提交</Button></Col>
+                    <Col span={6}><Button type="primary" onClick={this.handleReset}>清空</Button></Col>
                 </FormItem>
             </Form>
         );
