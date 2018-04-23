@@ -49,7 +49,8 @@ const WebApiConfig = {
         search: basicDataBaseApiUrl + "extrainfo/searchcompanya",
         add: basicDataBaseApiUrl + "extrainfo/addcompanyainfo/",
         modify: basicDataBaseApiUrl + "extrainfo/modifycompanyainfo/",
-        delete: basicDataBaseApiUrl + "extrainfo/deletecompanyainfo/"
+        delete: basicDataBaseApiUrl + "extrainfo/deletecompanyainfo/",
+        getall: basicDataBaseApiUrl + "extrainfo/getall",
     }
 }
 export default WebApiConfig;

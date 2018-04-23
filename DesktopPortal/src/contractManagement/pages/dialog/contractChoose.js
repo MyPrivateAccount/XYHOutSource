@@ -136,7 +136,7 @@ class ContractChoose extends Component{
     }
     render(){
         let dataSource = this.props.searchInfo.searchResult.extension ;
-        //console.log("contractChooseVisible:", this.props.contractChooseVisible);
+        console.log("contractChooseVisible:", this.props.contractChooseVisible);
         const rowSelection = {
             type:"radio",
             onChange: (selectedRowKeys, selectedRows) => {

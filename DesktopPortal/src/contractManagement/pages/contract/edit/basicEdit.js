@@ -1,11 +1,12 @@
 import { connect } from 'react-redux';
-import { getDicParList, saveContractBasic, viewContractBasic,basicLoadingStart, openContractChoose } from '../../../actions/actionCreator';
+import { getDicParList, saveContractBasic, viewContractBasic,basicLoadingStart, openContractChoose, companyListGet } from '../../../actions/actionCreator';
 import React, { Component } from 'react';
 import { Icon, Input, InputNumber, Button, Checkbox, Row, Col, Form, DatePicker, Select, Cascader,Radio } from 'antd';
 import moment from 'moment';
 import { call } from 'redux-saga/effects';
 import ContractChoose from '../../dialog/contractChoose';
-
+import CompanyAChoose from '../../dialog/companyAChoose';
+import SearchCondition from '../../../constants/searchCondition';
 const FormItem = Form.Item;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
@@ -16,6 +17,8 @@ class BasicEdit extends Component {
         organizateID: '',
         departMentFullName:'',
         departmentFullId:'',
+        curSetCompanyA: {},
+        isFollow: false,
     }
     handleCancel = () => {
         this.props.dispatch(viewContractBasic())
@@ -31,8 +34,19 @@ class BasicEdit extends Component {
         this.props.dispatch(openContractChoose({contractName: contractName}));
     }
     
+    componentWillMount(){
+        if(this.props.basicInfo.isFollow)
+        {
+            this.setState({isFollow: this.props.basicInfo.isFollow});
+        }
+        
+    }
     getUserOrgName = () =>{
 
+    }
+    handleIsFollow = (e) => {
+        console.log('handleIsFollow:', e);
+        this.setState({isFollow: e.target.value});
     }
     handleSave = (e) => {
         e.preventDefault();
@@ -55,11 +69,12 @@ class BasicEdit extends Component {
                     newBasicInfo.createTime = moment().format("YYYY-MM-DD");
                     //newBasicInfo.createDepartment = this.props.activeOrg.organizationName;
                 }
- 
+                
                 if (basicOperType != 'add') {
                     newBasicInfo = Object.assign({}, this.props.basicInfo, values);
                 }
-                
+                console.log('this.props.basicInfo:', this.props.basicInfo);
+                console.log('basicOperType:', basicOperType);
                 newBasicInfo.isSubmmitShop = 1;
                 newBasicInfo.isSubmmitRelation = 1;
                 newBasicInfo.createDepartment = this.props.activeOrg.organizationName || "";
@@ -70,8 +85,19 @@ class BasicEdit extends Component {
                     newBasicInfo.organizateID = this.state.organizateID ;
                     //newBasicInfo.ext1 = this.state.departmentFullId;
                 }
-
+      
+                if(this.state.curSetCompanyA)
+                {
+      
+                    newBasicInfo.companyAT = this.state.curSetCompanyA.type;
+                    newBasicInfo.companyAId = this.state.curSetCompanyA.id;
+                }
                 
+                if(this.state.curFollowContract)
+                {
+                    newBasicInfo.follow = this.state.curFollowContract.name;
+                    newBasicInfo.followId = this.state.curFollowContract.id;
+                }
                 delete newBasicInfo.startAndEndTime;
                 delete newBasicInfo.examineStatus;
                 let method = (basicOperType === 'add' ? 'POST' : "PUT");
@@ -81,6 +107,7 @@ class BasicEdit extends Component {
                     entity: newBasicInfo, 
         
                 }));
+                this.setState({curSetCompanyA: {}});
             }
         });
     }
@@ -109,8 +136,23 @@ class BasicEdit extends Component {
      
         this.setState({departMentFullName: text.join('-'), organizateID: organizateID, departmentFullId:departmentFullId})
     }
+    handleChooseCompanyA = () =>{
+        let condition = SearchCondition.companyASearchCondition;
+        condition.type = 'dialog';
+        this.props.dispatch(companyListGet(condition));
+    }
     displayRender = (label) => {
         return label[label.length - 1];
+    }
+    handleChooseCompanyACallback = (info) => {
+        console.log('handleChooseCompanyACallback:', info);
+        if(info !== null)
+        {
+            this.setState({curSetCompanyA: info});
+            this.props.form.setFieldsValue({
+                companyA: info.name,
+              });
+        }
     }
     render(){
 
@@ -209,7 +251,7 @@ class BasicEdit extends Component {
             </Row>
             <Row type="flex" style={{marginTop: "25px"}}>
                 <Col span={12}>
-                    <FormItem {...formItemLayout} label={<span>甲方类型</span>}>
+                    {/* <FormItem {...formItemLayout} label={<span>甲方类型</span>}>
                     {getFieldDecorator('companyAT', {
                                     initialValue: basicInfo.companyAT ? basicInfo.companyAT.toString() : "",
                                     rules: [{ required: true, message: '请选择甲方类型!' }],
@@ -222,15 +264,26 @@ class BasicEdit extends Component {
                                         }
                                     </Select>
                         )}
+                    </FormItem> */}
+                    <FormItem {...formItemLayout} label={<span>申请人</span>}>
+                        {getFieldDecorator('ext1', {
+                        initialValue: basicInfo.projectName,
+                        rules:[{required:true, message:'请输入申请人!'}]
+                        })(
+                            <Input placeholder="申请人" />
+                        )
+                        
+                        }
                     </FormItem>
                 </Col>
                 <Col span={12}>
-                    <FormItem {...formItemLayout} label={<span>甲方公司全称</span>}>
+                    <FormItem {...formItemLayout} label={<span>甲方公司</span>}>
                     {getFieldDecorator('companyA', {
                             initialValue: basicInfo.companyA,
-                            rules:[{required:true, message:'请输入甲方公司全称!'}]
+                            rules:[{required:true, message:'请选择甲方公司全称!'}]
                             })(
-                                <Input placeholder="甲方公司全称" />
+                                <Input placeholder="甲方公司"  onClick={this.handleChooseCompanyA}/>
+                                
                             )
                             
                     }
@@ -370,7 +423,8 @@ class BasicEdit extends Component {
 
             </Row>
             <Row type="flex" style={{marginTop:"25px"}}>
-            <Col span={12}>
+
+             <Col span={12}>
                  <FormItem {...formItemLayout} label={<span>返回原件</span>}>
                   {getFieldDecorator('returnOrigin', {
                                   initialValue: basicInfo.returnOrigin !== null ? (basicInfo.returnOrigin === 1 ? 1 :2) : null ,
@@ -385,39 +439,7 @@ class BasicEdit extends Component {
                   }
                  </FormItem>
               </Col>
-                <Col span={12}>
-                    <FormItem {...formItemLayout} label={<span>续签合同</span>}>
-                        {getFieldDecorator('follow', {
-                                    initialValue: curFollowContract.name !== undefined ? curFollowContract.name : basicInfo.follow,
-                                    //rules:[{required:true, message:'续签合同'}]
-                                    })(
-                                        //<span>{'无'}</span>
-                                        <Input  onClick={this.handleRenewClick}></Input>
-                                    )
-                                    
-                            }
-                    </FormItem>
-       
-                </Col>
-
-            </Row>
-			<Row type="flex" style={{marginTop:"25px"}}>
-                {/*
-  
-                    <Col span={12}>
-                        <FormItem {...formItemLayout} label={<span>归属部门</span>}>
-                        {getFieldDecorator('Organizete', {
-                                        initialValue: basicInfo.Organizete,
-                                        rules:[{required:true, message:'请选择归属部门!'}]
-                                        })(
-                                            <Input placeholder="归属部门"/>
-                                        )
-                                        
-                        }
-                        </FormItem>
-                    </Col>
-                */}
-                <Col span={12}>
+              <Col span={12}>
                         <FormItem {...formItemLayout} label={<span>申请部门</span>}>
                         {getFieldDecorator('organizate', {
                                         initialValue: basicInfo.organizateFullId ? basicInfo.organizateFullId.split('*') : [],//departMentInit,//basicInfo.relation ? basicInfo.relation.split('*') : [],//["1", "1385f04d-3ac8-49c6-a310-fe759814a685", "120"],//basicInfo.organizete ? basicInfo.organizete.split('-') : [],
@@ -429,6 +451,35 @@ class BasicEdit extends Component {
                         }
                         </FormItem>
                     </Col>
+            </Row>
+
+            <Row type="flex" style={{marginTop:"25px"}}>
+                <Col span={12}>
+                        <FormItem {...formItemLayout} label={<span>项目地址</span>}>
+                            {getFieldDecorator('projectAddress', {
+                                        initialValue: basicInfo.projectAddress,
+                                        //rules:[{required:true, message:'续签合同'}]
+                                        })(
+                                            <Input placeholder="项目地址"  />
+                                        )
+                                        
+                                }
+                        </FormItem>
+                    </Col>
+                <Col span={12}>
+                        <FormItem {...formItemLayout} label={<span>备注</span>}>
+                            {getFieldDecorator('remark', {
+                                        initialValue: basicInfo.remark,
+                                        //rules:[{required:true, message:'续签合同'}]
+                                        })(
+                                            <TextArea placeholder="备注" autosize />
+                                        )
+                                        
+                                }
+                        </FormItem>
+                    </Col>
+   
+
             </Row>
             <Row type="flex" style={{marginTop:"25px"}}>
                 {/* {
@@ -450,18 +501,40 @@ class BasicEdit extends Component {
                     </Col>
                     : null
                 } */}
+             <Col span={12}>
+                 <FormItem {...formItemLayout} label={<span>是否续签</span>}>
+                  {getFieldDecorator('isFollow', {
+                                  initialValue: basicInfo.isFollow,//basicInfo.isFollow !== null ? (basicInfo.isFollow  ? 1 :2) : null ,
+                                 // rules:[{required:true, message:'请选择是否返还原件!'}]
+                                  })(
+                                    <RadioGroup onChange={(e) =>this.handleIsFollow(e)}>
+                                        <Radio value={true}>是</Radio>
+                                        <Radio value={false}>否</Radio>
+                                    </RadioGroup>
+                                  )
+                                  
+                  }
+                 </FormItem>
+              </Col>
+              {
+
+                this.state.isFollow ?
                 <Col span={12}>
-                    <FormItem {...formItemLayout} label={<span>备注</span>}>
-                        {getFieldDecorator('remark', {
-                                    initialValue: basicInfo.remark,
+                    <FormItem {...formItemLayout} label={<span>续签合同</span>}>
+                        {getFieldDecorator('follow', {
+                                    initialValue: curFollowContract.name !== undefined ? curFollowContract.name : basicInfo.follow,
                                     //rules:[{required:true, message:'续签合同'}]
                                     })(
-                                        <TextArea placeholder="备注" autosize />
+                                        //<span>{'无'}</span>
+                                        <Input  onClick={this.handleRenewClick}></Input>
                                     )
                                     
                             }
                     </FormItem>
+       
                 </Col>
+                :null
+              }
   
             </Row>
             {/* <Row type="flex" style={{marginTop:"25px"}}>
@@ -502,6 +575,7 @@ class BasicEdit extends Component {
             }
           </Form>
           <ContractChoose/> 
+          <CompanyAChoose callback={this.handleChooseCompanyACallback}/>
          </div>
         
                         

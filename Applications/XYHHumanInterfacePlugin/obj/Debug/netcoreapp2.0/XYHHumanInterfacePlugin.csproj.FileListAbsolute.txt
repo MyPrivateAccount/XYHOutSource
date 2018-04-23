@@ -37,3 +37,5 @@ D:\工作\XHY\XYHOutSource\Applications\XYHHumanInterfacePlugin\obj\Debug\netcor
 D:\工作\XHY\XYHOutSource\Applications\XYHHumanInterfacePlugin\obj\Debug\netcoreapp2.0\XYHHumanInterfacePlugin.csproj.CopyComplete
 D:\工作\XHY\XYHOutSource\Applications\XYHHumanInterfacePlugin\obj\Debug\netcoreapp2.0\XYHHumanInterfacePlugin.dll
 D:\工作\XHY\XYHOutSource\Applications\XYHHumanInterfacePlugin\obj\Debug\netcoreapp2.0\XYHHumanInterfacePlugin.pdb
+H:\XYH\XYHOutSource\Applications\XYHHumanInterfacePlugin\obj\Debug\netcoreapp2.0\XYHHumanInterfacePlugin.dll
+H:\XYH\XYHOutSource\Applications\XYHHumanInterfacePlugin\obj\Debug\netcoreapp2.0\XYHHumanInterfacePlugin.pdb

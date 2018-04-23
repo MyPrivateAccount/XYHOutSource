@@ -39,7 +39,7 @@ namespace XYHContractPlugin.Models
             base.OnModelCreating(builder);
             builder.Entity<ContractInfo>(b =>
             {
-                b.HasKey(K => new { K.ID, K.Num});
+                b.HasKey(K => new { K.ID});
                 b.ToTable("XYH_DT_CONTRACTINFO");
             });
 

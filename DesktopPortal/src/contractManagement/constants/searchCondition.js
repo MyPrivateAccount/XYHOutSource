@@ -13,6 +13,7 @@ const SearchCondition = {
         keyWord: '',
         searchType:'',
         address:'',
+        type:'',
     }
 }
 

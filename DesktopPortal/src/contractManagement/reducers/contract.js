@@ -67,7 +67,8 @@ reducerMap[actionTypes.OPEN_RECORD] = function(state, action){
         },
         //contractAttachInfo:{},
         discard:false,
-        complementInfo:{},//补充协议
+        complementInfos:{},//补充协议
+        followHistory:[],//补充协议
         annexInfo:{},
         attachInfo:{},
 

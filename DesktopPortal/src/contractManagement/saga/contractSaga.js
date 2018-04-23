@@ -89,6 +89,7 @@ export function* gotoThisContract(action) {
     let url = WebApiConfig.contract.GetContractInfo + id;
     let res;
     //
+    console.log(`获取合同详情url:${url},`);
     try {
         res = yield call(ApiClient.get, url);
         getApiResult(res, result);
@@ -251,10 +252,7 @@ export function* deletePicAsync(action) {
             yield put(actionUtils.action(attchLoadingEnd))
         
     } catch (e) {
-        notification.error({
-            message: '图片删除失败！',
-            duration: 3
-        });
+
     }
 }
 

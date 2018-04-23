@@ -594,8 +594,8 @@ namespace XYHContractPlugin.Controllers
                 }
 
                 Logger.Trace($"{exarequest.ContentId}发生审核成功");
-                request.BaseInfo.Num = await _contractInfoManager.GetContractNum(request.BaseInfo.ID, HttpContext.RequestAborted);
-                await _contractInfoManager.ModifyContractBeforCheckAsync(User, request, guid, "TEST", HttpContext.RequestAborted);
+                request.BaseInfo.Num = string.IsNullOrEmpty(request.BaseInfo.Num) ? await _contractInfoManager.GetContractNum(request.BaseInfo.ID, HttpContext.RequestAborted) : request.BaseInfo.Num;
+                await _contractInfoManager.ModifyContractBeforCheckAsync(User,  request, guid, "TEST", HttpContext.RequestAborted);
 
                 
                 response.Extension = guid;

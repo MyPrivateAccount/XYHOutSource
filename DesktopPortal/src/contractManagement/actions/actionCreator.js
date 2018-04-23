@@ -152,3 +152,7 @@ export const attachSubmitEnd = createAction(actionTypes.ATTACH_SUBMIT_END);
 //导出全部数据
 export const getAllExportData = createAction(actionTypes.GET_ALL_EXPORT_DATA);
 export const endExportAllData = createAction(actionTypes.END_EXPORT_ALL_DATA);
+
+//甲方公司信息窗口
+export const getAllCompanyAData = createAction(actionTypes.GET_ALL_COMPANYA_DATA);
+export const closeCompanyADialog = createAction(actionTypes.CLOSE_COMPANYA_DIALOG);
