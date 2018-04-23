@@ -134,10 +134,10 @@ export function* getWorkNumber(state) {
     try {
         huResult = yield call(ApiClient.get, url);
         //弹消息，返回
-        if (huResult.isOk) {
+        if (huResult.data.code == 0) {
             huResult.message = '人事信息提交成功';
 
-            yield put({ type: actionUtils.getActionType(actionTypes.SET_HUMANINFONUMBER), payload: {worknumber:huResult} });
+            yield put({ type: actionUtils.getActionType(actionTypes.SET_HUMANINFONUMBER), payload: {worknumber:huResult.data.extension} });
         }
     } catch (e) {
         huResult.msg = "部门用户获取接口调用异常!";

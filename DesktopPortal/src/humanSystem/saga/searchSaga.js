@@ -101,7 +101,7 @@ export function* getHumanListAsync(state) {
         let res = yield call(ApiClient.post, url, state.payload);
          if (res.data.code == 0) {
              result.isOk = true;
-             let lv = JSON.parse(res.data.extension);
+             let lv = res.data.extension;
              let data = lv.map(function(v, k) {
                  return {key: k, id: v.userID, username: v.name, idcard: v.idCard};
              });
