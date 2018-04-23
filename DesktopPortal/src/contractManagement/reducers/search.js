@@ -14,6 +14,9 @@ const initState = {
     activeMenu: 'menu_index',//当前菜单
     showContractShow:false,
 
+    allExportData: [],
+    isBeginExportAllData: false,
+    
     activeCustomers: [],//选中客户信息
     searchKeyWord: '',//搜索关键词
     searchCondition: {},//完整搜索条件
@@ -165,5 +168,18 @@ reducerMap[actionTypes.SAVE_SEARCH_CONDITION] = function (state, action) {
 }
 
 
+reducerMap[actionTypes.BEGIN_EXPORT_ALL_DATA] = function(state,action){
+    let isBeginExportAllData = false;
+    let allExportData = [];
+    if(action.payload.isOk){
+        isBeginExportAllData = true;
+        allExportData = action.payload.extension || [];
+    }
+    return Object.assign({}, state, {allExportData: allExportData, isBeginExportAllData: isBeginExportAllData});
+}
 
+reducerMap[actionTypes.END_EXPORT_ALL_DATA] = function(state,action){
+
+    return Object.assign({}, state, {allExportData: [], isBeginExportAllData: false});
+}
 export default handleActions(reducerMap, initState);

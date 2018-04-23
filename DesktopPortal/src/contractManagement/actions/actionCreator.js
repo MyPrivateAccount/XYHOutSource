@@ -108,11 +108,18 @@ export const changeActiveOrg = createAction(actionTypes.CHAGNE_ACTIVE_ORG);
 //临时更改设置当前用户的部门id为当前选择orgid
 export const setInitActiveOrg = createAction(actionTypes.SET_INIT_ACTIVEORG);
 
+//甲方公司
+export const companyAEdit = createAction(actionTypes.COMPANYA_EDIT);
+export const companyAAdd = createAction(actionTypes.COMPANYA_ADD);
+export const companyASave = createAction(actionTypes.COMPANYA_SAVE);
+export const companyADelete = createAction(actionTypes.COMPANYA_DELETE);
+export const companyAListUpdate = createAction(actionTypes.COMPANYA_LIST_UPDATE);
+export const companyACloseDialog = createAction(actionTypes.COMPANYA_DIALOG_CLOSE);
+export const companyListGet = createAction(actionTypes.COMPANYA_GET_LIST);
 
-
-
-
-
+//续签记录
+export const closeFollowHistoryDialog = createAction(actionTypes.FOLLOW_HISTORY_DIALOG_CLOSE);
+export const openFollowHistoryDialog = createAction(actionTypes.FOLLOW_HISTORY_DIALOG_OPEN);
 
 
 
@@ -141,3 +148,7 @@ export const attchLoadingEnd = createAction(actionTypes.LOADING_END_ATTACH);
 
 export const basicSubmitEnd = createAction(actionTypes.BASIC_SUBMIT_END);
 export const attachSubmitEnd = createAction(actionTypes.ATTACH_SUBMIT_END);
+
+//导出全部数据
+export const getAllExportData = createAction(actionTypes.GET_ALL_EXPORT_DATA);
+export const endExportAllData = createAction(actionTypes.END_EXPORT_ALL_DATA);

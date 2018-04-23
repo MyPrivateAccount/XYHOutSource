@@ -82,7 +82,7 @@ namespace XYHContractPlugin.Controllers
             }
             try
             {
-                var ret = await _contractInfoManager.GetAllinfoByIdAsync2(contractId, HttpContext.RequestAborted);
+                var ret = await _contractInfoManager.GetAllinfoByIdAsync2(user,contractId, HttpContext.RequestAborted);
                 Response.Extension = ret;
 
                 foreach (var item in ret.Modifyinfo)

@@ -1,6 +1,7 @@
 import { connect } from 'react-redux';
-import { editContractBasic, openModifyHistory } from '../../../actions/actionCreator';
+import { editContractBasic, openModifyHistory, openFollowHistoryDialog } from '../../../actions/actionCreator';
 import ModifyHistory from '../../dialog/modifyHistory';
+import FollowHistory from '../../dialog/followHistory';
 import React, { Component } from 'react'
 import { Icon, Table, Button, Checkbox, Row, Col, Form } from 'antd'
 import moment from 'moment';
@@ -37,8 +38,11 @@ class BasicInfo extends Component {
         return text;
     }
 
-    handleViewHistory = ()=>{
+    handleViewModifyHistory = ()=>{
         this.props.dispatch(openModifyHistory())
+    }
+    handleViewFollowHistory = () =>{
+        this.props.dispatch(openFollowHistoryDialog())
     }
     render(){
         const basicInfo = this.props.contractInfo.baseInfo;
@@ -123,8 +127,8 @@ class BasicInfo extends Component {
                     <Row className='viewRow'>
                         {/* <Col span={12}>是否作废:{(basicInfo.discard && basicInfo.discard === '1') ? "是" : "否"}</Col> */}
                         <Col span={12}>项目地址:{basicInfo.projectAddress}</Col>
-                        <Col span={1} onClick={this.handleViewHistory} style={{color:'blue'}} title="点击获取更改记录">更改记录</Col>
-                        <Col span={1} onClick={this.handleViewHistory} style={{color:'blue'}} title="点击获取续签记录">续签记录</Col>
+                        <Col span={2} onClick={this.handleViewModifyHistory} style={{color:'blue'}} title="点击获取更改记录">更改记录</Col>
+                        <Col span={2} onClick={this.handleViewFollowHistory} style={{color:'blue'}} title="点击获取续签记录">续签记录</Col>
                     </Row>
                     <Row className='viewRow'>
                         
@@ -135,6 +139,7 @@ class BasicInfo extends Component {
                     </Row> */}
                 </Form>
                 <ModifyHistory />
+                <FollowHistory />
             </div>
         )
     }

@@ -1,5 +1,6 @@
 import {connect} from 'react-redux';
-import { openComplement, searchStart, saveSearchCondition, setLoadingVisible,openAttachMent, openContractRecord, gotoThisContract, openContractRecordNavigator} from '../actions/actionCreator';
+import { openComplement, searchStart, saveSearchCondition, setLoadingVisible,
+openAttachMent, openContractRecord, gotoThisContract, openContractRecordNavigator, getAllExportData, endExportAllData} from '../actions/actionCreator';
 import React, {Component} from 'react';
 import {Button, Row, Col, Table} from 'antd';
 import moment from 'moment';
@@ -28,6 +29,40 @@ class SearchResult extends Component {
         if (newProps.searchInfo.searchResult && pageIndex) {
             this.setState({pagination: {current: pageIndex, pageSize: pageSize, total: validityContractCount}});
         }
+        if(newProps.isBeginExportAllData)
+        {
+            let allExportData = newProps.allExportData;
+            this.handleExportAllData(allExportData);
+        }
+    }
+    
+    handleExportAllData = (exportData) => {
+        let header = [{v:"序号", position:'A1', key: 'num'}];
+        let columns = this.getContractInfoExportColumns();
+        let headers = header.concat(this.getHeader(columns));
+        let newHeader = headers.reduce((prev, next) => Object.assign({}, prev, {[next.position]: {v: next.v}}), {});
+        let dataList = {};
+        let newData = {};
+        for(let i = 0; i < exportData.length ; i++)
+        {
+            let data = this.getSingleExportData(headers, exportData[i], i + 1);
+            newData = data.reduce((prev, next) => Object.assign({}, prev, {[next.position]: {v: next.v}}), {});
+            Object.assign(dataList, {...newData});
+        }
+        console.log('datalist:', dataList);
+        let output = Object.assign({}, newHeader, dataList);
+        // 获取所有单元格的位置
+        let outputPos = Object.keys(output);
+        // 计算出范围
+        let ref = outputPos[0] + ':' + outputPos[outputPos.length - 1];
+        // 构建 workbook 对象
+        let wb = {
+            SheetNames: ['mySheet'],
+            Sheets: {
+                'mySheet': Object.assign({}, output, { '!ref': ref })
+            }
+        };
+        XLSX.writeFile(wb, 'output.xlsx');
     }
     hasPermission(buttonInfo) {
         let hasPermission = false;
@@ -601,7 +636,11 @@ class SearchResult extends Component {
     // handleContractDetail = (record) => {
     //     this.props.dispatch(getContractDetail(record));
     // }
+
     handleMultiExport = () =>{
+        this.props.dispatch(getAllExportData())
+    }
+    handleMultiExport1 = () =>{
         let header = [{v:"序号", position:'A1', key: 'num'}];
         let columns = this.getContractInfoExportColumns();
         let headers = header.concat(this.getHeader(columns));
@@ -690,6 +729,8 @@ class SearchResult extends Component {
 
 function mapStateToProps(state) {
     return {
+        isBeginExportAllData: state.search.isBeginExportAllData,
+        allExportData:state.search.allExportData,
         searchInfo: state.search,
         basicData: state.basicData,
         judgePermissions: state.judgePermissions

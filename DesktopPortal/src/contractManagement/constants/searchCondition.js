@@ -1,4 +1,4 @@
-
+const defaultPageSize = 10;
 const SearchCondition = {
     mySubmit: {//我提交的
         examineStatus: [1],
@@ -7,17 +7,12 @@ const SearchCondition = {
         pageSize: 10,
         listType: "mySubmit"
     },
-    sourceCondition: {//调客归属部门条件
-        type: 'source',
+    companyASearchCondition: {
         pageIndex: 0,
-        pageSize: 10000,
-        userID: ''
-    },
-    targetCondition: {//调客目标部门条件
-        type: 'target',
-        pageIndex: 0,
-        pageSize: 10000,
-        userID: ''
+        pageSize: defaultPageSize,
+        keyWord: '',
+        searchType:'',
+        address:'',
     }
 }
 

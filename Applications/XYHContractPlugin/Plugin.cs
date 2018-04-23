@@ -50,6 +50,7 @@ namespace XYHContractPlugin
         
             context.Services.AddScoped<XYHContractPlugin.Managers.FileScopeManager>();
             context.Services.AddScoped<FileInfoManager>();
+            context.Services.AddScoped<ExtraInfoDataManager>();
             context.Services.AddScoped<IExtraDataInfoStrore, ExtraDataInfoStore>();
             context.Services.AddScoped<PermissionExpansionManager>();
             context.Services.AddScoped<IOrganizationExpansionStore, OrganizationExpansionStore>();

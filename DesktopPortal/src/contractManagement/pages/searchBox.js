@@ -122,7 +122,7 @@ function mapStateToProps(state) {
     return {
         searchInfo: state.search,
          oidc: state.oidc,
-         setContractOrgTree:state.basicData.permissionOrgTree.setContractOrgTree,
+         setContractOrgTree:state.basicData.permissionOrgTree.searchOrgTree,//state.basicData.permissionOrgTree.setContractOrgTree,
     }
 }
 

@@ -19,12 +19,14 @@ namespace XYHContractPlugin.Managers
 {
      public  class ExtraInfoDataManager
     {
-        public ExtraInfoDataManager(IExtraDataInfoStrore extraData, IMapper mapper)
+        public ExtraInfoDataManager(IExtraDataInfoStrore extraData,IContractInfoStore contractStore, IMapper mapper)
         {
             Store = extraData ?? throw new ArgumentNullException(nameof(extraData));
+            _contractStore = contractStore ?? throw new ArgumentNullException(nameof(contractStore));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
-        protected IExtraDataInfoStrore Store { get; }
+        protected IExtraDataInfoStrore Store { get; set; }
+        protected IContractInfoStore _contractStore { get; set; }
         protected IMapper _mapper { get; }
 
         public virtual async Task<CompanyAInfoResponse> CreateAsync(UserInfo userInfo, CompanyAInfoRequest companyAInfoRequest, CancellationToken cancellationToken = default(CancellationToken))
@@ -45,7 +47,45 @@ namespace XYHContractPlugin.Managers
             return _mapper.Map<CompanyAInfoResponse>(info);
         }
 
-        public virtual async  Task DeleteAsync(UserInfo userInfo, CompanyAInfo companyAInfo, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual async  Task<ResponseMessage> DeleteListAsync(UserInfo userInfo, List<string> ids, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            List<string> tempIds = new List<string>();
+            List<CompanyAInfo> infos = new List<CompanyAInfo>();
+            ResponseMessage response = new ResponseMessage();
+            foreach(var item in ids)
+            {
+                var contract = await _contractStore.GetAsync(x => x.Where(a => a.CompanyAId == item));
+                if(contract == null)
+                {
+                    var companyAInfo = await Store.GetAsync(x => x.Where(a => !a.IsDelete && a.ID == item));
+                    companyAInfo.DeleteTime = DateTime.Now;
+                    companyAInfo.DeleteUser = userInfo.Id;
+                    companyAInfo.IsDelete = true;
+                    infos.Add(companyAInfo);
+              
+                }
+    
+            }
+            
+            if(ids.Count > infos.Count)
+            {
+                response.Message = "部分删除完成";
+                response.Code = "部分删除";
+            }
+            else 
+            {
+                response.Message = "全部删除完成";
+            }
+            if (infos.Count == 0)
+            {
+                response.Message = "删除失败";
+                response.Code = "删除失败";
+                return response;
+            }
+            await Store.DeleteListAsync(userInfo,infos, cancellationToken);
+            return response;
+        }
+        public virtual async Task DeleteAsync(UserInfo userInfo, CompanyAInfo companyAInfo, CancellationToken cancellationToken = default(CancellationToken))
         {
 
             //var companyAInfo = Store.GetAsync<CompanyAInfo>(a => a.Where(b => b.ID == id), cancellationToken);
@@ -53,10 +93,9 @@ namespace XYHContractPlugin.Managers
             {
                 throw new ArgumentNullException(nameof(companyAInfo));
             }
-         
-            await Store.DeleteAsync(userInfo,companyAInfo, cancellationToken);
-        }
 
+            await Store.DeleteAsync(userInfo, companyAInfo, cancellationToken);
+        }
         public virtual async Task ModifyAsync(CompanyAInfoRequest companyAInfoRequest, CancellationToken cancellation = default(CancellationToken))
         {
             if (companyAInfoRequest == null)
@@ -78,7 +117,14 @@ namespace XYHContractPlugin.Managers
             var companyAInfo = await Store.GetAsync<CompanyAInfo>(a => a.Where(b => b.ID == id), cancellation);
             return companyAInfo;
         }
-
+        public virtual async Task<ResponseMessage<List<CompanyAInfoResponse>>> GetAllAsync(UserInfo user,  CancellationToken cancellationToken = default(CancellationToken))
+        {
+            ResponseMessage<List<CompanyAInfoResponse>> response = new ResponseMessage<List<CompanyAInfoResponse>>();
+            
+            var info = await Store.ListAsync<CompanyAInfo>(a => a.Where(b => !b.IsDelete), cancellationToken);
+            response.Extension = _mapper.Map<List<CompanyAInfoResponse>>(info);
+            return response;
+        }
         public virtual async Task<CompanyASearchResponse<CompanyAInfoResponse>> Search(UserInfo user, CompanyASearchCondition condition, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (condition == null)
@@ -114,7 +160,7 @@ namespace XYHContractPlugin.Managers
             {
                 query = query.Where(x => x.Address == condition.Address);
             }
-            if (string.IsNullOrEmpty(condition.SearchType) )
+            if (!string.IsNullOrEmpty(condition.SearchType) )
             {
                 query = query.Where(x => x.Type == condition.SearchType);
             }

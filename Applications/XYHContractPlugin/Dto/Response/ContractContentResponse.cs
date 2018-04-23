@@ -71,5 +71,6 @@ namespace XYHContractPlugin.Dto.Response
         public List<ContractModifyResponse> Modifyinfo { get; set; }
         public List<FileItemResponse> FileList { get; set; }
 
+        public List<ContractInfoResponse> FollowHistory { get; set; }
     }
 }

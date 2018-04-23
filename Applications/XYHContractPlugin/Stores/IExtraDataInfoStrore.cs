@@ -16,6 +16,7 @@ namespace XYHContractPlugin.Stores
         //Task<List<FileInfo>> CreateListAsync(List<CompanyAInfo> companyAInfoList, CancellationToken cancellationToken = default(CancellationToken));
         Task DeleteAsync(UserInfo userInfo, CompanyAInfo companyAInfo, CancellationToken cancellationToken = default(CancellationToken));
 
+        Task DeleteListAsync(UserInfo userInfo, List<CompanyAInfo> Infos, CancellationToken cancellationToken = default(CancellationToken));
         Task<TResult> GetAsync<TResult>(Func<IQueryable<CompanyAInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken));
 
         Task<List<TResult>> ListAsync<TResult>(Func<IQueryable<CompanyAInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken));
