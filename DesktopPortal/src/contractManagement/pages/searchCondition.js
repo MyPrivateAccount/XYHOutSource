@@ -9,7 +9,7 @@ import SearchBox from './searchBox';
 // const CheckboxGroup = Checkbox.Group;
 // const ButtonGroup = Button.Group;
 const Option = Select.Option;
-const checkStateDefine = [{value: '1', key: '审核中'},{value: '8', key: '已审核'}];
+const checkStateDefine = [{type: '1', key: '审核中'},{type: '8', key: '已审核'}];
 let t = null;
 class SearchCondition extends Component {
     state = {
@@ -34,6 +34,8 @@ class SearchCondition extends Component {
         selectedMenuKey: 'menu_index',
         searchHandleMethod: null,//searchbox的查询方法,
         checkedList:null,
+        isNowCheck: false,
+        isHasCheck: false,
     }
     componentWillMount() {
 
@@ -130,21 +132,19 @@ class SearchCondition extends Component {
         this.setState({condition:condition}, () =>{this.handleSearch()});
     }
 
-    handleCheckChange = (e, typeq) =>{
+    handleCheckChange = (e, type) =>{
         //this.setState({checkedList:,});
-        console.log('handleCheckChange:', e.target);
-        let condition = {...this.state.condition};
-        e.map(value =>{
-            if(typeq === "checkStatu"){
-                let res = checkStateDefine.find(tp => tp.value === value);
-                if(res){
-                    condition["checkStatu"] = e;
-                }
-       
-            }
-        })
-  
+        console.log('e.target.checked:', e.target.checked);
         
+        if(type === '1'){
+            console.log('1type:', type);
+            this.setState({isNowCheck:e.target.checked, isHasCheck:false});
+        }else if(type === '8'){
+            console.log('8type:', type);
+            this.setState({isNowCheck:false, isHasCheck:e.target.checked});
+        }
+        let condition = {...this.state.condition};
+        condition.checkStatu = e.target.checked ? type : null;
         this.setState({condition:condition}, () =>{this.handleSearch()});
     }
     render() {
@@ -189,16 +189,17 @@ class SearchCondition extends Component {
                         </Row>
                         {
                         <Row className="normalInfo">
-                             <Col span={24}>
-                                <label>审核状态：</label>
-                                <Checkbox.Group   >
-                                    {
-                                        checkStateDefine.map(b =>
-                                            <Checkbox key={b.key} value={b.value} onChange={(e) => this.handleCheckChange(e, "checkStatu")}>{b.key}</Checkbox>
-                                        )
-                                    }
-                                </Checkbox.Group>
-                            </Col>
+            
+                                {/* <label>审核状态：</label> */}
+                                <Col span={4}>
+                                <label>审核中：</label>
+                                    <Checkbox onChange={(e) =>this.handleCheckChange(e, "1")} checked={this.state.isNowCheck}></Checkbox>
+                                </Col>
+                                <Col span={4}>
+                                    <label>审核通过：</label>
+                                    <Checkbox onChange={(e) =>this.handleCheckChange(e, "8")} checked={this.state.isHasCheck}></Checkbox>
+                                </Col>
+                        
                         </Row>
                         }
                         {      
