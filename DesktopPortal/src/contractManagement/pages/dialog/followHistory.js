@@ -48,7 +48,7 @@ class FollowHistory extends Component{
             <Timeline>
                 {
                     (this.props.followHistory || []).map((item, index) =>
-                        <Timeline.Item color={index == this.props.followHistory.length -1 ? 'red' : 'green'}>{item.name}</Timeline.Item>
+                        <Timeline.Item color={index == this.props.followHistory.length -1 ? 'red' : 'green'} key={item.id}>{item.name}</Timeline.Item>
                     )
                 }
    

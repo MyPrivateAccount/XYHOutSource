@@ -26,76 +26,58 @@ namespace XYHHumanPlugin.Models
         public DbSet<AnnexInfo> AnnexInfos { get; set; }
         public DbSet<FileInfo> FileInfos { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        protected internal virtual void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<HumanInfo>(b =>
             {
-                b.HasKey(k => new { k.ID });
+                b.HasKey(k => k.ID);
                 b.ToTable("XYH_HU_HUMANMANAGE");
             });
             modelBuilder.Entity<ContractInfo>(b => {
-                b.HasKey(k => new { k.ID });
+                b.HasKey(k => k.ID);
                 b.ToTable("XYH_HU_CONTRACT");
             });
             modelBuilder.Entity<BlackInfo>(b => {
-                b.HasKey(k => new { k.IDCard });
+                b.HasKey(k => k.IDCard);
                 b.ToTable("XYH_HU_BLACKLIST");
             });
             modelBuilder.Entity<AttendanceInfo>(b => {
-                b.HasKey(k => new { k.ID });
+                b.HasKey(k => k.ID);
                 b.ToTable("XYH_HU_ATTENDANCE");
             });
             modelBuilder.Entity<PositionInfo>(b => {
-                b.HasKey(k => new { k.ID });
+                b.HasKey(k => k.ID);
                 b.ToTable("XYH_HU_POSITION");
             });
             modelBuilder.Entity<SalaryInfo>(b => {
-                b.HasKey(k => new { k.ID });
+                b.HasKey(k => k.ID);
                 b.ToTable("XYH_HU_SALARY");
             });
             modelBuilder.Entity<MonthInfo>(b => {
-                b.HasKey(k => new { k.ID });
+                b.HasKey(k => k.ID);
                 b.ToTable("XYH_HU_MONTH");
             });
             modelBuilder.Entity<SalaryFormInfo>(b => {
-                b.HasKey(k => new { k.ID });
+                b.HasKey(k => k.ID);
                 b.ToTable("XYH_HU_SALARYFORM");
             });
             modelBuilder.Entity<AttendanceFormInfo>(b => {
-                b.HasKey(k => new { k.ID });
+                b.HasKey(k => k.ID);
                 b.ToTable("XYH_HU_ATTENDANCEFORM");
             });
             modelBuilder.Entity<ModifyInfo>(b => {
-                b.HasKey(k => new { k.ID });
+                b.HasKey(k => k.ID);
                 b.ToTable("XYH_HU_MODIFY");
             });
-            modelBuilder.Entity<FileInfo>(b => {
-                b.ToTable("XYH_HU_FILEINFOS");
-                b.HasKey(k => new { k.FileGuid, k.FileExt, k.Type });
-            });
             modelBuilder.Entity<AnnexInfo>(b => {
-                b.HasKey(k => new { k.ID });
+                b.HasKey(k => k.ID);
                 b.ToTable("XYH_HU_ANNEX");
             });
-            
-        }
-
-        public override int SaveChanges(bool acceptAllChangesOnSuccess)
-        {
-            OnBeforeSaving();
-            return base.SaveChanges(acceptAllChangesOnSuccess);
-        }
-
-        public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            OnBeforeSaving();
-            return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
-        }
-
-        private void OnBeforeSaving()
-        {
-
+            modelBuilder.Entity<FileInfo>(b => {
+                b.HasKey(k => k.FileGuid);
+                b.ToTable("XYH_HU_FILEINFOS");
+            });
         }
 
     }

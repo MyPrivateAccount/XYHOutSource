@@ -136,7 +136,7 @@ const auditTools = [{
     cache: null
 },
 {
-    id: 'ContractInfo', //合同检索缩略信息项
+    id: 'contractInfo', //合同检索缩略信息项
     component: () => createLoadableComponent(import('./contractManagement/ContractAuditViewIndex.js')),
     cache: null
 },

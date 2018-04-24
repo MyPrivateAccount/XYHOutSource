@@ -157,6 +157,7 @@ namespace ApplicationGateway
                 c.IncludeXmlComments(xmlPath4);
                 c.IncludeXmlComments(xmlPath5);
                 c.IncludeXmlComments(xmlPath6);
+                c.IncludeXmlComments(xmlPath7);
                 c.OperationFilter<HttpHeaderOperation>(); // 添加httpHeader参数
             });
             services.ConfigureSwaggerGen(options =>

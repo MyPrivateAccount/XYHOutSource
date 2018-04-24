@@ -118,7 +118,7 @@ namespace XYHHumanPlugin.Managers
                 sql += connectstr + @"LOCATE('" + condition.KeyWord + "', a.`Name`)>0";
                 connectstr = " and ";
             }
-            else
+            else if (condition?.KeyWord != null)
             {
                 sql += connectstr + @"a.`ID`!=''";
                 connectstr = " and ";

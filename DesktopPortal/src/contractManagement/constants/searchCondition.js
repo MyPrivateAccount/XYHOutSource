@@ -13,6 +13,21 @@ const SearchCondition = {
         keyWord: '',
         searchType:'',
         address:'',
+        type:'',
+    },
+    contractSearchCondition: {
+        keyWord: '',
+        checkStatu: null,//审核状态
+        //organizationName: [],//
+        createDateStart: null,//录入时间
+        createDateEnd: null,
+        //isOverTime:false,
+        type:'',
+        discard:0,
+        follow:0,
+        orderRule: 0,
+        pageIndex: 0,
+        pageSize: 5
     }
 }
 

@@ -117,10 +117,10 @@ class ModifyHistory extends Component{
         //console.log('dataSource:', dataSource);
         return(
             <Modal 
-                title="修改历史"  wrapClassName="vertical-center-modal"  width='700' confirmLoading={this.props.showLoading} className='contractChoose' footer={null} maskClosable={false} visible={this.props.modifyHistoryVisible} 
+                title="修改历史"  wrapClassName="vertical-center-modal"  width={'700'} confirmLoading={this.props.showLoading} className='contractChoose' footer={null} maskClosable={false} visible={this.props.modifyHistoryVisible} 
                 onCancel={this.handleCancel}
             >
-                <Table rowKey={record => record.uid} scroll={{ y: 240 }} columns={this.getTableColumns()} pagination={{ pageSize: 5 }}  size="small" dataSource={dataSource} />  
+                <Table rowKey={record => record.id} scroll={{ y: 240 }} columns={this.getTableColumns()} pagination={{ pageSize: 5 }}  size="small" dataSource={dataSource} />  
             </Modal>
         )
     }

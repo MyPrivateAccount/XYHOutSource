@@ -21,20 +21,44 @@ export function* getCompanyAListAsync(state) {
         const comResult = yield call(ApiClient.post, url, state.payload/*{"isDeleted":true,"isSearch":true,"keyWords":"ff","roleId":"","OrganizationIds":[],"pageIndex":0,"pageSize":10}*/);
         getApiResult(comResult, result);
         console.log(`url:${url},resbody:${JSON.stringify(result)}`);
-        yield put({ type: actionUtils.getActionType(actionTypes.SET_SEARCH_LOADING), payload: false });
+        if(state.payload.type !== 'dialog')
+        {
+            yield put({ type: actionUtils.getActionType(actionTypes.SET_SEARCH_LOADING), payload: false });
+        }
+            
     } catch (e) {
         result.msg = '甲方列表获取接口调用失败！';
     }
     if (result.isOk) {
-        result.msg = '甲方列表获取成功'
-        if (!state.payload.isSearch) {
-            yield put({ type: actionUtils.getActionType(actionTypes.COMPANYA_GET_LIST), payload: result });
-        } else {
-            yield put({ type: actionUtils.getActionType(actionTypes.COMPANYA_SERACH_COMPLETE), payload: result });
+        result.msg = '甲方列表获取成功';
+        if(state.payload.type === 'dialog')
+        {
+            // if(result.extension || result.extension.length === 0)
+            // {
+            //     notification.error({
+            //         message: '没有甲方信息，请先在甲方管理中设置',
+            //         description: result.msg,
+            //         duration: 3
+            //     });
+            // }
+      
+            yield put({type: actionUtils.getActionType(actionTypes.OPEN_COMPANYA_DIALOG), payload: result});
+            
+           
         }
+        else
+        {
+            if (!state.payload.isSearch) {
+                yield put({ type: actionUtils.getActionType(actionTypes.COMPANYA_GET_LIST), payload: result });
+            } else {
+                yield put({ type: actionUtils.getActionType(actionTypes.COMPANYA_SERACH_COMPLETE), payload: result });
+            }
+    
+        }
+ 
     } else {
         notification.error({
-            message: '甲方',
+            message: '甲方列表获取失败!',
             description: result.msg,
             duration: 3
         });
@@ -90,6 +114,49 @@ export function* deleteCompanyAsync(state) {
         duration: 3
     });
 }
+
+
+export function* getAllCompanyADataAsync(state){
+    //console.log("getCompanyAListAsync:", state);
+    let result = { isOk: false, extension: [], msg: '甲方列表获取失败' };
+    let url = WebApiConfig.extraInfo.search;
+    console.log(`url:${url},body:${JSON.stringify(state.payload)}`);
+    try {
+        const comResult = yield call(ApiClient.post, url, state.payload/*{"isDeleted":true,"isSearch":true,"keyWords":"ff","roleId":"","OrganizationIds":[],"pageIndex":0,"pageSize":10}*/);
+        getApiResult(comResult, result);
+        console.log(`url:${url},resbody:${JSON.stringify(result)}`);
+        //yield put({ type: actionUtils.getActionType(actionTypes.SET_SEARCH_LOADING), payload: false });
+    } catch (e) {
+        result.msg = '甲方列表获取接口调用失败！';
+    }
+    if (result.isOk) {
+        result.msg = '甲方列表获取成功';
+        if(state.payload.type === 'dialog')
+        {
+            yield put({type: actionUtils.getActionType(actionTypes.OPEN_COMPANYA_DIALOG), payload: result});  
+           
+        }
+        else
+        {
+            if (!state.payload.isSearch) {
+                yield put({ type: actionUtils.getActionType(actionTypes.COMPANYA_GET_LIST), payload: result });
+            } else {
+                yield put({ type: actionUtils.getActionType(actionTypes.COMPANYA_SERACH_COMPLETE), payload: result });
+            }
+    
+        }
+ 
+    } else {
+        notification.error({
+            message: '甲方列表获取失败!',
+            description: result.msg,
+            duration: 3
+        });
+    }
+
+}
+
+
 
 // //获取用户职级列表
 // export function* getUserPrivListAsync() {

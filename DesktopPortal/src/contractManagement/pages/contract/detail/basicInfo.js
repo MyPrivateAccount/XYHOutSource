@@ -71,12 +71,12 @@ class BasicInfo extends Component {
                         </Col>
                     </Row>
                     <Row className='viewRow'>
-                        <Col span={12}>合同编号:{contractId}</Col>
+                        <Col span={12}>合同编号:{basicInfo.num}</Col>
                         
                     </Row>
                     <Row className='viewRow'>
                         <Col span={12}>合同类型:{this.getTextByCode(this.props.basicData.contractCategories, basicInfo.type) }</Col>
-                        <Col span={12}>申请人:{basicInfo.createUser}</Col>
+                        <Col span={12}>申请人:{basicInfo.ext1}</Col>
                     </Row>
                     <Row className='viewRow'>
                         <Col span={12}>申请时间:{basicInfo.createTime}</Col>
@@ -91,6 +91,7 @@ class BasicInfo extends Component {
                         <Col span={12}>项目负责人:{basicInfo.proprincipalPepole}</Col>
                     </Row>
                     <Row className='viewRow'>
+                        {/* //甲方类型:{this.getTextByCode(this.props.basicData.firstPartyCatogories, basicInfo.companyAT)}</Col> */}
                         <Col span={12}>甲方类型:{this.getTextByCode(this.props.basicData.firstPartyCatogories, basicInfo.companyAT)}</Col>
                         <Col span={12}>甲方公司全称:{basicInfo.companyA}</Col>
                     </Row>

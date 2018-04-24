@@ -63,7 +63,7 @@ namespace XYHContractPlugin.Models
         public int? Count { get; set; }
         public bool ReturnOrigin { get; set; } 
 
-        [Key]
+        //[Key]
         [MaxLength(64)]
         public string Num { get; set; }
         public bool? IsFollow { get; set; }

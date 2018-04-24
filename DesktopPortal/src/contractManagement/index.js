@@ -16,7 +16,7 @@ sagaMiddleware.run(rootSaga);
 const {Header, Sider, Content} = Layout;
 const menuDefine = [
     {menuID: "menu_index", displayName: "合同信息", menuIcon: 'contacts'},
-    {menuID: "menu_partA", displayName: "甲方管理", menuIcon: 'menu_partA'},
+    {menuID: "menu_partA", displayName: "甲方管理", menuIcon: 'appstore-o', requirePermission:['COMPANYA_MANAGE']},
     //{menuID: "menu_renew", displayName: "合同续签", menuIcon: 'contacts'},
 
     //{ menuID: "menu_analysis", displayName: "客户业态分析", menuIcon: 'pie-chart' }//租壹屋
@@ -178,7 +178,20 @@ class ContractManagementIndex extends Component {
         }
         return org;
     }
-
+    hasPermission(buttonInfo) {
+        let hasPermission = false;
+        if (this.props.judgePermissions && buttonInfo.requirePermission) {
+            for (let i = 0; i < buttonInfo.requirePermission.length; i++) {
+                if (this.props.judgePermissions.includes(buttonInfo.requirePermission[i])) {
+                    hasPermission = true;
+                    break;
+                }
+            }
+        } else {
+            hasPermission = true;
+        }
+        return hasPermission;
+    }
     render() {
         let navigator = this.props.navigator;
         let activeOrg = this.props.activeOrg;
@@ -206,11 +219,12 @@ class ContractManagementIndex extends Component {
                             : null
                         }
                         {menuDefine.map((menu, i) =>
-
+                            this.hasPermission(menu) ?
                             <Menu.Item key={menu.menuID} style={{borderBottom: menu.menuID === "menu_invalid" ? '1px solid #fff' : 'none'}}>
                                 <Icon type={menu.menuIcon} />
                                 <span>{menu.displayName}</span>
-                            </Menu.Item>
+                            </Menu.Item> 
+                            :null
                         )}
                     </Menu>
 

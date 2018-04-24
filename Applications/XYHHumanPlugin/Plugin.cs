@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using XYHHumanPlugin.Models;
 using XYHHumanPlugin.Stores;
 using XYHHumanPlugin.Managers;
-using ApplicationCore.Managers;
 
 namespace XYHHumanPlugin
 {
@@ -44,7 +43,6 @@ namespace XYHHumanPlugin
             context.Services.AddDbContext<HumanDbContext>(options => options.UseMySql(context.ConnectionString), ServiceLifetime.Scoped);
             context.Services.AddScoped<IHumanManageStore, HumanManageStore>();
             context.Services.AddScoped<HumanManager>();
-            context.Services.AddScoped<PermissionExpansionManager>();
 
             return base.Init(context);
         }

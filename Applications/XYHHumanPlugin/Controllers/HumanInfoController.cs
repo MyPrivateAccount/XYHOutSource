@@ -29,10 +29,10 @@ namespace XYHHumanPlugin.Controllers
         private readonly ILogger Logger = LoggerManager.GetLogger("XYHHumaninfo");
         private readonly HumanManager _humanManage;
         private readonly RestClient _restClient;
-        private static string _lastDate;
-        private static int  _lastNumber;
+        private string _lastDate;
+        private int  _lastNumber;
 
-        public HumanInfoController(HumanManager human, RestClient rsc)
+        HumanInfoController(HumanManager human, RestClient rsc)
         {
             _humanManage = human;
             _lastNumber = 0;

@@ -10,7 +10,7 @@ const initState = {
         baseInfo:{},
         attachInfo:{},
         additionalInfo:{},
-        modifyInfo:{},
+        modifyInfo:null,
         complementInfos:{},//补充协议
         followHistory:[],
         discard:false,
@@ -39,6 +39,8 @@ const initState = {
     modifyHistoryVisible:false,
     followHistoryVisible:false,
     isBeginExportAllData: false,
+    allContractData: {},//临时数据供合同对话框使用
+
 }
 
 let reducerMap = {};
@@ -67,7 +69,8 @@ reducerMap[actionTypes.OPEN_RECORD] = function(state, action){
         },
         //contractAttachInfo:{},
         discard:false,
-        complementInfo:{},//补充协议
+        complementInfos:{},//补充协议
+        followHistory:[],//补充协议
         annexInfo:{},
         attachInfo:{},
 
@@ -191,18 +194,34 @@ reducerMap[actionTypes.GOTO_THIS_CONTRACT_FINISH] = (state, action) => {
     return newState;
 }
 
-reducerMap[actionTypes.OPEN_CONTRACT_CHOOSE] = (state, action) =>{
-    let newState = Object.assign({}, state, {contractChooseVisible:true , curFollowContract: {}});
-    return newState;
+// reducerMap[actionTypes.OPEN_CONTRACT_CHOOSE] = (state, action) =>{
+//     let newState = Object.assign({}, state, {contractChooseVisible:true , curFollowContract: {}});
+//     return newState;
+// }
+
+// reducerMap[actionTypes.CLOSE_CONTRACT_CHOOSE] = (state, action) =>{
+//     let curFollowContract = {}
+//     if(action.payload){
+//         curFollowContract = action.payload.record
+//     }
+//     let newState = Object.assign({}, state, {contractChooseVisible:false, curFollowContract: curFollowContract});
+//     return newState;
+// }
+
+reducerMap[actionTypes.OPEN_CONTRACT_CHOOSE] = function(state,action){
+    let allContractData = {};
+    if(action.payload)
+    {
+        allContractData = action.payload;
+        // if(allCompanyAData === null || allCompanyAData.length === 0){
+        //     return state;
+        // }
+    }
+    return Object.assign({}, state, { contractChooseVisible: true, allContractData:allContractData});
 }
 
-reducerMap[actionTypes.CLOSE_CONTRACT_CHOOSE] = (state, action) =>{
-    let curFollowContract = {}
-    if(action.payload){
-        curFollowContract = action.payload.record
-    }
-    let newState = Object.assign({}, state, {contractChooseVisible:false, curFollowContract: curFollowContract});
-    return newState;
+reducerMap[actionTypes.CLOSE_CONTRACT_CHOOSE] = function(state,action){
+    return Object.assign({}, state, { contractChooseVisible: false, allContractData:{} });
 }
 
 //图片信息编辑  //此时的情况是应该已经拿到了当前的合同id

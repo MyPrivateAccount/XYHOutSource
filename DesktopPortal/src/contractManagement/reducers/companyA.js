@@ -6,7 +6,10 @@ const initState = {
     operInfo: { operType: '' },
     companyAList: [],
     activeCompanyA: {},
-    companySearchResult: []//用户查询结果
+    companySearchResult: [],//查询结果
+
+    allCompanyAData:[],
+    isShowCompanyADialog: false,
 };
 let reducerMap = {};
 
@@ -44,5 +47,22 @@ reducerMap[actionTypes.COMPANYA_SERACH_COMPLETE] = function (state, action) {
 //设置遮罩层
 reducerMap[actionTypes.SET_SEARCH_LOADING] = function (state, action) {
     return Object.assign({}, state, { showLoading: action.payload });
+}
+
+
+reducerMap[actionTypes.OPEN_COMPANYA_DIALOG] = function(state,action){
+    let allCompanyAData = {};
+    if(action.payload)
+    {
+        allCompanyAData = action.payload;
+        // if(allCompanyAData === null || allCompanyAData.length === 0){
+        //     return state;
+        // }
+    }
+    return Object.assign({}, state, { isShowCompanyADialog: true, allCompanyAData: allCompanyAData });
+}
+
+reducerMap[actionTypes.CLOSE_COMPANYA_DIALOG] = function(state,action){
+    return Object.assign({}, state, { isShowCompanyADialog: false });
 }
 export default handleActions(reducerMap, initState)

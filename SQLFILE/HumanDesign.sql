@@ -17,12 +17,11 @@ CREATE TABLE `XYH_HU_HUMANMANAGE` (
   `Contract` varchar(127) DEFAULT '',/*合同上传内容个数--外链*/
   `CreateTime` datetime DEFAULT NULL,/*创建时间*/
   `EntryTime` datetime DEFAULT NULL,/*入职时间*/
-  `OrgDepartment` datetime DEFAULT NULL,/*所属部门*/
   `BecomeTime` datetime DEFAULT NULL,/*转正时间*/
   `LeaveTime` datetime DEFAULT NULL,/*离开时间*/
   `IsSocialInsurance` BOOLEAN DEFAULT FALSE,/*是否参加社保*/
   `SocialInsuranceInfo` varchar(127) DEFAULT '',/*社保具体信息*/
-  `BasicSalary` int(11) DEFAULT 0,/*基本工资*/
+  `BaseSalary` int(11) DEFAULT 0,/*基本工资*/
   `Subsidy`int(11) DEFAULT 0,/*岗位补贴*/
   `ClothesBack` int(11) DEFAULT 0,/*工装扣款*/
   `AdministrativeBack` int(11) DEFAULT 0,/*行政扣款*/

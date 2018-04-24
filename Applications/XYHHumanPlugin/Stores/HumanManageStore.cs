@@ -73,11 +73,11 @@ namespace XYHHumanPlugin.Stores
                 annexinfo.ID = Guid.NewGuid().ToString();
             }
 
-            Context.AnnexInfos.Add(annexinfo);
+            Context.Add(annexinfo);
             return Context.SaveChangesAsync(cancellationToken);
         }
 
-        public Task CreateAsync(FileInfo fileinfo, string tt, CancellationToken cancellationToken = default(CancellationToken))
+        public Task CreateAsync(FileInfo fileinfo, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (fileinfo == null)
             {

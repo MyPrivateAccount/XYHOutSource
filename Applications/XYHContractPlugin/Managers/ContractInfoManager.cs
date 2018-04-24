@@ -30,19 +30,22 @@ namespace XYHContractPlugin.Managers
             IContractInfoStore contractStore,
             IMapper mapper,
             IOrganizationExpansionStore organizationExpansionStore,
-            PermissionExpansionManager permissionExpansionManager
+            PermissionExpansionManager permissionExpansionManager,
+            UserManager userManager
             )
         {
             Store = contractStore ?? throw new ArgumentNullException(nameof(contractStore));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _iorganizationExpansionStore = organizationExpansionStore ?? throw new ArgumentNullException(nameof(organizationExpansionStore));
             _permissionExpansionManager = permissionExpansionManager ?? throw new ArgumentNullException(nameof(permissionExpansionManager));
+            _curUserManager = userManager;
         }
         protected IContractInfoStore Store { get; }
         protected IMapper _mapper { get; }
         protected IOrganizationExpansionStore _iorganizationExpansionStore { get; }
 
         protected PermissionExpansionManager _permissionExpansionManager { get; }
+        private UserManager _curUserManager { get; }
         public virtual async Task<ContractInfoResponse> CreateAsync(UserInfo userinfo, ContractInfoRequest buildingBaseInfoRequest, string modifyid, string checkaction, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (buildingBaseInfoRequest == null)
@@ -266,7 +269,8 @@ namespace XYHContractPlugin.Managers
             {
                 if(temp != "" && temp.Contains(prevTemp))
                 {
-                    contractNum = string.Format("XYH{0}", int.Parse(temp.Substring(3)) + 1);
+                    string nowTemp = string.Format("{0:d3}", int.Parse(temp.Substring(temp.Length - 3, 3)) + 1);
+                    contractNum = string.Format("XYH{0}{1}", DateTime.Now.ToString("yyyyMMdd"), nowTemp);
                 }
                 else
                 {
@@ -426,6 +430,12 @@ namespace XYHContractPlugin.Managers
             }
 
             var modifyinfo = await Store.GetListModifyAsync(a => a.Where(b => b.ContractID == id));
+            foreach(var item in modifyinfo)
+            { 
+
+                var userInfo = await _curUserManager.GetUserAsync(item.ModifyPepole);
+                item.ModifyPepole = userInfo.UserName;
+             }
             returninfo.Modifyinfo = _mapper.Map<List<ContractModifyResponse>>(modifyinfo);
             
             return returninfo;
@@ -507,7 +517,7 @@ namespace XYHContractPlugin.Managers
             }
             List<ContractInfoResponse> infos = new List<ContractInfoResponse>();
             infos.Insert(0, _mapper.Map<ContractInfoResponse>(contractinfo));
-            while (contractinfo.IsFollow == true)
+            while (contractinfo.IsFollow == true && !string.IsNullOrEmpty(contractinfo.FollowId))
             {
                 string id = contractinfo.FollowId;
                 contractinfo = await Store.GetAsync(a => a.Where(b => b.ID == id), cancellationToken);

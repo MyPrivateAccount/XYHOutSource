@@ -9,7 +9,7 @@ import '../edit/contract.less';
 import BasicInfo from './basicInfo';
 //import AttachEdit from './attachEdit';
 import AttachInfo from './attachInfo';
-
+import ComplementInfo from './complementInfo';
 const { Header, Sider, Content } = Layout;
 class ContractInfo extends Component{
     componentWillMount(){
@@ -25,8 +25,7 @@ class ContractInfo extends Component{
     }
 
     render(){
-        let basicOperType = this.props.operInfo.basicOperType;
-        let attachPicOperType = this.props.operInfo.attachPicOperType;
+
         return(
             <div className="relative">
                 <Layout>
@@ -64,6 +63,14 @@ class ContractInfo extends Component{
                             }
 
                         </Row>
+                        <Row id="additionalInfo">
+                            {
+                                
+                                //<Col span={24}>{basicOperType === 'view' ? <BasicInfo /> : ((attachPicOperType === "add" || additionOperType === "edit") ? null : <BasicEdit />)}</Col>
+                                <Col span={24}><ComplementInfo /></Col>
+                            }
+
+                        </Row>
                         <Row id="attchInfo">
                             {
                                 
@@ -72,7 +79,7 @@ class ContractInfo extends Component{
                             }
 
                         </Row>
-                        <div>
+                        {/* <div>
                             <BackTop visibilityHeight={400} />
                         </div>
                         <Row type="flex" justify="space-between">
@@ -84,7 +91,7 @@ class ContractInfo extends Component{
                                         onClick={this.handleOk} loading={this.props.submitLoading}>提交</Button>
                                 }
                             </Col>
-                        </Row>
+                        </Row> */}
                     </Content>
                 </Layout>
             </div>

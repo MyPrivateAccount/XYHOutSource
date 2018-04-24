@@ -104,6 +104,7 @@ class AuditRecordItem extends Component {
     }
 
     handleAuditClick = (auditInfo) => {
+        console.log("auditInfo:", auditInfo);
         if (!auditType[auditInfo.contentType]) {
             notification.error({
                 description: '暂不支持此种类型的审核!',
