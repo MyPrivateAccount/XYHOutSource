@@ -57,9 +57,9 @@ class CompanyAChoose extends Component{
         e.preventDefault();
         this.props.dispatch(closeCompanyADialog({}));
      
-        if(this.props.callback){
+        if(this.props.companyADialogCallback){
     
-            this.props.callback(this.getCurChoose(true));
+            this.props.companyADialogCallback(this.getCurChoose(true));
         }
         //this.props.dispatch(setLoadingVisible(true));
         
@@ -101,9 +101,9 @@ class CompanyAChoose extends Component{
         this.setState({ condition: condition });
  
         this.props.dispatch(closeCompanyADialog());
-        if(this.props.callback){
+        if(this.props.companyADialogCallback){
     
-            this.props.callback(this.getCurChoose(false));
+            this.props.companyADialogCallback(this.getCurChoose(false));
         }
     }
     getTableColumns = () =>{
@@ -175,7 +175,7 @@ class CompanyAChoose extends Component{
             }
         };
         return(
-            this.props.isShowCompanyADialog &&
+          
              <Modal 
                 title="甲方选择" style={{ top: 20 }} confirmLoading={this.props.showLoading} maskClosable={false} visible={this.props.isShowCompanyADialog} 
                 onCancel={this.handleCancel}

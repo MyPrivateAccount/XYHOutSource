@@ -1,19 +1,21 @@
 import {connect} from 'react-redux';
 //import {closeAdjustCustomer, getUserByOrg, adjustCustomer, setLoadingVisible} from '../../actions/actionCreator';
-import { getContractDetail, searchStart, saveSearchCondition, setLoadingVisible,closeContractChoose,openAttachMent, openContractRecord} from '../../actions/actionCreator';
+import {  searchStart, saveSearchCondition, setLoadingVisible,closeContractChoose,openAttachMent, openContractRecord} from '../../actions/actionCreator';
 import React, {Component} from 'react';
-import {Row, Col, Modal, Select, TreeSelect, Form, Table,Button} from 'antd';
-import SearchBox from '../searchBox';
-import moment from 'moment';
+import {Row, Col, Modal, Select, TreeSelect, Form, Table,Button, Layout, Spin, Input} from 'antd';
 
+import moment from 'moment';
+import SearchCondition from '../../constants/searchCondition';
 const Option = Select.Option;
 const FormItem = Form.Item;
 
 class ContractChoose extends Component{
-    lastSearchInfo = {};
+
     componentWillMount(){
-        //这个地方需要对默认搜索进行处理
-        this.lastSearchInfo = this.props.searchInfo;
+        if(this.props.isShowCompanyADialog)
+        {
+            this.handleSearch();
+        }
     }
     state = {
         pagination: {
@@ -23,81 +25,71 @@ class ContractChoose extends Component{
         },
         condition: {
             keyWord: '',
-            checkStatu: null,//审核状态
-            //organizationName: [],//
-            createDateStart: null,//录入时间
-            createDateEnd: null,
-            //IsExpire:false,
-            discard:0,
-            follow:0,
             orderRule: 0,
             pageIndex: 0,
-            pageSize: 5
+            pageSize: 5,
+            type:'dialog',
         },
         checkList: [],
         curSelectRecord:{},
         curSelectIndex:null
     }
+    getCurChoose = (isConfirm) =>{
+        return  isConfirm ? this.state.curSelectRecord : null;
+    }
     handleOk = (e) => {
         e.preventDefault();
-        this.props.dispatch(closeContractChoose({record: this.state.checkList[0]}));
-        this.props.dispatch(setLoadingVisible(true));
+        this.props.dispatch(closeContractChoose({}));
+     
+        if(this.props.companyADialogCallback){
+    
+            this.props.companyADialogCallback(this.getCurChoose(true));
+        }
+        //this.props.dispatch(setLoadingVisible(true));
         
         //this.props.dispatch(adjustCustomer(requestInfo));
     }
     componentWillReceiveProps(newProps, prevProps) {
-        //console.log("newProps.searchInfo.searchResul", newProps.searchInfo.searchResult);
-        let {pageIndex, pageSize, totalCount} = newProps.searchInfo.searchResult;
-        if (newProps.searchInfo.searchResult && pageIndex) {
-            this.setState({pagination: {current: pageIndex, pageSize: 5, total: totalCount}});
-        }
+
+        this.setState({ dataLoading: false });
+        let paginationInfo = {
+            pageSize: newProps.allContractData.pageSize,
+            current: newProps.allContractData.pageIndex,
+            total: newProps.allContractData.totalCount
+        };
+        console.log("分页信息：", paginationInfo);
+        this.setState({ pagination: paginationInfo });
 
     }
-        //searchbox组件render前的回调
-    searchBoxWillMount = (searchMethod) => {
-        if (searchMethod) {
-            //setState由于是异步函数因此当前设置的值未必可以马上生效故而后面的回调函数可以在设置成功后进行的操作
-            this.setState({searchHandleMethod: searchMethod}, () => {this.handleSearch();});
-        }
+    handleSearch = (e) => {
+        SearchCondition.contractSearchCondition = this.state.condition;
+        SearchCondition.contractSearchCondition.pageIndex = 0;
+        SearchCondition.contractSearchCondition.pageSize = 5;
+        console.log("查询条件", SearchCondition);
+        this.setState({ dataLoading: true });
+        this.props.dispatch(searchStart(SearchCondition.contractSearchCondition));
     }
-    //查询处理
-    handleSearch = () => {
-        let searchMethod = this.state.searchHandleMethod;
-        if (searchMethod) {
-            searchMethod();
-        }
-    }
-   
+
+    handleTableChange = (pagination, filters, sorter) => {
+        SearchCondition.contractSearchCondition.pageIndex = (pagination.current - 1);
+        SearchCondition.contractSearchCondition.pageSize = pagination.pageSize;
+        console.log("table改变，", pagination);
+        this.props.dispatch(searchStart(SearchCondition.contractSearchCondition));
+    };
+    
+
     handleCancel = () => {
+        this.setState({curSelectRecord: {}});
 
-        //this.props.dispatch(closeAdjustCustomer());
-        let initState = {
-            
-                pagination: {
-                    pageSize: 5,
-                    current: 0,
-                    total: 0
-                },
-                condition: {
-                    keyWord: '',
-                    checkStatu: null,//审核状态
-                    //organizationName: [],//
-                    createDateStart: null,//录入时间
-                    createDateEnd: null,
-                    //IsExpire:false,
-                    discard:0,
-                    follow:0,
-                    orderRule: 0,
-                    pageIndex: 0,
-                    pageSize: 5
-                },
-                checkList: [],
-                curSelectRecord:{},
-                curSelectIndex:null
-            
-        }
-        this.setState({pagination:initState.pagination, condition:initState.condition, curSelectRecord:{}, curSelectIndex:null});
+        let condition = { ...this.state.condition };
+        condition.keyWord = '';
+        this.setState({ condition: condition });
+ 
         this.props.dispatch(closeContractChoose());
+        if(this.props.handleChooseContract){
+    
+            this.props.handleChooseContract(this.getCurChoose(false));
+        }
     }
     getTableColumns = () =>{
         let columns = [
@@ -165,6 +157,12 @@ class ContractChoose extends Component{
             }
         }
     }
+    handleNameChange = (e) => {
+        //console.log("输入内容：", e.target.value);
+        let condition = { ...this.state.condition };
+        condition.keyWord = e.target.value;
+        this.setState({ condition: condition });
+    }
     render(){
         let dataSource = this.props.searchInfo.searchResult.extension ;
         console.log("contractChooseVisible:", this.props.contractChooseVisible);
@@ -176,19 +174,52 @@ class ContractChoose extends Component{
             }
         };
         return(
+
             <Modal 
-                title="合同选择" style={{ top: 20 }} confirmLoading={this.props.showLoading} className='contractChoose' maskClosable={false} visible={this.props.contractChooseVisible} 
-                onCancel={this.handleCancel}
-                footer={[
-                    <Button key="back" type="default" size="large" onClick={this.handleCancel}>取消</Button>,
-                    <Button key="submit" type="primary" size="large" loading={this.state.loading} onClick={this.handleOk}>
-                        确定
-                    </Button>,
-                ]}
-            >
-                <SearchBox condition={this.state.condition} willMountCallback={this.searchBoxWillMount}/>
-                <Table rowKey={record => record.uid} columns={this.getTableColumns()} rowSelection={rowSelection} pagination={this.state.pagination} onChange={this.handleChangePage} dataSource={dataSource}  onRowClick={this.handleRowClick} />  
-            </Modal>
+            title="合同选择" style={{ top: 20 }} confirmLoading={this.props.showLoading} maskClosable={false} visible={this.props.contractChooseVisible} 
+            onCancel={this.handleCancel}
+            footer={[
+                <Button key="back" type="default" size="large" onClick={this.handleCancel}>取消</Button>,
+                <Button key="submit" type="primary" size="large" loading={this.state.loading} onClick={this.handleOk}>
+                    确定
+                </Button>,
+            ]}>
+            <Layout>
+                {/* <Content >
+                        <Row>
+                           <Col style={{ margin: '7px 5px'}}>  */}
+                                <div className="searchBox">
+                                    <Row >
+                                        <Col span={12}>
+                                            <Input value={this.state.condition.keyWord} style={{ width: '100%', verticalAlign: 'left',  }} placeholder={"请输入合同名称或者编号"} onPressEnter={this.handleSearch} onChange={this.handleNameChange}  />
+                                            <Button style={{position:'absolute', marginleft:'2px'}} type="primary" icon="search" onClick={this.handleSearch}>查询</Button>
+                                         </Col>
+                                    
+                                    </Row>
+                                </div>
+                            {/* </Col>
+                        </Row>
+                </Content> */}
+                
+                <Spin spinning={this.state.dataLoading}>
+                    {<Table rowKey={record => record.id} pagination={this.state.pagination} rowSelection={rowSelection}  columns={this.getTableColumns()} dataSource={this.props.allContractData.extension} onChange={this.handleTableChange} onRowClick={this.handleRowClick}/>}
+                </Spin>
+            </Layout>
+        </Modal>
+
+            // <Modal 
+            //     title="合同选择" style={{ top: 20 }} confirmLoading={this.props.showLoading} className='contractChoose' maskClosable={false} visible={this.props.contractChooseVisible} 
+            //     onCancel={this.handleCancel}
+            //     footer={[
+            //         <Button key="back" type="default" size="large" onClick={this.handleCancel}>取消</Button>,
+            //         <Button key="submit" type="primary" size="large" loading={this.state.loading} onClick={this.handleOk}>
+            //             确定
+            //         </Button>,
+            //     ]}
+            // >
+            //     <SearchBox condition={this.state.condition} willMountCallback={this.searchBoxWillMount}/>
+            //     <Table rowKey={record => record.uid} columns={this.getTableColumns()} rowSelection={rowSelection} pagination={this.state.pagination} onChange={this.handleChangePage} dataSource={dataSource}  onRowClick={this.handleRowClick} />  
+            // </Modal>
         )
     }
 }
@@ -197,9 +228,8 @@ function mapStateToProps(state){
     return {
         searchInfo: state.search,
         showLoading: state.search.showLoading,
-        showContractShow:state.search.showContractShow,
         contractChooseVisible: state.contractData.contractChooseVisible,
-        
+        allContractData: state.contractData.allContractData,
     };
 }
 

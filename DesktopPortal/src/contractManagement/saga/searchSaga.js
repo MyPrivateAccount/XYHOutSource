@@ -32,11 +32,29 @@ export function* getContractListAsync(state) {
         console.log(`url:${url},body:${JSON.stringify(state.payload)},result:${JSON.stringify(res)},newBody:${JSON.stringify(newBody)}`);
        getApiResult(res, result);
        if (result.isOk) {
-       if (res.data.validityContractCount) {
-            result.msg = "合同查询成功！";
-            result.validityContractCount = res.data.validityContractCount;
-       }
-        yield put({ type: actionUtils.getActionType(actionTypes.SEARCH_COMPLETE), payload: result });
+            if (res.data.validityContractCount) {
+                    result.msg = "合同查询成功！";
+                    result.validityContractCount = res.data.validityContractCount;
+            }
+            if(state.payload.type === 'dialog'){
+            
+                // if(result.extension || result.extension.length === 0)
+                // {
+                //     notification.error({
+                //         message: '没有甲方信息，请先在甲方管理中设置',
+                //         description: result.msg,
+                //         duration: 3
+                //     });
+                // }
+          
+                yield put({type: actionUtils.getActionType(actionTypes.OPEN_CONTRACT_CHOOSE), payload: result});
+                
+               
+            }
+            else{
+                yield put({ type: actionUtils.getActionType(actionTypes.SEARCH_COMPLETE), payload: result });
+            }
+            
      }
         yield put({ type: actionUtils.getActionType(actionTypes.SET_SEARCH_LOADING), payload: false });
     } catch (e) {

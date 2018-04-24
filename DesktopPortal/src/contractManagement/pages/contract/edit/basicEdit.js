@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { getDicParList, saveContractBasic, viewContractBasic,basicLoadingStart, openContractChoose, companyListGet } from '../../../actions/actionCreator';
+import { searchStart, saveContractBasic, viewContractBasic,basicLoadingStart, openContractChoose, companyListGet } from '../../../actions/actionCreator';
 import React, { Component } from 'react';
 import { Icon, Input, InputNumber, Button, Checkbox, Row, Col, Form, DatePicker, Select, Cascader,Radio } from 'antd';
 import moment from 'moment';
@@ -18,6 +18,7 @@ class BasicEdit extends Component {
         departMentFullName:'',
         departmentFullId:'',
         curSetCompanyA: {},
+        curSetContract: {},
         isFollow: false,
     }
     handleCancel = () => {
@@ -92,10 +93,10 @@ class BasicEdit extends Component {
                     newBasicInfo.companyAId = this.state.curSetCompanyA.id;
                 }
                 console.log('this.state.curFollowContract:', this.state.curFollowContract);
-                if(this.props.curFollowContract)
+                if(this.props.curSetContract)
                 {
-                    newBasicInfo.follow = this.props.curFollowContract.name;
-                    newBasicInfo.followId = this.props.curFollowContract.id;
+                    newBasicInfo.follow = this.props.curSetContract.name;
+                    newBasicInfo.followId = this.props.curSetContract.id;
                 }
                 delete newBasicInfo.startAndEndTime;
                 delete newBasicInfo.examineStatus;
@@ -106,7 +107,7 @@ class BasicEdit extends Component {
                     entity: newBasicInfo, 
         
                 }));
-                this.setState({curSetCompanyA: {}});
+                this.setState({curSetContract: {}, curSetCompanyA: {}});
             }
         });
     }
@@ -136,9 +137,34 @@ class BasicEdit extends Component {
         this.setState({departMentFullName: text.join('-'), organizateID: organizateID, departmentFullId:departmentFullId})
     }
     handleChooseCompanyA = () =>{
-        let condition = SearchCondition.companyASearchCondition;
-        condition.type = 'dialog';
+        let condition = {
+            
+            pageIndex: 0,
+            pageSize: 10,
+            keyWord: '',
+            searchType:'',
+            address:'',
+            type:'dialog',
+        
+        };
+
+        //console.log("handleChooseCompanyA:", condition);
         this.props.dispatch(companyListGet(condition));
+    }
+
+    handleChooseContract = () =>{
+        let condition = {
+            
+            keyWord: '',
+            orderRule: 0,
+            pageIndex: 0,
+            pageSize: 5,
+            type:'dialog',
+        
+        };
+
+        //console.log("handleChooseCompanyA:", condition);
+        this.props.dispatch(searchStart(condition));
     }
     displayRender = (label) => {
         return label[label.length - 1];
@@ -150,6 +176,17 @@ class BasicEdit extends Component {
             this.setState({curSetCompanyA: info});
             this.props.form.setFieldsValue({
                 companyA: info.name,
+              });
+        }
+    }
+
+    handleChooseContractCallback = (info) => {
+        console.log('handleChooseContractCallback:', info);
+        if(info !== null)
+        {
+            this.setState({curSetContract: info});
+            this.props.form.setFieldsValue({
+                follow: info.name,
               });
         }
     }
@@ -496,7 +533,7 @@ class BasicEdit extends Component {
                                     //rules:[{required:true, message:'续签合同'}]
                                     })(
                                         //<span>{'无'}</span>
-                                        <Input  onClick={this.handleRenewClick}></Input>
+                                        <Input  onClick={this.handleChooseContract}></Input>
                                     )
                                     
                             }
@@ -579,7 +616,7 @@ class BasicEdit extends Component {
             }
           </Form>
           <ContractChoose/> 
-          <CompanyAChoose callback={this.handleChooseCompanyACallback} />
+          <CompanyAChoose companyADialogCallback={this.handleChooseCompanyACallback} contractDialogCallback={this.handleChooseContractCallback} />
          </div>
         
                         
@@ -606,7 +643,8 @@ function mapStateToProps(state) {
         complementInfo: state.contractData.contractInfo.complementInfo,
         curFollowContract: state.contractData.curFollowContract,
         //setContractOrgTree: state.basicData.permissionOrgTree.setContractOrgTree,
-        setContractOrgTree:state.basicData.permissionOrgTree.searchOrgTree
+        setContractOrgTree:state.basicData.permissionOrgTree.searchOrgTree,
+        isShowCompanyADialog: state.companyAData.isShowCompanyADialog,
     }
   }
   
