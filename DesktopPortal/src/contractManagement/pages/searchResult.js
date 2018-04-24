@@ -10,6 +10,7 @@ const buttonDef = [
     { buttonID:"record", buttonName:"录入", icon:'', type:'primary', size:'small', requirePermission:['RECORD_FUC']},
     { buttonID:"uploadFile", buttonName:"附件上传", icon:'', type:'primary', size:'small',requirePermission:['UPLOAD_FILE']},
     { buttonID:"export", buttonName:"导出", icon:'', type:'primary', size:'small', requirePermission:['EXPORT_CONTRACT']},
+    { buttonID:"exportAll", buttonName:"全部导出", icon:'', type:'primary', size:'small', requirePermission:['EXPORT_ALL_CONTRACT']},
    
 ];
 class SearchResult extends Component {
@@ -684,17 +685,18 @@ class SearchResult extends Component {
                 return this.handleMultiExport;
             case 'uploadFile':
                 return this.onClickUploadFile;
-         
+            case 'exportAll':
+                return this.handleMultiExport1;
             default:
                 return null;
         }
     }
 
     getMainButton = (button, i) =>{
-        if(this.hasPermission(button)&& (button.buttonID !='uploadFile' )){
-            if(button.buttonID ==='export' && this.state.checkList.length === 0){
-                return null;
-            }
+        if(this.hasPermission(button)&& (button.buttonID !='uploadFile' ) && (button.buttonID != 'export')){
+            // if(button.buttonID ==='export' && this.state.checkList.length === 0){
+            //     return null;
+            // }
             return <Button key = {i} id= {button.buttonID} style={{marginBottom: '10px', marginRight: '10px', border:0}}  onClick = {this.handleClickFucButton(button.buttonID)} icon={button.icon} size={button.size} type={button.type}>{button.buttonName}</Button> ;
         }else{
             return null;

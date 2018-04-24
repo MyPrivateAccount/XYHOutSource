@@ -73,8 +73,7 @@ class BasicEdit extends Component {
                 if (basicOperType != 'add') {
                     newBasicInfo = Object.assign({}, this.props.basicInfo, values);
                 }
-                console.log('this.props.basicInfo:', this.props.basicInfo);
-                console.log('basicOperType:', basicOperType);
+      
                 newBasicInfo.isSubmmitShop = 1;
                 newBasicInfo.isSubmmitRelation = 1;
                 newBasicInfo.createDepartment = this.props.activeOrg.organizationName || "";
@@ -92,11 +91,11 @@ class BasicEdit extends Component {
                     newBasicInfo.companyAT = this.state.curSetCompanyA.type;
                     newBasicInfo.companyAId = this.state.curSetCompanyA.id;
                 }
-                
-                if(this.state.curFollowContract)
+                console.log('this.state.curFollowContract:', this.state.curFollowContract);
+                if(this.props.curFollowContract)
                 {
-                    newBasicInfo.follow = this.state.curFollowContract.name;
-                    newBasicInfo.followId = this.state.curFollowContract.id;
+                    newBasicInfo.follow = this.props.curFollowContract.name;
+                    newBasicInfo.followId = this.props.curFollowContract.id;
                 }
                 delete newBasicInfo.startAndEndTime;
                 delete newBasicInfo.examineStatus;
@@ -373,19 +372,19 @@ class BasicEdit extends Component {
                         }
                         </FormItem>
                     </Col>
+                    <Col span={12}>
+                        <FormItem {...formItemLayout} label={<span>项目地址</span>}>
+                            {getFieldDecorator('projectAddress', {
+                                        initialValue: basicInfo.projectAddress,
+                                        //rules:[{required:true, message:'续签合同'}]
+                                        })(
+                                            <Input placeholder="项目地址"  />
+                                        )
+                                        
+                                }
+                        </FormItem>
+                    </Col>
 
-                <Col span={12}>
-                    <FormItem {...formItemLayout} label={<span>佣金方案</span>}>
-                    {getFieldDecorator('commission', {
-                                initialValue: basicInfo.commission,
-                                rules:[{required:true, message:'请输入佣金方案!'}]
-                                })(
-                                    <Input placeholder="佣金方案" />
-                                )
-                                
-                        }
-                    </FormItem>
-                </Col>
 
             </Row>
 
@@ -452,35 +451,6 @@ class BasicEdit extends Component {
                         </FormItem>
                     </Col>
             </Row>
-
-            <Row type="flex" style={{marginTop:"25px"}}>
-                <Col span={12}>
-                        <FormItem {...formItemLayout} label={<span>项目地址</span>}>
-                            {getFieldDecorator('projectAddress', {
-                                        initialValue: basicInfo.projectAddress,
-                                        //rules:[{required:true, message:'续签合同'}]
-                                        })(
-                                            <Input placeholder="项目地址"  />
-                                        )
-                                        
-                                }
-                        </FormItem>
-                    </Col>
-                <Col span={12}>
-                        <FormItem {...formItemLayout} label={<span>备注</span>}>
-                            {getFieldDecorator('remark', {
-                                        initialValue: basicInfo.remark,
-                                        //rules:[{required:true, message:'续签合同'}]
-                                        })(
-                                            <TextArea placeholder="备注" autosize />
-                                        )
-                                        
-                                }
-                        </FormItem>
-                    </Col>
-   
-
-            </Row>
             <Row type="flex" style={{marginTop:"25px"}}>
                 {/* {
                     basicOperType === 'edit' ? 
@@ -537,6 +507,40 @@ class BasicEdit extends Component {
               }
   
             </Row>
+            <Row type="flex" style={{marginTop:"25px"}}>
+             <Col span={12}>
+                    <FormItem {...formItemLayout} label={<span>佣金方案</span>}>
+                    {getFieldDecorator('commission', {
+                                initialValue: basicInfo.commission,
+                                //rules:[{required:true, message:'请输入佣金方案!'}]
+                                })(
+                                    <Input type="textarea"  autosize={{ minRows: 4, maxRows: 6 }}  placeholder="佣金方案" />
+                                )
+                                
+                        }
+                    </FormItem>
+                </Col>
+ 
+   
+
+            </Row>
+            <Row type="flex" style={{marginTop:"25px"}}>
+
+                <Col span={12}>
+                        <FormItem {...formItemLayout} label={<span>备注</span>}>
+                            {getFieldDecorator('remark', {
+                                        initialValue: basicInfo.remark,
+                                        //rules:[{required:true, message:'续签合同'}]
+                                        })(
+                                            <Input type="textarea"  autosize={{ minRows: 4, maxRows: 6 }} placeholder="备注"  />
+                                        )
+                                        
+                                }
+                        </FormItem>
+                    </Col>
+   
+
+            </Row>
             {/* <Row type="flex" style={{marginTop:"25px"}}>
                 <Col span={12}>
                     <FormItem {...formItemLayout} label={<span>补充协议</span>}>
@@ -575,7 +579,7 @@ class BasicEdit extends Component {
             }
           </Form>
           <ContractChoose/> 
-          <CompanyAChoose callback={this.handleChooseCompanyACallback}/>
+          <CompanyAChoose callback={this.handleChooseCompanyACallback} />
          </div>
         
                         

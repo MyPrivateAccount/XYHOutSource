@@ -65,7 +65,7 @@ class CompanyAChoose extends Component{
         
         //this.props.dispatch(adjustCustomer(requestInfo));
     }
-    componentWillReceiveProps(newProps) {
+    componentWillReceiveProps(newProps, prevProps) {
         this.setState({ dataLoading: false });
         let paginationInfo = {
             pageSize: newProps.allCompanyAData.pageSize,
@@ -74,6 +74,7 @@ class CompanyAChoose extends Component{
         };
         console.log("分页信息：", paginationInfo);
         this.setState({ pagination: paginationInfo });
+
     }
     handleSearch = (e) => {
         SearchCondition.companyASearchCondition = this.state.condition;
@@ -94,6 +95,11 @@ class CompanyAChoose extends Component{
 
     handleCancel = () => {
         this.setState({curSelectRecord: {}});
+
+        let condition = { ...this.state.condition };
+        condition.keyWord = '';
+        this.setState({ condition: condition });
+ 
         this.props.dispatch(closeCompanyADialog());
         if(this.props.callback){
     
@@ -169,7 +175,8 @@ class CompanyAChoose extends Component{
             }
         };
         return(
-            <Modal 
+            this.props.isShowCompanyADialog &&
+             <Modal 
                 title="甲方选择" style={{ top: 20 }} confirmLoading={this.props.showLoading} maskClosable={false} visible={this.props.isShowCompanyADialog} 
                 onCancel={this.handleCancel}
                 footer={[

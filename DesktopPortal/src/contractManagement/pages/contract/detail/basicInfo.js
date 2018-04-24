@@ -92,7 +92,7 @@ class BasicInfo extends Component {
                     </Row>
                     <Row className='viewRow'>
                         {/* //甲方类型:{this.getTextByCode(this.props.basicData.firstPartyCatogories, basicInfo.companyAT)}</Col> */}
-                        <Col span={12}>项目地址:{basicInfo.projectAddress}</Col>
+                        <Col span={12}>甲方类型:{this.getTextByCode(this.props.basicData.firstPartyCatogories, basicInfo.companyAT)}</Col>
                         <Col span={12}>甲方公司全称:{basicInfo.companyA}</Col>
                     </Row>
                     <Row className='viewRow'>

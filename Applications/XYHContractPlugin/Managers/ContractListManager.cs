@@ -159,12 +159,15 @@ namespace XYHContractPlugin.Managers
             {
                 query = query.Where(x => x.EndTime < DateTime.Now);
             }
-            else if (condition?.CreateDateStart != null && condition?.CreateDateEnd != null)
+            if (condition?.CreateDateStart != null)
             {
      
-                query = query.Where(x => (x.CreateTime >= condition.CreateDateStart.Value && x.EndTime >=  x.CreateTime));
+                query = query.Where(x => (x.CreateTime >= condition.CreateDateStart.Value ));
             }
-
+            if(condition?.CreateDateEnd != null)
+            {
+                query = query.Where(x => ( x.EndTime >= x.CreateTime.Value));
+            }
             if (condition.Follow == 1)
             {
                 query = query.Where(x => x.IsFollow.Value);

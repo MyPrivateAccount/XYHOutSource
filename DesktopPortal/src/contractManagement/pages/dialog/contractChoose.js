@@ -4,7 +4,7 @@ import { getContractDetail, searchStart, saveSearchCondition, setLoadingVisible,
 import React, {Component} from 'react';
 import {Row, Col, Modal, Select, TreeSelect, Form, Table,Button} from 'antd';
 import SearchBox from '../searchBox';
-
+import moment from 'moment';
 
 const Option = Select.Option;
 const FormItem = Form.Item;
@@ -45,12 +45,13 @@ class ContractChoose extends Component{
         
         //this.props.dispatch(adjustCustomer(requestInfo));
     }
-    componentWillReceiveProps(newProps) {
+    componentWillReceiveProps(newProps, prevProps) {
         //console.log("newProps.searchInfo.searchResul", newProps.searchInfo.searchResult);
         let {pageIndex, pageSize, totalCount} = newProps.searchInfo.searchResult;
         if (newProps.searchInfo.searchResult && pageIndex) {
             this.setState({pagination: {current: pageIndex, pageSize: 5, total: totalCount}});
         }
+
     }
         //searchbox组件render前的回调
     searchBoxWillMount = (searchMethod) => {
@@ -103,8 +104,8 @@ class ContractChoose extends Component{
             {
                 title: '合同编号',
                 // width: 80,
-                dataIndex: 'id',
-                key: 'id',
+                dataIndex: 'num',
+                key: 'num',
 
             },
             {
@@ -113,6 +114,36 @@ class ContractChoose extends Component{
                 dataIndex: 'name',
                 key: 'name',
                 
+            },
+            {
+                title: '合同开始时间',
+                // width: 80,
+                dataIndex: 'startTime',
+                key: 'startTime',
+                render:  (text, record) => {
+        
+                    let newText = text;
+                    if (text) {
+                        newText = moment(text).format('YYYY-MM-DD');
+                    }
+                    
+                    return (<span>{newText}</span>);
+                }
+            },
+            {
+                title: '合同结束时间',
+                // width: 80,
+                dataIndex: 'endTime',
+                key: 'endTime',
+                render:  (text, record) => {
+        
+                    let newText = text;
+                    if (text) {
+                        newText = moment(text).format('YYYY-MM-DD');
+                    }
+                    
+                    return (<span>{newText}</span>);
+                }
             },
         ]
         return columns;

@@ -30,19 +30,22 @@ namespace XYHContractPlugin.Managers
             IContractInfoStore contractStore,
             IMapper mapper,
             IOrganizationExpansionStore organizationExpansionStore,
-            PermissionExpansionManager permissionExpansionManager
+            PermissionExpansionManager permissionExpansionManager,
+            UserManager userManager
             )
         {
             Store = contractStore ?? throw new ArgumentNullException(nameof(contractStore));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _iorganizationExpansionStore = organizationExpansionStore ?? throw new ArgumentNullException(nameof(organizationExpansionStore));
             _permissionExpansionManager = permissionExpansionManager ?? throw new ArgumentNullException(nameof(permissionExpansionManager));
+            _curUserManager = userManager;
         }
         protected IContractInfoStore Store { get; }
         protected IMapper _mapper { get; }
         protected IOrganizationExpansionStore _iorganizationExpansionStore { get; }
 
         protected PermissionExpansionManager _permissionExpansionManager { get; }
+        private UserManager _curUserManager { get; }
         public virtual async Task<ContractInfoResponse> CreateAsync(UserInfo userinfo, ContractInfoRequest buildingBaseInfoRequest, string modifyid, string checkaction, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (buildingBaseInfoRequest == null)
@@ -427,6 +430,12 @@ namespace XYHContractPlugin.Managers
             }
 
             var modifyinfo = await Store.GetListModifyAsync(a => a.Where(b => b.ContractID == id));
+            foreach(var item in modifyinfo)
+            { 
+
+                var userInfo = await _curUserManager.GetUserAsync(item.ModifyPepole);
+                item.ModifyPepole = userInfo.UserName;
+             }
             returninfo.Modifyinfo = _mapper.Map<List<ContractModifyResponse>>(modifyinfo);
             
             return returninfo;

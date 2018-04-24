@@ -53,6 +53,7 @@ namespace XYHContractPlugin
             context.Services.AddScoped<ExtraInfoDataManager>();
             context.Services.AddScoped<IExtraDataInfoStrore, ExtraDataInfoStore>();
             context.Services.AddScoped<PermissionExpansionManager>();
+            context.Services.AddScoped<UserManager>();
             context.Services.AddScoped<IOrganizationExpansionStore, OrganizationExpansionStore>();
             return base.Init(context);
         }
