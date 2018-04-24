@@ -71,7 +71,7 @@ class BasicInfo extends Component {
                         </Col>
                     </Row>
                     <Row className='viewRow'>
-                        <Col span={12}>合同编号:{contractId}</Col>
+                        <Col span={12}>合同编号:{basicInfo.num}</Col>
                         
                     </Row>
                     <Row className='viewRow'>

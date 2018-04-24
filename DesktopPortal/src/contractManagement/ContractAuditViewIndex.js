@@ -16,8 +16,9 @@ class ContractAuditViewIndex extends Component {
     componentWillMount() {
         //console.log("首次加载 buildID:", this.props.buildingID);
         const contentInfo = this.props.contentInfo;
-        if (contentInfo.contentType === "contract") {
-            this.props.dispatch(gotoThisContract({ id: contentInfo.contentID }));
+        if (contentInfo.contentType === "ContractCommit") {
+            let record = { id: contentInfo.contentID }
+            this.props.dispatch(gotoThisContract({record:record} ));
         }
     }
 

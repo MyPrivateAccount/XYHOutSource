@@ -19,12 +19,12 @@ class AuditContract extends Component {
 
 
     render() {
-        let HouseToolComponent = getToolComponent("contractInfo");
+        let ContractToolComponent = getToolComponent("contractInfo");
         let contentInfo = { contentID: this.props.activeAuditInfo.contentId, contentType: this.props.activeAuditInfo.contentType };
         return (
             <div>
                 <b>合同审核</b>
-                <HouseToolComponent dispatch={this.props.dispatch} contentInfo={contentInfo} />
+                <ContractToolComponent dispatch={this.props.dispatch} contentInfo={contentInfo} />
                 <AuditHistory />
                 {
                     this.props.activeAuditInfo.examineStatus === 1 ? <AuditForm /> : null

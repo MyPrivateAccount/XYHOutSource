@@ -10,7 +10,7 @@ const initState = {
         baseInfo:{},
         attachInfo:{},
         additionalInfo:{},
-        modifyInfo:{},
+        modifyInfo:null,
         complementInfos:{},//补充协议
         followHistory:[],
         discard:false,
