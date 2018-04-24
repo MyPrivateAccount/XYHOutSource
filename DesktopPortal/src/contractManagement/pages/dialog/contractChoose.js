@@ -40,10 +40,10 @@ class ContractChoose extends Component{
     handleOk = (e) => {
         e.preventDefault();
         this.props.dispatch(closeContractChoose({}));
-     
-        if(this.props.companyADialogCallback){
+        //console.log('this.props.contractDialogCallback:', this.props.contractDialogCallback);
+        if(this.props.contractDialogCallback){
     
-            this.props.companyADialogCallback(this.getCurChoose(true));
+            this.props.contractDialogCallback(this.getCurChoose(true));
         }
         //this.props.dispatch(setLoadingVisible(true));
         
@@ -88,7 +88,7 @@ class ContractChoose extends Component{
         this.props.dispatch(closeContractChoose());
         if(this.props.handleChooseContract){
     
-            this.props.handleChooseContract(this.getCurChoose(false));
+           // this.props.handleChooseContract(this.getCurChoose(false));
         }
     }
     getTableColumns = () =>{
@@ -165,12 +165,12 @@ class ContractChoose extends Component{
     }
     render(){
         let dataSource = this.props.searchInfo.searchResult.extension ;
-        console.log("contractChooseVisible:", this.props.contractChooseVisible);
+        //console.log("contractChooseVisible:", this.props.contractChooseVisible);
         const rowSelection = {
             type:"radio",
             onChange: (selectedRowKeys, selectedRows) => {
                 console.log("selectedRowKeys:", selectedRows);
-                this.setState({checkList: selectedRows});
+                this.setState({curSelectRecord: selectedRows[0]});
             }
         };
         return(

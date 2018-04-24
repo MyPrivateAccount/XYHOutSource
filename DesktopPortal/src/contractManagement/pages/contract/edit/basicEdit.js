@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import { searchStart, saveContractBasic, viewContractBasic,basicLoadingStart, openContractChoose, companyListGet } from '../../../actions/actionCreator';
 import React, { Component } from 'react';
-import { Icon, Input, InputNumber, Button, Checkbox, Row, Col, Form, DatePicker, Select, Cascader,Radio } from 'antd';
+import { Icon, Input, InputNumber, Button, Checkbox, Row, Col, Form, DatePicker, Select, Cascader,Radio, notification } from 'antd';
 import moment from 'moment';
 import { call } from 'redux-saga/effects';
 import ContractChoose from '../../dialog/contractChoose';
@@ -17,8 +17,8 @@ class BasicEdit extends Component {
         organizateID: '',
         departMentFullName:'',
         departmentFullId:'',
-        curSetCompanyA: {},
-        curSetContract: {},
+        curSetCompanyA: null,
+        curSetContract: null,
         isFollow: false,
     }
     handleCancel = () => {
@@ -92,11 +92,19 @@ class BasicEdit extends Component {
                     newBasicInfo.companyAT = this.state.curSetCompanyA.type;
                     newBasicInfo.companyAId = this.state.curSetCompanyA.id;
                 }
-                console.log('this.state.curFollowContract:', this.state.curFollowContract);
-                if(this.props.curSetContract)
+                console.log('this.state.curSetContract:', this.state.curSetContract);
+                if(this.state.curSetContract)
                 {
-                    newBasicInfo.follow = this.props.curSetContract.name;
-                    newBasicInfo.followId = this.props.curSetContract.id;
+                    newBasicInfo.follow = this.state.curSetContract.name;
+                    newBasicInfo.followId = this.state.curSetContract.id;
+                    
+                }else if(newBasicInfo.isFollow && this.state.curSetContract === null)
+                {
+                    notification.warning({
+                        message: '请选择续签合同!',
+                        duration: 3
+                    })
+                    return;
                 }
                 delete newBasicInfo.startAndEndTime;
                 delete newBasicInfo.examineStatus;
@@ -529,7 +537,7 @@ class BasicEdit extends Component {
                 <Col span={12}>
                     <FormItem {...formItemLayout} label={<span>续签合同</span>}>
                         {getFieldDecorator('follow', {
-                                    initialValue: curFollowContract.name !== undefined ? curFollowContract.name : basicInfo.follow,
+                                    initialValue:  basicInfo.follow,
                                     //rules:[{required:true, message:'续签合同'}]
                                     })(
                                         //<span>{'无'}</span>
@@ -615,8 +623,8 @@ class BasicEdit extends Component {
             
             }
           </Form>
-          <ContractChoose/> 
-          <CompanyAChoose companyADialogCallback={this.handleChooseCompanyACallback} contractDialogCallback={this.handleChooseContractCallback} />
+          <ContractChoose contractDialogCallback={this.handleChooseContractCallback}/> 
+          <CompanyAChoose companyADialogCallback={this.handleChooseCompanyACallback}  />
          </div>
         
                         

@@ -103,7 +103,7 @@ class CompanyAChoose extends Component{
         this.props.dispatch(closeCompanyADialog());
         if(this.props.companyADialogCallback){
     
-            this.props.companyADialogCallback(this.getCurChoose(false));
+            //this.props.companyADialogCallback(this.getCurChoose(false));
         }
     }
     getTableColumns = () =>{

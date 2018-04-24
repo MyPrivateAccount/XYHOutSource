@@ -84,7 +84,7 @@ CREATE TABLE `xyh_dt_contractinfo` (
   `Ext1` varchar(256) CHARACTER SET utf8mb4 DEFAULT NULL,
   `Ext2` varchar(256) CHARACTER SET utf8mb4 DEFAULT NULL,
   `IsFollow` bit(1) DEFAULT b'1',
-  `ProjectAddress` varchar(256) CHARACTER SET utf8mb4 NOT NULL,
+  `ProjectAddress` varchar(256) CHARACTER SET utf8mb4 DEFAULT NULL,
   `CompanyAId` varchar(127) CHARACTER SET utf8mb4 NOT NULL,
   `OrganizateFullId` varchar(512) CHARACTER SET utf8mb4 DEFAULT NULL,
   `Num` varchar(64) CHARACTER SET utf8mb4 NOT NULL,
