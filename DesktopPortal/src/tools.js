@@ -70,7 +70,7 @@ const tools = [
         icon: <Icon type="like-o" className="icon" />
     },
     {
-        id:'humanSystem',//人事系统
+        id:'HumanIndex',//人事系统
         mutipleInstance:false,
         component: ()=>createLoadableComponent(import('./humanSystem')),//() => createLoadableComponent(import('./personnelSystem')),
         cache: null,
