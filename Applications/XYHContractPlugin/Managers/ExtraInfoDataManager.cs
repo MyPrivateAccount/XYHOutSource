@@ -158,7 +158,7 @@ namespace XYHContractPlugin.Managers
 
             if (!string.IsNullOrEmpty(condition.Address))
             {
-                query = query.Where(x => x.Address == condition.Address);
+                query = query.Where(x => x.Address.Contains(condition.Address));
             }
             if (!string.IsNullOrEmpty(condition.SearchType) )
             {

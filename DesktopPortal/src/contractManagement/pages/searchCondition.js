@@ -9,7 +9,7 @@ import SearchBox from './searchBox';
 // const CheckboxGroup = Checkbox.Group;
 // const ButtonGroup = Button.Group;
 const Option = Select.Option;
-const checkStateDefine = [{value: '0', key: '未审核'}, {value: '1', key: '审核中'},{value: '2', key: '已审核'}];
+const checkStateDefine = [{value: '1', key: '审核中'},{value: '8', key: '已审核'}];
 let t = null;
 class SearchCondition extends Component {
     state = {
@@ -32,7 +32,8 @@ class SearchCondition extends Component {
         // secondAreaOption: [],
         // thirdAreaOption: [],
         selectedMenuKey: 'menu_index',
-        searchHandleMethod: null//searchbox的查询方法
+        searchHandleMethod: null,//searchbox的查询方法,
+        checkedList:null,
     }
     componentWillMount() {
 
@@ -130,6 +131,8 @@ class SearchCondition extends Component {
     }
 
     handleCheckChange = (e, typeq) =>{
+        //this.setState({checkedList:,});
+        console.log('handleCheckChange:', e.target);
         let condition = {...this.state.condition};
         e.map(value =>{
             if(typeq === "checkStatu"){
@@ -154,7 +157,7 @@ class SearchCondition extends Component {
         if(this.props.searchResult.validityContractCount){
             dataSourceTotal = this.props.searchResult.validityContractCount;
         }
-      
+       
 
         return (
             <div>
@@ -184,20 +187,20 @@ class SearchCondition extends Component {
                                     <Checkbox onChange={this.handleFollow}></Checkbox>
                             </Col>
                         </Row>
-                        {/*
+                        {
                         <Row className="normalInfo">
                              <Col span={24}>
                                 <label>审核状态：</label>
-                                <Checkbox.Group onChange={(e) => this.handleCheckChange(e, "checkStatu")} value={this.state.condition.checkStatu}>
+                                <Checkbox.Group   >
                                     {
                                         checkStateDefine.map(b =>
-                                            <Checkbox key={b.key} value={b.value}>{b.key}</Checkbox>
+                                            <Checkbox key={b.key} value={b.value} onChange={(e) => this.handleCheckChange(e, "checkStatu")}>{b.key}</Checkbox>
                                         )
                                     }
                                 </Checkbox.Group>
                             </Col>
                         </Row>
-                        */}
+                        }
                         {      
 
                             <Row className="normalInfo">
