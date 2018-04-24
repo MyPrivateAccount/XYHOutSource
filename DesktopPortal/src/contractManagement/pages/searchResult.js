@@ -639,7 +639,8 @@ class SearchResult extends Component {
     // }
 
     handleMultiExport = () =>{
-        this.props.dispatch(getAllExportData())
+        console.log('handleMultiExport');
+        this.props.dispatch(getAllExportData());
     }
     handleMultiExport1 = () =>{
         let header = [{v:"序号", position:'A1', key: 'num'}];
@@ -678,15 +679,16 @@ class SearchResult extends Component {
         this.props.dispatch(openComplement({record: record}));
      }
     handleClickFucButton = (buttonID) =>{
+        console.log('buttonID:', buttonID);
         switch(buttonID){
             case 'record':
                 return this.onClickRecord;
             case 'export':
-                return this.handleMultiExport;
+                return this.handleMultiExport1;
             case 'uploadFile':
                 return this.onClickUploadFile;
             case 'exportAll':
-                return this.handleMultiExport1;
+                return this.handleMultiExport;
             default:
                 return null;
         }
