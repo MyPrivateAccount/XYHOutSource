@@ -639,8 +639,10 @@ class SearchResult extends Component {
     // }
 
     handleMultiExport = () =>{
-        console.log('handleMultiExport');
-        this.props.dispatch(getAllExportData());
+        let condition = {...this.props.searchInfo.searchCondition};
+        condition.pageIndex = -1;
+  
+        this.props.dispatch(getAllExportData(condition));
     }
     handleMultiExport1 = () =>{
         let header = [{v:"序号", position:'A1', key: 'num'}];

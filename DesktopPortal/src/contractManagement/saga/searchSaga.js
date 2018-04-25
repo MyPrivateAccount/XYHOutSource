@@ -185,7 +185,7 @@ export function* getAllExportDataAsync(action){
     
     
     //let newBody = dealCondition(body);
-    let newBody = {"keyWord": "","pageIndex":-1,"pageSize":10};
+    let newBody = action.payload;
     try {
         let res = yield call(ApiClient.post, url, newBody);
         console.log(`查询所有合同url:${url},result:${JSON.stringify(res)},newBody:${JSON.stringify(newBody)}`);
