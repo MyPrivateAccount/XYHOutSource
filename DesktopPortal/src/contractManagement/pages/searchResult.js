@@ -32,6 +32,7 @@ class SearchResult extends Component {
         }
         if(newProps.isBeginExportAllData)
         {
+            console.log('newProps.isBeginExportAllData:', newProps.isBeginExportAllData);
             let allExportData = newProps.allExportData;
             this.handleExportAllData(allExportData);
         }
@@ -64,6 +65,7 @@ class SearchResult extends Component {
             }
         };
         XLSX.writeFile(wb, 'output.xlsx');
+        this.props.dispatch(endExportAllData());
     }
     hasPermission(buttonInfo) {
         let hasPermission = false;
@@ -641,7 +643,11 @@ class SearchResult extends Component {
     handleMultiExport = () =>{
         let condition = {...this.props.searchInfo.searchCondition};
         condition.pageIndex = -1;
-  
+        condition.keyWord = this.props.searchInfo.searchKeyWord;
+        if (this.props.searchInfo.activeOrg.id !== "0") {
+            condition.organizate = this.props.searchInfo.activeOrg.id;
+        }
+        console.log('handleMultiExport.....');
         this.props.dispatch(getAllExportData(condition));
     }
     handleMultiExport1 = () =>{
