@@ -10,7 +10,7 @@ const buttonDef = [
     { buttonID:"record", buttonName:"录入", icon:'', type:'primary', size:'small', requirePermission:['RECORD_FUC']},
     { buttonID:"uploadFile", buttonName:"附件上传", icon:'', type:'primary', size:'small',requirePermission:['UPLOAD_FILE']},
     { buttonID:"export", buttonName:"导出", icon:'', type:'primary', size:'small', requirePermission:['EXPORT_CONTRACT']},
-    { buttonID:"exportAll", buttonName:"全部导出", icon:'', type:'primary', size:'small', requirePermission:['EXPORT_ALL_CONTRACT']},
+    { buttonID:"exportAll", buttonName:"导出查询结果", icon:'', type:'primary', size:'small', requirePermission:['EXPORT_ALL_CONTRACT']},
    
 ];
 class SearchResult extends Component {
@@ -601,7 +601,7 @@ class SearchResult extends Component {
             ]
         };
         buttonDef.map((button, i) =>{
-            return this.hasPermission(button,i)&& button.buttonID != 'record' ? columns.children.push(this.getPermissonCol(button)) : null
+            return this.hasPermission(button,i)&& button.buttonID != 'record' && button.buttonID != 'exportAll' ? columns.children.push(this.getPermissonCol(button)) : null
         });
         //console.log('getOtherInfoColumns:', columns);
         return columns;

@@ -17,7 +17,7 @@ class SearchCondition extends Component {
         filterTags: [],
         condition: {
             keyWord: '',
-            checkStatu: null,//审核状态
+            checkStatu: 0,//审核状态
             //organizationName: [],//
             createDateStart: null,//录入时间
             createDateEnd: null,
@@ -144,7 +144,7 @@ class SearchCondition extends Component {
             this.setState({isNowCheck:false, isHasCheck:e.target.checked});
         }
         let condition = {...this.state.condition};
-        condition.checkStatu = e.target.checked ? type : null;
+        condition.checkStatu = e.target.checked ? type : 0;
         this.setState({condition:condition}, () =>{this.handleSearch()});
     }
     render() {

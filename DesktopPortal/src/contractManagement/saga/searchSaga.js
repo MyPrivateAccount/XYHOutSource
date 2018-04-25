@@ -184,8 +184,9 @@ export function* getAllExportDataAsync(action){
     let url = WebApiConfig.search.getContractList;
     
     
-    //let newBody = dealCondition(body);
-    let newBody = action.payload;
+    let body = action.payload;
+    let newBody = dealCondition(body);
+  
     try {
         let res = yield call(ApiClient.post, url, newBody);
         console.log(`查询所有合同url:${url},result:${JSON.stringify(res)},newBody:${JSON.stringify(newBody)}`);
