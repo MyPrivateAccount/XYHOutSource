@@ -261,7 +261,7 @@ function mapStateToProps(state, props) {
         showOrgSelect: state.search.showOrgSelect,
         orgInfo: state.basicData.orgInfo,
         permissionOrgTree: state.basicData.permissionOrgTree,
-     
+        judgePermissions: state.judgePermissions,
     }
 }
 export default withReducer(reducers, 'ContractManagementIndex', {mapExtraState: (state, rootState) => ({oidc: rootState.oidc,judgePermissions: rootState.app.judgePermissions})})(connect(mapStateToProps)(ContractManagementIndex));

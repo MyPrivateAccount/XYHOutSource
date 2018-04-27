@@ -36,8 +36,21 @@ class FollowHistory extends Component{
         this.props.dispatch(closeFollowHistoryDialog());
     }
 
-    
-
+    dateTimeRender = (text) => {
+        
+        let newText = text;
+        if (text) {
+            newText = moment(text).format('YYYY-MM-DD');
+        }
+        
+        return (<span>申请日期{newText}</span>);
+    }
+    projectNameRender = (text) =>{
+        return (<span>项目名称:{text}</span>);
+    }
+    numRender = (text) =>{
+        return (<span>合同编号:{text}</span>);
+    }
     render(){
         let contractInfo = (contractInfo || {});
         return(
@@ -48,7 +61,12 @@ class FollowHistory extends Component{
             <Timeline>
                 {
                     (this.props.followHistory || []).map((item, index) =>
-                        <Timeline.Item color={index == this.props.followHistory.length -1 ? 'red' : 'green'} key={item.id}>{item.name}</Timeline.Item>
+                        <Timeline.Item color={index == this.props.followHistory.length -1 ? 'red' : 'green'} key={item.id}>
+                            {item.name}
+                            <p>{this.numRender(item.num)}</p>
+                            <p>{this.dateTimeRender(item.createTime)}</p>
+                            <p>{this.projectNameRender(item.projectName)}</p>
+                        </Timeline.Item>
                     )
                 }
    
