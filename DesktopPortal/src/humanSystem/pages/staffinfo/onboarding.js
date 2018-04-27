@@ -1,15 +1,16 @@
 import React, {Component} from 'react';
 import {withReducer} from 'react-redux-dynamic-reducer';
-import {Form,Modal, Input,InputNumber,DatePicker,notification, Select, Icon,Upload, Button, Row, Col, Checkbox,TreeSelect, Tag, Spin} from 'antd'
+import {Form,Modal, Cascader,Input,InputNumber,DatePicker,notification, Select, Icon,Upload, Button, Row, Col, Checkbox,TreeSelect, Tag, Spin} from 'antd'
 import {connect} from 'react-redux';
 import reducers from '../../reducers';
 import moment from 'moment';
 import WebApiConfig from '../../constants/webapiConfig';
 import './staff.less';
-import { getworkNumbar, postHumanInfo} from '../../actions/actionCreator';
+import { getworkNumbar, postHumanInfo, getallOrgTree} from '../../actions/actionCreator';
 import { NewGuid } from '../../../utils/appUtils';
 import ApiClient from '../../../utils/apiClient';
 
+const Option = Select.Option;
 const FormItem = Form.Item;
 
 const formItemLayout = {
@@ -35,7 +36,7 @@ class OnBoarding extends Component {
 
     componentWillMount() {
         this.state.userinfo.id = NewGuid();
-        //this.props.dispatch(getworkNumbar());
+        //this.props.dispatch(getallOrgTree('each'));
     }
 
     componentDidMount() {
@@ -72,21 +73,9 @@ class OnBoarding extends Component {
         let url = WebApiConfig.server.GetWorkNumber;
         ApiClient.get(url).then(function (f) {
             if (f.data.code==0) {
-                //tempthis.setState({userinfo: {...tempthis.state.userinfo, worknumber: f.data.extension}});
                 tempthis.props.form.setFieldsValue({userid:f.data.extension});
             }
         });
-        // var ht = new XMLHttpRequest();
-        // ht.open('GET', url, true);
-        // ht.onload = function (e) {
-        //     if (this.status === 200) {
-        //         let re = JSON.parse(this.response);
-        //         if (re.code === "0") {
-        //             tempthis.setState({userinfo: {...tempthis.state.userinfo, worknumber: re.extension}});
-        //         }
-        //     }
-        // }
-        // ht.send(null);
     }
 
     UploadFile(file, callback) {
@@ -169,13 +158,24 @@ class OnBoarding extends Component {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                this.props.dispatch(postHumanInfo(values, this.state.fileinfo));
+                this.props.dispatch(postHumanInfo({humaninfo:values, fileinfo:this.state.fileinfo}));
             }
         });
     }
 
     handleReset = () => {
         this.props.form.resetFields();
+    }
+
+    handleChooseDepartmentChange =  (v, selectedOptions) => {
+        let organizateID = (v ||v != []) ? v[v.length -1].toString() : 0;
+        let departmentFullId = v? v.join('*'): '';
+
+        let text = selectedOptions.map(item => {
+            return item.label
+        })
+     
+        this.setState({departMentFullName: text.join('-'), organizateID: organizateID, departmentFullId:departmentFullId})
     }
 
     render() {
@@ -210,6 +210,19 @@ class OnBoarding extends Component {
                         }]
                     })(
                         <Input placeholder="请输入姓名" />
+                    )}
+                </FormItem>
+                <FormItem {...formItemLayout1} label="性别">
+                    {getFieldDecorator('sex', {
+                        reules: [{
+                            required:true, message: 'please entry Age',
+                        }]
+                    })(
+                        <Select
+                            placeholder="选择性别">
+                            <Option value="1">男</Option>
+                            <Option value="2">女</Option>
+                        </Select>
                     )}
                 </FormItem>
                 <FormItem {...formItemLayout1} label="年龄">
@@ -276,9 +289,7 @@ class OnBoarding extends Component {
                                     message: 'please entry Orgdepartment',
                                 }]
                             })(
-                                <TreeSelect style={{ width: '70%' }} allowClear showSearch
-                                    dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-                                    treeData={this.props.organizateTree} />
+                                <Cascader options={this.props.setContractOrgTree}  onChange={this.handleChooseDepartmentChange } changeOnSelect  placeholder="归属部门"/>
                             )}
                 </FormItem>
                 <FormItem {...formItemLayout} label="职位">

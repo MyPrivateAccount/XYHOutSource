@@ -3,8 +3,8 @@ import * as actionTypes from '../constants/actionType';
 import appAction from '../../utils/appUtils';
 
 const initState = {
-    humanList: [{key: '1', id: 'tt', username: 'test', idcard: 'hhee'}],
     showLoading: true,
+    searchOrgTree: [],
     navigator: [],//导航记录
 };
 let reducerMap = {};
@@ -99,6 +99,53 @@ reducerMap[actionTypes.DIC_GET_AREA_COMPLETE] = function (state, action) {
     //console.log("地区json：", areaList);
     return Object.assign({}, state, {areaList: areaList});
 }
+
+function getAllChildrenNode(node, parentId, formatNodeLit) {
+    let nodeList = formatNodeLit.filter(n => n.Original.parentId === parentId);
+    if (nodeList.length === 0) {
+        return [];
+    }
+    nodeList.map(n => {
+        n.children = getAllChildrenNode(n, n.key, formatNodeLit);
+    });
+    node.children = nodeList;
+    return nodeList;
+}
+
+reducerMap[actionTypes.DIC_GET_ALL_ORG_LIST_COMPLETE] = function(state, action) {
+    
+    let arrOrg = action.payload.extension;
+    let formatNodeList = [];
+    for (var i in action.payload.extension) {
+        var node = action.payload.extension[i];
+        var orgNode = {key: node.id, value: node.id, children: [], Original: node};
+        orgNode.name = node.organizationName;
+        orgNode.label = node.organizationName;
+        orgNode.id = node.id;
+        orgNode.organizationName = node.organizationName;
+        orgNode.parentId = node.parentId;
+
+        formatNodeList.push(orgNode);
+    }
+    let orgTreeSource = [];//顶层节点
+    let curPeakNode = {}
+    formatNodeList.map(node => {
+        let parentID = node.Original.parentId;
+        let result = formatNodeList.filter(n => n.key === parentID);
+        if (result.length == 0) {//找不到父级的部门为顶级部门
+            orgTreeSource.push(node);
+            curPeakNode = node;
+        }
+    });
+    
+    orgTreeSource.map(node => {
+        getAllChildrenNode(node, node.key, formatNodeList)
+    });
+    
+    let levelCount = 0;
+
+    return Object.assign({}, state, {searchOrgTree: orgTreeSource, levelCount: levelCount});
+}
 //部门数据
 reducerMap[actionTypes.DIC_GET_ORG_LIST_COMPLETE] = function (state, action) {
     let orgInfo = {...state.orgInfo};
@@ -157,10 +204,6 @@ reducerMap[actionTypes.CLOSE_USER_BREAD] = function(state, action) {
 reducerMap[actionTypes.SET_HUMANINFONUMBER] = function(state, action) {
     let f = {...state.userinfo, worknumber: action.payload}
     return Object.assign({}, state, {userinfo: f});
-}
-
-reducerMap[actionTypes.UPDATE_ALLHUMANINFO] = function(state, action) {
-    return Object.assign({}, state,{humanList:action.payload} );
 }
 
 export default handleActions(reducerMap, initState);

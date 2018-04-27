@@ -8,13 +8,15 @@ const initState = {
     navigator: [],//导航记录
     activeOrg: {id: '0', organizationName: '不限'},//当前部门
     activeMenu: 'menu_index',//当前菜单
-    searchKeyWord: '',//搜索关键词
+    keyWord: '',//搜索关键词
     searchCondition: {},//完整搜索条件
-    searchHumanType: 0,
-    searchSortType: 0,//0不排 1升 2降
-    agesCondition: 0,
-    searchResult: {extension: [], pageIndex: 0, pageSize: 10, totalCount: 0},//搜索结果
-    expandSearchBox: true
+    humanType: 0,//0不限 1在职 2离职 3黑名单
+    orderRule: 0,//0不排 1升 2降
+    ageCondition: 0,//0不限 1 20以上 2 30以上 3 40以上
+    searchResult: {extension: [{key: '1', id: 'tt', username: 'test', idcard: 'hhee'}], pageIndex: 0, pageSize: 10, totalCount: 1},//搜索结果
+    expandSearchBox: true,
+    pageIndex: 0,
+    pageSize: 10
 };
 let reducerMap = {};
 
@@ -84,17 +86,7 @@ reducerMap[actionTypes.SEARCH_CUSTOMER_COMPLETE] = function (state, action) {
     });
     return Object.assign({}, state, {searchResult: result});
 }
-//加载客户详情完成
-// reducerMap[actionTypes.GET_CUSTOMER_DETAIL_COMPLETE] = function (state, action) {
-//     let activeCustomer = action.payload || {};
-//     if (activeCustomer.mainPhone) {
-//         activeCustomer.mainPhone = activeCustomer.mainPhone.replace(/([0-9]{3})[0-9]{3}([0-9]{4})/g, '$1***$2');
-//     }
-//     return Object.assign({}, state, {
-//         activeCustomers: [activeCustomer],
-//         navigator: [{id: action.payload.id, name: '客户详情', type: 'customerDetail'}]
-//     });
-// }
+
 //保存查询条件
 reducerMap[actionTypes.SAVE_SEARCH_CONDITION] = function (state, action) {
     return Object.assign({}, state, {searchCondition: action.payload});
@@ -102,6 +94,22 @@ reducerMap[actionTypes.SAVE_SEARCH_CONDITION] = function (state, action) {
 
 reducerMap[actionTypes.SEARCH_BOX_EXPAND] = function(state, action) {
     return Object.assign({}, state, {expandSearchBox: !state.expandSearchBox});
+}
+
+reducerMap[actionTypes.SEARCH_HUMANTYPE] = function(state, action) {
+    return Object.assign({}, state, {humanType:action.payload} );
+}
+
+reducerMap[actionTypes.SEARCH_AGETYPE] = function(state, action) {
+    return Object.assign({}, state, {ageCondition:action.payload} );
+}
+
+reducerMap[actionTypes.SEARCH_ORDERTYPE] = function(state, action) {
+    return Object.assign({}, state, {orderRule:action.payload} );
+}
+
+reducerMap[actionTypes.UPDATE_ALLHUMANINFO] = function(state, action) {
+    return Object.assign({}, state,{searchResult: action.payload} );
 }
 
 export default handleActions(reducerMap, initState);

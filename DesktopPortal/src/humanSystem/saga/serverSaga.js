@@ -10,14 +10,14 @@ import { notification } from 'antd';
 const actionUtils = appAction(actionTypes.ACTION_ROUTE)
 
 export function* postHumanInfoAsync(state) {
-    let urlpic = WebApiConfig.server.PostHumanPicture;
+    //let urlpic = WebApiConfig.server.PostHumanPicture;
     let urlhuman = WebApiConfig.server.PostHumaninfo;
 
     let humanResult = { isOk: false, msg: '人事信息提交失败！' };
 
     try {
-        const picResult = yield call(ApiClient.post, urlpic, state.payload);
-        humanResult = yield call(ApiClient.post, urlhuman, state.payload);
+        //const picResult = yield call(ApiClient.post, urlpic, state.payload);
+        humanResult = yield call(ApiClient.post, urlhuman, state.payload.humaninfo, state.payload.fileinfo);
 
         //弹消息，返回
         if (humanResult.data.code == 0) {

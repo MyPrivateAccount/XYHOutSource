@@ -34,30 +34,25 @@ export function* getParListAsync(state) {
 }
 
 //获取所有子部门
-export function* getAllChildOrgsAsync(state) {
-    // let result = { isOk: false, extension: [], msg: '部门数据获取失败！' };
+export function* getAllOrgsAsync(state) {
     let result = {}
-    let url = WebApiConfig.dic.OrgList + state.payload;
+    let url = WebApiConfig.dic.permissionOrg + state.payload;
+    
     try {
         const orgResult = yield call(ApiClient.get, url);
-        // console.log(orgResult, '获取所有子部门', state.payload)
         getApiResult(orgResult, result);
         if (result.isOk) {
             yield put({ 
-                 type: actionUtils.getActionType(actionTypes.DIC_GET_ORG_LIST_COMPLETE),
-                 payload: { extension: result.extension, parentId: state.payload } 
+                 type: actionUtils.getActionType(actionTypes.DIC_GET_ALL_ORG_LIST_COMPLETE),
+                 payload: { extension: result.extension, type: state.payload } 
             });
         } 
     } catch (e) {
-        result.msg = "部门数据获取接口调用异常!";
+        result.msg = "获取所有可操作部门接口调用异常!";
+        console.log('getAllOrgsAsync error,url:', url);
     }
-    // if (!result.isOk) {
-    //     notification.error({
-    //         description: result.msg,
-    //         duration: 3
-    //     });
-    // }
 }
+
 //获取用户部门数据
 export function* getUserOrgAsync(state) {
     // let result = { isOk: false, extension: {}, msg: '部门详细数据获取失败！' };
@@ -102,32 +97,6 @@ export function* getOrgUserListAsync(state) {
     }
 }
 
-export function* postHumanInfoAsync(state) {
-    let urlpic = WebApiConfig.server.PostHumanPicture;
-    let urlhuman = WebApiConfig.server.PostHumaninfo;
-
-    let humanResult = { isOk: false, msg: '人事信息提交失败！' };
-
-    try {
-        const picResult = yield call(ApiClient.post, urlpic, state.payload);
-        const humanResult = yield call(ApiClient.post, urlhuman, state.payload);
-
-        //弹消息，返回
-        if (humanResult.isOk) {
-            humanResult.message = '人事信息提交成功';
-
-            yield put({ type: actionUtils.getActionType(actionTypes.CLOSE_USER_BREAD), payload: {} });
-        }
-    } catch (e) {
-        humanResult.msg = "部门用户获取接口调用异常!";
-    }
-    
-    notification[humanResult.isOk ? 'success' : 'error']({
-        message: humanResult.msg,
-        duration: 3
-    });
-}
-
 export function* getWorkNumber(state) {
     let url = WebApiConfig.server.GetWorkNumber;
     let huResult = { isOk: false, msg: '获取工号失败！' };
@@ -153,10 +122,9 @@ export function* getWorkNumber(state) {
 
 export default function* watchDicAllAsync() {
     yield takeLatest(actionUtils.getActionType(actionTypes.DIC_GET_PARLIST), getParListAsync);
-    yield takeLatest(actionUtils.getActionType(actionTypes.DIC_GET_ORG_LIST), getAllChildOrgsAsync);
+    yield takeLatest(actionUtils.getActionType(actionTypes.DIC_GET_ORG_LIST), getAllOrgsAsync);
     yield takeLatest(actionUtils.getActionType(actionTypes.DIC_GET_ORG_DETAIL), getUserOrgAsync);
     yield takeLatest(actionUtils.getActionType(actionTypes.GET_ORG_USERLIST), getOrgUserListAsync);
-    yield takeEvery(actionUtils.getActionType(actionTypes.POST_HUMANINFO), postHumanInfoAsync);
-    yield takeEvery(actionUtils.getActionType(actionTypes.GET_HUMANINFONUMBER), getWorkNumber);
+    yield takeLatest(actionUtils.getActionType(actionTypes.GET_HUMANINFONUMBER), getWorkNumber);
 }
 

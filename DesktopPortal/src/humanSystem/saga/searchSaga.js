@@ -45,45 +45,27 @@ export function* getCustomerListAsync(state) {
         });
     }
 }
-// //审核操作
-// export function* getCustomerDetailAsync(state) {
-//     let result = { isOk: false, extension: {}, msg: '加载客户详情失败！' };
-//     let url = WebApiConfig.search.getCustomerDetail + state.payload.id;
-//     try {
-//         let res = yield call(ApiClient.get, url);
-//         // console.log(`加载客户详情:url:${url},result:${JSON.stringify(res)}`);
-//         getApiResult(res, result);
-//         if (result.isOk) {
-//             result.msg = '加载客户详情成功！';
-//             if (result.extension) {
-//                 if (result.extension.customerDealResponse === null) {
-//                     result.extension.customerDealResponse = state.payload.customerDealResponse;
-//                 }
-//                 if (result.extension.customerLossResponse === null) {
-//                     result.extension.customerLossResponse = state.payload.customerLossResponse;
-//                 }
-//             }
-//             yield put({ type: actionUtils.getActionType(actionTypes.GET_CUSTOMER_DETAIL_COMPLETE), payload: result.extension });
-//         }
-//         yield put({ type: actionUtils.getActionType(actionTypes.SET_SEARCH_LOADING), payload: false });
-//     } catch (e) {
-//         result.msg = "加载客户详情接口调用异常！";
-//     }
-//     if (!result.isOk) {
-//         notification.error({
-//             description: result.msg,
-//             duration: 3
-//         });
-//     }
-// }
 
-export function* getSearchWordListAsync(state) {
-    let result = {isOk: false, extension: {}, msg: '检索关键字失败！'};
-    let url = WebApiConfig.search.searchWordHumanList;
+export function* getSearchConditionAsync(state) {
+    let result = {isOk: false, extension: {}, msg: '检索条件失败！'};
+    let url = WebApiConfig.search.searchHumanList;
     try {
-        let res = yield call(ApiClient.post, url);
+        let res = yield call(ApiClient.post, url, state.payload);
+         if (res.data.code == 0) {
+             result.isOk = true;
+             let lv = res.data.extension;
+             let data = lv.map(function(v, k) {
+                 return {key: k, id: v.userID, username: v.name, idcard: v.idCard};
+             });
+             let re = {extension: data, 
+                pageIndex: res.data.pageIndex, 
+                pageSize: res.data.pageSize,
+                totalCount: res.data.totalCount};
+
+             yield put ({type: actionUtils.getActionType(actionTypes.UPDATE_ALLHUMANINFO), payload: re});
+         }
     } catch (e) {
-        result.msg = '检索关键字接口调用异常';
+        result.msg = '检索条件调用异常';
     }
 
     if (!result.isOk) {
@@ -122,6 +104,6 @@ export function* getHumanListAsync(state) {
 
 export default function* watchAllSearchAsync() {
     yield takeLatest(actionUtils.getActionType(actionTypes.SEARCH_CUSTOMER), getCustomerListAsync);
-    yield takeLatest(actionUtils.getActionType(actionTypes.SEARCH_KEYWORD), getSearchWordListAsync);
+    yield takeLatest(actionUtils.getActionType(actionTypes.SEARCH_CONDITION), getSearchConditionAsync);
     yield takeLatest(actionUtils.getActionType(actionTypes.GET_ALLHUMANINFO), getHumanListAsync);
 }

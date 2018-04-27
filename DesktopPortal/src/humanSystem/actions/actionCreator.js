@@ -20,7 +20,13 @@ export const changeActiveOrg = createAction(actionTypes.CHAGNE_ACTIVE_ORG);
 
 //搜索处理
 export const searchKeyWord = createAction(actionTypes.SEARCH_KEYWORD);
+export const searchCondition = createAction(actionTypes.SEARCH_CONDITION);
 export const searchCustomer = createAction(actionTypes.SEARCH_CUSTOMER);
+export const searchHumanType = createAction(actionTypes.SEARCH_HUMANTYPE);
+export const searchAgeType = createAction(actionTypes.SEARCH_AGETYPE);
+export const searchOrderType = createAction(actionTypes.SEARCH_ORDERTYPE);
+export const searchConditionType = createAction(actionTypes.SEARCH_CONDITION);
+
 export const saveSearchCondition = createAction(actionTypes.SAVE_SEARCH_CONDITION);
 export const expandSearchbox = createAction(actionTypes.SEARCH_BOX_EXPAND);
 
@@ -32,3 +38,5 @@ export const closebreadPage = createAction(actionTypes.CLOSE_USER_BREAD);
 export const getworkNumbar = createAction(actionTypes.GET_HUMANINFONUMBER);
 
 export const postHumanInfo = createAction(actionTypes.POST_HUMANINFO);
+
+export const getallOrgTree = createAction(actionTypes.DIC_GET_ORG_LIST);

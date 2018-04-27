@@ -12,7 +12,7 @@ const LoadableOnboardPage = Loadable({
     loading: () => <LoadableLoading />,
 });
 const LoadableMonthPage = Loadable({
-    loader: () => import('./mouth/mouth'),
+    loader: () => import('./month/month'),
     loading: () => <LoadableLoading />,
 });
 const LoadableAttendancePage = Loadable({

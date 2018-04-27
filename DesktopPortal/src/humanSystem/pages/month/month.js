@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { getDicParList, expandSearchbox, searchConditionType, searchCondition,setbreadPage, searchHumanType,searchAgeType,searchOrderType } from '../../actions/actionCreator';
+import { getDicParList, searchConditionType,searchOrderType } from '../../actions/actionCreator';
 import React, { Component } from 'react'
 import {Table, Layout, Input, Select, Icon, Button, Row, Col, Checkbox, Tag, Pagination, Spin} from 'antd'
 import '../search.less'
@@ -35,60 +35,9 @@ const rowSelection = {
 };
 
 class Staffinfo extends Component {
-
-    handleKeyChangeWord = (e) => {
-        this.props.searchInfo.keyWord = e.target.value;
-    }
-
-    handleSearch(condite) {
-        this.props.dispatch(searchConditionType(this.props.searchInfo));
-    }
-
     componentWillMount() {
         this.props.dispatch(searchConditionType(SearchCondition.topteninfo));
         
-    }
-
-    handleSaleStatusChange = (value, text) => {
-        this.props.dispatch(searchHumanType(value));
-    }
-
-    handlePriceRange = (value) => {
-        this.props.dispatch(searchAgeType(value));
-    }
-
-    handleOrderChange = (e) => {
-        this.props.dispatch(searchOrderType(e.target.value));
-    }
-
-    handleTableChange = (pagination, filters, sorter) => {
-        this.props.searchInfo.pageIndex = (pagination.current - 1);
-    };
-
-    handleTagClose = (tag, i) => {//过滤标签删除
-        console.log("移除的tag：", tag, this.state.checkedTag);
-        let tagArray = this.state.filterTags;
-        let condition = this.state.condition;
-        let checkedTag = this.state.checkedTag;
-        let removeTag = tagArray.splice(i, 1)[0];
-        if (removeTag.type === "tag") {
-            //delete checkedTag[removeTag.value];
-            for (let i = checkedTag.length - 1; i > -1; i--) {
-                if (checkedTag[i] === removeTag.value) {
-                    checkedTag.splice(i, 1);
-                    break;
-                }
-            }
-        } else {
-            condition[removeTag.type] = '0';
-        }
-        console.log("tagArray", tagArray, checkedTag);
-        this.setState({condition: condition, filterTags: tagArray, checkedTag: checkedTag, pageIndex: 0});
-        this.handleSearch(condition);
-    }
-
-    handleOnboarding =(e)=> {
-        this.props.dispatch(setbreadPage(e));
     }
 
     render() {
