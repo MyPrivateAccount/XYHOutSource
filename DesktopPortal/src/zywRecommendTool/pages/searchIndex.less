@@ -1,0 +1,111 @@
+@searchBoxHeight:2.5rem;
+@borderColor:#e0e0e0;
+.recommendTool{
+    .RecommendItemBorder{
+        border-bottom:1px solid @borderColor;
+        padding:15px 10px;
+        margin-bottom:15px;
+        .title{
+            font-size:1rem;
+            cursor: pointer;
+        }
+        .itemLeft{
+            display: flex;
+            .imgDiv {
+                margin-right: 15px;
+            }
+            .leftText{
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                padding: 10px 5px;
+                .buildingTitle{
+                    cursor: pointer;
+                    font-size: 1.3rem;
+                }
+            }
+        }
+        .itemRight{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height:9rem;
+        }
+    }
+    .ant-card{
+        height: 100%;
+        overflow: hidden;
+    }
+    .ant-card-body{
+        height:100%;
+        padding:0;
+        padding-bottom: 50px;
+    }
+}
+.searchBox{
+    img{
+        height:@searchBoxHeight;
+    }
+    input[type=text]{
+        height:@searchBoxHeight;
+    }
+    button{
+        height: @searchBoxHeight;
+        vertical-align: top;
+    }
+    padding: 20px 0;
+   
+}
+.searchConditon{
+    padding: 0.5rem 2.5rem;
+    border:1px solid @borderColor;
+    .saleStatusBtn{
+        margin-right: 10px;
+        border:0;
+    }
+    .statusBtnDefault{
+        background-color: #64bce3;
+    }
+    .priceRangeBtn{
+        margin-right: 10px;
+        border:0
+    }
+    .priceBtnActive{
+        color:#108ee9;
+        font-weight: bold;
+    }
+    .ant-row{
+        margin-top:10px;
+    }
+    .ant-tag-text{
+        color:red;
+    }
+    .ant-select{
+        margin-right:5px;
+        width:90px;
+    }
+}
+.searchResult{
+    .ant-pagination {
+        margin:15px auto;
+    }
+}
+.searchResultNav{
+    margin-top:10px;
+    .ant-btn{
+        border:0;
+        font-weight: bold;
+        color:#108ee9;
+    }
+    .ant-btn-circle{
+        color:#fff;
+    }
+}
+.searchResultDetail{
+    .ant-card-head{
+        background-color: #ececec;
+    }
+}
+.msgContent{
+    padding:5px;
+}

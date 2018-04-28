@@ -1,0 +1,32 @@
+@borderColor:#e0e0e0;
+.itemBorder{
+  border-bottom:1px solid @borderColor;
+  padding:15px 10px;
+  margin-bottom:15px;
+  .title{
+      font-size:1rem;
+      cursor: pointer;
+  }
+  .itemLeft{
+      display: flex;
+      .imgDiv {
+          margin-right: 15px;
+      }
+      .leftText{
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          padding: 10px 5px;
+          .buildingTitle{
+              cursor: pointer;
+              font-size: 1.3rem;
+          }
+      }
+  }
+  .itemRight{
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height:9rem;
+  }
+}
