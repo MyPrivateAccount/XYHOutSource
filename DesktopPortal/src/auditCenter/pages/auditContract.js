@@ -4,7 +4,8 @@ import React, { Component } from 'react';
 import AuditForm from './item/auditForm';
 import AuditHistory from './auditHistory'
 import getToolComponent from '../../tools';
-
+import {getDicParList} from '../../actions/actionCreators'
+import {globalAction} from 'redux-subspace';
 
 class AuditContract extends Component {
     state = {
@@ -17,14 +18,16 @@ class AuditContract extends Component {
         //console.log("audit houseSource componentWillReceiveProps:", newProps);
     }
 
-
+    getPageByContentType = () =>{
+        this.props.dispatch(globalAction(getDicParList(['CONTRACT_CATEGORIES', 'FIRST_PARTT_CATEGORIES', 'COMMISSION_CATEGORIES', 'XK_SELLER_TYPE'])));
+    }
     render() {
         let ContractToolComponent = getToolComponent("contractInfo");
         let contentInfo = { contentID: this.props.activeAuditInfo.contentId, contentType: this.props.activeAuditInfo.contentType };
         return (
             <div>
                 <b>合同审核</b>
-                <ContractToolComponent dispatch={this.props.dispatch} contentInfo={contentInfo} />
+                {this.getPageByContentType()}
                 <AuditHistory />
                 {
                     this.props.activeAuditInfo.examineStatus === 1 ? <AuditForm /> : null

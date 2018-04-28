@@ -5,14 +5,11 @@ import { Icon, Table, Button, Checkbox, Row, Col, Form } from 'antd'
 import moment from 'moment';
 
 class ComplementInfo extends Component {
-
-    handleEdit = (e) => {
-        e.preventDefault();
-        this.props.dispatch(contractComplementEdit());
-        this.props.dispatch(openComplementStart({id:2}));
+    state = {
+        expandStatus: true
     }
     render(){
-        console.log('this.props.complementInfos.examineStatus:', this.props.complementInfos.examineStatus);
+     
         let complementInfo = this.props.complementInfo || [];
         return (
             <div style={{ marginTop: '25px', backgroundColor: "#ECECEC" }}>
@@ -27,19 +24,22 @@ class ComplementInfo extends Component {
                                 //<Button type="primary" shape="circle" icon="edit" onClick={this.handleEdit} />
                             }
                         </Col>
-                    </Row>
+                        <Col span={1}><Icon type={this.state.expandStatus ? "up" : "down"} onClick={(e) => this.setState({expandStatus: !this.state.expandStatus})} /></Col>
+                        </Row>
+                        <div style={{display: this.state.expandStatus ? "block" : "none"}}>
   
-                    <Row className='viewRow'>
-                        {
-                           complementInfo.length === 0 ? <div style={{ marginLeft: '20px' }}>{'暂无信息'}</div> :
-                           
-                            complementInfo.map((item, i)=>{
-                                return <Col span={24} key= {i}>补充内容{i + 1}:{item.contentInfo}</Col>
-                            })
-                            
-                        }
-                            
-                    </Row>
+                            <Row className='viewRow'>
+                                {
+                                complementInfo.length === 0 ? <div style={{ marginLeft: '20px' }}>{'暂无信息'}</div> :
+                                
+                                    complementInfo.map((item, i)=>{
+                                        return <Col span={24} key= {i}>补充内容{i + 1}:{item.contentInfo}</Col>
+                                    })
+                                    
+                                }
+                                    
+                            </Row>
+                        </div>
                 </Form>
               
             </div>
@@ -47,19 +47,4 @@ class ComplementInfo extends Component {
     }
 }
 
-function mapStateToProps(state) {
-
-    return {
-        contractInfo: state.contractData.contractInfo,
-        basicData: state.basicData,
-        complementInfo: state.contractData.contractInfo.complementInfos.complementInfo,
-        complementInfos:state.contractData.contractInfo.complementInfos,
-    }
-}
-
-function mapDispatchToProps(dispatch) {
-    return {
-        dispatch
-    };
-}
-export default connect(mapStateToProps, mapDispatchToProps)(ComplementInfo);
+export default ComplementInfo;
