@@ -82,7 +82,15 @@ const tools = [
         component: ()=>createLoadableComponent(import('./contractManagement')),//() => createLoadableComponent(import('./personnelSystem')),
         cache: null,
         icon: <Icon type="book" className="icon"/>
+    },
+    {
+        id:'expenseManager',//费用系统
+        mutipleInstance:false,
+        component: ()=>createLoadableComponent(import('./expenseManager')),//() => createLoadableComponent(import('./personnelSystem')),
+        cache: null,
+        icon: <Icon type="book" className="icon"/>
     }
+
 ]
 
 export function getToolDefine(id) {

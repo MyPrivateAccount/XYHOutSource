@@ -1,0 +1,41 @@
+
+.vertical-center-modal {
+    text-align: center;
+    white-space: nowrap;
+  }
+  
+  .vertical-center-modal:before {
+    content: '';
+    display: inline-block;
+    height: 100%;
+    vertical-align: middle;
+    width: 0;
+  }
+  
+  .vertical-center-modal .ant-modal {
+    display: inline-block;
+    vertical-align: middle;
+    top: 0;
+    text-align: left;
+  }
+
+.dealInfo{
+    .ant-form-item-label{
+        label:before{
+             display: inline-block;
+             margin-right: 4px;
+             content: "*";
+             font-family: SimSun;
+             line-height: 1;
+             font-size: 12px;
+             color: #f04134;
+         }
+    }
+}
+.notNeed {
+    .dealInfo{
+        .ant-form-item-label label:before {
+            content: "";
+        }
+    }
+}

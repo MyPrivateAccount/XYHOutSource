@@ -1,0 +1,91 @@
+.menuPage{
+  .myMenusider{
+    position: relative;
+  }
+  .houseList{
+    position: absolute;
+    width: 400px;
+    height: 100%;
+    z-index: 999;
+    background-color: #F2F2F2;
+    border: 1px solid #dcdcdc;
+    top:0;
+    left:200px;
+    overflow: scroll;
+  }
+  .collapsed{
+    position: absolute;
+    width: 400px;
+    height: 100%;
+    z-index: 999;
+    background-color: #F2F2F2;
+    border: 1px solid #dcdcdc;
+    top:0;
+    left:64px;
+    overflow: scroll;
+  }
+  .mycontent{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    .searchBox{
+      width: 90%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      .searchInput{
+        width: 90%;
+      }
+      .addIcon{
+        font-size: 1.5rem;
+        cursor: pointer;
+        color: #d9d9d9c7;
+      }
+    }
+    .listBox{
+      width:100%;
+      padding: 0 10px;
+      margin-top: 10px;
+      background-color: #fff;
+      .noSubmit{
+        color: red;
+        padding-left: 10px;
+      }
+      .submit{
+        color: #b3b3b3;
+        padding-left: 10px;
+      }
+      .list_part{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 0;
+        .buldingTitle,.addShopsIcon{
+          font-weight: bold;
+        }
+        .addShopsIcon{
+          cursor: pointer;
+        }
+      }
+      .list_shops{
+        padding: 10px 20px;
+        border-top: 1px solid #dcdcdc;
+        .deleteShop{
+          cursor: pointer;
+        }
+      }
+      .moreBtn{
+        text-align: center;
+        padding: 15px 0;
+        cursor: pointer;
+      }
+    }
+  }
+  .ant-badge-dot {
+     box-shadow: none;
+  }
+}
