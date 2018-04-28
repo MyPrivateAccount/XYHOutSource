@@ -17,6 +17,7 @@ namespace XYHContractPlugin.Stores
 
         //IQueryable<ContractFileScope> GetDetailQuery();
 
+        Task<ContractInfo> CreateAsync(SimpleUser userinfo, ContractInfo buildingBaseInfo, string modifyid, string ext1, string ext2, string checkaction, CancellationToken cancellationToken = default(CancellationToken));
         Task<ContractInfo> CreateAsync(SimpleUser userinfo, ContractInfo buildingBaseInfo, string modifyid, string checkaction, CancellationToken cancellationToken = default(CancellationToken));
         Task<bool> CreateAsync(SimpleUser userinfo, List<AnnexInfo> annexinfo, CancellationToken cancle = default(CancellationToken));
         Task<bool> CreateAsync(SimpleUser userinfo, List<ComplementInfo> compleinfo, CancellationToken cancle = default(CancellationToken));

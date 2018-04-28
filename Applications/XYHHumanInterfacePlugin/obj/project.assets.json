@@ -9993,25 +9993,25 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\lenovo\\.nuget\\packages\\": {},
+    "C:\\Users\\ler\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackagesFallback\\": {},
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\工作\\XHY\\XYHOutSource\\Applications\\XYHHumanInterfacePlugin\\XYHHumanInterfacePlugin.csproj",
+      "projectUniqueName": "H:\\XYH\\XYHOutSource\\Applications\\XYHHumanInterfacePlugin\\XYHHumanInterfacePlugin.csproj",
       "projectName": "XYHHumanInterfacePlugin",
-      "projectPath": "D:\\工作\\XHY\\XYHOutSource\\Applications\\XYHHumanInterfacePlugin\\XYHHumanInterfacePlugin.csproj",
-      "packagesPath": "C:\\Users\\lenovo\\.nuget\\packages\\",
-      "outputPath": "D:\\工作\\XHY\\XYHOutSource\\Applications\\XYHHumanInterfacePlugin\\obj\\",
+      "projectPath": "H:\\XYH\\XYHOutSource\\Applications\\XYHHumanInterfacePlugin\\XYHHumanInterfacePlugin.csproj",
+      "packagesPath": "C:\\Users\\ler\\.nuget\\packages\\",
+      "outputPath": "H:\\XYH\\XYHOutSource\\Applications\\XYHHumanInterfacePlugin\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackagesFallback\\",
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
       ],
       "configFilePaths": [
-        "C:\\Users\\lenovo\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\ler\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.Fallback.config"
       ],
@@ -10020,15 +10020,14 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-        "http://server-d02/nuget": {},
         "https://api.nuget.org/v3/index.json": {},
         "https://www.myget.org/F/aspnet-contrib/api/v3/index.json": {}
       },
       "frameworks": {
         "netcoreapp2.0": {
           "projectReferences": {
-            "D:\\工作\\XHY\\XYHOutSource\\Applications\\XYHHumanPlugin\\XYHHumanPlugin.csproj": {
-              "projectPath": "D:\\工作\\XHY\\XYHOutSource\\Applications\\XYHHumanPlugin\\XYHHumanPlugin.csproj"
+            "H:\\XYH\\XYHOutSource\\Applications\\XYHHumanPlugin\\XYHHumanPlugin.csproj": {
+              "projectPath": "H:\\XYH\\XYHOutSource\\Applications\\XYHHumanPlugin\\XYHHumanPlugin.csproj"
             }
           }
         }

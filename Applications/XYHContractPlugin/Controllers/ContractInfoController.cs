@@ -351,7 +351,7 @@ namespace XYHContractPlugin.Controllers
                     return response;
                 }
                 request.BaseInfo.Num = await _contractInfoManager.GetContractNum(request.BaseInfo.ID, HttpContext.RequestAborted);
-                response.Extension = await _contractInfoManager.AddContractAsync(User, request, "TEST", HttpContext.RequestAborted);
+                response.Extension = await _contractInfoManager.AddContractAsync(User, strModifyGuid, request, "TEST", HttpContext.RequestAborted);
                 response.Message = "add simple ok";
             }
             catch (Exception e)
@@ -889,7 +889,7 @@ namespace XYHContractPlugin.Controllers
             }
             return response;
         }
-        [HttpGet("getFollowHistory/{contractId}")]
+        [HttpGet("getfollowhistory/{contractId}")]
         [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
         public async Task<ResponseMessage<List<ContractInfoResponse>>> GetFollowHistory(UserInfo user, string contractId)
         {
@@ -902,7 +902,7 @@ namespace XYHContractPlugin.Controllers
                 {
                     response.Code = ResponseCodeDefines.ModelStateInvalid;
                     response.Message = "请求参数不正确";
-                    Logger.Error("error GetContractByid");
+                    Logger.Error("error getfollowhistory");
                     return response;
                 }
 
@@ -914,6 +914,33 @@ namespace XYHContractPlugin.Controllers
                 response.Code = ResponseCodeDefines.ServiceError;
                 response.Message = e.ToString();
                 Logger.Trace($"获取合同续签记录(GetFollowHistory)：\r\n请求参数为：\r\n" + contractId);
+            }
+            return response;
+        }
+        [HttpGet("getmodifyinfobyid/{id}")]
+        [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
+        public virtual async Task<ResponseMessage<ModifyInfo>> GetModifyInfoById(UserInfo user, string id)
+        {
+            ResponseMessage<ModifyInfo> response = new ResponseMessage<ModifyInfo>();
+
+            try
+            {
+                Logger.Trace($"获取修改信息(getmodifyinfobyid)：\r\n请求参数为：\r\n" + id);
+                if (string.IsNullOrEmpty(id))
+                {
+                    response.Code = ResponseCodeDefines.ModelStateInvalid;
+                    response.Message = "请求参数不正确";
+                    Logger.Error("error GetModifyInfoById");
+                    return response;
+                }
+                response.Extension = await _contractInfoManager.GetModifyInfo(id, HttpContext.RequestAborted);
+                response.Code = "0";
+            }
+            catch(Exception e)
+            {
+                response.Code = ResponseCodeDefines.ServiceError;
+                response.Message = e.ToString();
+                Logger.Trace($"获取修改信息(getmodifyinfobyid)：\r\n请求参数为：\r\n" + id);
             }
             return response;
         }
