@@ -19,7 +19,7 @@ namespace ApplicationCore.Stores
 
         protected virtual TContext Context { get; }
 
-        public DbSet<OrganizationExpansion> OrganizationExpansions { get; }
+        public IQueryable<OrganizationExpansion> OrganizationExpansions { get; }
 
         public async Task<OrganizationExpansion> CreateAsync(OrganizationExpansion organizationExpansion)
         {

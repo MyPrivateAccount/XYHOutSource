@@ -2,12 +2,12 @@
   {
     "Code": "Filiale",
     "Name": "分公司",
-    "Value": 10
+    "Value": 3
   },
   {
     "Code": "Region",
     "Name": "大区",
-    "Value": 3
+    "Value": 10
   },
   {
     "Code": "Area",

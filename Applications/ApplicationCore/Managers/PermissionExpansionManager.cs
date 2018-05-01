@@ -60,6 +60,15 @@ namespace ApplicationCore.Managers
             organizationIds.AddRange(Ids);
             return organizationIds;
         }
+        public async Task<string> GetExaminePermissionId(string userId)
+        {
+            var permissions = await Store.ListAsync(a => a.Where(b => b.UserId == userId && b.PermissionId.Contains("ExaminFlowUse")));
+            if (permissions?.Count > 0)
+            {
+                return permissions.OrderByDescending(a => a.PermissionId).FirstOrDefault().PermissionId;
+            }
+            return "";
+        }
 
 
         public virtual async Task<List<string>> GetPermissionUserIds(string permissionItemId)
@@ -81,6 +90,22 @@ namespace ApplicationCore.Managers
         public virtual async Task<List<string>> GetUseridsHaveOrganPermission(string organizationId, string permissionId)
         {
             var permissions = await Store.ListAsync(a => a.Where(b => b.OrganizationId == organizationId && b.PermissionId == permissionId));
+            if (permissions?.Count == 0)
+            {
+                return new List<string>();
+            }
+            return permissions.Select(a => a.UserId).ToList();
+        }
+
+        /// <summary>
+        /// 获取多个部门下拥有指定权限的Userid
+        /// </summary>
+        /// <param name="permissionId"></param>
+        /// <param name="organizationId"></param>
+        /// <returns></returns>
+        public virtual async Task<List<string>> GetUseridsHaveOrganPermission(List<string> organizationIds, List<string> permissionIds)
+        {
+            var permissions = await Store.ListAsync(a => a.Where(b => organizationIds.Contains(b.OrganizationId) && permissionIds.Contains(b.PermissionId)));
             if (permissions?.Count == 0)
             {
                 return new List<string>();

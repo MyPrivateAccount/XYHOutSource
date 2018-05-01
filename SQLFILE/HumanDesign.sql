@@ -15,7 +15,8 @@ CREATE TABLE `XYH_HU_HUMANMANAGE` (
   `CreateUser` varchar(127) DEFAULT '',/*创建人*/
   `Modify` int(11) DEFAULT '0',/*修改个数*/
   `Picture` varchar(256) DEFAULT '',/*员工照片*/
-  `RecentModify` varchar(127) DEFAULT '',/*最近修改:创建 入职 离职--外链表*/
+  `RecentModify` varchar(127) DEFAULT '',/*最近修改:创建kl入职 离职--外链表*/
+  `StaffStatus` int(11) DEFAULT 0,/*0 未入职 1离职 2入职 3转正*/
   `Contract` varchar(127) DEFAULT '',/*合同上传内容个数--外链*/
   `CreateTime` datetime DEFAULT NULL,/*创建时间*/
   `EntryTime` datetime DEFAULT NULL,/*入职时间*/
@@ -134,11 +135,11 @@ CREATE TABLE `XYH_HU_SALARY` (
 
 DROP TABLE IF EXISTS `XYH_HU_MONTH`;/*月结*/
 CREATE TABLE `XYH_HU_MONTH` (
-  `ID` varchar(127) NOT NULL DEFAULT '',
+  `ID` varchar(127) NOT NULL DEFAULT '',/**/
   `SettleTime` datetime DEFAULT NULL,/*月结时间*/
   `OperName` varchar(127) NOT NULL DEFAULT '',/*操作人*/
-  `OperTime` datetime DEFAULT NULL,/*操作时间*/
   `AttendanceForm` varchar(127) NOT NULL DEFAULT '',/*月结考勤表-链接到XYH_HU_ATTENDANCEFORM.ID*/
+  `SalaryForm` varchar(127) NOT NULL DEFAULT '',/*月结工资表-链接外面*/
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -146,7 +147,7 @@ DROP TABLE IF EXISTS `XYH_HU_SALARYFORM`;/*月结工资表*/
 CREATE TABLE `XYH_HU_SALARYFORM` (
   `ID` varchar(127) NOT NULL DEFAULT '',/*工资表ID*/
   `MonthID` varchar(127) NOT NULL DEFAULT '',
-  `HumanID` varchar(127) NOT NULL DEFAULT '',/*数据库和员工id，取员工信息*/
+  `HumanID` varchar(127) NOT NULL DEFAULT '',/*存人事的guid*/
   `BaseSalary` int(11) DEFAULT 0,/*基本工资*/
   `Subsidy`int(11) DEFAULT 0,/*岗位补贴*/
   `ClothesBack` int(11) DEFAULT 0,/*工装扣款*/
@@ -160,7 +161,9 @@ DROP TABLE IF EXISTS `XYH_HU_ATTENDANCEFORM`;/*月结考勤表*/
 CREATE TABLE `XYH_HU_ATTENDANCEFORM` (
   `ID` varchar(127) NOT NULL DEFAULT '',/*考勤表ID*/
   `MonthID` varchar(127) NOT NULL DEFAULT '',
-  `HumanID` varchar(127) NOT NULL DEFAULT '',/*数据库和员工id*/
+  `HumanID` varchar(127) NOT NULL DEFAULT '',/*存人事的guid*/
+  `ComeTime` datetime DEFAULT NULL,/*到时间*/
+  `LeaveTime` datetime DEFAULT NULL,/*离开时间*/
   `Late` int(11) DEFAULT 0,/*迟到*/
   `Leave` int(11) DEFAULT 0,/*旷工*/
   PRIMARY KEY (`ID`)

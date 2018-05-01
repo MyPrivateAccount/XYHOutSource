@@ -14,6 +14,9 @@ const WebApiConfig = {
         PostHumanPicture: basicDataBaseApiUrl + "humaninfo/humaninfo/uploadmore/",
         PostHumaninfo: basicDataBaseApiUrl + "humaninfo/addhuman",
         GetWorkNumber: basicDataBaseApiUrl + "humaninfo/jobnumber",
+        LastMonth: basicDataBaseApiUrl + "month/lastmonth",
+        RecoverMonth: basicDataBaseApiUrl + "month/backmonth",
+        CreateMonth: basicDataBaseApiUrl + "month/craetemonth",
     },
     search: {
         searchHumanList: basicDataBaseApiUrl + 'humaninfo/searchhumaninfo',
@@ -21,6 +24,7 @@ const WebApiConfig = {
         getRepeatJudgeInfo: basicDataBaseApiUrl + 'customerInfo/customerheavy/',//获取重客判断信息
         getCustomerByUserID: basicDataBaseApiUrl + 'customerInfo/salesmancustomer/',//根据用户ID获取客户列表
         getAuditHistory: basicDataBaseApiUrl + "examines/",//获取审核历史详细
+        getAllMonthList: basicDataBaseApiUrl + 'month/monthlist',
     },
     attach: {
         uploadUrl: `${UploadUrl}/file/upload/`,

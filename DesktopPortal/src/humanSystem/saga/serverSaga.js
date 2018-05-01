@@ -59,7 +59,57 @@ export function* getWorkNumber(state) {
     }
 }
 
+export function* recoverMonth(state) {
+    let url = WebApiConfig.server.RecoverMonth;
+    let huResult = { isOk: false, msg: '恢复月结失败！' };
+    try {
+        huResult = yield call(ApiClient.post, url, state.payload);
+        //弹消息，返回
+        if (huResult.isOk) {
+            huResult.message = '恢复月结成功';
+
+            yield put({ type: actionUtils.getActionType(actionTypes.CHANGE_LOADING), payload: false});
+            yield put({ type: actionUtils.getActionType(actionTypes.MONTH_GETALLMONTHLIST)});
+        }
+    } catch (e) {
+        huResult.msg = "恢复月结接口调用异常!";
+    }
+    
+    if (!huResult.isOk) {
+        notification.error({
+            message: huResult.msg,
+            duration: 3
+        });
+    }
+}
+
+export function* createMonth(state) {
+    let url = WebApiConfig.server.CreateMonth;
+    let huResult = { isOk: false, msg: '创建月结失败！' };
+    try {
+        huResult = yield call(ApiClient.get, url, state.payload);
+        //弹消息，返回
+        if (huResult.isOk) {
+            huResult.message = '创建月结成功';
+
+            yield put({ type: actionUtils.getActionType(actionTypes.CHANGE_LOADING), payload: false});
+            yield put({ type: actionUtils.getActionType(actionTypes.MONTH_GETALLMONTHLIST) });
+        }
+    } catch (e) {
+        huResult.msg = "创建月结接口调用异常!";
+    }
+    
+    if (!huResult.isOk) {
+        notification.error({
+            message: huResult.msg,
+            duration: 3
+        });
+    }
+}
+
 export default function* watchDicAllAsync() {
-    yield takeEvery(actionUtils.getActionType(actionTypes.POST_HUMANINFO), postHumanInfoAsync);
-    yield takeEvery(actionUtils.getActionType(actionTypes.GET_HUMANINFONUMBER), getWorkNumber);
+    yield takeLatest(actionUtils.getActionType(actionTypes.POST_HUMANINFO), postHumanInfoAsync);
+    yield takeLatest(actionUtils.getActionType(actionTypes.GET_HUMANINFONUMBER), getWorkNumber);
+    yield takeLatest(actionUtils.getActionType(actionTypes.MONTH_RECOVER), recoverMonth);
+    yield takeLatest(actionUtils.getActionType(actionTypes.MONTH_CREATE), createMonth);
 }

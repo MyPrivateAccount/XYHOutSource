@@ -16,6 +16,8 @@ namespace XYHHumanPlugin.Models
         public string Name { get; set; }
         [MaxLength(127)]
         public string IDCard { get; set; }
+        public int? Age { get; set; }
+        public int? Sex { get; set; }
         [MaxLength(127)]
         public string Position { get; set; }
         [MaxLength(127)]
@@ -25,6 +27,7 @@ namespace XYHHumanPlugin.Models
         public string Picture { get; set; }
         [MaxLength(127)]
         public string RecentModify { get; set; }
+        public int? StaffStatus { get; set; }
         [MaxLength(127)]
         public string Contract { get; set; }
         public DateTime? EntryTime { get; set; }

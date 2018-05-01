@@ -9,10 +9,11 @@ namespace ApplicationCore.Models
     //public class Users : IdentityUser
     public class Users 
     {
+        [Key]
         [MaxLength(127)]
         public string Id { get; set; }
 
-        [MaxLength(127)]
+        [MaxLength(256)]
         public string UserName { get; set; }
 
         [MaxLength(127)]

@@ -104,7 +104,10 @@ namespace XYHHumanPlugin.Models
         public DateTime? SettleTime { get; set; }
         [MaxLength(127)]
         public string OperName { get; set; }
-        public DateTime? OperTime { get; set; }
+        [MaxLength(127)]
+        public string AttendanceForm { get; set; }
+        [MaxLength(127)]
+        public string SalaryForm { get; set; }
     }
 
     public class SalaryFormInfo
@@ -133,6 +136,8 @@ namespace XYHHumanPlugin.Models
         public string MonthID { get; set; }
         [MaxLength(127)]
         public string HumanID { get; set; }
+        public DateTime? ComeTime { get; set; }
+        public DateTime? LeaveTime { get; set; }
         public int? Late { get; set; }
         public int? Leave { get; set; }
     }

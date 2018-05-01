@@ -6,6 +6,8 @@ const initState = {
     showLoading: true,
     searchOrgTree: [],
     navigator: [],//导航记录
+    monthresult: {extension: [{key: '1', last: 'tt', monthtime: 'test', operater: 'hhee'}], pageIndex: 0, pageSize: 10, totalCount: 1},
+    monthlast: '2018.5',
 };
 let reducerMap = {};
 //字典数据
@@ -204,6 +206,14 @@ reducerMap[actionTypes.CLOSE_USER_BREAD] = function(state, action) {
 reducerMap[actionTypes.SET_HUMANINFONUMBER] = function(state, action) {
     let f = {...state.userinfo, worknumber: action.payload}
     return Object.assign({}, state, {userinfo: f});
+}
+
+reducerMap[actionTypes.MONTH_UPDATEMONTHLIST] = function(state, action) {
+    return Object.assign({}, state, {monthresult: action.payload, showLoading: false, monthlast: action.payload.lastTime});
+}
+
+reducerMap[actionTypes.CHANGE_LOADING] = function(state, action) {
+    return Object.assign({}, state, {showLoading: action.payload});
 }
 
 export default handleActions(reducerMap, initState);

@@ -9,6 +9,16 @@ namespace XYHHumanPlugin.Dto.Response
         public string ID { get; set; }
         public DateTime? SettleTime { get; set; }
         public string OperName { get; set; }
-        public DateTime? OperTime { get; set; }
+        public string AttendanceForm { get; set; }
+        public string SalaryForm { get; set; }
+    }
+
+    public class SearchMonthInfoResponse
+    {
+        public int pageIndex { get; set; }
+        public int pageSize { get; set; }
+        public int totalCount { get; set; }
+        public DateTime? lastTime { get; set; }
+        public List<MonthInfoResponse> extension { get; set; }
     }
 }

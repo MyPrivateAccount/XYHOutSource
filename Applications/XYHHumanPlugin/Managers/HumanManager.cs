@@ -198,6 +198,25 @@ namespace XYHHumanPlugin.Managers
                 sql += connectstr + @"a.`OrganizateID`='" + condition.Organizate + "'";
                 connectstr = " and ";
             }
+
+            if (condition?.AgeCondition > 0)
+            {
+                if (condition?.AgeCondition == 1)
+                {
+                    sql += connectstr + @"a.`Age`>=20";
+                    connectstr = " and ";
+                }
+                else if (condition?.AgeCondition == 2)
+                {
+                    sql += connectstr + @"a.`Age`>=30";
+                    connectstr = " and ";
+                }
+                else if (condition?.AgeCondition == 3)
+                {
+                    sql += connectstr + @"a.`Age`>=40";
+                    connectstr = " and ";
+                }
+            }
             
             if (condition?.OrderRule == 0 || condition?.OrderRule == null)
             {
@@ -208,23 +227,30 @@ namespace XYHHumanPlugin.Managers
                 sql += @" ORDER BY a.`ID`";
             }
 
-            var query = _Store.DapperSelect<HumanInfo>(sql).ToList();
-            Response.ValidityContractCount = query.Count;
-            Response.TotalCount = query.Count;
-
-            List<HumanInfo> result = new List<HumanInfo>();
-            var begin = (condition.pageIndex) * condition.pageSize;
-            var end = (begin + condition.pageSize) > query.Count ? query.Count : (begin + condition.pageSize);
-
-            for (; begin < end; begin++)
+            try
             {
-                result.Add(query.ElementAt(begin));
+                var query = _Store.DapperSelect<HumanInfo>(sql).ToList();
+                Response.ValidityContractCount = query.Count;
+                Response.TotalCount = query.Count;
+
+                List<HumanInfo> result = new List<HumanInfo>();
+                var begin = (condition.pageIndex) * condition.pageSize;
+                var end = (begin + condition.pageSize) > query.Count ? query.Count : (begin + condition.pageSize);
+
+                for (; begin < end; begin++)
+                {
+                    result.Add(query.ElementAt(begin));
+                }
+
+                Response.PageIndex = condition.pageIndex;
+                Response.PageSize = condition.pageSize;
+                Response.Extension = _mapper.Map<List<HumanInfoResponse>>(result);
             }
+            catch (Exception e)
+            {
 
-            Response.PageIndex = condition.pageIndex;
-            Response.PageSize = condition.pageSize;
-            Response.Extension = _mapper.Map<List<HumanInfoResponse>>(result);
-
+                throw;
+            }
             
             return Response;
         }

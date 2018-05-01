@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace ApplicationCore.Dto
@@ -11,25 +12,16 @@ namespace ApplicationCore.Dto
         {
             if (ModelState.IsValid)
                 return "";
-            System.Text.StringBuilder sbErrors = new System.Text.StringBuilder();
-            foreach (var item in ModelState.Values)
+            var error = "";
+            var errors = ModelState.Values.ToList();
+            foreach (var item in errors)
             {
-                if (item.Errors.Count > 0)
+                foreach (var e in item.Errors)
                 {
-                    for (int i = item.Errors.Count - 1; i >= 0; i--)
-                    {
-                        string msg = item.Errors[i].ErrorMessage;
-                        if (String.IsNullOrEmpty(msg) && item.Errors[i].Exception!=null)
-                        {
-                            msg = item.Errors[i].Exception.Message??"";
-                        }
-
-                        sbErrors.AppendLine( item.Errors[i].ErrorMessage + ":" + (item.RawValue?.ToString()));
-                      
-                    }
+                    error += e.Exception.Message + "  ";
                 }
             }
-            return sbErrors.ToString();
+            return error;
 
         }
     }

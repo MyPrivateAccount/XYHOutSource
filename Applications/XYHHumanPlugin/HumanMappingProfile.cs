@@ -14,6 +14,9 @@ namespace XYHHumanPlugin
             CreateMap<HumanInfo, HumanInfoResponse>();
             CreateMap<HumanInfoResponse, HumanInfo>();
 
+            CreateMap<MonthInfo, MonthInfoResponse>();
+            CreateMap<MonthInfoResponse, MonthInfo>();
+
             CreateMap<BlackInfo, BlackInfoResponse>();
             CreateMap<BlackInfoResponse, BlackInfo>();
 

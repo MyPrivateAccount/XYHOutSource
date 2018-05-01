@@ -21,7 +21,7 @@ namespace XYHHumanPlugin.Dto.Request
         public int CheckStatu { get; set; }
         public int HumanType { get; set; }
         public string Organizate { get; set; }
-        
+        public int AgeCondition { get; set; }
         public int SearchTimeType { get; set; }
         public DateTime? CreateDateStart { get; set; }
         public DateTime? CreateDateEnd { get; set; }

@@ -30,9 +30,9 @@ namespace XYHHumanPlugin.Controllers
         private readonly HumanManager _humanManage;
         private readonly RestClient _restClient;
         private string _lastDate;
-        private int  _lastNumber;
+        private int _lastNumber;
 
-        HumanInfoController(HumanManager human, RestClient rsc)
+        public HumanInfoController( RestClient rsc, HumanManager human)
         {
             _humanManage = human;
             _lastNumber = 0;
@@ -41,14 +41,14 @@ namespace XYHHumanPlugin.Controllers
 
         [HttpGet("testinfo")]
         [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
-        public async Task<ResponseMessage<List<int>>> GetTestInfo()//[FromRoute]string testinfo
+        public async Task<ResponseMessage<List<int>>> GetTestInfo([FromRoute]string testinfo)
         {
             var Response = new ResponseMessage<List<int>>();
-            //if (string.IsNullOrEmpty(testinfo))
-            //{
-            //    Response.Code = ResponseCodeDefines.ModelStateInvalid;
-            //    Response.Message = "请求参数不正确";
-            //}
+            if (string.IsNullOrEmpty(testinfo))
+            {
+                Response.Code = ResponseCodeDefines.ModelStateInvalid;
+                Response.Message = "请求参数不正确";
+            }
             try
             {
                 //Response.Extension = await _userTypeValueManager.FindByTypeAsync(user.Id, type, HttpContext.RequestAborted);
@@ -78,7 +78,7 @@ namespace XYHHumanPlugin.Controllers
             {
                 //if (await _permissionExpansionManager.HavePermission(User.Id, "SEARCH_CONTRACT"))
                 //{
-                    pagingResponse = await _humanManage.SearchHumanInfo(User, condition, HttpContext.RequestAborted);
+                pagingResponse = await _humanManage.SearchHumanInfo(User, condition, HttpContext.RequestAborted);
                 //}
                 //else
                 //{
@@ -96,10 +96,10 @@ namespace XYHHumanPlugin.Controllers
             }
             return pagingResponse;
         }
-        
+
         [HttpPost("addhuman")]
         [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
-        public async Task<ResponseMessage<List<HumanInfoResponse>>> AddHumanInfo(UserInfo User, [FromBody]HumanInfRequest condition)
+        public async Task<ResponseMessage<List<HumanInfoResponse>>> AddHumanInfo(UserInfo User, [FromBody]HumanInfRequest condition, [FromBody]FileInfoRequest fileInfoRequests)
         {
             var Response = new ResponseMessage<List<HumanInfoResponse>>();
             try
@@ -133,6 +133,19 @@ namespace XYHHumanPlugin.Controllers
                     return Response;
                 }
 
+                if (fileInfoRequests != null)
+                {
+                    NameValueCollection nameValueCollection = new NameValueCollection();
+                    var nwf = CreateNwf(User, "humaninfo", fileInfoRequests);
+
+                    nameValueCollection.Add("appToken", "app:nwf");
+                    Logger.Info("nwf协议");
+                    string response2 = await _restClient.Post(ApplicationContext.Current.NWFUrl, nwf, "POST", nameValueCollection);
+                    Logger.Info("返回：\r\n{0}", response2);
+
+                    await _humanManage.CreateFileScopeAsync(User.Id, fileInfoRequests, HttpContext.RequestAborted);
+                }
+                
                 await _humanManage.AddHuman(User, condition, modifyid, "TEST", HttpContext.RequestAborted);
                 Response.Message = $"addhumaninfo sucess";
             }
@@ -153,11 +166,11 @@ namespace XYHHumanPlugin.Controllers
             try
             {
                 var td = DateTime.Now;
-                if (td.Month.ToString()+td.Day.ToString() == _lastDate)
+                if (td.Month.ToString() + td.Day.ToString() == _lastDate)
                 {
                     _lastNumber++;
                 }
-                else 
+                else
                 {
                     _lastNumber = 0;
                     _lastDate = td.Month.ToString() + td.Day.ToString();
@@ -355,5 +368,8 @@ namespace XYHHumanPlugin.Controllers
             return nwf;
         }
         #endregion
+
+
+
     }
 }

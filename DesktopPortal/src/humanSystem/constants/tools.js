@@ -13,6 +13,12 @@ export const ListColums = [
     { title: '身份证号', dataIndex: 'idcard', key: 'idcard' }
 ]
 
+export const MonthListColums = [
+    { title: '上一月结时间', dataIndex: 'last', key: 'last' },
+    { title: '月结时间', dataIndex: 'monthtime', key: 'monthtime' },
+    { title: '操作人', dataIndex: 'operater', key: 'operater' }
+]
+
 export const AgeRanges = [
     { value: 0, label: '不限'}, 
     { value: 1, label: '20岁以上'},

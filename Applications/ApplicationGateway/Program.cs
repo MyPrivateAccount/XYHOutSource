@@ -13,6 +13,8 @@ namespace ApplicationGateway
 {
     public class Program
     {
+        private static XYH.Core.Log.ILogger ExceptionLogger = null;
+        private static XYH.Core.Log.ILogger CrashLogger = null;
         public static void Main(string[] args)
         {
             var configuration = new ConfigurationBuilder()
@@ -20,6 +22,7 @@ namespace ApplicationGateway
                 .AddEnvironmentVariables()
                 .AddCommandLine(args)
                 .Build();
+
             LogLevels logLevel = LogLevels.Info;
             int maxDays = 7;
             var logConfig = configuration.GetSection("Log");
@@ -48,6 +51,13 @@ namespace ApplicationGateway
             LoggerManager.SetLoggerAboveLevels(logLevel);
             LoggerManager.StartClear(maxDays, logFolder, LoggerManager.GetLogger("clear"));
 
+            ExceptionLogger = XYH.Core.Log.LoggerManager.GetLogger("Exception");
+            CrashLogger = XYH.Core.Log.LoggerManager.GetLogger("Crash");
+
+            //全局异常日志
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+            AppDomain.CurrentDomain.FirstChanceException += CurrentDomain_FirstChanceException;
+
             var host = WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>()
                 .UseUrls($"http://*:{configuration["Port"]}")
@@ -56,5 +66,24 @@ namespace ApplicationGateway
 
             //BuildWebHost(args).Run();
         }
+
+
+        private static void CurrentDomain_FirstChanceException(object sender, System.Runtime.ExceptionServices.FirstChanceExceptionEventArgs e)
+        {
+            if (ExceptionLogger != null)
+            {
+                ExceptionLogger.Error("{0}", e.Exception.ToString());
+            }
+        }
+
+        private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            if (CrashLogger != null)
+            {
+                CrashLogger.Fatal("崩溃：\r\n{0}", e.ExceptionObject.ToString());
+            }
+        }
+
+
     }
 }

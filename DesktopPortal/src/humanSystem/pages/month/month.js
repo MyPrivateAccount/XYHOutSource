@@ -1,10 +1,9 @@
 import { connect } from 'react-redux';
-import { getDicParList, searchConditionType,searchOrderType } from '../../actions/actionCreator';
+import { searchConditionType,getAllMonthList, recoverMonth, createMonth,monthLast} from '../../actions/actionCreator';
 import React, { Component } from 'react'
 import {Table, Layout, Input, Select, Icon, Button, Row, Col, Checkbox, Tag, Pagination, Spin} from 'antd'
-import '../search.less'
 import SearchCondition from '../../constants/searchCondition'
-import { SearchHumanTypes, ListColums, AgeRanges} from '../../constants/tools'
+import { MonthListColums} from '../../constants/tools'
 
 const { Header, Sider, Content } = Layout;
 const CheckboxGroup = Checkbox.Group;
@@ -36,94 +35,57 @@ const rowSelection = {
 
 class Staffinfo extends Component {
     componentWillMount() {
-        this.props.dispatch(searchConditionType(SearchCondition.topteninfo));
-        
+        this.props.dispatch(getAllMonthList());
+    }
+
+    handleTableChange = (pagination, filters, sorter) => {
+        this.props.monthresult.pageIndex = (pagination.current - 1);
+    };
+
+    createMonth = () => {
+        this.props.dispatch(createMonth(this.prop.monthlast));
+    }
+
+    recoverMonth = () => {
+        this.props.dispatch(recoverMonth(this.prop.monthlast));
     }
 
     render() {
-        const searchInfo = this.props.searchInfo || {};
-        const showLoading = searchInfo.showLoading;
-        const humanList = this.props.searchInfo.searchResult.extension;
+        const nextMonth =2;
+        const showLoading = this.props.showLoading;
+        const monthList = this.props.monthresult.extension;
         return (
             <div>
                 <div style={{display: "block"}}>
-                    <Row className='searchBox'>
-                        <Col span={12}>
-                            <Input addonBefore="新耀行" prefix={<Icon type="search" />} 
-                            onPressEnter={(e) => this.handleSearch()} 
-                            style={{ paddingRight: '10px', marginLeft: '5px'}} 
-                            placeholder='请输入姓名'
-                            onChange = {this.handleKeyChangeWord} />
-                        </Col>
-                        <Col span={8}>
-                            <Button type="primary" onClick={(e) => this.handleSearch()}>搜索</Button>
+                    <Row>
+                        <Col span={8} offset={8}>
+                            <p style={{padding: '15px 10px', margin: '0px 3px'}}>{"待结月份:"+nextMonth}</p>
                         </Col>
                     </Row>
-                    <div className='searchCondition'>
-                        <Row>
-                            <Col span={12}>
-                                <span style={styles.bSpan}>所有人员 > </span>
-                            </Col>
-                            <Col span={4}>
-                                <Button onClick={this.handleSearchBoxToggle}>{this.props.searchInfo.expandSearchBox ? "收起筛选" : "展开筛选"}<Icon type={this.props.searchInfo.expandSearchBox ? "up-square-o" : "down-square-o"} /></Button>
-                            </Col>
-                        </Row>
-                        <div style={{display: this.props.searchInfo.expandSearchBox ? "block" : "none"}}>
-                            <Row className="normalInfo">
-                                <Col span={24}>
-                                    <label style={styles.conditionRow}>状态 ：</label>
-                                    {SearchHumanTypes.map(
-                                        (t, i) => <Button type="primary" size='small' key={t.value} className={this.props.searchInfo.humanType === t.value ? 'saleStatusBtn' : 'saleStatusBtn statusBtnDefault'} onClick={(e) => this.handleSaleStatusChange(t.value)}>{t.label}</Button>
-                                    )}
-                                </Col>
-                            </Row>
-                            <Row className="normalInfo">
-                                <Col span={24}>
-                                    <label style={styles.conditionRow}>年龄 ：</label>
-                                    {
-                                        AgeRanges.map(age =>
-                                            <Button className={age.value === this.props.searchInfo.ageCondition ? "staffRangeBtn staffBtnActive" : "staffRangeBtn"} key={age.value} onClick={(e) => this.handlePriceRange(age.value)}>{age.label}</Button>
-                                        )
-                                    }
-                                </Col>
-                            </Row>
-                            <Row className="normalInfo">
-                                <Col span={24}>
-                                    <label style={styles.conditionRow}>排序 ：</label>
-                                    <ButtonGroup onClick={this.handleOrderChange}>
-                                        <Button type={this.props.searchInfo.orderRule === 0 ? "primary" : ""} value="0">不排序</Button>
-                                        <Button type={this.props.searchInfo.orderRule === 1 ? "primary" : ""} icon="arrow-up" value="1">升序</Button>
-                                        <Button type={this.props.searchInfo.orderRule === 2 ? "primary" : ""} icon="arrow-down" value="2">降序</Button>
-                                    </ButtonGroup>
-                                </Col>
-                            </Row>
-                        </div>
-                    </div>
-                    <Row className="groupButton">
-                        <Col span={24}>
-                            <Button type="primary" className="statuButton" onClick={(e) => this.handleOnboarding(0)}>入职</Button>
-                            <Button type="primary" className="statuButton" onClick={(e) => this.handleSearch(1)}>转正</Button>
-                            <Button type="primary" className="statuButton" onClick={(e) => this.handleSearch(2)}>异动调薪</Button>
-                            <Button type="primary" className="statuButton" onClick={(e) => this.handleSearch(3)}>离职</Button>
-                            <Button type="primary" className="statuButton" onClick={(e) => this.handleSearch(4)}>合同上传</Button>
-                            <Button type="primary" className="statuButton" onClick={(e) => this.handleSearch(5)}>加入黑名单</Button>
-                            <Button type="primary" className="statuButton" onClick={(e) => this.handleSearch()}>历史信息</Button>
+                    <Row>
+                        <Col span={8} offset={8}>
+                            <Button style={{padding: '15px 12px', margin: '10px 15px'}} type="primary" onClick={(e) => this.createMonth()}>月结</Button>
                         </Col>
                     </Row>
-                    <p style={{padding: '15px 10px', borderBottom: '1px solid #e0e0e0', fontSize: '1.4rem', fontWeight: 'bold'}}>目前已为你筛选出<b style={{color: '#f36366'}}> {humanList.length || 0} </b>条员工信息</p>
+                    <Row>
+                        <Col span={8} offset={8}>
+                            <Button style={{padding:'15px 12px'}} type="primary" onClick={(e) => this.recoverMonth()}>{"恢复:"+this.props.monthLast}</Button>
+                        </Col>
+                    </Row>
+                    <p style={{padding: '15px 10px', borderBottom: '1px solid #e0e0e0', fontSize: '1.4rem', fontWeight: 'bold'}}>目前已为你筛选出<b style={{color: '#f36366'}}> {monthList.length || 0} </b>条员工信息</p>
                     <Spin spinning={showLoading} delay={200} tip="查询中...">
                         {
-                            humanList.length>0 ? <div className='searchResult'>
+                            monthList.length>0 ? <div className='searchResult'>
                                 {/**搜索结果**/}
                                 <Row>
                                     <Col span={24}>
                                         <Layout>
                                             <Header style={{ backgroundColor: '#ececec' }}>
-                                                人事列表
+                                                月结列表
                                                     &nbsp;
                                             </Header>
                                             <Content>
-                                                <Table rowSelection={rowSelection} rowKey={record => record.key} pagination={this.props.searchInfo.searchResult} columns={ListColums} dataSource={this.props.searchInfo.searchResult.extension} onChange={this.handleTableChange} />
+                                                <Table rowSelection={rowSelection} rowKey={record => record.key} pagination={this.props.monthresult} columns={MonthListColums} dataSource={this.props.monthresult.extension} onChange={this.handleTableChange} />
                                             </Content>
                                         </Layout>
                                     </Col>
@@ -143,8 +105,9 @@ class Staffinfo extends Component {
 
 function stafftableMapStateToProps(state) {
     return {
-        searchInfo: state.search,
-        showLoading: state.basicData.showLoading
+        showLoading: state.basicData.showLoading,
+        monthresult: state.basicData.monthresult,
+        monthLast: state.basicData.monthlast
     }
 }
 

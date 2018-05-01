@@ -99,11 +99,78 @@ namespace XYHHumanPlugin.Stores
             await Context.SaveChangesAsync(cancellationToken);
         }
 
+        public async Task CreateMonthAsync(SimpleUser userinfo, MonthInfo monthinf, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (monthinf == null)
+            {
+                throw new ArgumentNullException(nameof(monthinf));
+            }
+
+            Context.Add(monthinf);
+            await Context.SaveChangesAsync(cancellationToken);
+        }
+
+        public async Task CreateMonthSalaryAsync(SalaryFormInfo forminfo, CancellationToken cle = default(CancellationToken))
+        {
+            if (forminfo == null)
+            {
+                throw new ArgumentNullException(nameof(forminfo));
+            }
+
+            Context.Add(forminfo);
+            await Context.SaveChangesAsync(cle);
+        }
+
+        public async Task CreateMonthAttendanceAsync(AttendanceFormInfo forminfo, CancellationToken cle = default(CancellationToken))
+        {
+            if (forminfo == null)
+            {
+                throw new ArgumentNullException(nameof(forminfo));
+            }
+
+            Context.Add(forminfo);
+            await Context.SaveChangesAsync(cle);
+        }
+
         public async Task DeleteAsync(HumanInfo userinfo, string contractid, CancellationToken cancellationToken = default(CancellationToken))
         { }
 
+        public async Task DeleteAsync(MonthInfo monthinfo, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (monthinfo == null)
+            {
+                throw new ArgumentNullException(nameof(monthinfo));
+            }
+            Context.Remove(monthinfo);
+            try
+            {
+                await Context.SaveChangesAsync(cancellationToken);
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
+            }
+        }
+
         public async Task DeleteListAsync(List<HumanInfo> buildingBaseList, CancellationToken cancellationToken = default(CancellationToken))
         { }
+
+        public async Task DeleteListAsync(List<MonthInfo> monthList, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (monthList == null)
+            {
+                throw new ArgumentNullException(nameof(monthList));
+            }
+            Context.RemoveRange(monthList);
+            try
+            {
+                await Context.SaveChangesAsync(cancellationToken);
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
+            }
+        }
 
         public Task<TResult> GetAsync<TResult>(Func<IQueryable<HumanInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken))
         {
@@ -114,7 +181,15 @@ namespace XYHHumanPlugin.Stores
             return query.Invoke(Context.HumanInfos.AsNoTracking()).SingleOrDefaultAsync(cancellationToken);
         }
 
-        public Task<List<TResult>> ListAsync<TResult>(Func<IQueryable<HumanInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<TResult> GetMonthAsync<TResult>(Func<IQueryable<MonthInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (query == null)
+            {
+                throw new ArgumentNullException(nameof(query));
+            }
+            return query.Invoke(Context.MonthInfos.AsNoTracking()).SingleOrDefaultAsync(cancellationToken);
+        }
+        public Task<List<TResult>> GetHumanListAsync<TResult>(Func<IQueryable<HumanInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (query == null)
             {
@@ -131,13 +206,22 @@ namespace XYHHumanPlugin.Stores
             }
             return query.Invoke(Context.ModifyInfos.AsNoTracking()).SingleOrDefaultAsync(cancellationToken);
         }
-        public Task<List<TResult>> ListModifyAsync<TResult>(Func<IQueryable<ModifyInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<List<TResult>> GetListModifyAsync<TResult>(Func<IQueryable<ModifyInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (query == null)
             {
                 throw new ArgumentNullException(nameof(query));
             }
             return query.Invoke(Context.ModifyInfos.AsNoTracking()).ToListAsync(cancellationToken);
+        }
+
+        public Task<List<TResult>> GetListMonthAsync<TResult>(Func<IQueryable<MonthInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (query == null)
+            {
+                throw new ArgumentNullException(nameof(query));
+            }
+            return query.Invoke(Context.MonthInfos.AsNoTracking()).ToListAsync(cancellationToken);
         }
 
         public async Task UpdateAsync(HumanInfo buildingBase, CancellationToken cancellationToken = default(CancellationToken))

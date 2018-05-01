@@ -102,8 +102,41 @@ export function* getHumanListAsync(state) {
     }
 }
 
+export function* getMonthListAsync(state) {
+    let result = {isOk: false, extension: {}, msg: '获取月结列表失败！'};
+    let url = WebApiConfig.search.getAllMonthList;
+
+    try {
+        let res = yield call(ApiClient.post, url, state.payload);
+        if (res.data.code == 0) {
+            result.isOk = true;
+            let lv = res.data.extension;
+            let data = lv.extension.map(function(v, k) {
+                let last = new Date(v.SettleTime);
+                last.setMonth(last.getMonth()-1);
+                let v1 = last.getFullYear() + '.' + last.getMonth();
+                let v2 = v.SettleTime.getFullYear() + '.' + v.SettleTime.getMonth();
+                return {key: k, last: v1, monthtime: v2, operater: v.OperName};
+            });
+
+            yield put ({type: actionUtils.getActionType(actionTypes.MONTH_UPDATEMONTHLIST),
+                 payload: {extension:data, pageIndex: lv.pageIndex, pageSize: lv.pageSize, totalCount: lv.totalCount, lastTime: lv.lastTime}});
+        }
+    } catch (e) {
+        result.msg = '检索关键字接口调用异常';
+    }
+
+    if (!result.isOk) {
+        notification.error({
+            description: result.msg,
+            duration: 3
+        });
+    }
+}
+
 export default function* watchAllSearchAsync() {
     yield takeLatest(actionUtils.getActionType(actionTypes.SEARCH_CUSTOMER), getCustomerListAsync);
     yield takeLatest(actionUtils.getActionType(actionTypes.SEARCH_CONDITION), getSearchConditionAsync);
     yield takeLatest(actionUtils.getActionType(actionTypes.GET_ALLHUMANINFO), getHumanListAsync);
+    yield takeLatest(actionUtils.getActionType(actionTypes.MONTH_GETALLMONTHLIST), getMonthListAsync);
 }
