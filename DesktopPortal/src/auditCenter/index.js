@@ -1,23 +1,24 @@
-import React, { Component } from 'react';
-import { withReducer } from 'react-redux-dynamic-reducer'
-import { Layout, Menu, Icon, Button, Breadcrumb } from 'antd'
-import { connect } from 'react-redux'
+import React, {Component} from 'react';
+import {withReducer} from 'react-redux-dynamic-reducer'
+import {Layout, Menu, Icon, Button, Breadcrumb} from 'antd'
+import {connect} from 'react-redux'
 import reducers from './reducers'
-import { sagaMiddleware } from '../'
+import {sagaMiddleware} from '../'
 import rootSaga from './saga/rootSaga';
-import { closeAuditDetail, changeMenu, setLoadingVisible, getAuditList } from './actions/actionCreator';
+import {closeAuditDetail, changeMenu, setLoadingVisible, getAuditList} from './actions/actionCreator';
 import ContentPage from './pages/contentPage';
 import SearchCondition from './constants/searchCondition';
+import {getDicParList} from '../actions/actionCreators'
 sagaMiddleware.run(rootSaga);
 
-const { Header, Sider, Content } = Layout;
+const {Header, Sider, Content} = Layout;
 const menuDefine = [
     // { menuID: "menu_waitAudit", displayName: "待审核", menuIcon: 'info-circle-o', examineStatus: 1 },
     // { menuID: "menu_passed", displayName: "审核通过", menuIcon: 'check-circle-o', examineStatus: 2 },
     // { menuID: "menu_reject", displayName: "审核驳回", menuIcon: 'close-circle-o', examineStatus: 3 }
-    { menuID: "menu_myAudit", displayName: "我审批的", menuIcon: 'info-circle-o' },
-    { menuID: "menu_mySubmit", displayName: "我发起的", menuIcon: 'check-circle-o' },
-    { menuID: "menu_copyToMe", displayName: "抄送我的", menuIcon: 'copy' }
+    {menuID: "menu_myAudit", displayName: "我审核的", menuIcon: 'info-circle-o'},
+    {menuID: "menu_mySubmit", displayName: "我发起的", menuIcon: 'check-circle-o'},
+    {menuID: "menu_copyToMe", displayName: "抄送我的", menuIcon: 'copy'}
 ];
 const homeStyle = {
     navigator: {
@@ -33,6 +34,7 @@ class AuditIndex extends Component {
         //searchCondition: SearchCondition.auditListCondition
     }
     componentWillMount() {
+        this.props.dispatch(getDicParList(['PHOTO_CATEGORIES','SHOP_LEASE_PAYMENTTIME','SHOP_DEPOSITTYPE']));
         this.props.dispatch(changeMenu(menuDefine[0]));
         this.props.dispatch(setLoadingVisible(true));
         this.props.dispatch(getAuditList(SearchCondition.auditListCondition));
@@ -92,10 +94,10 @@ class AuditIndex extends Component {
                 </Sider>
                 <Layout>
                     <Header>
-                        <Breadcrumb separator=">" style={{ fontSize: '1.2rem' }}>
+                        <Breadcrumb separator=">" style={{fontSize: '1.2rem'}}>
                             <Breadcrumb.Item onClick={this.handleNavClick} key='home' style={homeStyle.navigator}>{this.state.activeMenu.displayName}</Breadcrumb.Item>
                             {
-                                navigator.map(nav => <Breadcrumb.Item key={nav.id}>{nav.contentName || '未命名'}</Breadcrumb.Item>)
+                                navigator.map(nav => <Breadcrumb.Item key={nav.id}>{nav.contentName || nav.taskName || '未命名'}</Breadcrumb.Item>)
                             }
                         </Breadcrumb>
                     </Header>
@@ -112,4 +114,4 @@ function mapStateToProps(state, props) {
         navigator: state.audit.navigator
     }
 }
-export default withReducer(reducers, 'AuditIndex', { namespaceActions: false })(connect(mapStateToProps)(AuditIndex));
+export default withReducer(reducers, 'AuditIndex', {namespaceActions: false, mapExtraState: (state, rootState) => ({oidc: rootState.oidc, rootBasicData: rootState.basicData})})(connect(mapStateToProps)(AuditIndex));

@@ -4,6 +4,7 @@ import AttachInfo from './attachInfo';
 import BasicInfo from './basicInfo';
 import LeaseInfo from './leaseInfo';
 import SupportInfo from './supportInfo';
+import ShopSummaryInfo from './shopSummaryInfo';
 import './editCommon.less';
 import '../building/buildingDish.less';
 
@@ -18,6 +19,7 @@ class ShopsDetail extends Component {
     }
     render() {
         const shopInfo = (this.props.shopInfo || {});
+        const basicData = (this.props.basicData || {});
         return (
             <div className="relative">
                 <Layout>
@@ -27,7 +29,7 @@ class ShopsDetail extends Component {
                                 {/**
                                  * 基本信息
                                  */}
-                                <Col span={24}><BasicInfo shopInfo={shopInfo} /></Col>
+                                <Col span={24}><BasicInfo shopInfo={shopInfo} basicData={basicData} /></Col>
                             </Row>
                             <Row>
                                 {/**
@@ -40,6 +42,10 @@ class ShopsDetail extends Component {
                                  * 配套设置
                                  */}
                                 <Col span={24}><SupportInfo shopInfo={shopInfo} /></Col>
+                            </Row>
+                            <Row>
+                                {/*商铺简介*/}
+                                <Col><ShopSummaryInfo shopInfo={shopInfo} /></Col>
                             </Row>
                             <Row>
                                 {/**

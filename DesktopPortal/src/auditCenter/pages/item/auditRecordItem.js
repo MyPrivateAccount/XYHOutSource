@@ -1,5 +1,5 @@
 import {connect} from 'react-redux';
-import {openAuditDetail, getAuditHistory} from '../../actions/actionCreator';
+import {openAuditDetail, getAuditHistory, getActiveDetail, getAuditDetail, getZywActiveDetail} from '../../actions/actionCreator';
 import React, {Component} from 'react'
 import {notification, Row, Col, Icon} from 'antd'
 import moment from 'moment';
@@ -8,7 +8,13 @@ import AuditCustomer from '../auditCustomer';
 import AuditHouseNewInfo from '../auditHouseNewInfo'
 import {setLoadingVisible} from '../../../customerManager/actions/actionCreator';
 import AuditBuildingOnSite from '../auditBuildingsOnSite';
+import AuditDealInfo from '../auditDealInfo';
+import ZYWAuditDealInfo from '../zywAuditDealInfo';
+import AuditPicture from '../auditPicture';
+import AuditDealBack from '../auditDealBack';
+import ZYWAuditDealBack from '../ZYWAuditDealBack';
 import AuditContract from '../auditContract';
+
 const itemStyle = {
     itemBorder: {
         height: '80px',
@@ -30,18 +36,18 @@ export const auditType = {
     building: {
         name: '新增楼盘',
         icon: <i className='iconfont icon-xinzengfangyuan_icon' style={{fontSize: '48px'}}></i>,
-        component: <AuditHouseSource />
+        component: <AuditHouseSource sourceType='building' company="xyh" />
     },
     shops: {
         name: '新增商铺',
         icon: <Icon type='shop' style={{fontSize: '48px', marginTop: '10px'}} />,
-        component: <AuditHouseSource />
+        component: <AuditHouseSource sourceType='shop' company="xyh" />
     },
-    // ShopsHot: {//热卖不需要审核
-    //     name: ' 热卖户型',
-    //     icon: <i className='iconfont icon-remai' style={{ fontSize: '48px' }}></i>,
-    //     component: <AuditHouseNewInfo subTitle='热卖户型' />
-    // },
+    ShopsHot: {//热卖不需要审核
+        name: '热卖户型',
+        icon: <i className='iconfont icon-remai' style={{fontSize: '48px'}}></i>,
+        component: <AuditHouseNewInfo subTitle='热卖户型' />
+    },
     ShopsAdd: {
         name: '商铺加推',
         icon: <i className='iconfont icon-jiatui' style={{fontSize: '48px'}}></i>,
@@ -84,11 +90,107 @@ export const auditType = {
     },
     TransferCustomer: {
         name: '调客审核',
-        icon: <Icon type="export" style={{fontSize: '48px'}} />,
+        icon: <Icon type="export" style={{fontSize: '48px', marginTop: '10px'}} />,
         component: <AuditCustomer />
     },
     BuildingsOnSite: {
         name: '指派驻场',
+        icon: <i className='iconfont icon-manager' style={{fontSize: '48px'}}></i>,
+        component: <AuditBuildingOnSite />
+    },
+    CustomerDeal: {
+        name: '成交信息',
+        icon: <Icon type="bank" style={{fontSize: '48px', marginTop: '10px'}} />,
+        component: <AuditDealInfo />
+    },
+    BuildingPicture: {
+        name: '楼盘图片',
+        icon: <i className='iconfont icon-tupian' style={{fontSize: '48px'}}></i>,
+        component: <AuditPicture picType='building' />
+    },
+    ShopPicture: {
+        name: '商铺图片',
+        icon: <i className='iconfont icon-tupian' style={{fontSize: '48px'}}></i>,
+        component: <AuditPicture picType='shop' />
+    },
+    CustomerDealBack: {
+        name: '成交回退',
+        icon: <i className='iconfont icon-dijia' style={{fontSize: '48px'}}></i>,
+        component: <AuditDealBack />
+    },
+    ///////   >>>>>>>>>>>>>>>>  租壹屋 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>. //////
+    ZYWBuilding: {
+        name: '租壹屋新增楼盘',
+        icon: <i className='iconfont icon-xinzengfangyuan_icon' style={{fontSize: '48px'}}></i>,
+        component: <AuditHouseSource sourceType='building' company="zyw" />
+    },
+    ZYWShops: {
+        name: '租壹屋新增商铺',
+        icon: <Icon type='shop' style={{fontSize: '48px', marginTop: '10px'}} />,
+        component: <AuditHouseSource sourceType='shop' company="zyw" />
+    },
+    ZYWCustomerDeal: {
+        name: '租壹屋成交信息',
+        icon: <Icon type="bank" style={{fontSize: '48px', marginTop: '10px'}} />,
+        component: <ZYWAuditDealInfo />
+    },
+    ZYWCustomerDealBack: {
+        name: '租壹屋成交回退',
+        icon: <i className='iconfont icon-dijia' style={{fontSize: '48px'}}></i>,
+        component: <ZYWAuditDealBack />
+    },
+    ZYWOwnerInfo: {
+        name: '租壹屋业主信息',
+        icon: <Icon type='user' style={{fontSize: '48px', marginTop: '10px'}} />,
+        component: <AuditHouseNewInfo subTitle="租壹屋业主信息" />
+    },
+    ZYWBuildingPicture: {
+        name: '租壹屋楼盘图片',
+        icon: <i className='iconfont icon-tupian' style={{fontSize: '48px'}}></i>,
+        component: <AuditPicture picType='building' />
+    },
+    ZYWIntensionLease: {
+        name: '租壹屋意向租约',
+        icon: <Icon type='file-text' style={{fontSize: '48px', marginTop: '10px'}} />,
+        component: <AuditHouseNewInfo subTitle="租壹屋意向租约" />
+    },
+    ZYWDiscountPolicy: {
+        name: '租壹屋优惠政策',
+        icon: <i className='iconfont icon-youhui' style={{fontSize: '48px'}}></i>,
+        component: <AuditHouseNewInfo subTitle='租壹屋优惠政策' />
+    },
+    ZYWCommissionType: {
+        name: '租壹屋佣金方案',
+        icon: <i className='iconfont icon-yongjin' style={{fontSize: '48px'}}></i>,
+        component: <AuditHouseNewInfo subTitle='租壹屋佣金方案' />
+    },
+    ZYWBuildingNo: {
+        name: '租壹屋楼栋批次',
+        icon: <i className='iconfont icon-pici' style={{fontSize: '48px'}}></i>,
+        component: <AuditHouseNewInfo subTitle='租壹屋楼栋批次' />
+    },
+    ZYWReportRule: {
+        name: '租壹屋报备规则',
+        icon: <i className='iconfont icon-guize' style={{fontSize: '48px'}}></i>,
+        component: <AuditHouseNewInfo subTitle='租壹屋报备规则' />
+    },
+    ZYWPrice: {
+        name: '租壹屋价格',
+        icon: <i className='iconfont icon-zongjia' style={{fontSize: '48px'}}></i>,
+        component: <AuditHouseNewInfo subTitle='租壹屋价格' />
+    },
+    ZYWShopPicture: {
+        name: '租壹屋商铺图片',
+        icon: <i className='iconfont icon-tupian' style={{fontSize: '48px'}}></i>,
+        component: <AuditPicture picType='shop' />
+    },
+    ZYWShopsHot: {
+        name: '租壹屋热租户型',
+        icon: <i className='iconfont icon-remai' style={{fontSize: '48px'}}></i>,
+        component: <AuditHouseNewInfo subTitle='租壹屋热租户型' />
+    },
+    ZYWBuildingsOnSite: {
+        name: '租壹屋指派驻场',
         icon: <i className='iconfont icon-manager' style={{fontSize: '48px'}}></i>,
         component: <AuditBuildingOnSite />
     },
@@ -104,7 +206,7 @@ class AuditRecordItem extends Component {
     }
 
     handleAuditClick = (auditInfo) => {
-        console.log("auditInfo:", auditInfo);
+        console.log(auditInfo, '???')
         if (!auditType[auditInfo.contentType]) {
             notification.error({
                 description: '暂不支持此种类型的审核!',
@@ -113,8 +215,16 @@ class AuditRecordItem extends Component {
             return;
         }
         this.props.dispatch(setLoadingVisible(true));
-        this.props.dispatch(openAuditDetail(auditInfo));
+        this.props.dispatch(getAuditDetail(auditInfo.id));
         this.props.dispatch(getAuditHistory(auditInfo.id));
+        if (auditInfo.submitDefineId && !(auditInfo.contentType || "").includes("Deal")) {
+            if (auditInfo.contentType.startsWith("ZYW")) {
+                this.props.dispatch(getZywActiveDetail(auditInfo.submitDefineId));
+            } else {
+                this.props.dispatch(getActiveDetail(auditInfo.submitDefineId));
+            }
+        }
+        this.props.dispatch(openAuditDetail(auditInfo));
     }
     getAuditTooltip(auditInfo) {
         let tooltip = '';
@@ -145,13 +255,13 @@ class AuditRecordItem extends Component {
         }
         return (
             <div style={itemStyle.itemBorder}>
-                <Row>
+                <Row style={{cursor: 'pointer'}} onClick={(e) => this.handleAuditClick(auditInfo)}>
                     <Col span={3}>
                         {this.getAuditIcon(auditInfo)}
                     </Col>
                     <Col span={16}>
                         <Row style={{marginBottom: '10px', cursor: 'pointer'}}>
-                            <Col span={20} onClick={(e) => this.handleAuditClick(auditInfo)}><b>{contentTypeText}</b></Col>
+                            <Col span={20} ><b>{contentTypeText}</b></Col>
                         </Row>
                         <Row style={{marginBottom: '5px', fontSize: '0.9rem'}}>
                             <Col >{auditInfo.contentName || ""}{auditInfo.ext2 ? "(" + auditInfo.ext2 + ")" : null}</Col>

@@ -34,7 +34,7 @@ class ComplementInfo extends Component {
                            complementInfo.length === 0 ? <div style={{ marginLeft: '20px' }}>{'暂无信息'}</div> :
                            
                             complementInfo.map((item, i)=>{
-                                return <Col span={24} key= {i}>补充内容{i}:{item.contentInfo}</Col>
+                                return <Col span={24} key= {i}>补充内容{i + 1}:{item.contentInfo}</Col>
                             })
                             
                         }

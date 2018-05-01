@@ -85,13 +85,16 @@ class BasicInfo extends Component {
                                 {/*** 详细 */}
                                 <Col span={12}>
                                     <Row className='viewRow'>
-                                        <Col span={12} ><b style={{fontSize: '1.3rem'}}>{basicInfo.name} | </b>{basicInfo.areaFullName}</Col>
-                                        <Col span={12}></Col>
+                                        <Col span={24} ><b style={{fontSize: '1.3rem'}}>{basicInfo.name} | </b>{basicInfo.areaFullName}</Col>
                                     </Row>
                                     <Row className='viewRow'>
+                                        <Col span={12}>{basicInfo.builtupArea}㎡ | 共{basicInfo.houseHolds}户</Col>
+                                        <Col span={12} style={{color: 'red', fontSize: '1.2rem'}}>{basicInfo.minPrice || basicInfo.maxPrice ? (basicInfo.minPrice + '-' + basicInfo.maxPrice + '元/㎡') : '暂未定价'}</Col>
+                                    </Row>
+                                    {/* <Row className='viewRow'>
                                         <Col span={12}>开盘时间：{basicInfo.openDate ? basicInfo.openDate.replace("T", " ") : ""}</Col>
                                         <Col span={12}>交房时间：{basicInfo.deliveryDate ? basicInfo.deliveryDate.replace("T", " ") : ""}</Col>
-                                    </Row>
+                                    </Row> */}
                                     <Row className='viewRow'>
                                         <Col span={12}>产权年限：{basicInfo.propertyTerm}年</Col>
                                         <Col span={12}>土地到期时间：{basicInfo.landExpireDate ? basicInfo.landExpireDate.replace("T", " ") : ""}</Col>
@@ -101,7 +104,7 @@ class BasicInfo extends Component {
                                         <Col span={12}>建筑面积：{basicInfo.builtupArea}㎡</Col>
                                     </Row>
                                     <Row className='viewRow'>
-                                        <Col span={12}>容积率：{basicInfo.plotRatio}%</Col>
+                                        <Col span={12}>容积率：{basicInfo.plotRatio}</Col>
                                         <Col span={12}>绿化率：{basicInfo.greeningRate}%</Col>
                                     </Row>
                                     <Row className='viewRow'>
@@ -139,21 +142,4 @@ class BasicInfo extends Component {
         )
     }
 }
-
-/*function mapStateToProps(state) {
-    //console.log('shopsMapStateToProps:' + JSON.stringify(state));
-    return {
-        buildingInfo: state.search.activeBuilding,
-        recommendList: state.search.recommendList,
-        hasRegionRecommendPermission: state.search.hasRegionRecommendPermission,
-        hasFilialeRecommendPermission: state.search.hasFilialeRecommendPermission
-    }
-}
-
-function mapDispatchToProps(dispatch) {
-    return {
-        dispatch
-    };
-}
-export default connect(mapStateToProps, mapDispatchToProps)(BasicInfo);*/
 export default BasicInfo;

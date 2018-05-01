@@ -13,26 +13,28 @@ class AuditHistory extends Component {
     }
     componentWillReceiveProps(newProps) {
     }
-    getRecordStstusText(status) {
-        let text = status;
-        switch (text) {
-            case 1:
-                text = "提交";
-                break;
-            case 2:
-                text = "待审核";
-                break;
-            case 3:
-                text = "审核通过";
-                break;
-            case 4:
-                text = "驳回";
-                break;
-            case 5:
-                text = "完成";
-                break;
-            default:
-                break;
+    getRecordStstusText(auditRecord) {
+        let text = auditRecord.examineContents;
+        if (!text || text == '') {
+            switch (auditRecord.recordStstus) {
+                case 1:
+                    text = "提交";
+                    break;
+                case 2:
+                    text = "待审核";
+                    break;
+                case 3:
+                    text = "审核通过";
+                    break;
+                case 4:
+                    text = "驳回";
+                    break;
+                case 5:
+                    text = "完成";
+                    break;
+                default:
+                    break;
+            }
         }
         return text;
     }
@@ -58,7 +60,7 @@ class AuditHistory extends Component {
                             } else if (record.recordStstus === 4) {
                                 stepStatus = "error";
                             }
-                            let title = (record.examineUserName || '') + this.getRecordStstusText(record.recordStstus);
+                            let title = (record.examineUserName || '') + this.getRecordStstusText(record);
                             return (<Step key={record.id} status={stepStatus} title={title} description={desc} />)
                         })
                     }

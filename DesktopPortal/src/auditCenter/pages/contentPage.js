@@ -3,11 +3,11 @@ import Loadable from 'react-loadable';
 import { connect } from 'react-redux';
 import LoadableLoading from '../../components/LoadableLoading';
 
-const LoadableMyAuditPage = Loadable({//我审批的
+const LoadableMyAuditPage = Loadable({//我审核的
     loader: () => import('./myAuditListPage'),
     loading: () => <LoadableLoading />,
 });
-const LoadableMySubmitPage = Loadable({//我审批的
+const LoadableMySubmitPage = Loadable({//我审核的
     loader: () => import('./mySubmitListPage'),
     loading: () => <LoadableLoading />,
 });

@@ -1,11 +1,8 @@
-// import { connect } from 'react-redux';
-// import { rulesTemplateEdit , getDynamicInfoList,getDynamicInfoDetail, gotoThisBuild} from '../../../actions/actionCreator';
 import React, {Component} from 'react'
-import {Form, Icon, Row, Col} from 'antd'
-// import BasicInfo from './basicInfo';
+import {Form, Icon, Row, Col, Layout} from 'antd'
 import {getReport} from '../../utils/utils';
 
-
+const {Header, Sider, Content} = Layout;
 const expCustomer = {
     "id": "4fa9fe37-2899-4174-a1c9-ad8e00188b5a",
     "customerId": "fba92d39-2aeb-4d19-88cd-99143e6fa598",
@@ -25,8 +22,10 @@ const expCustomer = {
     "expectedBeltTime": "2017-11-28T17:48:53.770883"
 }
 
-class RelShopsInfo extends Component {
-
+class RulesTemplateInfo extends Component {
+    state = {
+        expandStatus: true
+    }
     render() {
         const {buildingInfo} = this.props
         let ruleInfo, template, templateData;
@@ -44,40 +43,30 @@ class RelShopsInfo extends Component {
         let templateDataStr
         if (templateData) {
             console.log(templateData, '展示的模板数据是不是对的')
-            templateDataStr = getReport(templateData, expCustomer, this.props.user, p)
+            templateDataStr = getReport(templateData, expCustomer || {}, this.props.user || {}, p)
         }
 
 
         return (
-            <Form layout="horizontal" style={{paddingBottom: '25px', backgroundColor: "#ECECEC"}}>
-                <Row type="flex">
-                    <Col span={20}>
-                        <Icon type="tags-o" className='content-icon' /><span className='content-title'>报备模板</span>
-                    </Col>
-                    <Col span={4}>
-                    </Col>
-                </Row>
-                <Row className='viewRow' style={{paddingBottom: '25px'}}>
-                    {
-                        templateDataStr ? <pre>{templateDataStr}</pre> : '暂无模板'
-                    }
-                </Row>
-            </Form>
+            <Layout>
+                <Content className='content' >
+                    <Form layout="horizontal" style={{paddingBottom: '25px', marginTop: '15px', backgroundColor: "#ECECEC"}}>
+                        <Row type="flex">
+                            <Col span={23}>
+                                <Icon type="tags-o" className='content-icon' /><span className='content-title'>报备模板</span>
+                            </Col>
+                            <Col span={1}><Icon type={this.state.expandStatus ? "up" : "down"} onClick={(e) => this.setState({expandStatus: !this.state.expandStatus})} /></Col>
+                        </Row>
+                        <Row className='viewRow' style={{paddingBottom: '25px', display: this.state.expandStatus ? "block" : "none"}}>
+                            {
+                                templateDataStr ? <pre>{templateDataStr}</pre> : '暂无模板'
+                            }
+                        </Row>
+                    </Form>
+                </Content>
+            </Layout>
         )
     }
 }
 
-/*function mapStateToProps(state) {
-    return {
-        buildInfo: state.search.activeBuilding,
-        user: (state.oidc.user || {}).profile || {},
-    }
-}
-
-function mapDispatchToProps(dispatch) {
-    return {
-        dispatch
-    };
-}
-export default connect(mapStateToProps, mapDispatchToProps)(RelShopsInfo);*/
-export default RelShopsInfo;
+export default RulesTemplateInfo;

@@ -56,7 +56,7 @@ namespace XYHContractPlugin.Managers
             return _mapper.Map<ContractInfoResponse>(baseinfo);
         }
 
-        public virtual async Task<ContractInfoResponse> AddContractAsync(UserInfo userinfo, ContractContentInfoRequest buildingBaseInfoRequest, string checkaction, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual async Task<ContractInfoResponse> AddContractAsync(UserInfo userinfo, string modifyGuid,ContractContentInfoRequest buildingBaseInfoRequest, string checkaction, CancellationToken cancellationToken = default(CancellationToken))
         {
 
             if (buildingBaseInfoRequest == null)
@@ -75,7 +75,7 @@ namespace XYHContractPlugin.Managers
             }
 
             var baseinfo = await Store.CreateAsync(_mapper.Map<SimpleUser>(userinfo), _mapper.Map<ContractInfo>(buildingBaseInfoRequest),
-                (buildingBaseInfoRequest.Modifyinfo!=null&&buildingBaseInfoRequest.Modifyinfo.Count>0)?buildingBaseInfoRequest.Modifyinfo.ElementAt(0).ID:null, checkaction, cancellationToken);
+                modifyGuid/*(buildingBaseInfoRequest.Modifyinfo!=null&&buildingBaseInfoRequest.Modifyinfo.Count>0)?buildingBaseInfoRequest.Modifyinfo.ElementAt(0).ID:null*/, JsonHelper.ToJson(buildingBaseInfoRequest), null, checkaction, cancellationToken);
             return _mapper.Map<ContractInfoResponse>(baseinfo);
         }
 
@@ -481,6 +481,18 @@ namespace XYHContractPlugin.Managers
             return (modify);
         }
 
+        public virtual async Task<ModifyInfo> GetModifyInfo(string modifyid,  CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (modifyid == null)
+            {
+                throw new ArgumentNullException(nameof(modifyid));
+            }
+
+            var modify = await Store.GetModifyAsync(a => a.Where(b => b.ID == modifyid));
+
+            return (modify);
+        }
+
         public virtual async Task SubmitAsync(string modifyid , ExamineStatusEnum ext, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (modifyid == null)
@@ -525,6 +537,8 @@ namespace XYHContractPlugin.Managers
             }
             return infos;
         }
+
+        
     }
 
 }

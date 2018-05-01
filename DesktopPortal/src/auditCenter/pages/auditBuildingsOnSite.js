@@ -1,5 +1,5 @@
 import {connect} from 'react-redux';
-import {getUpdateRecordDetail, setLoadingVisible, getBuildingDetail, getBuildingShops} from '../actions/actionCreator';
+import {getActiveDetail, setLoadingVisible, getBuildingDetail, getBuildingShops} from '../actions/actionCreator';
 import React, {Component} from 'react';
 import {Row, Col, Checkbox, Tag, Pagination, Spin} from 'antd';
 import AuditForm from './item/auditForm';
@@ -27,7 +27,7 @@ class AuditBuildingOnSite extends Component {
     //格式化审核内容
     formatUpdateContent(updateContent) {
         let jsonObj = updateContent;
-        if (jsonObj && jsonObj.startsWith("{") && jsonObj.endsWith("}")) {
+        if (jsonObj && (jsonObj.startsWith("{") || jsonObj.endsWith("["))) {
             try {
                 jsonObj = JSON.parse(jsonObj);
                 console.log("jsonObj:==", jsonObj);

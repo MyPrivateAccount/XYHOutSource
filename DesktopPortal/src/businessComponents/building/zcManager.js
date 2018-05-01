@@ -12,11 +12,11 @@ class ZcmanagerInfo extends Component {
     }
 
     render() {
-        let buildInfo = this.props.buildInfo || {};
+        let buildInfo = this.props.buildingInfo || {};
         return (
             <Layout>
                 <Content className='content' >
-                    <Form layout="horizontal" >
+                    <div style={{marginTop: '15px', backgroundColor: "#ECECEC"}}>
                         <Row type="flex" style={{padding: '1rem 0'}}>
                             <Col span={23}>
                                 <Icon type="tags-o" className='content-icon' /> <span className='content-title'>驻场信息</span>
@@ -24,6 +24,9 @@ class ZcmanagerInfo extends Component {
                             <Col span={1}><Icon type={this.state.expandStatus ? "up" : "down"} onClick={(e) => this.setState({expandStatus: !this.state.expandStatus})} /></Col>
                         </Row>
                         <div style={{display: this.state.expandStatus ? "block" : "none"}}>
+                            <Row className='viewRow'>
+                                {buildInfo.residentUserManager && buildInfo.residentUserManager.id ? <Col> {buildInfo.residentUserManager.userName}(驻场经理) ： {buildInfo.residentUserManager.phoneNumber}</Col> : null}
+                            </Row>
                             <Row className='viewRow'>
                                 {
                                     buildInfo.residentUser1 ? <Col span={12}> {`${buildInfo.residentUser1Info.userName} ： ${buildInfo.residentUser1Info.phoneNumber}`}</Col> : null
@@ -41,23 +44,11 @@ class ZcmanagerInfo extends Component {
                                 }
                             </Row>
                         </div>
-                    </Form>
+                    </div>
                 </Content>
             </Layout>
         )
     }
 }
 
-/*function mapStateToProps(state) {
-    return {
-        buildInfo: state.search.activeBuilding,
-    }
-}
-
-function mapDispatchToProps(dispatch) {
-    return {
-        dispatch
-    };
-}
-export default connect(mapStateToProps, mapDispatchToProps)(ZcmanagerInfo);*/
 export default ZcmanagerInfo;

@@ -1,10 +1,10 @@
-import { connect } from 'react-redux';
-import { closeAuditDetail, saveAudit, setLoadingVisible } from '../../actions/actionCreator';
-import React, { Component } from 'react'
-import { Input, Radio, Form, Button, Row, Col } from 'antd'
+import {connect} from 'react-redux';
+import {closeAuditDetail, saveAudit, setLoadingVisible} from '../../actions/actionCreator';
+import React, {Component} from 'react'
+import {Input, Radio, Form, Button, Row, Col} from 'antd'
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
-const { TextArea } = Input;
+const {TextArea} = Input;
 
 class AuditForm extends Component {
     state = {
@@ -17,13 +17,13 @@ class AuditForm extends Component {
         if (activeAuditHistory) {
             let curRecord = activeAuditHistory.examineRecordResponses.find(record => record.recordStstus === 2);
             if (curRecord) {
-                this.setState({ recordId: curRecord.id });
+                this.setState({recordId: curRecord.id});
             }
         }
     }
 
     hanldeRejectReson = (e) => {
-        this.setState({ desc: e.target.value })
+        this.setState({desc: e.target.value})
     }
     handleAuditdChange = (e) => {
         this.setState({
@@ -32,7 +32,7 @@ class AuditForm extends Component {
     }
     handleSave = (e) => {
         e.preventDefault();
-        let request = { ...this.state };
+        let request = {...this.state};
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (!err) {
                 this.props.dispatch(setLoadingVisible(true));
@@ -46,14 +46,16 @@ class AuditForm extends Component {
     }
 
     render() {
-        const { getFieldDecorator } = this.props.form;
+        const {getFieldDecorator} = this.props.form;
         const formItemLayout = {
-            labelCol: { span: 4 },
-            wrapperCol: { span: 24 },
+            labelCol: {span: 4},
+            wrapperCol: {span: 24},
         };
         let auditStatus = this.state.auditStatus;
+        let curUserID = (this.props.curUser.profile || {}).sub;
+        let isShowAuditForm = (this.props.activeAuditHistory.examineRecordResponses || []).filter(r => r.recordStstus == 2 && r.examineUserId == curUserID).length > 0;
         return (
-            <div style={{ padding: '1rem' }}>
+            <div style={{padding: '1rem', display: isShowAuditForm ? 'block' : 'none'}}>
                 <Row>
                     <Col>
                         <RadioGroup onChange={this.handleAuditdChange} value={auditStatus}>
@@ -66,7 +68,7 @@ class AuditForm extends Component {
                     <Col>
                         <FormItem  {...formItemLayout} label="">
                             {getFieldDecorator('desc', {
-                                rules: [{ required: !auditStatus, message: '请输入驳回原因!' }],
+                                rules: [{required: !auditStatus, message: '请输入驳回原因!'}],
                             })(
                                 <TextArea rows={4} onChange={this.hanldeRejectReson} placeholder={auditStatus ? '请输入意见' : '请输入驳回原因'} />
                                 )}
@@ -74,8 +76,8 @@ class AuditForm extends Component {
                     </Col>
                 </Row>
                 <Row>
-                    <Col style={{ textAlign: 'center', padding: '5px' }}>
-                        <Button type="primary" style={{ marginRight: '10px' }} onClick={this.handleSave} loading={this.props.showLoading}>提交</Button>
+                    <Col style={{textAlign: 'center', padding: '5px'}}>
+                        <Button type="primary" style={{marginRight: '10px'}} onClick={this.handleSave} loading={this.props.showLoading}>提交</Button>
                         <Button type="primary" onClick={this.handleCancel}>取消</Button>
                     </Col>
                 </Row>
@@ -88,7 +90,8 @@ function mapStateToProps(state) {
     return {
         activeAuditInfo: state.audit.activeAuditInfo,
         activeAuditHistory: state.audit.activeAuditHistory,
-        showLoading: state.audit.showLoading
+        showLoading: state.audit.showLoading,
+        curUser: (state.oidc || {}).user || {}
     }
 }
 

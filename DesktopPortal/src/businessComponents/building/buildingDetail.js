@@ -15,6 +15,7 @@ import ZcManager from './zcManager';
 import RulesTemplateInfo from './rulesTemplateInfo';
 import Active from './active';
 import '../buildingSearchItem.less'
+import BuildingNoInfo from './buildingNoInfo'
 
 const {Header, Sider, Content} = Layout;
 
@@ -87,6 +88,9 @@ class BuildingDetail extends Component {
         console.log("getShopStatusStatistic:", status);
         let count = 0;
         let shopStatusArray = [...this.state.shopStatusArray];
+        if (shopStatusArray.length === 0 && this.props.buildingShops.length > 0) {
+            this.getShopStatusArray(this.props);
+        }
         if (status) {
             let result = shopStatusArray.find(s => s.saleStatus == status);
             if (result) {
@@ -106,8 +110,9 @@ class BuildingDetail extends Component {
         // const msgList = this.props.msgList.extension || [];
         const shopSaleStatus = (this.props.basicData || {}).shopSaleStatus || [];
         const buildingInfo = this.props.buildingInfo || {};
+        const isZYW = this.props.isZYW;
         return (
-            <div className="relative" style={{ marginTop: '10px'}}>
+            <div className="relative" style={{marginTop: '10px'}}>
                 <Layout>
                     <Content className='content buildingDish'>
                         {/**基本信息**/}
@@ -128,7 +133,7 @@ class BuildingDetail extends Component {
                             <Col className="content">
                                 <Radio.Group value={this.state.activeTab} size='large' onChange={(e) => this.handleChangTab(e.target.value)}>
                                     <Radio.Button value="basic">基本信息</Radio.Button>
-                                    <Radio.Button value="marketingCtrl">销控看板</Radio.Button>
+                                    <Radio.Button value="marketingCtrl">{isZYW ? "租控看板" : "销控看板"}</Radio.Button>
                                     <Radio.Button value="reportRegular">报备规则</Radio.Button>
                                     <Radio.Button value="buildingNewInfo">楼盘动态</Radio.Button>
                                     <Radio.Button value="shopLayout">商铺列表</Radio.Button>
@@ -143,7 +148,11 @@ class BuildingDetail extends Component {
                                 </Row>
                                 <Row id="zcManager">
                                     {/*** 驻场信息*/}
-                                    <Col span={24}> <ZcManager /></Col>
+                                    <Col span={24}> <ZcManager buildingInfo={buildingInfo} /></Col>
+                                </Row>
+                                <Row id=''>
+                                    {/*** 楼栋批次*/}
+                                    <Col span={24}><BuildingNoInfo buildingInfo={buildingInfo} /></Col>
                                 </Row>
                                 <Row id="supportInfo">
                                     {/*** 配套信息 */}
@@ -177,7 +186,7 @@ class BuildingDetail extends Component {
                         {
                             this.state.activeTab === "buildingNewInfo" ?
                                 <div>
-                                    <Active id={this.props.buildingInfo.id} />
+                                    <Active buildingInfo={buildingInfo} />
                                 </div> : null
                         }
                         {
@@ -187,7 +196,7 @@ class BuildingDetail extends Component {
                                     mode="horizontal"
                                 >
                                     <Menu.Item key="all">全部{this.getShopStatusStatistic()}</Menu.Item>
-                                    {shopSaleStatus.map(s => <Menu.Item key={s.value}>{s.key}{this.getShopStatusStatistic(s.value)}</Menu.Item>)}
+                                    {shopSaleStatus.filter(x => x.ext2 !== '1').map(s => <Menu.Item key={s.value}>{s.key}{this.getShopStatusStatistic(s.value)}</Menu.Item>)}
                                 </Menu>
                                 {buildingShops.map((item, i) => <ShopResultItem key={i} shopInfo={item} buildingInfo={this.props.buildingInfo} gotoShopDetail={() => this.gotoShopDetail(item.id)} />)}</div> : null
                         }
@@ -197,22 +206,5 @@ class BuildingDetail extends Component {
         )
     }
 }
-
-/*function mapStateToProps(state) {
-    // console.log('消息列表:' + JSON.stringify(state.search.msgList));
-    return {
-        buildInfo: state.search.activeBuilding,
-        searchInfo: state.search,
-        basicData: state.basicData,
-        msgList: state.search.msgList
-    }
-}
-
-function mapDispatchToProps(dispatch) {
-    return {
-        dispatch
-    };
-}
-export default connect(mapStateToProps, mapDispatchToProps)(BuildingDishEdit);*/
 
 export default BuildingDetail

@@ -1,0 +1,75 @@
+import React, {Component} from 'react'
+import {Layout, Row, Col} from 'antd'
+import AttachInfo from './attachInfo';
+import BasicInfo from './basicInfo';
+import LeaseInfo from './leaseInfo';
+import SupportInfo from './supportInfo';
+import ShopSummaryInfo from './shopSummaryInfo';
+import OwnerInfo from './ownerInfo'
+import IntensionLease from './intensionLease'
+import './editCommon.less';
+import '../building/buildingDish.less';
+
+const {Header, Sider, Content} = Layout;
+
+class ShopsDetail extends Component {
+    state = {
+
+    }
+    componentWillMount() {
+
+    }
+    render() {
+        const shopInfo = (this.props.shopInfo || {});
+        const basicData = (this.props.basicData || {});
+        return (
+            <div className="relative">
+                <Layout>
+                    <Content className='content buildingDish'>
+                        <div>
+                            <Row>
+                                {/**
+                                 * 基本信息
+                                 */}
+                                <Col span={24}><BasicInfo shopInfo={shopInfo} basicData={basicData} /></Col>
+                            </Row>
+                            <Row>
+                                <Col span={24}><IntensionLease shopInfo={shopInfo} basicData={basicData}/></Col>
+                            </Row>
+                            <Row>
+                                {/**
+                                 * 租约信息
+                                 */}
+                                <Col span={24}><LeaseInfo shopInfo={shopInfo} basicData={basicData}/></Col>
+                            </Row>
+                            <Row>
+                                {/**
+                                 * 业主信息
+                                 */}
+                                <Col span={24}><OwnerInfo shopInfo={shopInfo} /></Col>
+                            </Row>
+                            <Row>
+                                {/**
+                                 * 配套设置
+                                 */}
+                                <Col span={24}><SupportInfo shopInfo={shopInfo} /></Col>
+                            </Row>
+                            <Row>
+                                {/*商铺简介*/}
+                                <Col><ShopSummaryInfo shopInfo={shopInfo} /></Col>
+                            </Row>
+                            <Row>
+                                {/**
+                                 * 附加信息
+                                 */}
+                                {/* <Col span={24}><AttachInfo shopInfo={shopInfo} /></Col> */}
+                            </Row>
+                        </div>
+                    </Content>
+                </Layout>
+            </div>
+        )
+    }
+}
+
+export default ShopsDetail;

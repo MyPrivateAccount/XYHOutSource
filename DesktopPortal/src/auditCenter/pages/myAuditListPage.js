@@ -87,7 +87,7 @@ class MyAuditListPage extends Component {
                                     <Col>
                                         <Menu onClick={this.handleMenuChange} selectedKeys={[this.state.activeTab]}
                                             mode="horizontal">
-                                            <Menu.Item key="waitAudit">待我审批的</Menu.Item>
+                                            <Menu.Item key="waitAudit">待我审核的</Menu.Item>
                                             <Menu.Item key="audited">我参与的</Menu.Item>
                                         </Menu>
                                     </Col>

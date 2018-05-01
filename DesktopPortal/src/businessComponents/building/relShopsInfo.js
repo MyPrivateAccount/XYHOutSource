@@ -35,7 +35,7 @@ class RelShopsInfo extends Component {
         return (
             <Layout>
                 <Content className='content' >
-                    <Form layout="horizontal" >
+                    <div style={{marginTop: '15px', backgroundColor: "#ECECEC"}}>
                         <Row type="flex" style={{padding: '1rem 0'}}>
                             <Col span={23}>
                                 <Icon type="tags-o" className='content-icon' /> <span className='content-title'>商铺整体概况</span>
@@ -58,7 +58,7 @@ class RelShopsInfo extends Component {
                                 <Col span={24}>优惠政策：{relShopInfo.preferentialPolicies}</Col>
                             </Row>
                         </div>
-                    </Form>
+                    </div>
                 </Content>
             </Layout>
         )

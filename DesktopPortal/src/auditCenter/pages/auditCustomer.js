@@ -85,28 +85,33 @@ class AuditCustomer extends Component {
     }
 
     render() {
+        console.log(this.props.activeAuditInfo, 888)
         let columns = this.getColunms();
         const dataSource = this.formateDataSource();
         let activeAuditHistory = this.props.activeAuditHistory;
         if (this.props.contentInfo) {
             activeAuditHistory = this.props.contentInfo;
-            columns.push({
-                title: '操作',
-                children: [{
-                    title: '删除',
-                    dataIndex: 'oper',
-                    render: (text, record) => {
-                        return (<Popconfirm title="确定要删除该调客请求吗?" onConfirm={(e) => this.handleCustomerCancel(record)}>
-                            <Button type="primary" size="small" shape="circle" icon="delete"></Button>
-                        </Popconfirm>)
-                    }
-                }]
-            });
+            // columns.push({
+            //     title: '操作',
+            //     children: [{
+            //         title: '删除',
+            //         dataIndex: 'oper',
+            //         render: (text, record) => {
+            //             return (<Popconfirm title="确定要删除该调客请求吗?" onConfirm={(e) => this.handleCustomerCancel(record)}>
+            //                 <Button type="primary" size="small" shape="circle" icon="delete"></Button>
+            //             </Popconfirm>)
+            //         }
+            //     }]
+            // });
         }
 
         return (
             <div>
                 <Table columns={columns} dataSource={dataSource} bordered={true} style={{ width: '80%', marginTop: '5px' }} />
+                {
+                   ( this.props.activeAuditInfo || {} ).ext1 ? 
+                   <p style={{padding:'15px 0',fontWeight:'700',}}><span style={{paddingRight:'5px'}}>调客原因：</span>{( this.props.activeAuditInfo || {} ).ext1}</p> : null
+                }
                 {
                     this.props.contentInfo ? <AuditHistory contentInfo={activeAuditHistory} /> : <AuditHistory />
                 }
@@ -119,7 +124,7 @@ class AuditCustomer extends Component {
 }
 
 function mapStateToProps(state) {
-    console.log("activeAuditHistory:", state.audit.activeAuditHistory);
+    // console.log("activeAuditHistory:", state.audit.activeAuditHistory);
     return {
         activeAuditInfo: state.audit.activeAuditInfo,
         activeAuditHistory: state.audit.activeAuditHistory

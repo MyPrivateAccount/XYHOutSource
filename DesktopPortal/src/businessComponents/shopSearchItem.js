@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import {Row, Col, Tag} from 'antd'
 import {TAG_TEXT_COLOR, TAG_BACKGROUND_COLOR, TAG_COLOR} from '../constants/uiColor';
+import {getShopName} from '../utils/utils'
 
 const supportMenus = [{label: '上水', value: 'upperWater'},
 {label: '下水', value: 'downWater'},
@@ -35,6 +36,9 @@ class ShopResultItem extends Component {
                 tags.push(item);
             }
         }
+        if (shopInfo.price && shopInfo.price % 1 > 0) {
+            shopInfo.price = (shopInfo.price * 1).toFixed(2);
+        }
         return (
             <div className='itemBorder'>
                 <Row>
@@ -43,11 +47,11 @@ class ShopResultItem extends Component {
                     </Col>
                     <Col span={17}>
                         <Row style={{marginBottom: '10px', cursor: 'pointer'}}>
-                            <Col span={20} onClick={(e) => this.handleShopClick(shopInfo.id)}><b className="buildingTitle">{shopInfo.buildingNo}-{shopInfo.floorNo}-{shopInfo.number}</b>（所属楼盘：{buildingInfo.basicInfo.name}）</Col>
+                            <Col span={20} onClick={(e) => this.handleShopClick(shopInfo.id)}><b className="buildingTitle">{getShopName(shopInfo)}</b>（所属楼盘：{buildingInfo.basicInfo.name}）</Col>
                         </Row>
                         <Row style={{marginBottom: '5px'}}>
                             <Col span={5}>{shopInfo.areaFullName}</Col>
-                            <Col >建筑面积：{shopInfo.buildingArea || "?"}㎡({shopInfo.width}*{shopInfo.height})</Col>
+                            <Col >建筑面积：{shopInfo.buildingArea || "?"}㎡({shopInfo.width}*{shopInfo.depth})</Col>
                         </Row>
                         <Row >
                             <Col>
@@ -63,7 +67,7 @@ class ShopResultItem extends Component {
                         </Row>
                         <Row>
                             <Col>
-                                <label style={{color: 'red'}}>{shopInfo.price || "?"}元/㎡</label>
+                                <label style={{color: 'red'}}>{shopInfo.price ? shopInfo.price + '元/㎡' : "暂未定价"}</label>
                             </Col>
                         </Row>
                     </Col>

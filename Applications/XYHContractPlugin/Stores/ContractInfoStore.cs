@@ -50,6 +50,42 @@ namespace XYHContractPlugin.Stores
             modify.ExamineTime = modify.ModifyStartTime;
             modify.ModifyCheck = checkaction;
 
+
+            buildingBaseInfo.IsDelete = false;
+            buildingBaseInfo.CreateUser = userinfo.Id;
+            buildingBaseInfo.CreateDepartment = userinfo.OrganizationName;
+            buildingBaseInfo.Modify = 1;
+            buildingBaseInfo.CurrentModify = modifyid;
+            buildingBaseInfo.CreateTime = DateTime.Now;
+            Context.Add(buildingBaseInfo);
+            Context.Add(modify);
+            await Context.SaveChangesAsync(cancellationToken);
+            return buildingBaseInfo;
+        }
+        public async Task<ContractInfo> CreateAsync(SimpleUser userinfo, ContractInfo buildingBaseInfo, string modifyid, string ext1, string ext2,string checkaction, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (buildingBaseInfo == null)
+            {
+                throw new ArgumentNullException(nameof(buildingBaseInfo));
+            }
+
+            if (string.IsNullOrEmpty(modifyid))
+            {
+                modifyid = Guid.NewGuid().ToString();
+            }
+
+            var modify = new ModifyInfo();
+            modify.ID = modifyid;
+            modify.Type = 1;//创建
+            modify.ContractID = buildingBaseInfo.ID;
+            modify.ModifyPepole = userinfo.Id;
+            modify.ModifyStartTime = DateTime.Now;
+            modify.ExamineStatus = (int)ExamineStatusEnum.Auditing;
+            modify.ExamineTime = modify.ModifyStartTime;
+            modify.ModifyCheck = checkaction;
+            modify.Ext1 = ext1;
+            modify.Ext2 = ext2;
+
             buildingBaseInfo.IsDelete = false;
             buildingBaseInfo.CreateUser = userinfo.Id;
             buildingBaseInfo.CreateDepartment = userinfo.OrganizationName;

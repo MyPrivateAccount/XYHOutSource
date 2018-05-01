@@ -238,20 +238,4 @@ class SaleControlPanel extends Component {
     }
 }
 
-/*function mapStateToProps(state) {
-    // console.log('首页', state.index.todayReportListId);
-    return {
-        showLoading: state.search.showLoading,
-        shopSaleStatus: state.basicData.shopSaleStatus,
-        buildingShops: state.search.buildingShops,
-        customerDeal: state.search.customerDeal
-    }
-}
-
-function mapDispatchToProps(dispatch) {
-    return {
-        dispatch
-    };
-}
-export default connect(mapStateToProps, mapDispatchToProps)(SaleControlPanel);*/
 export default SaleControlPanel;

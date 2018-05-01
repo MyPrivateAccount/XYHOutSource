@@ -5,7 +5,8 @@ const SearchCondition = {
         waitAuditListCondition: {//待审核
             pageIndex: 0,
             pageSize: defaultPageSize,
-            listType: "myAudit_wait"
+            listType: "myAudit_wait",
+            recordStatus:[3,4]
         },
         auditedListCondition: {//我参与过的
             examineStatus: [],//[1],
