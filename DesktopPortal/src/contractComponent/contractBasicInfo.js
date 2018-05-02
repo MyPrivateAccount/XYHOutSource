@@ -30,7 +30,7 @@ class BasicInfo extends Component {
 
 
     render(){
-        const basicInfo = this.props.contractInfo.baseInfo;
+        const basicInfo = this.props.basicInfo;
         if (basicInfo.startTime && basicInfo.startTime !== "") {
             basicInfo.startTime = moment(basicInfo.startTime).format("YYYY-MM-DD");
         }

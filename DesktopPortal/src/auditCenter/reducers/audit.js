@@ -25,7 +25,8 @@ const initState = {
     buildingOfActiveInfo: {},//房源动态所属的楼盘
     shopOfActiveInfo: {},//房源动态商铺详情
     buildingOfShops: [],//房源动态所属的楼盘下的商铺列表
-    dealInfo: {}//客户成交信息
+    dealInfo: {},//客户成交信息
+    contractInfo:{},//合同分类信息
 };
 let reducerMap = {};
 
@@ -124,6 +125,10 @@ reducerMap[actionTypes.GET_BUILDING_SHOPS_COMPLETE] = function (state, action) {
 //成交详情获取完成
 reducerMap[actionTypes.GET_CUSTOMER_DEALINFO_COMPLETE] = function (state, action) {
     return Object.assign({}, state, {dealInfo: action.payload || {}});
+}
+//合同
+reducerMap[actionTypes.GET_CONTRACT_DETAIL_COMPLETE] = function (state, action) {
+    return Object.assign({}, state, {contractInfo: action.payload || {}});
 }
 
 export default handleActions(reducerMap, initState);

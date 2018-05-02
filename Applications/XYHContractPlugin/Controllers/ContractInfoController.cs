@@ -83,6 +83,13 @@ namespace XYHContractPlugin.Controllers
             try
             {
                 var ret = await _contractInfoManager.GetAllinfoByIdAsync2(user,contractId, HttpContext.RequestAborted);
+                if(ret == null)
+                {
+                    Response.Code = ResponseCodeDefines.ModelStateInvalid;
+                    Response.Message = "请求合同不存在";
+                    Logger.Error("error GetContractByid");
+                    return Response;
+                }
                 Response.Extension = ret;
 
                 foreach (var item in ret.Modifyinfo)
