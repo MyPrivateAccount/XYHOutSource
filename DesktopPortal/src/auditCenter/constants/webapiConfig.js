@@ -1,4 +1,5 @@
 import {BaseApiUrl, basicDataBaseApiUrl} from '../../constants/baseConfig';
+import contract from '../../contractManagement/reducers/contract';
 
 const WebApiConfig = {
     audit: {
@@ -24,6 +25,10 @@ const WebApiConfig = {
         zywBuildingShops: basicDataBaseApiUrl + "zyw/Shops/search",//"Shops/list",//楼盘商铺获取
         getShopDetail: basicDataBaseApiUrl + 'Shops/',//获取商铺详情
         getZYWShopDetail: basicDataBaseApiUrl + 'zyw/Shops/',//获取商铺详情
+    },
+    contract: {
+        modifyDetail: basicDataBaseApiUrl + 'contractinfo/getmodifyinfobyid/', //获取合同内容的部分详情
+        getContractDetail: basicDataBaseApiUrl + 'contractinfo/',
     }
 }
 export default WebApiConfig;

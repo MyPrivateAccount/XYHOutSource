@@ -83,7 +83,7 @@ namespace XYHContractPlugin.Controllers
                 GatewayInterface.Dto.ExamineSubmitRequest exarequest = new GatewayInterface.Dto.ExamineSubmitRequest();
                 exarequest.ContentId = contractId;
                 exarequest.ContentType = "ContractCommit";
-                exarequest.ContentName = "AddComplement";
+                exarequest.ContentName = "UploadFiles";
                 exarequest.SubmitDefineId = strModifyGuid;
                 exarequest.Source = "";
                 exarequest.CallbackUrl = ApplicationContext.Current.UpdateExamineCallbackUrl;

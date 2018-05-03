@@ -126,7 +126,7 @@ namespace XYHContractPlugin.Managers
                 itm.CurrentModify = strModify;
             }
 
-            await Store.CreateModifyAsync(_mapper.Map<SimpleUser>(userinfo), strcontractid, strModify, UpdateComplementContract, strCheck, ExamineStatusEnum.Auditing, false);
+            await Store.CreateModifyAsync(_mapper.Map<SimpleUser>(userinfo), strcontractid, strModify, UpdateComplementContract, strCheck, ExamineStatusEnum.Auditing, false, JsonHelper.ToJson(buildingBaseInfoRequest));
 
             return await Store.AutoCreateAsync(_mapper.Map<SimpleUser>(userinfo), _mapper.Map<List<ComplementInfo>>(buildingBaseInfoRequest), cancellationToken);
         }
@@ -397,6 +397,10 @@ namespace XYHContractPlugin.Managers
 
                 contractinfo.Organizate = _iorganizationExpansionStore.GetFullName(contractinfo.OrganizateID).Replace("默认顶级-", "");
                 contractinfo.CreateDepartment = _iorganizationExpansionStore.GetFullName(contractinfo.CreateDepartmentID).Replace("默认顶级-", "");
+            }
+            else
+            {
+                return null;
             }
 
 

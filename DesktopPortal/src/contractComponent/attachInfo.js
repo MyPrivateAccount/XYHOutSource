@@ -19,6 +19,27 @@ class AttachInfo extends Component {
         expandStatus: true
     }
 
+    componentDidMount() {
+        let fileList = [];
+    
+        if (this.props.contractAttachInfo.fileList) {
+            let curFileList = this.props.contractAttachInfo.fileList;//直接修改会改变state
+            this.getGroup(curFileList);
+        }
+        this.setState({ fileList: fileList });
+        
+        
+    }
+
+    componentWillReceiveProps(newProps) {
+        let fileList = [];
+       // console.log('newProps.contractAttachInfo.fileList:', newProps.contractAttachInfo.fileList);
+        if (newProps.contractAttachInfo.fileList) {
+            let curFileList = newProps.contractAttachInfo.fileList;//直接修改会改变state
+            this.getGroup(curFileList);
+           
+        }    
+    }
 
     getGroup = (fl)  => {
         if(fl && fl.length>0){
@@ -55,6 +76,7 @@ class AttachInfo extends Component {
             previewVisible: true,
         });
     }
+    handleCancel = () => this.setState({ previewVisible: false })
     render() {
         let { contractAttachInfo } = this.props;
         let { previewVisible, previewImage, fileList, group } = this.state;
@@ -71,6 +93,8 @@ class AttachInfo extends Component {
             }
         }
         let contractFileList = contractAttachInfo.fileList || [];
+        console.log('contractFileList:', contractFileList);
+   
         return (
             <div className="">
                 <Layout>

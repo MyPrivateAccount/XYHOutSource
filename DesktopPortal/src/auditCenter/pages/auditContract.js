@@ -4,7 +4,11 @@ import React, { Component } from 'react';
 import AuditForm from './item/auditForm';
 import AuditHistory from './auditHistory'
 import getToolComponent from '../../tools';
-import {getDicParList} from '../../actions/actionCreators'
+import {getDicParList,} from '../../actions/actionCreators';
+import {getContractDetail, setLoadingVisible} from '../actions/actionCreator';
+import ContractBasicInfo from '../../contractComponent/contractBasicInfo';
+import ComplementInfo from '../../contractComponent/complementInfo';
+import AttachInfo from '../../contractComponent/attachInfo';
 import {globalAction} from 'redux-subspace';
 
 class AuditContract extends Component {
@@ -13,17 +17,51 @@ class AuditContract extends Component {
     }
     componentWillMount() {
         console.log("当前审核信息:", this.props.activeAuditInfo);
+        this.props.dispatch(globalAction(getDicParList(['CONTRACT_CATEGORIES', 'FIRST_PARTT_CATEGORIES', 'COMMISSION_CATEGORIES', 'XK_SELLER_TYPE', 'CONTRACT_ATTACHMENT_CATEGORIES', 'CONTRACT_SETTLEACCOUNTS'])));
+        this.props.dispatch(setLoadingVisible(true));
+        this.props.dispatch(getContractDetail(this.props.activeAuditInfo.contentId));
+       // this.props.dispatch(getContractDetail("973cbad1-307b-48a5-72da-d418d1c8147b"));
+        
     }
     componentWillReceiveProps(newProps) {
         //console.log("audit houseSource componentWillReceiveProps:", newProps);
+       // this.props.dispatch(globalAction(getDicParList(['CONTRACT_CATEGORIES', 'FIRST_PARTT_CATEGORIES', 'COMMISSION_CATEGORIES', 'XK_SELLER_TYPE'])));
+        
     }
 
     getPageByContentType = () =>{
-        this.props.dispatch(globalAction(getDicParList(['CONTRACT_CATEGORIES', 'FIRST_PARTT_CATEGORIES', 'COMMISSION_CATEGORIES', 'XK_SELLER_TYPE'])));
+        const contractInfo = this.props.contractInfo || {};
+        const rootBasicData = (this.props.rootBasicData || {}) || [];
+        const curType = this.props.activeAuditInfo.contentName || '';
+        console.log('contractInfo:', contractInfo)
+        
+  
+        if(curType === 'AddContract' || curType === 'Modify'){
+            let basicInfo = contractInfo.baseInfo || {};
+            return (<ContractBasicInfo basicData={rootBasicData} basicInfo={basicInfo}/>);
+        }else if(curType === 'AddComplement' || curType === 'ModifyComplement'){
+            return (<ComplementInfo basicData={rootBasicData} complementInfo={contractInfo.complementInfo || []}/>);
+        }else if(curType === 'UploadFiles'){
+            let contractAttachInfo = {};
+            contractAttachInfo.fileList = contractInfo.fileList || [];
+            return (<AttachInfo basicData={rootBasicData} contractAttachInfo={contractAttachInfo}/>);
+        }
+        
+
+     
+        // let curType = contractInfo.type;
+        // if(curType === 1 || curType === 2){
+        //     return (<ContractBasicInfo basicData={rootBasicData} contractInfo={contractInfo.ext1}/>);
+        // }else if(curType === 3){
+        //     let contractAttachInfo = {};
+        //     contractAttachInfo.fileList = contractInfo.ext1 || [];
+        //     return (<AttachInfo basicData={rootBasicData} contractAttachInfo={contractAttachInfo}/>);
+        // }else if(curType === 4){
+        //     return (<ComplementInfo basicData={rootBasicData} complementInfo={contractInfo.ext1} />);
+        // }
     }
     render() {
-        let ContractToolComponent = getToolComponent("contractInfo");
-        let contentInfo = { contentID: this.props.activeAuditInfo.contentId, contentType: this.props.activeAuditInfo.contentType };
+    
         return (
             <div>
                 <b>合同审核</b>
@@ -38,9 +76,11 @@ class AuditContract extends Component {
 }
 
 function mapStateToProps(state) {
+    //console.log('state.rootBasicData:', state.rootBasicData);
     return {
-        basicData: state.basicData,
+        rootBasicData: state.rootBasicData,
         activeAuditInfo: state.audit.activeAuditInfo,
+        contractInfo: state.audit.contractInfo,
     }
 }
 

@@ -7,6 +7,7 @@ import getApiResult from './sagaUtil';
 import {notification} from 'antd';
 import SearchCondition from '../constants/searchCondition';
 
+
 //获取待审核列表
 export function* getAuditListAsync(state) {
     let result = {isOk: false, extension: [], msg: '待审核列表查询失败！'};
@@ -212,6 +213,8 @@ export function* getZYWUpdateRecordDetailAsync(state) {
     }
 }
 
+
+
 export default function* watchAllSearchAsync() {
     yield takeLatest(actionTypes.GET_AUDIT_LIST, getAuditListAsync);
     yield takeLatest(actionTypes.SAVE_AUDIT, auditAsync);
@@ -221,5 +224,6 @@ export default function* watchAllSearchAsync() {
     yield takeLatest(actionTypes.GET_CUSTOMER_DEALINFO, getDealInfoAsync);
     yield takeLatest(actionTypes.GET_ZYW_CUSTOMER_DEALINFO, getZYWDealInfoAsync);
     yield takeLatest(actionTypes.GET_ZYW_UPDATE_RECORD_DETAIL, getZYWUpdateRecordDetailAsync);
+
 }
 

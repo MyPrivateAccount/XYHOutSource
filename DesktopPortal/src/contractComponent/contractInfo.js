@@ -4,7 +4,7 @@ import {contractInfoGroup} from '../../../constants/commonDefine';
 import { Layout, Table, Button, Checkbox, Radio, Row, Col, Icon, Anchor, BackTop, Modal, notification } from 'antd'
 import { getDicParList, openContractRecord,submitContractInfo } from '../../../actions/actionCreator';
 
-import '../edit/contract.less';
+import './contract.less';
 //import BasicEdit from '../edit/basicEdit';
 import BasicInfo from './basicInfo';
 //import AttachEdit from './attachEdit';
@@ -13,11 +13,7 @@ import ComplementInfo from './complementInfo';
 const { Header, Sider, Content } = Layout;
 class ContractInfo extends Component{
     componentWillMount(){
-        if(this.props.basicData.contractCategories.length === 0 || this.props.basicData.firstPartyCatogories.length === 0
-        || this.props.basicData.commissionCatogories.length === 0 || this.props.basicData.contractProjectCatogories.length === 0){
-          this.props.dispatch(getDicParList(['CONTRACT_CATEGORIES', 'FIRST_PARTT_CATEGORIES', 'COMMISSION_CATEGORIES', 'XK_SELLER_TYPE']));
-        }
-       
+
       }
 
     handleAnchorChange = (e) =>{
