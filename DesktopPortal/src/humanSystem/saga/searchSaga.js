@@ -112,11 +112,13 @@ export function* getMonthListAsync(state) {
             result.isOk = true;
             let lv = res.data.extension;
             let data = lv.extension.map(function(v, k) {
-                let last = new Date(v.SettleTime);
+                let last = new Date(v.settleTime);
                 last.setMonth(last.getMonth()-1);
                 let v1 = last.getFullYear() + '.' + (last.getMonth()+1);
-                let v2 = v.SettleTime.getFullYear() + '.' + (v.SettleTime.getMonth()+1);
-                return {key: k, last: v1, monthtime: v2, operater: v.OperName};
+
+                last.setMonth(last.getMonth()+1);
+                let v2 = last.getFullYear() + '.' + (last.getMonth()+1);
+                return {key: k, last: v1, monthtime: v2, operater: v.operName};
             });
 
             yield put ({type: actionUtils.getActionType(actionTypes.MONTH_UPDATEMONTHLIST),

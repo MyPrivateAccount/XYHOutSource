@@ -152,10 +152,44 @@ namespace XYHHumanPlugin.Stores
             }
         }
 
+        
         public async Task DeleteListAsync(List<HumanInfo> buildingBaseList, CancellationToken cancellationToken = default(CancellationToken))
         { }
 
         public async Task DeleteListAsync(List<MonthInfo> monthList, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (monthList == null)
+            {
+                throw new ArgumentNullException(nameof(monthList));
+            }
+            Context.RemoveRange(monthList);
+            try
+            {
+                await Context.SaveChangesAsync(cancellationToken);
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
+            }
+        }
+
+        public async Task DeleteListAsync(List<SalaryFormInfo> monthList, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (monthList == null)
+            {
+                throw new ArgumentNullException(nameof(monthList));
+            }
+            Context.RemoveRange(monthList);
+            try
+            {
+                await Context.SaveChangesAsync(cancellationToken);
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
+            }
+        }
+        public async Task DeleteListAsync(List<AttendanceFormInfo> monthList, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (monthList == null)
             {
@@ -196,6 +230,23 @@ namespace XYHHumanPlugin.Stores
                 throw new ArgumentNullException(nameof(query));
             }
             return query.Invoke(Context.HumanInfos.AsNoTracking()).ToListAsync(cancellationToken);
+        }
+
+        public Task<List<TResult>> GetListSalaryFormAsync<TResult>(Func<IQueryable<SalaryFormInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (query == null)
+            {
+                throw new ArgumentNullException(nameof(query));
+            }
+            return query.Invoke(Context.SalaryFormInfos.AsNoTracking()).ToListAsync(cancellationToken);
+        }
+        public Task<List<TResult>> GetListAttendanceFormAsync<TResult>(Func<IQueryable<AttendanceFormInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (query == null)
+            {
+                throw new ArgumentNullException(nameof(query));
+            }
+            return query.Invoke(Context.AttendanceFormInfos.AsNoTracking()).ToListAsync(cancellationToken);
         }
 
         public Task<TResult> GetModifyAsync<TResult>(Func<IQueryable<ModifyInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken))

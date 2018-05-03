@@ -16,7 +16,7 @@ const WebApiConfig = {
         GetWorkNumber: basicDataBaseApiUrl + "humaninfo/jobnumber",
         LastMonth: basicDataBaseApiUrl + "month/lastmonth",
         RecoverMonth: basicDataBaseApiUrl + "month/backmonth",
-        CreateMonth: basicDataBaseApiUrl + "month/craetemonth",
+        CreateMonth: basicDataBaseApiUrl + "month/createmonth",
     },
     search: {
         searchHumanList: basicDataBaseApiUrl + 'humaninfo/searchhumaninfo',

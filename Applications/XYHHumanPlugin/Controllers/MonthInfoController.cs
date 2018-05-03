@@ -109,19 +109,29 @@ namespace XYHHumanPlugin.Controllers
             if (!ModelState.IsValid)
             {
                 pagingResponse.Code = ResponseCodeDefines.ModelStateInvalid;
-                Logger.Warn($"用户{User?.UserName ?? ""}({User?.Id ?? ""})查询人事条件(PostCustomerListSaleMan)模型验证失败：\r\n{pagingResponse.Message ?? ""}，\r\n请求参数为：\r\n");
+                Logger.Warn($"用户{User?.UserName ?? ""}({User?.Id ?? ""})创建月结信息失败：\r\n{pagingResponse.Message ?? ""}，\r\n请求参数为：\r\n");
                 return pagingResponse;
             }
 
             try
             {
-                await _monthManage.CreateMonth(User, nextmonth, HttpContext.RequestAborted);
+                DateTime now = DateTime.Now;
+                var temp = await _monthManage.GetLastMonth();
+
+                if (temp != null && temp.SettleTime.Value.ToString("Y") == now.ToString("Y"))
+                {
+                    pagingResponse.Code = ResponseCodeDefines.ServiceError;
+                    pagingResponse.Message = "日期重复";
+                    return pagingResponse;
+                }
+
+                await _monthManage.CreateMonth(User, now, HttpContext.RequestAborted);
             }
             catch (Exception e)
             {
                 pagingResponse.Code = ResponseCodeDefines.ServiceError;
                 pagingResponse.Message = "服务器错误:" + e.ToString();
-                Logger.Error($"用户{User?.UserName ?? ""}({User?.Id ?? ""})查询业务员条件(PostCustomerListSaleMan)请求失败：\r\n{pagingResponse.Message ?? ""}，\r\n请求参数为：\r\n");
+                Logger.Error($"用户{User?.UserName ?? ""}({User?.Id ?? ""})创建月结信息失败：\r\n{pagingResponse.Message ?? ""}，\r\n请求参数为：\r\n");
 
             }
             return pagingResponse;

@@ -38,8 +38,17 @@ namespace XYHHumanPlugin.Managers
 
         public virtual async Task DeleteMonth(DateTime date, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var result = await _Store.GetListMonthAsync(a => a.Where(b => b.SettleTime == date));
-            await _Store.DeleteListAsync(result, cancellationToken);
+            var result = await _Store.GetListMonthAsync(a => a.Where(b => b.SettleTime.Value.ToString("Y") == date.ToString("Y")));
+            foreach (var item in result)
+            {
+                await DeleteMonthSalaryForm(item.ID, cancellationToken);
+                await DeleteMonthAttendanceForm(item.ID, cancellationToken);
+            }
+
+            if (result.Count > 0)
+            {
+                await _Store.DeleteListAsync(result, cancellationToken);
+            }
         }
 
         public virtual async Task<SearchMonthInfoResponse> GetAllMonthInfo(XYHHumanPlugin.Dto.Request.MonthRequest req, CancellationToken cancellationToken = default(CancellationToken))
@@ -84,14 +93,16 @@ namespace XYHHumanPlugin.Managers
             month.ID = Guid.NewGuid().ToString();
             month.SettleTime = date;
             month.OperName = user.Id;
+            month.SalaryForm = Guid.NewGuid().ToString();
+            month.AttendanceForm = Guid.NewGuid().ToString();
 
             await _Store.CreateMonthAsync(_mapper.Map<SimpleUser>(user), month, cancellationToken);
 
 
             List<HumanInfo> humanlist = await _Store.GetHumanListAsync(a => a.Where(b => b.StaffStatus > 1 && b.ID != ""));//入职员工
-            if (await CreateMonthSalaryForm(month.ID, humanlist))
+            if (await CreateMonthSalaryForm(month.ID, month.SalaryForm, humanlist))
             {
-                if (await CreateMonthAttendanceForm(month.ID, humanlist))
+                if (await CreateMonthAttendanceForm(month.ID, month.AttendanceForm, humanlist))
                 {
                     return true;
                 }
@@ -99,14 +110,14 @@ namespace XYHHumanPlugin.Managers
             return false;
         }
 
-        private async Task<bool> CreateMonthSalaryForm(string monthid, List<HumanInfo> humaninfolist, CancellationToken cle = default(CancellationToken))
+        private async Task<bool> CreateMonthSalaryForm(string monthid, string salaryid, List<HumanInfo> humaninfolist, CancellationToken cle = default(CancellationToken))
         {
             try
             {
                 foreach (var item in humaninfolist)
                 {
                     SalaryFormInfo salary = new SalaryFormInfo();
-                    salary.ID = Guid.NewGuid().ToString();
+                    salary.ID = salaryid;
                     salary.MonthID = monthid;
                     salary.HumanID = item.ID;
                     salary.BaseSalary = item.BaseSalary;
@@ -128,9 +139,22 @@ namespace XYHHumanPlugin.Managers
             return false;
         }
 
-        private async Task<bool> CreateMonthAttendanceForm(string monthid, List<HumanInfo> humaninfolist, CancellationToken cle = default(CancellationToken))
+        private async Task<bool> CreateMonthAttendanceForm(string monthid, string attendanceid, List<HumanInfo> humaninfolist, CancellationToken cle = default(CancellationToken))
         {
-            return true;//姑且这样，以后写考勤
+            
+            return true;
+        }
+
+        private async Task<bool> DeleteMonthSalaryForm(string monthid, CancellationToken cle = default(CancellationToken))
+        {
+            var result = await _Store.GetListSalaryFormAsync(a => a.Where(b => b.MonthID == monthid));
+            await _Store.DeleteListAsync(result, cle);
+            return true;
+        }
+
+        private async Task<bool> DeleteMonthAttendanceForm(string monthid, CancellationToken cle = default(CancellationToken))
+        {
+            return false;
         }
     }
 }

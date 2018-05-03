@@ -43,11 +43,11 @@ class Staffinfo extends Component {
     };
 
     createMonth = () => {
-        this.props.dispatch(createMonth(this.prop.monthLast));
+        this.props.dispatch(createMonth({last:this.props.monthLast,result:this.props.monthresult}));
     }
 
     recoverMonth = () => {
-        this.props.dispatch(recoverMonth(this.prop.monthLast));
+        this.props.dispatch(recoverMonth({last:this.props.monthLast,result:this.props.monthresult}));
     }
 
     render() {
@@ -69,17 +69,17 @@ class Staffinfo extends Component {
                 <div style={{display: "block"}}>
                     <Row>
                         <Col span={8} offset={8}>
-                            <p style={{padding: '15px 10px', margin: '0px 2px'}}>{"待结月份:"+nextMonth}</p>
+                            <p style={{padding: '15px 10px'}}>{"待结月份:"+nextMonth}</p>
                         </Col>
                     </Row>
                     <Row>
                         <Col span={8} offset={8}>
-                            <Button style={{padding: '5px 12px', margin: '10px 10px'}} type="primary" onClick={(e) => this.createMonth()}>月结</Button>
+                            <Button style={{padding: '5px 12px', margin: '5px 5px', width: '120px'}} type="primary" onClick={(e) => this.createMonth()}>月结</Button>
                         </Col>
                     </Row>
                     <Row>
                         <Col span={8} offset={8}>
-                            <Button style={{padding:'5px 12px'}} type="primary" onClick={(e) => this.recoverMonth()}>{recoverinfo}</Button>
+                            <Button style={{padding:'5px 12px', margin: '5px 5px', width: '120px'}} type="primary" onClick={(e) => this.recoverMonth()}>{recoverinfo}</Button>
                         </Col>
                     </Row>
                     <p style={{padding: '15px 10px', borderBottom: '1px solid #e0e0e0', fontSize: '1.4rem', fontWeight: 'bold'}}>目前已为你筛选出<b style={{color: '#f36366'}}> {monthList.length || 0} </b>条月结信息</p>
