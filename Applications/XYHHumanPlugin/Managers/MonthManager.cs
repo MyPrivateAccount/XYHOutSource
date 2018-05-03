@@ -56,14 +56,22 @@ namespace XYHHumanPlugin.Managers
 
             if (list != null)
             {
-                var tf = await GetLastMonth();
+                
 
                 SearchMonthInfoResponse result = new SearchMonthInfoResponse();
                 result.extension = _mapper.Map<List<MonthInfoResponse>>(info);
                 result.pageIndex = req.pageIndex;
                 result.pageSize = req.pageSize;
                 result.totalCount = list.Count;
-                result.lastTime = tf.SettleTime;
+
+                var tf = await GetLastMonth();
+                if (tf != null)
+                {
+                    result.lastTime = tf.SettleTime;
+                }
+                else
+                    result.lastTime = DateTime.Now;
+                
 
                 return result;
             }

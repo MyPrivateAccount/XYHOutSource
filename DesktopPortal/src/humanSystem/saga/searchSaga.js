@@ -114,8 +114,8 @@ export function* getMonthListAsync(state) {
             let data = lv.extension.map(function(v, k) {
                 let last = new Date(v.SettleTime);
                 last.setMonth(last.getMonth()-1);
-                let v1 = last.getFullYear() + '.' + last.getMonth();
-                let v2 = v.SettleTime.getFullYear() + '.' + v.SettleTime.getMonth();
+                let v1 = last.getFullYear() + '.' + (last.getMonth()+1);
+                let v2 = v.SettleTime.getFullYear() + '.' + (v.SettleTime.getMonth()+1);
                 return {key: k, last: v1, monthtime: v2, operater: v.OperName};
             });
 

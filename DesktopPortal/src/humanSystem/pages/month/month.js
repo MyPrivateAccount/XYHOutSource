@@ -35,7 +35,7 @@ const rowSelection = {
 
 class Staffinfo extends Component {
     componentWillMount() {
-        this.props.dispatch(getAllMonthList());
+        this.props.dispatch(getAllMonthList(this.props.monthresult));
     }
 
     handleTableChange = (pagination, filters, sorter) => {
@@ -43,36 +43,46 @@ class Staffinfo extends Component {
     };
 
     createMonth = () => {
-        this.props.dispatch(createMonth(this.prop.monthlast));
+        this.props.dispatch(createMonth(this.prop.monthLast));
     }
 
     recoverMonth = () => {
-        this.props.dispatch(recoverMonth(this.prop.monthlast));
+        this.props.dispatch(recoverMonth(this.prop.monthLast));
     }
 
     render() {
-        const nextMonth =2;
+        let recoverinfo = "恢复到:";
+        let nextMonth = new Date(this.props.monthLast);
         const showLoading = this.props.showLoading;
         const monthList = this.props.monthresult.extension;
+
+        let monthinfo = nextMonth.getFullYear() + "." + (nextMonth.getMonth()+1);
+        if (monthList.length > 0) {
+            nextMonth.setMonth(nextMonth.getMonth()+1);
+            recoverinfo += monthinfo;
+        }
+        nextMonth = nextMonth.getFullYear() + "." + (nextMonth.getMonth()+1);
+        
+
         return (
             <div>
                 <div style={{display: "block"}}>
                     <Row>
                         <Col span={8} offset={8}>
-                            <p style={{padding: '15px 10px', margin: '0px 3px'}}>{"待结月份:"+nextMonth}</p>
+                            <p style={{padding: '15px 10px', margin: '0px 2px'}}>{"待结月份:"+nextMonth}</p>
                         </Col>
                     </Row>
                     <Row>
                         <Col span={8} offset={8}>
-                            <Button style={{padding: '15px 12px', margin: '10px 15px'}} type="primary" onClick={(e) => this.createMonth()}>月结</Button>
+                            <Button style={{padding: '5px 12px', margin: '10px 10px'}} type="primary" onClick={(e) => this.createMonth()}>月结</Button>
                         </Col>
                     </Row>
                     <Row>
                         <Col span={8} offset={8}>
-                            <Button style={{padding:'15px 12px'}} type="primary" onClick={(e) => this.recoverMonth()}>{"恢复:"+this.props.monthLast}</Button>
+                            <Button style={{padding:'5px 12px'}} type="primary" onClick={(e) => this.recoverMonth()}>{recoverinfo}</Button>
                         </Col>
                     </Row>
-                    <p style={{padding: '15px 10px', borderBottom: '1px solid #e0e0e0', fontSize: '1.4rem', fontWeight: 'bold'}}>目前已为你筛选出<b style={{color: '#f36366'}}> {monthList.length || 0} </b>条员工信息</p>
+                    <p style={{padding: '15px 10px', borderBottom: '1px solid #e0e0e0', fontSize: '1.4rem', fontWeight: 'bold'}}>目前已为你筛选出<b style={{color: '#f36366'}}> {monthList.length || 0} </b>条月结信息</p>
                     <Spin spinning={showLoading} delay={200} tip="查询中...">
                         {
                             monthList.length>0 ? <div className='searchResult'>

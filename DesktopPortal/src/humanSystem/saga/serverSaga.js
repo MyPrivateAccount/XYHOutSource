@@ -68,7 +68,6 @@ export function* recoverMonth(state) {
         if (huResult.isOk) {
             huResult.message = '恢复月结成功';
 
-            yield put({ type: actionUtils.getActionType(actionTypes.CHANGE_LOADING), payload: false});
             yield put({ type: actionUtils.getActionType(actionTypes.MONTH_GETALLMONTHLIST)});
         }
     } catch (e) {
@@ -92,7 +91,6 @@ export function* createMonth(state) {
         if (huResult.isOk) {
             huResult.message = '创建月结成功';
 
-            yield put({ type: actionUtils.getActionType(actionTypes.CHANGE_LOADING), payload: false});
             yield put({ type: actionUtils.getActionType(actionTypes.MONTH_GETALLMONTHLIST) });
         }
     } catch (e) {
