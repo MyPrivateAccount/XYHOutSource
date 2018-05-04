@@ -99,7 +99,7 @@ namespace XYHContractPlugin.Stores
         }
 
         public async Task CreateModifyAsync(SimpleUser userinfo, string contractid, string modifyid, int ntype, string checkaction, ExamineStatusEnum exa = ExamineStatusEnum.UnSubmit,
-            bool updatetocontract = true, string ext1 = null, string ext2= null, string ext3 = null, string ext4= null, CancellationToken cancellationToken = default(CancellationToken))
+            bool updatetocontract = true, string ext1 = null, string ext2= null, string ext3 = null, string ext4= null, string ext5 = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (contractid != null)
             {
@@ -120,6 +120,7 @@ namespace XYHContractPlugin.Stores
                 tmodify.Ext2 = ext2;
                 tmodify.Ext3 = ext3;
                 tmodify.Ext4 = ext4;
+                tmodify.Ext5 = ext5;
                 tmodify.ModifyCheck = checkaction;
 
                 if (updatetocontract)

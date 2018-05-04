@@ -29,4 +29,11 @@ namespace XYHContractPlugin.Dto.Request
         [StringLength(255)]
         public string Group { get; set; }
     }
+
+    public class FileUploadRequest
+    {
+
+        public List<FileInfoRequest> AddFileList { get; set; }
+        public List<string> DeleteFileList { get; set; }
+    }
 }

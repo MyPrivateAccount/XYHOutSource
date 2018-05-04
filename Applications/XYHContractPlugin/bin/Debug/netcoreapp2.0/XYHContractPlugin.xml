@@ -4,7 +4,7 @@
         <name>XYHContractPlugin</name>
     </assembly>
     <members>
-        <member name="M:XYHContractPlugin.Controllers.ContractFileController.UploadFiles(ApplicationCore.Dto.UserInfo,System.Collections.Generic.List{XYHContractPlugin.Dto.Request.FileInfoRequest},System.String,System.String,System.String)">
+        <member name="M:XYHContractPlugin.Controllers.ContractFileController.UploadFiles(ApplicationCore.Dto.UserInfo,XYHContractPlugin.Dto.Request.FileUploadRequest,System.String,System.String,System.String)">
             <summary>
             批量上传文件
             </summary>

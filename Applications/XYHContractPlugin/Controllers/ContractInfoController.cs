@@ -34,11 +34,13 @@ namespace XYHContractPlugin.Controllers
         private readonly ILogger Logger = LoggerManager.GetLogger("Contractinfo");
         private readonly ContractInfoManager _contractInfoManager;
         private readonly FileScopeManager _fileScopeManager;
+        private readonly FileInfoManager _fileInfoManager;
         private readonly RestClient _restClient;
 
-        public ContractInfoController(ContractInfoManager contractManager, FileScopeManager fim, RestClient rsc)
+        public ContractInfoController(ContractInfoManager contractManager, FileScopeManager fim, FileInfoManager fileInfoManager,RestClient rsc)
         {
             _fileScopeManager = fim;
+            _fileInfoManager = fileInfoManager;
             _contractInfoManager = contractManager;
             _restClient = rsc;
         }
@@ -850,23 +852,26 @@ namespace XYHContractPlugin.Controllers
                     else if (modifyre.Type == ContractInfoManager.AddAnnexContract)
                     {
                         List<FileInfoRequest> fileInfoRequests = JsonHelper.ToObject<List<FileInfoRequest>>(modifyre.Ext1);
-                        List<NWF> listnf = JsonHelper.ToObject<List<NWF>>(modifyre.Ext2);
+                        List<string> deleteList = JsonHelper.ToObject<List<string>>(modifyre.Ext5);
+                        //List<NWF> listnf = JsonHelper.ToObject<List<NWF>>(modifyre.Ext2);
                         UserInfo user = JsonHelper.ToObject<UserInfo>(modifyre.Ext3);
+                        List<FileInfoCallbackRequest> filCallBackReq = new List<FileInfoCallbackRequest>();
 
                         int nindex = 0;
                         foreach (var item in fileInfoRequests)
                         {
                             try
                             {
-                                NameValueCollection nameValueCollection = new NameValueCollection();
-                                nameValueCollection.Add("appToken", "app:nwf");
-                                Logger.Info("nwf协议");
-                                string response2 = await _restClient.Post(ApplicationContext.Current.NWFUrl, listnf.ElementAt(nindex++), "POST", nameValueCollection);
-                                Logger.Info("返回：\r\n{0}", response2);
-
+                                //NameValueCollection nameValueCollection = new NameValueCollection();
+                                //nameValueCollection.Add("appToken", "app:nwf");
+                                //Logger.Info("nwf协议");
+                                //string response2 = await _restClient.Post(ApplicationContext.Current.NWFUrl, listnf.ElementAt(nindex++), "POST", nameValueCollection);
+                                //Logger.Info("返回：\r\n{0}", response2);
+                                
+                                
                                 await _fileScopeManager.CreateAsync(user, modifyre.Ext4, modifyre.ContractID, modifyre.ID, item);
 
-                                response.Message = response2;
+                                //response.Message = response2;
                             }
                             catch (Exception e)
                             {
@@ -875,6 +880,18 @@ namespace XYHContractPlugin.Controllers
                                 Logger.Error($"用户{user?.UserName ?? ""}({user?.Id ?? ""})批量上传文件信息(UploadFiles)报错：\r\n{e.ToString()},请求参数为：\r\n,(dest){modifyre.Ext4 ?? ""},(contractId){ modifyre.ContractID ?? ""}," + (fileInfoRequests != null ? JsonHelper.ToJson(fileInfoRequests) : ""));
                             }
                         }
+                        try
+                        {
+                            await _fileInfoManager.CreateListAsync(user.Id, fileInfoRequests, HttpContext.RequestAborted);
+                            await _fileScopeManager.DeleteContractFileListAsync(user.Id, modifyre.ContractID, deleteList, HttpContext.RequestAborted);
+                        }
+                        catch(Exception e)
+                        {
+                            response.Code = ResponseCodeDefines.ServiceError;
+                            response.Message = e.ToString();
+                            Logger.Trace($"合同文件添加或删除失败，审核中心回调(SubmitBuildingCallback)报错：\r\n{e.ToString()}，\r\n请求参数为：\r\n" + fileInfoRequests != null ? JsonHelper.ToJson(fileInfoRequests) : "\r\n" + deleteList != null ? JsonHelper.ToJson(deleteList) : "");
+                        }
+                       
                     }
                     else if (modifyre.Type == ContractInfoManager.UpdateComplementContract)
                     {
@@ -896,6 +913,8 @@ namespace XYHContractPlugin.Controllers
             }
             return response;
         }
+
+  
         [HttpGet("getfollowhistory/{contractId}")]
         [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
         public async Task<ResponseMessage<List<ContractInfoResponse>>> GetFollowHistory(UserInfo user, string contractId)
@@ -950,6 +969,116 @@ namespace XYHContractPlugin.Controllers
                 Logger.Trace($"获取修改信息(getmodifyinfobyid)：\r\n请求参数为：\r\n" + id);
             }
             return response;
+        }
+
+        [HttpGet("getcontractmodifybyid/{id}")]
+        [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
+        public virtual async Task<ResponseMessage<ModifyDetailResponse>> GetAllModifyInfoById(UserInfo user, string id)
+        {
+            ResponseMessage<ModifyDetailResponse> response = new ResponseMessage<ModifyDetailResponse>();
+
+            try
+            {
+                Logger.Trace($"获取修改信息(getmodifyinfobyid)：\r\n请求参数为：\r\n" + id);
+                if (string.IsNullOrEmpty(id))
+                {
+                    response.Code = ResponseCodeDefines.ModelStateInvalid;
+                    response.Message = "请求参数不正确";
+                    Logger.Error("error GetModifyInfoById");
+                    return response;
+                }
+                var modifyInfo = await _contractInfoManager.GetModifyInfo(id, HttpContext.RequestAborted);
+
+                if(modifyInfo == null || string.IsNullOrEmpty(modifyInfo.Ext1))
+                {
+                    response.Code = ResponseCodeDefines.ModelStateInvalid;
+                    response.Message = "合同信息不存在";
+                    Logger.Error("error getcontractmodifybyid");
+                    return response;
+                }
+
+                var info = new ModifyDetailResponse();
+                info.ID = modifyInfo.ID;
+                info.ContractID = modifyInfo.ContractID;
+                info.ExamineStatus = modifyInfo.ExamineStatus;
+                info.ExamineTime = modifyInfo.ExamineTime;
+                info.Ext1 = modifyInfo.Ext1;
+                info.Ext2 = modifyInfo.Ext2;
+                info.Ext3 = modifyInfo.Ext3;
+                info.Ext4 = modifyInfo.Ext4;
+                info.Ext5 = modifyInfo.Ext5;
+                info.ModifyCheck = modifyInfo.ModifyCheck;
+                info.ModifyPepole = modifyInfo.ModifyPepole;
+                info.ModifyStartTime = modifyInfo.ModifyStartTime;
+                info.Type = modifyInfo.Type;
+
+                if(info.Type == 1 || info.Type == 2)
+                {
+                    info.ContractInfo = JsonHelper.ToObject<ContractContentResponse>(modifyInfo.Ext1);
+                }
+                else if(info.Type == 3)
+                {
+                    List<FileInfo> fileInfos = new List<FileInfo>();
+                    List<FileItemResponse> fileItems = new List<FileItemResponse>();
+                    List<FileInfoRequest> fileInfoRequests = JsonHelper.ToObject<List<FileInfoRequest>>(info.Ext1);
+                    fileInfos = await _fileScopeManager.FindByContractIdAsync(user.Id, modifyInfo.ContractID);
+                    foreach (var item in fileInfoRequests)
+                    {
+                        var fileInfo = new FileInfo();
+                    
+            
+                        fileInfo.Driver = item.WXPath.Substring(0, 1);
+                        fileInfo.Uri = CovertPath(item.WXPath);
+                        fileInfo.Type = "ICON";
+                        fileInfo.Name = item.Name;
+                        fileInfo.FileGuid = item.FileGuid;
+                        fileInfo.Group = item.Group;
+
+
+                        fileInfos.Add(fileInfo);
+                    }
+
+                  
+                    if (fileInfos.Count() > 0)
+                    {
+                        var f = fileInfos.Select(a => a.FileGuid).Distinct();
+                        foreach (var item in f)
+                        {
+                            var f1 = fileInfos.Where(a => a.Type != "Attachment" && a.FileGuid == item).ToList();
+                            if (f1?.Count > 0)
+                            {
+                                fileItems.Add(ConvertToFileItem(item, f1));
+                            }
+                        }
+
+                        info.FileList = fileItems;
+                    }
+                }
+                else if(info.Type == 4)
+                {
+                    info.ComplementInfo = JsonHelper.ToObject<List<ContractComplementResponse>>(modifyInfo.Ext1);
+                }
+                response.Extension = info;
+                response.Code = "0";
+
+
+            }
+            catch (Exception e)
+            {
+                response.Code = ResponseCodeDefines.ServiceError;
+                response.Message = e.ToString();
+                Logger.Trace($"获取修改信息(GetAllModifyInfoById)：\r\n请求参数为：\r\n" + id);
+            }
+            return response;
+        }
+        public string CovertPath(string path)
+        {
+            path = path.Replace('\\', '/');
+            int index1 = path.IndexOf("Images/");
+            int nlength = ("Images/").Length;
+            string newPath = path.Substring(index1 + nlength);
+
+            return newPath;
         }
     }
 }

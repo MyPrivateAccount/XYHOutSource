@@ -57,10 +57,10 @@ namespace XYHContractPlugin.Controllers
         [Authorize(AuthenticationSchemes = OAuthValidationDefaults.AuthenticationScheme)]
         [HttpPost("{dest}/uploadmore/{contractId}")]
         [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "FileUpload" })]
-        public async Task<ResponseMessage> UploadFiles(UserInfo user, [FromBody]List<FileInfoRequest> fileInfoRequests, [FromQuery]string source, [FromRoute]string dest, [FromRoute]string contractId)
+        public async Task<ResponseMessage> UploadFiles(UserInfo user, [FromBody]FileUploadRequest fileInfoRequests, [FromQuery]string source, [FromRoute]string dest, [FromRoute]string contractId)
         {
             ResponseMessage response = new ResponseMessage();
-            if (fileInfoRequests == null || fileInfoRequests.Count == 0)
+            if (fileInfoRequests == null || ((fileInfoRequests.AddFileList == null && fileInfoRequests.AddFileList.Count == 0)&& (fileInfoRequests.DeleteFileList == null && fileInfoRequests.DeleteFileList.Count == 0)) )
             {
                 response.Code = ResponseCodeDefines.ArgumentNullError;
                 response.Message = "请求参数错误";
@@ -76,6 +76,20 @@ namespace XYHContractPlugin.Controllers
                 return response;
             }
 
+
+            List<FileInfo> fileInfos = new List<FileInfo>();
+            List<FileItemResponse> fileItems = new List<FileItemResponse>();
+            fileInfos = await _fileScopeManager.FindByContractIdAsync(user.Id, contractId);
+
+            if(fileInfoRequests.DeleteFileList != null && fileInfoRequests.DeleteFileList.Count > 0)
+            {
+                //删除信息此处只存待审核通过后一并删除
+            }
+            if(fileInfoRequests.AddFileList != null && fileInfoRequests.AddFileList.Count > 0)
+            {
+                
+            }
+            
             string strModifyGuid = Guid.NewGuid().ToString();
 
             try
@@ -110,16 +124,11 @@ namespace XYHContractPlugin.Controllers
 
                 response.Message = "发起审核成功";
 
-                List<NWF> nf = new List<NWF>();
-                foreach (var item in fileInfoRequests)
-                {
-                    nf.Add(CreateNwf(user, source, item));
-                }
+  
 
-                string st = JsonHelper.ToJson(nf);
-                Logger.Trace($"all lenght {st.Length}");
-                await _fileScopeManager.CreateModifyAsync(user, contractId, strModifyGuid, "TEST", JsonHelper.ToJson(fileInfoRequests),
-                    st, JsonHelper.ToJson(user), dest, HttpContext.RequestAborted);//添加修改历史
+            
+                await _fileScopeManager.CreateModifyAsync(user, contractId, strModifyGuid, "TEST", JsonHelper.ToJson(fileInfoRequests.AddFileList),
+                    null, JsonHelper.ToJson(user), dest, JsonHelper.ToJson(fileInfoRequests.DeleteFileList),HttpContext.RequestAborted);//添加修改历史
 
                 response.Message = "添加附件修改成功";
             }
@@ -130,10 +139,11 @@ namespace XYHContractPlugin.Controllers
                 response.Message = e.ToString();
                 Logger.Error($"上传文件信息回调(FileCallback)模型验证失败：\r\n{e.ToString()},请求参数为：\r\n" + (fileInfoRequests != null ? JsonHelper.ToJson(fileInfoRequests) : ""));
             }
-            
+
 
             return response;
         }
+
 
         /// <summary>
         /// 

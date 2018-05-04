@@ -101,5 +101,8 @@ namespace XYHContractPlugin.Models
         public string Ext3 { get; set; }
         [MaxLength(100)]
         public string Ext4 { get; set; }
+        //删除列表
+        [MaxLength(15000)]
+        public string Ext5 { get; set; }
     }
 }
