@@ -238,29 +238,37 @@ class AttachEdit extends Component {
     const { completeFileList, deletePicList } = this.props;
     console.log(completeFileList, deletePicList, '???s删除图片？？？？？？？？')
     let id = this.props.basicInfo.id;
-    if (completeFileList.length !== 0) {
-      console.log('进入的是新增么？？')
-      
-      // this.setState({ uploading: true });
+    if(completeFileList.length !== 0 || deletePicList.length !== 0){
       this.props.save({
-        fileInfo: completeFileList,
+        fileInfo: {addFileList:completeFileList || [], deleteFileList:deletePicList || []},
         completeFileList: completeFileList,
         id: id,
-        type: this.props.type, // shops  building  updataRecord
+        //type: this.props.type, // shops  building  updataRecord
       });
-      //return;
     }
-    if (deletePicList.length !== 0) { // 删除图片
-      console.log('进入的是删除么？？')
-      // this.setState({ uploading: true });
-      this.props.dispatch(deletePicAsync({
-        fileInfo: deleteIdArr,
-        id: id,
-        deletePicList: deletePicList,
-        type: this.props.type,
-      }))
-      return;
-    }
+    // if (completeFileList.length !== 0) {
+    //   console.log('进入的是新增么？？')
+      
+    //   // this.setState({ uploading: true });
+    //   this.props.save({
+    //     fileInfo: completeFileList,
+    //     completeFileList: completeFileList,
+    //     id: id,
+    //     type: this.props.type, // shops  building  updataRecord
+    //   });
+    //   //return;
+    // }
+    // if (deletePicList.length !== 0) { // 删除图片
+    //   console.log('进入的是删除么？？')
+    //   // this.setState({ uploading: true });
+    //   this.props.dispatch(deletePicAsync({
+    //     fileInfo: deleteIdArr,
+    //     id: id,
+    //     deletePicList: deletePicList,
+    //     type: this.props.type,
+    //   }))
+    //   return;
+    // }
   }
 
   UploadFile = (file, callback) => {
