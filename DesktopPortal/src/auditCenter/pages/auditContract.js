@@ -19,7 +19,7 @@ class AuditContract extends Component {
         console.log("当前审核信息:", this.props.activeAuditInfo);
         this.props.dispatch(globalAction(getDicParList(['CONTRACT_CATEGORIES', 'FIRST_PARTT_CATEGORIES', 'COMMISSION_CATEGORIES', 'XK_SELLER_TYPE', 'CONTRACT_ATTACHMENT_CATEGORIES', 'CONTRACT_SETTLEACCOUNTS'])));
         this.props.dispatch(setLoadingVisible(true));
-        this.props.dispatch(getContractDetail(this.props.activeAuditInfo.contentId));
+        this.props.dispatch(getContractDetail(this.props.activeAuditInfo.submitDefineId));
        // this.props.dispatch(getContractDetail("973cbad1-307b-48a5-72da-d418d1c8147b"));
         
     }
@@ -32,33 +32,35 @@ class AuditContract extends Component {
     getPageByContentType = () =>{
         const contractInfo = this.props.contractInfo || {};
         const rootBasicData = (this.props.rootBasicData || {}) || [];
-        const curType = this.props.activeAuditInfo.contentName || '';
+        //const curType = this.props.activeAuditInfo.contentName || '';
         console.log('contractInfo:', contractInfo)
         
   
-        if(curType === 'AddContract' || curType === 'Modify'){
-            let basicInfo = contractInfo.baseInfo || {};
-            return (<ContractBasicInfo basicData={rootBasicData} basicInfo={basicInfo}/>);
-        }else if(curType === 'AddComplement' || curType === 'ModifyComplement'){
-            return (<ComplementInfo basicData={rootBasicData} complementInfo={contractInfo.complementInfo || []}/>);
-        }else if(curType === 'UploadFiles'){
-            let contractAttachInfo = {};
-            contractAttachInfo.fileList = contractInfo.fileList || [];
-            return (<AttachInfo basicData={rootBasicData} contractAttachInfo={contractAttachInfo}/>);
-        }
+        // if(curType === 'AddContract' || curType === 'Modify'){
+        //     let basicInfo = contractInfo.baseInfo || {};
+        //     return (<ContractBasicInfo basicData={rootBasicData} basicInfo={basicInfo}/>);
+        // }else if(curType === 'AddComplement' || curType === 'ModifyComplement'){
+        //     return (<ComplementInfo basicData={rootBasicData} complementInfo={contractInfo.complementInfo || []}/>);
+        // }else if(curType === 'UploadFiles'){
+        //     let contractAttachInfo = {};
+        //     contractAttachInfo.fileList = contractInfo.fileList || [];
+        //     return (<AttachInfo basicData={rootBasicData} contractAttachInfo={contractAttachInfo}/>);
+        // }
         
 
      
-        // let curType = contractInfo.type;
-        // if(curType === 1 || curType === 2){
-        //     return (<ContractBasicInfo basicData={rootBasicData} contractInfo={contractInfo.ext1}/>);
-        // }else if(curType === 3){
-        //     let contractAttachInfo = {};
-        //     contractAttachInfo.fileList = contractInfo.ext1 || [];
-        //     return (<AttachInfo basicData={rootBasicData} contractAttachInfo={contractAttachInfo}/>);
-        // }else if(curType === 4){
-        //     return (<ComplementInfo basicData={rootBasicData} complementInfo={contractInfo.ext1} />);
-        // }
+        let curType = contractInfo.type;
+        if(curType === 1 || curType === 2){
+            let curContractInfo = contractInfo.baseInfo || {};
+            curContractInfo.discard = contractInfo.discard;
+            return (<ContractBasicInfo basicData={rootBasicData} basicInfo={contractInfo.baseInfo}/>);
+        }else if(curType === 3){
+            let contractAttachInfo = {};
+            contractAttachInfo.fileList = contractInfo.fileList || [];
+            return (<AttachInfo basicData={rootBasicData} contractAttachInfo={contractAttachInfo}/>);
+        }else if(curType === 4){
+            return (<ComplementInfo basicData={rootBasicData} complementInfo={contractInfo.complementInfo || []} />);
+        }
     }
     render() {
     

@@ -27,7 +27,7 @@ const WebApiConfig = {
         getZYWShopDetail: basicDataBaseApiUrl + 'zyw/Shops/',//获取商铺详情
     },
     contract: {
-        modifyDetail: basicDataBaseApiUrl + 'contractinfo/getmodifyinfobyid/', //获取合同内容的部分详情
+        modifyDetail: basicDataBaseApiUrl + 'contractinfo/getcontractmodifybyid/', //获取合同内容的部分详情
         getContractDetail: basicDataBaseApiUrl + 'contractinfo/',
     }
 }

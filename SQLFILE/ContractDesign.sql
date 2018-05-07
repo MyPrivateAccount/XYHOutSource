@@ -215,5 +215,6 @@ CREATE TABLE `XYH_DT_MODIFY` (
   `Ext2` varchar(15000) DEFAULT '',/**/
   `Ext3` varchar(600) DEFAULT '',/**/
   `Ext4` varchar(100) DEFAULT '',/**/
+  `Ext5` varchar(100) DEFAULT '',/**/
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

@@ -409,6 +409,7 @@ namespace XYHContractPlugin.Managers
             returninfo.FollowHistory = followHistory;
             var annexinfo = await Store.GetListAnnexAsync(a => a.Where(b => b.ContractID == id), cancellationToken);
             returninfo.AnnexInfo = _mapper.Map<List<ContractAnnexResponse>>(annexinfo);
+            
             if (annexinfo.Count > 0)
             {
                 var modify = await Store.GetModifyAsync(a => a.Where(b => b.ID == annexinfo.ElementAt(0).CurrentModify), cancellationToken);
@@ -417,7 +418,22 @@ namespace XYHContractPlugin.Managers
                     item.ExamineStatus = (int)modify.ExamineStatus;
                 }
             }
-
+            else 
+            {
+                if(!string.IsNullOrEmpty( contractinfo.CurrentModify))
+                {
+                    var fileModify = await Store.GetModifyAsync(a => a.Where(b => b.ID == contractinfo.CurrentModify && b.Type == 3));
+                    if (fileModify != null)
+                    {
+                        ContractAnnexResponse info = new ContractAnnexResponse();
+                        info.ExamineStatus = fileModify.ExamineStatus.Value;
+                        info.Group = "";
+                        returninfo.AnnexInfo.Add(info);
+                    }
+        
+                }
+ 
+            }
             var complementinfo = await Store.GetListComplementAsync(a => a.Where(b => b.ContractID == id));
             returninfo.ComplementInfo = _mapper.Map<List<ContractComplementResponse>>(complementinfo);
             if (complementinfo.Count > 0)
