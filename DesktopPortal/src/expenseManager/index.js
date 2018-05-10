@@ -19,23 +19,33 @@ class ExpenseManagerIndex extends Component {
 
     state = {
         isCollapse: false,
+        activeMenu: menuDefine[0],
     }
 
     onCollapse = ()=>{
         this.setState({isCollapse: !this.state.isCollapse});
     }
+
+    handleNavigatorClick = () =>{
+
+    }
+
+    handleMenuClick = (menu) =>{
+
+    }
     render(){
         return (
-            <Layout>
+            <Layout className="page">
                 <Sider
                     collapsible
                     collapsed={this.state.isCollapse}
                     onCollapse = {this.onCollapse}
-                >
+                >    <div className="logo" />
                     <Menu
-                        theme=''
+                        theme="dark"
                         defaultSelectedKeys = {['menu_index']}
-
+                        mode="inline"
+                        onClick={this.handleMenuClick}
                     >
                     {
                         menuDefine.map((item, i) =>
@@ -47,12 +57,30 @@ class ExpenseManagerIndex extends Component {
                     }
                     </Menu>
                 </Sider>
+                <Layout>
+                    <Header>
+                        <Breadcrumb separator='>' style= {{fontSize:'1.2rem'}}> 
+                            <Breadcrumb.Item key= 'first'>{menuDefine[this.props.activeMenu.displayName]}</Breadcrumb.Item>
+                            {
+                                menuDefine.map((item, i) =>{
+                                    return <Breadcrumb.Item key={item.id}>{item.name}</Breadcrumb.Item>
+                                })
+                            }
+                        </Breadcrumb>
+                    </Header>
+                    <Content>
+
+                    </Content>
+                </Layout>
             </Layout>
         );
     }
 }
 
 function mapStateToProps(state){
-    
+    return{
+        activeMenu: state.search.activeMenu,
+        navigator: state.search.navigator,
+    }
 }
 export default withReducer(reducers, 'ExpenseManagerIndex', {mapExtraState: (state, rootState) => ({oidc: rootState.oidc,judgePermissions: rootState.app.judgePermissions})})(connect(mapStateToProps)(ExpenseManagerIndex));
