@@ -12,7 +12,8 @@ const ButtonGroup = Button.Group;
 class ChargeInfo extends Component {
 
     state = {
-        id: NewGuid()
+        id: NewGuid(),
+        number: 1
     }
 
     componentWillMount() {
