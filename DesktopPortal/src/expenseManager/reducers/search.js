@@ -1,4 +1,4 @@
-import * as actionTypes from '../constants/actionTypes';
+import * as actionTypes from '../constants/actionType';
 import {handleActions} from 'redux-actions'
 const initState = {
     activeMenu: {},
