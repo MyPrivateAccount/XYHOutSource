@@ -7,7 +7,10 @@ import { getDepartment } from '../../actions/actionCreator'
 const { Header, Sider, Content } = Layout;
 const CheckboxGroup = Checkbox.Group;
 const ButtonGroup = Button.Group;
-
+const formItemLayout1 = {
+    labelCol:{ span:6},
+    wrapperCol:{ span:6 },
+};
 
 class ChargeInfo extends Component {
 
@@ -59,37 +62,84 @@ class ChargeInfo extends Component {
                 {
                     this.state.costlist.map(
                         function(v, i) {
+                            let costtype = 'costtype_' + i;
+                            let costmoney = 'costmoney_' + i;
+                            let costcomment = 'costcomment_' + i;
+                            let chargenumber = 'chargenumber_' + i;
+                            let chargemoney = 'chargemoney_' + i;
+                            let chargecomment = 'chargecomment_' + i;
+
                             return (
                                 <div>
-                                    <FormItem {...formItemLayout1} label="性别">
-                                        {getFieldDecorator('sex', {
+                                    <FormItem {...formItemLayout1} label="费用类型">
+                                        {getFieldDecorator(costtype, {
                                             reules: [{
                                                 required:true, message: 'please entry Age',
                                             }]
                                         })(
-                                            <Select
-                                                placeholder="选择性别">
-                                                <Option value="1">男</Option>
-                                                <Option value="2">女</Option>
+                                            <Select placeholder="选择费用类型">
+                                                {
+                                                    this.props.chargeCostTypeList.map(
+                                                        function (params) {
+                                                            return <Option value="1">{params.key}</Option>;
+                                                        }
+                                                    )
+                                                }
                                             </Select>
                                         )}
                                     </FormItem>
-                                    <FormItem {...formItemLayout1} label="年龄">
-                                        {getFieldDecorator('age', {
+                                    <FormItem {...formItemLayout1} label="金额">
+                                        {getFieldDecorator(costmoney, {
                                             reules: [{
-                                                required:true, message: 'please entry Age',
+                                                required:true, message: 'please entry',
                                             }]
                                         })(
                                             <InputNumber style={{width: '100%'}} />
                                         )}
                                     </FormItem>
-                                    <FormItem {...formItemLayout1} label="生日">
-                                        {getFieldDecorator('birthday', {
+                                    <FormItem {...formItemLayout1} label="摘要">
+                                        {getFieldDecorator(costcomment, {
                                             reules: [{
-                                                required:true, message: 'please entry Birthday',
+                                                required:true, message: 'please entry Comments',
                                             }]
                                         })(
-                                            <DatePicker format='YYYY-MM-DD' style={{width: '100%'}} />
+                                            <Input placeholder="请输入摘要" />
+                                        )}
+                                    </FormItem>
+                                    <FormItem {...formItemLayout1} label="发票号">
+                                        {getFieldDecorator(costcomment, {
+                                            reules: [{
+                                                required:true, message: 'please entry Comments',
+                                            }]
+                                        })(
+                                            <Input placeholder="请输入摘要" />
+                                        )}
+                                    </FormItem>
+                                    <FormItem {...formItemLayout1} label="发票金额">
+                                        {getFieldDecorator(costcomment, {
+                                            reules: [{
+                                                required:true, message: 'please entry Comments',
+                                            }]
+                                        })(
+                                            <Input placeholder="请输入摘要" />
+                                        )}
+                                    </FormItem>
+                                    <FormItem {...formItemLayout1} label="备注">
+                                        {getFieldDecorator(costcomment, {
+                                            reules: [{
+                                                required:true, message: 'please entry Comments',
+                                            }]
+                                        })(
+                                            <Input placeholder="请输入摘要" />
+                                        )}
+                                    </FormItem>
+                                    <FormItem {...formItemLayout1} label="附件">
+                                        {getFieldDecorator(costcomment, {
+                                            reules: [{
+                                                required:true, message: 'please entry Comments',
+                                            }]
+                                        })(
+                                            <Input placeholder="请输入摘要" />
                                         )}
                                     </FormItem>
                                 </div>
@@ -107,7 +157,8 @@ class ChargeInfo extends Component {
 
 function chargetableMapStateToProps(state) {
     return {
-        department: state.eachDepartment
+        department: state.eachDepartment,
+        chargeCostTypeList: state.chargeCostTypeList
     }
 }
 
