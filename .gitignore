@@ -24,6 +24,12 @@ Applications/XYHContractPlugin/bin/
 Applications/XYHContractPlugin/obj/
 Applications/XYHContractInterfacePlugin/bin/
 Applications/XYHContractInterfacePlugin/obj/
+
+Applications/XYHChargePlugin/bin/
+Applications/XYHChargePlugin/obj/
+Applications/XYHChargeInterfacePlugin/bin/
+Applications/XYHChargeInterfacePlugin/obj/
+
 Applications/.vs/
 Applications/Backup2/
 Applications/Backup1/

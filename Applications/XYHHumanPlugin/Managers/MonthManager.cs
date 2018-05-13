@@ -92,7 +92,7 @@ namespace XYHHumanPlugin.Managers
             MonthInfo month = new MonthInfo();
             month.ID = Guid.NewGuid().ToString();
             month.SettleTime = date;
-            month.OperName = user.Id;
+            month.OperName = user.UserName;
             month.SalaryForm = Guid.NewGuid().ToString();
             month.AttendanceForm = Guid.NewGuid().ToString();
 

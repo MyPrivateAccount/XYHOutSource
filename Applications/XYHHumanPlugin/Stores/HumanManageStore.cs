@@ -43,7 +43,7 @@ namespace XYHHumanPlugin.Stores
             var modify = new ModifyInfo();
             modify.ID = modifyid;
             modify.Type = 1;//创建
-            modify.IDCard = modifyid;
+            modify.IDCard = humaninfo.IDCard;
             modify.ModifyPepole = userinfo.Id;
             modify.ModifyStartTime = DateTime.Now;
             modify.ExamineStatus = (int)ExamineStatusEnum.Auditing;

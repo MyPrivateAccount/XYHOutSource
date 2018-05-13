@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ApplicationCore\ApplicationCore.csproj" />
+    <ProjectReference Include="..\GatewayInterface\GatewayInterface.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore">
+      <HintPath>..\..\..\OutSource\Applications\dll\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Identity.Stores">
+      <HintPath>..\..\..\OutSource\Applications\dll\Microsoft.Extensions.Identity.Stores.dll</HintPath>
+    </Reference>
+    <Reference Include="XYH.Core">
+      <HintPath>..\..\..\OutSource\Applications\dll\XYH.Core.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>
