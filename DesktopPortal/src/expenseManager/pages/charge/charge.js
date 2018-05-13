@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import React, { Component } from 'react'
 import {Table, Layout, Form, Modal, Cascader, Upload, InputNumber, Input, Select, Icon, Button, Col, Checkbox, Tag, Pagination, Spin} from 'antd'
-import { NewGuid } from '../../../../utils/appUtils';
+import { NewGuid } from '../../../utils/appUtils';
 import { getDepartment } from '../../actions/actionCreator'
 
 const Option = Select.Option;
