@@ -65,17 +65,17 @@ class SearchCondition extends Component {
 
     //searchbox组件render前的回调
     searchBoxWillMount = (searchMethod) => {
-        if (searchMethod) {
-            //setState由于是异步函数因此当前设置的值未必可以马上生效故而后面的回调函数可以在设置成功后进行的操作
-            this.setState({searchHandleMethod: searchMethod}, () => {this.handleSearch();});
-        }
+        // if (searchMethod) {
+        //     //setState由于是异步函数因此当前设置的值未必可以马上生效故而后面的回调函数可以在设置成功后进行的操作
+        //     this.setState({searchHandleMethod: searchMethod}, () => {this.handleSearch();});
+        // }
     }
     //查询处理
     handleSearch = () => {
-        let searchMethod = this.state.searchHandleMethod;
-        if (searchMethod) {
-            searchMethod();
-        }
+        // let searchMethod = this.state.searchHandleMethod;
+        // if (searchMethod) {
+        //     searchMethod();
+        // }
     }
    
 

@@ -16,7 +16,7 @@ const menuDefine = [
     {
         menuID:'menu_index', displayName: '费用信息', menuIcon:'contacts', type:'subMenu',
         childMenu:[
-            { menuID:'basicinfo', displayName: '基本信息', menuIcon:'contacts', type:'item',},
+            { menuID:'basicinfo', displayName: '录入信息', menuIcon:'contacts', type:'item',},
             { menuID:'optin2', displayName: 'option2', menuIcon:'contacts', type:'item',},
         ],
         subMenu:[{

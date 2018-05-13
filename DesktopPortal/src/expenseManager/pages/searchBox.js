@@ -36,9 +36,9 @@ class SearchBox extends Component{
         let condition = {...this.props.condition};
 
         condition.keyWord = this.props.searchInfo.searchKeyWord;
-        if (this.props.searchInfo.activeOrg.id !== "0") {
-            condition.organizate = this.props.searchInfo.activeOrg.id;
-        }
+        // if (this.props.searchInfo.activeOrg.id !== "0") {
+        //     condition.organizate = this.props.searchInfo.activeOrg.id;
+        // }
        // let userInfo = this.props.oidc.user.profile;
         console.log('navigator:', navigator);
         console.log('activeOrg:',this.props.searchInfo.activeOrg);
@@ -122,7 +122,7 @@ function mapStateToProps(state) {
     return {
         searchInfo: state.search,
          oidc: state.oidc,
-         setContractOrgTree:state.basicData.permissionOrgTree.searchOrgTree,//state.basicData.permissionOrgTree.setContractOrgTree,
+         //setContractOrgTree:state.basicData.permissionOrgTree.searchOrgTree,//state.basicData.permissionOrgTree.setContractOrgTree,
     }
 }
 

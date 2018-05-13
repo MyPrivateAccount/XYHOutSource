@@ -39,12 +39,16 @@ class ChargeInfo extends Component {
     }
 
     addCost = () => {
-
         let t = {
             previewVisible: false,
             previewImage: '',
             fileList: []
         }
+        this.setState(Object.assign({}, this.state, {costlist: this.state.costlist.push(t)}));
+    }
+
+    hasErrors(fieldsError) {
+        return !Object.keys(fieldsError).some(field => fieldsError[field]);
     }
 
     render() {
@@ -68,7 +72,7 @@ class ChargeInfo extends Component {
                             validator: this.isCardID
                         }]
                     })(
-                        <Input enable="false" />
+                        <Input disabled={true} />
                     )}
                 </FormItem>
                 <FormItem {...formItemLayout1} label="报销门店">
