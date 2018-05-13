@@ -16,7 +16,7 @@ const menuDefine = [
     {
         menuID:'menu_index', displayName: '费用信息', menuIcon:'contacts', type:'subMenu',
         childMenu:[
-            { menuID:'optin1', displayName: 'option1', menuIcon:'contacts', type:'item',},
+            { menuID:'basicinfo', displayName: '基本信息', menuIcon:'contacts', type:'item',},
             { menuID:'optin2', displayName: 'option2', menuIcon:'contacts', type:'item',},
         ],
         subMenu:[{
@@ -168,7 +168,13 @@ class ExpenseManagerIndex extends Component {
 
 
     getContentPage = () =>{
-      //  return <ContentPage curMenuID={this.state.activeMenu.menuID}/>
+        let navigator = this.props.navigator;
+        if (navigator.length > 0) {
+            if (navigator[navigator.length - 1].id === 0) {
+                return <ContentPage curMenuID='Onboarding' />;
+            }
+        }
+       return <ContentPage curMenuID={this.state.activeMenu.menuID} />;
     }
 
     getSubMenu = (menu) =>{

@@ -32,6 +32,6 @@ export function* getParListAsync(state) {
     }
 }
 
-export function* watchGetAllArea() {
-    yield takeLatest(actionUtils.getActionType(actionTypes.GET_CHARGEDICINFO), getAllAreaAsync);
+export default function* watchGetAlldic() {
+    yield takeLatest(actionUtils.getActionType(actionTypes.GET_CHARGEDICINFO), getParListAsync);
 }

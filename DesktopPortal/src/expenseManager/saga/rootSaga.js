@@ -1,5 +1,5 @@
 
-import watchDicAllAsync from './dicSaga';
+import watchGetAlldic from './dicSaga';
 
 
 // export default function* rootSaga(){
@@ -11,7 +11,7 @@ import watchDicAllAsync from './dicSaga';
 export default function* rootSaga() {
     yield [
    
-        watchDicAllAsync(),
+        watchGetAlldic(),
      
     ]
 }
