@@ -21,4 +21,8 @@ reducerMap[actionTypes.DIC_GET_PARLIST_COMPLETE] = function (state, action) {
     });
 }
 
+reducerMap[actionTypes.CLOSE_USER_BREAD] = function(state, action) {
+    return Object.assign({}, state, {navigator: []});
+}
+
 export default handleActions(reducerMap,initState);

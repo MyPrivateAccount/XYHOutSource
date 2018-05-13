@@ -1,8 +1,9 @@
 import { connect } from 'react-redux';
 import React, { Component } from 'react'
-import {Table, Layout, Form, Modal, Cascader, Upload, InputNumber, Input, Select, Icon, Button, Col, Checkbox, Tag, Pagination, Spin} from 'antd'
+import {Table, notification, Layout, Form, Modal, Cascader, Upload, InputNumber, Input, Select, Icon, Button, Col, Checkbox, Tag, Pagination, Spin} from 'antd'
 import { NewGuid } from '../../../utils/appUtils';
-import { getDepartment } from '../../actions/actionCreator'
+import { getDicInfo, uploadFile, postChargeInfo } from '../../actions/actionCreator';
+import WebApiConfig from '../../constants/webapiConfig';
 
 const Option = Select.Option;
 const FormItem = Form.Item;
@@ -22,16 +23,64 @@ class ChargeInfo extends Component {
 
     state = {
         id: NewGuid(),
-        costlist: []
+        costlist: [
+            {
+                receiptID: NewGuid(),
+                previewVisible: false,
+                previewImage: '',
+                fileList: []
+            }
+        ],
+        imgfilelist: []
     }
 
     componentWillMount() {
-        this.props.dispatch(getDepartment());
+        this.props.dispatch(getDicInfo(["CHARGE_COST_TYPE"]));
         //this.props.dispatch(searchConditionType(SearchCondition.topteninfo));
     }
 
-    handleSubmit = ()=> {
+    componentDidMount() {
+        this.props.form.setFieldsValue({id:this.state.id});
+    }
 
+    handleSubmit = (e) => {
+        e.preventDefault();
+        let self = this;
+        this.props.form.validateFields((err, values) => {
+            if (!err) {
+
+                let costinfos = [];
+                let receiptinfos = [];
+                for (const ite in values) {
+                    let ary = ite.split("_");
+                    if (ary.length > 0) {
+                        if (ary[1] === "reciepcomment") {
+                            receiptinfos[+ary[0]] = Object.assign({}, receiptinfos[+ary[0]], {"comments": values[ite]});
+                        } else if (ary[1] === "reciepmoney") {
+                            receiptinfos[+ary[0]] = Object.assign({}, receiptinfos[+ary[0]], {"receiptmoney": values[ite]});
+                        } else if (ary[1] === "reciepnumber") {
+                            receiptinfos[+ary[0]] = Object.assign({}, receiptinfos[+ary[0]], {"reciepnumber": values[ite]});
+                        } else if (ary[1] === "costcomment") {
+                            costinfos[+ary[0]] = Object.assign({}, costinfos[+ary[0]], {"comments": values[ite]});
+                        } else if (ary[1] === "costmoney") {
+                            costinfos[+ary[0]] = Object.assign({}, costinfos[+ary[0]], {"cost": values[ite]});
+                        } else if (ary[1] === "costtype") {
+                            costinfos[+ary[0]] = Object.assign({}, costinfos[+ary[0]], {"type": values[ite]});
+                        } 
+                            
+                    }
+                }
+                let tf = {
+                    chargeinfo: {
+                        id: self.state.id,
+                        department: values.department
+                    },
+                    costinfos: costinfos,
+                    receiptinfos: receiptinfos
+                }
+                this.props.dispatch(postChargeInfo(tf));
+            }
+        });
     }
     
     handleReset = ()=> {
@@ -40,16 +89,75 @@ class ChargeInfo extends Component {
 
     addCost = () => {
         let t = {
+            receiptID: NewGuid(),
             previewVisible: false,
             previewImage: '',
             fileList: []
         }
-        this.setState(Object.assign({}, this.state, {costlist: this.state.costlist.push(t)}));
+        this.state.costlist.push(t);
+        this.setState({costlist: this.state.costlist});
     }
 
     hasErrors(fieldsError) {
         return !Object.keys(fieldsError).some(field => fieldsError[field]);
     }
+
+    UploadFile = (file, callback) => {
+        let id = this.state.userinfo.id;
+        let uploadUrl = `${WebApiConfig.attach.uploadUrl}${id}`;
+        let fileGuid = NewGuid();
+        let fd = new FormData();
+        fd.append("fileGuid", fileGuid)
+        fd.append("name", file.name)
+        fd.append("file", file);
+    
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', uploadUrl, true);
+        xhr.send(fd);
+        xhr.onload = function (e) {
+          if (this.status === 200) {
+            let r = JSON.parse(this.response);
+             console.log("返回结果：", this.response);
+            if (r.code === "0") {
+              let uf = {
+                fileGuid: fileGuid,
+                from: 'pc-upload',
+                WXPath: r.extension,
+                sourceId: id,
+                appId: 'contractManagement',
+                localUrl: file.url,
+                name: file.name
+              }
+              // console.log("pic值", uf);
+              if (callback) {
+                callback(uf);
+              }
+            } else {
+              notification.error({
+                message: '上传失败：',
+                duration: 3
+              });
+            }
+          } else {
+            notification.error({
+              message: '图片上传失败!',
+              duration: 3
+            });
+          }
+        }
+        xhr.onerror = function (e) {
+          notification.error({
+            message: '图片上传失败!',
+            duration: 3
+          });
+        }
+        xhr.onabort = function () {
+          notification.error({
+            message: '图片上传异常终止!',
+            duration: 3
+          });
+        }
+      }
 
     render() {
         const uploadButton = (
@@ -68,31 +176,29 @@ class ChargeInfo extends Component {
                     {getFieldDecorator('id', {
                         reules: [{
                             required:true, message: 'please entry IDcard',
-                        }, {
-                            validator: this.isCardID
                         }]
                     })(
                         <Input disabled={true} />
                     )}
                 </FormItem>
                 <FormItem {...formItemLayout1} label="报销门店">
-                    {getFieldDecorator('name', {
+                    {getFieldDecorator('department', {
                         reules: [{
-                            required:true, message: 'please entry Name',
+                            required:true, message: 'please entry department',
                         }]
                     })(
                         <Cascader options={this.props.setContractOrgTree}  onChange={this.handleChooseDepartmentChange } changeOnSelect  placeholder="归属部门"/>
                     )}
                 </FormItem>
                 {
-                    this.state.costlist.map(
+                    self.state.costlist.map(
                         function(v, i) {
-                            let costtype = 'costtype_' + i;
-                            let costmoney = 'costmoney_' + i;
-                            let costcomment = 'costcomment_' + i;
-                            let chargenumber = 'chargenumber_' + i;
-                            let chargemoney = 'chargemoney_' + i;
-                            let chargecomment = 'chargecomment_' + i;
+                            let costtype = i+'_costtype';
+                            let costmoney = i+'_costmoney';
+                            let costcomment = i+'_costcomment';
+                            let reciepnumber = i+'_reciepnumber';
+                            let reciepmoney = i+'_reciepmoney';
+                            let reciepcomment = i+'_reciepcomment';
 
                             let handleCancel = () => {
                                 self.state.costlist[i].previewVisible = false;
@@ -105,7 +211,14 @@ class ChargeInfo extends Component {
                                 self.setState(Object.assign({}, self.state));
                             }
 
-                            let handleBeforeUpload = () => { return true;}
+                            let handleBeforeUpload = (pf) => {
+                                self.UploadFile(pf, (ufile) => {
+                                    ufile.receiptID = v.receiptID;
+                                    self.props.dispatch(uploadFile(ufile));
+
+                                });
+                                return true;
+                            }
                         
                             let handleChange = ({ fileList }) => {
                                 self.state.costlist[i].fileList = fileList;
@@ -113,7 +226,10 @@ class ChargeInfo extends Component {
                             }
 
                             return (
-                                <div>
+                                <div key={i}>
+                                    <FormItem {...formItemLayout}/>
+                                    <FormItem {...formItemLayout}/>
+                                    <FormItem {...formItemLayout}/>
                                     <FormItem {...formItemLayout1} label="费用类型">
                                         {getFieldDecorator(costtype, {
                                             reules: [{
@@ -122,9 +238,9 @@ class ChargeInfo extends Component {
                                         })(
                                             <Select placeholder="选择费用类型">
                                                 {
-                                                    this.props.chargeCostTypeList.map(
+                                                    self.props.chargeCostTypeList.map(
                                                         function (params) {
-                                                            return <Option value="1">{params.key}</Option>;
+                                                            return <Option key={params.value} value={params.value}>{params.key}</Option>;
                                                         }
                                                     )
                                                 }
@@ -137,7 +253,7 @@ class ChargeInfo extends Component {
                                                 required:true, message: 'please entry',
                                             }]
                                         })(
-                                            <InputNumber style={{width: '100%'}} />
+                                            <InputNumber placeholder="请输入金额" style={{width: '100%'}} />
                                         )}
                                     </FormItem>
                                     <FormItem {...formItemLayout1} label="摘要">
@@ -150,7 +266,7 @@ class ChargeInfo extends Component {
                                         )}
                                     </FormItem>
                                     <FormItem {...formItemLayout1} label="发票号">
-                                        {getFieldDecorator(chargenumber, {
+                                        {getFieldDecorator(reciepnumber, {
                                             reules: [{
                                                 required:true, message: 'please entry',
                                             }]
@@ -159,16 +275,16 @@ class ChargeInfo extends Component {
                                         )}
                                     </FormItem>
                                     <FormItem {...formItemLayout1} label="发票金额">
-                                        {getFieldDecorator(chargemoney, {
+                                        {getFieldDecorator(reciepmoney, {
                                             reules: [{
                                                 required:true, message: 'please entry',
                                             }]
                                         })(
-                                            <Input placeholder="请输入发票金额" />
+                                            <InputNumber placeholder="请输入发票金额" style={{width: '100%'}} />
                                         )}
                                     </FormItem>
                                     <FormItem {...formItemLayout1} label="备注">
-                                        {getFieldDecorator(chargecomment, {
+                                        {getFieldDecorator(reciepcomment, {
                                             reules: [{
                                                 required:true, message: 'please entry',
                                             }]
@@ -198,7 +314,7 @@ class ChargeInfo extends Component {
                     )
                 }
                 <FormItem wrapperCol={{ span: 12, offset: 6 }}>
-                    <Col span={6}><Button type="primary" icon="plus" onClick={this.addCost} ></Button></Col>
+                    <Col span={6}><Button type="primary" icon="plus" onClick={this.addCost.bind(this)} ></Button></Col>
                 </FormItem>
                 <FormItem wrapperCol={{ span: 12, offset: 6 }}>
                     <Col span={6}><Button type="primary" htmlType="submit" disabled={this.hasErrors(getFieldsValue())} >提交</Button></Col>
@@ -211,8 +327,8 @@ class ChargeInfo extends Component {
 
 function chargetableMapStateToProps(state) {
     return {
-        department: state.eachDepartment,
-        chargeCostTypeList: state.chargeCostTypeList
+        department: state.basicData.eachDepartment,
+        chargeCostTypeList: state.basicData.chargeCostTypeList
     }
 }
 

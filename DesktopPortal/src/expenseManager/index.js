@@ -5,7 +5,7 @@ import reducers from './reducers/index';
 import rootSaga from './saga/rootSaga';
 import {sagaMiddleware} from '../';
 import {Layout, Menu, Icon, Button, Breadcrumb} from 'antd';
-import {changeMenu} from './actions/actionCreator';
+import {changeMenu, closebreadPage} from './actions/actionCreator';
 import ContentPage from './pages/contentPage';
 const {Header, Sider, Content} = Layout;
 const SubMenu = Menu.SubMenu;
@@ -164,6 +164,11 @@ class ExpenseManagerIndex extends Component {
     handleNavigatorClick = (e) =>{
         let navigator = this.props.navigator;
 
+        if(navigator.length > 0) {
+            if(navigator[navigator.length -1].id === 0) {
+                this.props.dispatch(closebreadPage(0));
+            }
+        }
     }
 
 
@@ -171,7 +176,7 @@ class ExpenseManagerIndex extends Component {
         let navigator = this.props.navigator;
         if (navigator.length > 0) {
             if (navigator[navigator.length - 1].id === 0) {
-                return <ContentPage curMenuID='Onboarding' />;
+                return <ContentPage curMenuID='menu_index' />;
             }
         }
        return <ContentPage curMenuID={this.state.activeMenu.menuID} />;
@@ -285,7 +290,7 @@ class ExpenseManagerIndex extends Component {
 
                             {
                                 breadcrumbList.map((item, i) =>{
-                                    return <Breadcrumb.Item key={item.menuID}  style={homeStyle.navigator} onClick={item.type !== 'subMenu' ? this.handleNavigatorClick : null} >{item.displayName}</Breadcrumb.Item>
+                                    return <Breadcrumb.Item key={item.menuID}  style={homeStyle.navigator} onClick={this.handleNavigatorClick} >{item.displayName}</Breadcrumb.Item>
                                 })
                             }
                         </Breadcrumb>

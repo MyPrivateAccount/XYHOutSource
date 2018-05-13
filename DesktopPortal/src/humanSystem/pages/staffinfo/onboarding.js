@@ -152,6 +152,7 @@ class OnBoarding extends Component {
             the.setState({ fileinfo: ufile, fileList: filelist});
           });
         }
+        return true;
     }
 
     handleSubmit = (e) => {

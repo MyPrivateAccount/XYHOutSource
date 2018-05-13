@@ -13,6 +13,10 @@ const WebApiConfig = {
     },
     userTypeValue: {
         Base: basicDataBaseApiUrl + 'userTypeValue', // put 更新当前用户历史楼盘
-    }
+    },
+    server: {
+        uploadImg: basicDataBaseApiUrl + "chargeinfo/uploadmore/",
+        addCharge: basicDataBaseApiUrl + "chargeinfo/addcharge/",
+    },
 }
 export default WebApiConfig;

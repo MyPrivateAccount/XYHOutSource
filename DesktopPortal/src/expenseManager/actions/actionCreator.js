@@ -3,5 +3,18 @@ import * as actionTypes from '../constants/actionType';
 
 export const getDepartment = createAction(actionTypes.GET_ALLDEPARTMENT);
 export const changeMenu = createAction(actionTypes.CHNAGE_MENU);
+
+//字典操作
+export const getDicInfo = createAction(actionTypes.GET_CHARGEDICINFO);
+
 //设置遮罩层
 export const setLoadingVisible = createAction(actionTypes.SET_SEARCH_LOADING);
+
+//面包屑
+export const closebreadPage = createAction(actionTypes.CLOSE_USER_BREAD);
+
+export const uploadFile = createAction(actionTypes.UPLOAD_CHARGEFILE);
+
+
+//服务接口
+export const postChargeInfo = createAction(actionTypes.POST_CHARGEINFO);

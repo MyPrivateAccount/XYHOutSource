@@ -1,6 +1,6 @@
 
 import watchGetAlldic from './dicSaga';
-
+import watchServerInterface from './serverSaga'
 
 // export default function* rootSaga(){
 //     yield[
@@ -10,8 +10,7 @@ import watchGetAlldic from './dicSaga';
 
 export default function* rootSaga() {
     yield [
-   
         watchGetAlldic(),
-     
+        watchServerInterface(),
     ]
 }
