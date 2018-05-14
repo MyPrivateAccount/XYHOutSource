@@ -109,7 +109,7 @@ namespace XYHChargePlugin.Controllers
                 GatewayInterface.Dto.ExamineSubmitRequest exarequest = new GatewayInterface.Dto.ExamineSubmitRequest();
                 exarequest.ContentId = request.ChargeInfo.ID;
                 exarequest.ContentType = "ChargeCommit";
-                exarequest.ContentName = $"addcharge {request.ChargeInfo.Name}";
+                exarequest.ContentName = $"addcharge {request.ChargeInfo.ID}";
                 exarequest.SubmitDefineId = modifyid;
                 exarequest.Source = "";
                 exarequest.CallbackUrl = ApplicationContext.Current.UpdateExamineCallbackUrl;
@@ -147,7 +147,72 @@ namespace XYHChargePlugin.Controllers
             return Response;
         }
 
+        #region Flow
+        [HttpPost("audit/updatechargecallback")]
+        [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
+        public async Task<ApplicationCore.ResponseMessage> UpdateRecordChargeCallback([FromBody] ExamineResponse examineResponse)
+        {
+            Logger.Warn($"审核回调接口(UpdateRecordSubmitCallback)：\r\n请求参数为：\r\n" + (examineResponse != null ? JsonHelper.ToJson(examineResponse) : ""));
 
+            ApplicationCore.ResponseMessage response = new ApplicationCore.ResponseMessage();
+            if (!ModelState.IsValid)
+            {
+                response.Code = ApplicationCore.ResponseCodeDefines.ModelStateInvalid;
+                response.Message = ModelState.GetAllErrors();
+                Logger.Warn($"费用动态审核回调(UpdateRecordSubmitCallback)报错：\r\n{response.Message ?? ""},\r\n请求参数为：\r\n" + (examineResponse != null ? JsonHelper.ToJson(examineResponse) : ""));
+                return response;
+            }
+
+            try
+            {
+                //await _updateRecordManager.UpdateRecordSubmitCallback(examineResponse);
+
+            }
+            catch (Exception e)
+            {
+                response.Code = ApplicationCore.ResponseCodeDefines.ServiceError;
+                response.Message = e.ToString();
+                Logger.Error($"费用动态审核回调(UpdateRecordSubmitCallback)报错：\r\n{response.Message ?? ""},\r\n请求参数为：\r\n" + (examineResponse != null ? JsonHelper.ToJson(examineResponse) : ""));
+            }
+            return response;
+        }
+
+        [HttpPost("audit/submitchargecallback")]
+        [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
+        public async Task<ApplicationCore.ResponseMessage> SubmitChargeCallback([FromBody] ExamineResponse examineResponse)
+        {
+            Logger.Trace($"费用提交审核中心回调(SubmitContractCallback)：\r\n请求参数为：\r\n" + (examineResponse != null ? JsonHelper.ToJson(examineResponse) : ""));
+
+            ApplicationCore.ResponseMessage response = new ApplicationCore.ResponseMessage();
+
+            if (examineResponse == null)
+            {
+                response.Code = ApplicationCore.ResponseCodeDefines.ModelStateInvalid;
+                Logger.Trace($"费用提交审核中心回调(SubmitContractCallback)模型验证失败：\r\n{response.Message ?? ""}，\r\n请求参数为：\r\n" + (examineResponse != null ? JsonHelper.ToJson(examineResponse) : ""));
+                return response;
+            }
+            try
+            {
+                response.Code = ApplicationCore.ResponseCodeDefines.SuccessCode;
+
+                if (examineResponse.ExamineStatus == ExamineStatus.Examined)
+                {
+                    await _chargeManager.SubmitAsync(examineResponse.SubmitDefineId, ExamineStatusEnum.Approved);
+                }
+                else if (examineResponse.ExamineStatus == ExamineStatus.Reject)
+                {
+                    await _chargeManager.SubmitAsync(examineResponse.SubmitDefineId, ExamineStatusEnum.Reject);
+                }
+            }
+            catch (Exception e)
+            {
+                response.Code = ApplicationCore.ResponseCodeDefines.ServiceError;
+                response.Message = e.ToString();
+                Logger.Trace($"费用提交审核中心回调(SubmitBuildingCallback)报错：\r\n{e.ToString()}，\r\n请求参数为：\r\n" + examineResponse != null ? JsonHelper.ToJson(examineResponse) : "");
+            }
+            return response;
+        }
+        #endregion
 
         #region File
         [HttpPost("files/callback")]

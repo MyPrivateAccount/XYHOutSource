@@ -6,9 +6,8 @@ USE `xyhdb`;
 DROP TABLE IF EXISTS `XYH_CH_CHARGEMANAGE`;
 CREATE TABLE `XYH_CH_CHARGEMANAGE` (
   `ID` varchar(127) NOT NULL DEFAULT '', /*数据库id*/
-  `Name` varchar(127) NOT NULL DEFAULT '',/*名字*/
   `Department` varchar(127) NOT NULL DEFAULT '',/*部门(报销门店)*/
-  `Note` varchar(255) NOT NULL DEFAULT '',/*备注*/
+  `Note` varchar(255) DEFAULT '',/*备注*/
   `CreateTime` datetime DEFAULT NULL,/*创建时间*/
   `PostTime` datetime DEFAULT NULL,/*打款时间*/
   `CreateUser` varchar(127) DEFAULT NULL,

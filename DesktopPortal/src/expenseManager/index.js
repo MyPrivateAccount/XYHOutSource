@@ -5,7 +5,7 @@ import reducers from './reducers/index';
 import rootSaga from './saga/rootSaga';
 import {sagaMiddleware} from '../';
 import {Layout, Menu, Icon, Button, Breadcrumb} from 'antd';
-import {changeMenu, closebreadPage} from './actions/actionCreator';
+import {changeMenu, closebreadPage, setuserPage, setuserPageIndex} from './actions/actionCreator';
 import ContentPage from './pages/contentPage';
 const {Header, Sider, Content} = Layout;
 const SubMenu = Menu.SubMenu;
@@ -67,27 +67,23 @@ class ExpenseManagerIndex extends Component {
     state = {
         isCollapse: false,
         activeMenu: menuDefine[0].childMenu[0],
-        current: menuDefine[0].childMenu[0].menuID,
-        keyPath: [menuDefine[0].childMenu[0].menuID, menuDefine[0].menuID],
-        openKeys: [],
-        
     }
 
-    
-
-
-    getMenuItem = (menu, key) =>{
+    getMenuItem = (menu, key, navigator) =>{
         let temp = {};
         if(menu && menu.childMenu){
             temp = menu.childMenu.find(item => item.menuID === key);
             if(temp !== undefined)
             {
+                navigator.push({menuID: menu.menuID, disname: menu.displayName});
+                navigator.push({menuID: temp.menuID, disname: temp.displayName});
                 return temp;
             }
             if(menu.subMenu){
+                navigator.push({menuID: menu.menuID, disname: menu.displayName});
                 for(let i = 0; i < menu.subMenu.length; i++){
-                    let res = this.getMenuItem(menu.subMenu[i],key);
-                    if(res !== undefined){
+                    let res = this.getMenuItem(menu.subMenu[i], key, navigator);
+                    if(res !== undefined) {
                         return res;
                     }
                 }
@@ -95,123 +91,46 @@ class ExpenseManagerIndex extends Component {
         }
     }
     handleMenuItemClick = (e) => {
-        console.log('Clicked: ', e);
-        console.log('this.state.activeMenu:', this.state.activeMenu)
-        this.setState({ current: e.key, keyPath: e.keyPath });
-        
         if (e.key === this.state.activeMenu.menuID ) return;
-        let curMainMenu = {};
-        for (let i in menuDefine) {
-            if (menuDefine[i].menuID == e.keyPath[e.keyPath.length -1]) {
-                curMainMenu = menuDefine[i];
+
+        let activeMenu = null;
+        let navigator = [];
+        for (let item of menuDefine) {
+            activeMenu = this.getMenuItem(item, e.key, navigator);
+            if (activeMenu) {
                 break;
             }
         }
-        let activeMenu = this.getMenuItem(curMainMenu, e.key);
-  
-        console.log('activeMenu:', activeMenu)
- 
-        this.props.dispatch(changeMenu(activeMenu));
 
-       
-        this.setState({ activeMenu:activeMenu});
-               
-       
+        this.state.activeMenu = activeMenu;//只是存储
+        this.props.dispatch(setuserPage(navigator));
       }
-      onOpenChange = (openKeys) => {
-          //console.log('openKeys:', openKeys);
-          //console.log("state:", this.state);
-        const state = this.state;
-        const latestOpenKey = openKeys.find(key => !(state.openKeys.indexOf(key) > -1));
-        const latestCloseKey = state.openKeys.find(key => !(openKeys.indexOf(key) > -1));
-        console.log(latestOpenKey, latestCloseKey);
-        let nextOpenKeys = [];
-        if (latestOpenKey) {
-          nextOpenKeys = this.getAncestorKeys(latestOpenKey).concat(latestOpenKey);
-        }
-        if (latestCloseKey) {
-          nextOpenKeys = this.getAncestorKeys(latestCloseKey);
-        }
-        this.setState({ openKeys: nextOpenKeys });
-      }
-      getSubMenuParentID = (menuID)=>{
-        for(let i = 0; i < menuDefine.length; i ++){
 
-           let temp = menuDefine[i].subMenu;
-        
-            while(temp){
-                
-                let menu = temp.find(item =>item.menuID === menuID)
-                if(menu !== undefined)
-                {
-                    return menu.parent;
-                }
-                temp = temp.subMenu;
-            }
-        }
-        return null;
-      }
-      getAncestorKeys = (key) => {
-          console.log('getAncestorKeys:', key);
-        let parent = [];
-        let temp = this.getSubMenuParentID(key);
-        if(temp)
-        {
-            parent.push(temp);
-        }
-        
-        return parent || [];
-      }
     onCollapse = ()=>{
         this.setState({isCollapse: !this.state.isCollapse});
     }
 
-    handleNavigatorClick = (e, menu) =>{
-        //console.log('this.state.keyPath:', this.state.keyPath);
-        if(menu){
-            
-            if(menu.childMenu && menu.childMenu[0]){
-                let activeMenu = menu.childMenu[0];
-                let keyPath = this.state.keyPath;
-                let index = keyPath.findIndex(item => item === menu.menuID);
-                let newKeyPath = null;
-                if(index > -1){
-                    newKeyPath = keyPath.slice(-(keyPath.length -index) );
-                    newKeyPath.splice(0, 0, activeMenu.menuID);
-                }
-               // console.log('this.state.keyPath,current:', newKeyPath)
-                this.props.dispatch(changeMenu(activeMenu));
-                this.setState({ activeMenu:activeMenu, keyPath: newKeyPath || this.state.keyPath,current: activeMenu.menuID,});
+    handleNavigatorClick = (i, menu) =>{
+        let navigator = this.props.navigator;
+        if(navigator.length > 0) {
+            if(navigator[navigator.length -1].menuID !== menu.menuID) {
+                this.props.dispatch(setuserPageIndex(i));
             }
         }
-        // let navigator = this.props.navigator;
-
-        // if(navigator.length > 0) {
-        //     if(navigator[navigator.length -1].id === 0) {
-        //         this.props.dispatch(closebreadPage(0));
-        //     }
-        // }
     }
 
-
     getContentPage = () =>{
-        // let navigator = this.props.navigator;
-        // if (navigator.length > 0) {
-        //     if (navigator[navigator.length - 1].id === 0) {
-        //         return <ContentPage curMenuID='menu_index' />;
-        //     }
-        // }
-        if(this.state.activeMenu &&this.state.activeMenu.menuID)
-        {
-            return <ContentPage curMenuID={this.state.activeMenu.menuID} />;
+        let navigator = this.props.navigator;
+
+        if (navigator.length > 0) {
+                return <ContentPage curMenuID={navigator[navigator.length - 1].menuID} />;
         }
-      
+        return <ContentPage curMenuID={this.state.activeMenu.menuID} />;
     }
 
     getSubMenu = (menu) =>{
         if(menu)
         {
-            //console.log('menu:', menu.displayName);
             return (
                 <SubMenu key={menu.menuID} title={<span><Icon type={menu.menuIcon} /><span>{menu.displayName}</span></span>}>
                     {
@@ -233,54 +152,10 @@ class ExpenseManagerIndex extends Component {
         {
            return  menuList.map((menu, i) => this.getSubMenu(menu));
         }
-
     }
-    getBreadcrumb = () =>{
-        let keyPath = this.state.keyPath;
-        let menuList = [];
-        if(keyPath.length > 0){
 
-            let i = keyPath.length -2;
-            let src = menuDefine;
-            let temp = menuDefine.find(item => item.menuID === keyPath[keyPath.length -1]);
-            menuList.push(temp);
-      
-            while(i >= 0){
-      
-                let item;
-                if(temp&&temp.childMenu)
-                {
-                    console.log('temp.child：',temp.childMenu );
-                    item = (temp.childMenu || []).find(item => item.menuID === keyPath[i]);
-                    console.log('temp.item：',item );
-                    if(item !== undefined)
-                    {
-                     
-                        menuList.push(item);
-                       
-                        break;
-                    }
-                }
-                if(temp.subMenu && item === undefined)
-                {
-                    item = (temp.subMenu || []).find(item => item.menuID === keyPath[i]);
-                    console.log('item:', item);
-                    if(item !== undefined){
-                        menuList.push(item);
-                        temp = item;
-                    }
-                }
-                i --;
-                
-              
-            }
-      
-        }
-        return menuList;
-    }
     render(){
-        let breadcrumbList = this.getBreadcrumb();
-        console.log('breadcrumbList:', breadcrumbList);
+        let navigator = this.props.navigator;
         return (
             <Layout className="page">
                 <Sider
@@ -290,34 +165,23 @@ class ExpenseManagerIndex extends Component {
                 >    <div className="logo" />
                     <Menu
                         theme="dark"
-                        openKeys={this.state.openKeys}
-                        defaultSelectedKeys = {['menu_index']}
+                        defaultSelectedKeys = {['home']}
                         defaultOpenKeys={['menu_index']}
-                        selectedKeys={[this.state.current]}
                         mode="inline"
-                        //onClick={this.handleMenuClick}
-                        onClick={this.handleMenuItemClick}
-                        onOpenChange={this.onOpenChange}
+                        onClick={this.handleMenuItemClick.bind(this)}
                     >
                     {
                         this.getMenuContent(menuDefine)
-                        // menuDefine.map((item, i) =>
-                        //     <Menu.Item key={item.menuID}>
-                        //         <Icon type={item.menuIcon} />
-                        //         <span>{item.displayName}</span>
-                        //     </Menu.Item>
-                        // )
                     }
                     </Menu>
                 </Sider>
                 <Layout>
                     <Header>
                  
-                        <Breadcrumb separator='>' style= {{fontSize:'1.2rem'}}> 
-
+                        <Breadcrumb separator='>' style= {{fontSize:'0.8rem'}}> 
                             {
-                                breadcrumbList.map((item, i) =>{
-                                    return <Breadcrumb.Item key={item.menuID}  style={homeStyle.navigator} onClick={(e) =>this.handleNavigatorClick(e, item)} >{item.displayName}</Breadcrumb.Item>
+                                navigator.map((item, i) =>{
+                                    return <Breadcrumb.Item key={i}  style={homeStyle.navigator} onClick={(e) =>this.handleNavigatorClick(i, item)} >{item.disname}</Breadcrumb.Item>
                                 })
                             }
                         </Breadcrumb>
@@ -335,8 +199,7 @@ class ExpenseManagerIndex extends Component {
 
 function mapStateToProps(state){
     return{
-        activeMenu: state.search.activeMenu,
-        navigator: state.search.navigator,
+        navigator: state.basicData.navigator,
     }
 }
 export default withReducer(reducers, 'ExpenseManagerIndex', {mapExtraState: (state, rootState) => ({oidc: rootState.oidc,judgePermissions: rootState.app.judgePermissions})})(connect(mapStateToProps)(ExpenseManagerIndex));

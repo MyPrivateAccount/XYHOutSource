@@ -35,14 +35,14 @@ export function* uploadFileAsync(state) {
 
 export function* postChargeAsync(state) {
     let result = { isOk: false, extension: [], msg: '费用添加失败！' };
-    let url = WebApiConfig.server.addCharge + state.payload.receiptID + '/';
+    let url = WebApiConfig.server.addCharge;
 
     try {
         let res = yield call(ApiClient.post, url, state.payload)
         getApiResult(res, result);
 
         if (result.isOk) {
-            yield put({ type: actionUtils.getActionType(actionTypes.CLOSE_USER_BREAD), payload: {} });
+            yield put({ type: actionUtils.getActionType(actionTypes.SET_USER_BREADINDEX), payload: 1 });
         }
     } catch (e) {
         result.msg = "费用添加接口调用异常！";

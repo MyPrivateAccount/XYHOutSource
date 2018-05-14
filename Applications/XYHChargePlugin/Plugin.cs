@@ -1,10 +1,14 @@
 ﻿using ApplicationCore;
 using ApplicationCore.Managers;
 using ApplicationCore.Plugin;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Threading.Tasks;
 using XYHChargePlugin.Managers;
+using XYHChargePlugin.Models;
+using XYHChargePlugin.Stores;
+using XYHHumanPlugin.Stores;
 
 namespace XYHChargePlugin
 {
@@ -38,9 +42,11 @@ namespace XYHChargePlugin
 
         public override Task<ResponseMessage> Init(ApplicationContext context)
         {
-            //context.Services.AddDbContext<BaseDataDbContext>(options => options.UseMySql("Server=server-d01;database=xinyaohang;uid=root;pwd=root;"));
+            //context.Services.AddDbContext<ChargeDbContext>(options => options.UseMySql("Server=server-d01;database=xinyaohang;uid=root;pwd=root;"));
+            context.Services.AddDbContext<ChargeDbContext>(options => options.UseMySql(context.ConnectionString), ServiceLifetime.Scoped);
             context.Services.AddScoped<ChargeManager>();
             context.Services.AddScoped<PermissionExpansionManager>();
+            context.Services.AddScoped<IChargeManageStore, ChargeManageStore>();
 
             return base.Init(context);
         }

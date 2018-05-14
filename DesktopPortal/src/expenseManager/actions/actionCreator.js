@@ -12,6 +12,9 @@ export const setLoadingVisible = createAction(actionTypes.SET_SEARCH_LOADING);
 
 //面包屑
 export const closebreadPage = createAction(actionTypes.CLOSE_USER_BREAD);
+export const setuserPage = createAction(actionTypes.SET_USER_BREAD);
+export const setuserPageIndex = createAction(actionTypes.SET_USER_BREADINDEX);
+export const adduserPage = createAction(actionTypes.SET_USER_BREADADD);
 
 export const uploadFile = createAction(actionTypes.UPLOAD_CHARGEFILE);
 

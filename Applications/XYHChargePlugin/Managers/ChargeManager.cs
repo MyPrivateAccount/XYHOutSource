@@ -22,6 +22,9 @@ namespace XYHChargePlugin.Managers
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
+        public static int UnCheckCharge = 0;
+        public static int CheckedCharge = 1;
+
         protected IChargeManageStore _Store { get; }
         protected IMapper _mapper { get; }
 
@@ -61,6 +64,24 @@ namespace XYHChargePlugin.Managers
             }
 
            await _Store.CreateFileScopeAsync(receiptid, _mapper.Map<List<FileScopeInfo>>(filescop), cancellationToken);
+        }
+
+        public virtual async Task SubmitAsync(string modifyid, ExamineStatusEnum ext, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (modifyid == null)
+            {
+                throw new ArgumentNullException(nameof(modifyid));
+            }
+
+            if (ext == ExamineStatusEnum.Approved)
+            {
+                await _Store.UpdateExamineStatus(modifyid, ext, CheckedCharge, cancellationToken);
+            }
+            else if (ext == ExamineStatusEnum.Reject)
+            {
+                await _Store.UpdateExamineStatus(modifyid, ext, UnCheckCharge, cancellationToken);
+            }
+
         }
 
         public virtual async Task<ChargeSearchResponse<ChargeInfoResponse>> SearchChargeInfo(UserInfo user, ChargeSearchRequest condition, bool Isself, CancellationToken cancellationToken = default(CancellationToken))

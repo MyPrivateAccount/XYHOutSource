@@ -122,7 +122,7 @@ const homeStyle = {
                     this.props.showOrgSelect ? <OrgSelect /> :
                         <Layout>
                             <Header>
-                                <Breadcrumb separator=">" style={{fontSize: '1.2rem'}}>
+                                <Breadcrumb separator=">" style={{fontSize: '0.8rem'}}>
                                     <Breadcrumb.Item onClick={this.handleNavClick.bind(this)} key='home' style={homeStyle.navigator}>{this.state.activeMenu.displayName}</Breadcrumb.Item>
                                     {
                                         navigator.map(nav => <Breadcrumb.Item key={nav.id}>{nav.name}</Breadcrumb.Item>)

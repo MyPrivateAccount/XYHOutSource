@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using XYHChargePlugin.Dto.Request;
 using XYHChargePlugin.Dto.Response;
 using XYHChargePlugin.Models;
 
@@ -13,6 +14,16 @@ namespace XYHChargePlugin
         {
             CreateMap<ChargeInfoResponse, ChargeInfo>();
             CreateMap<ChargeInfo, ChargeInfoResponse>();
+
+            CreateMap<CostInfo, CostInfoResponse>();
+            CreateMap<CostInfoResponse, CostInfo>();
+
+            CreateMap<ReceiptInfo, ReceiptInfoResponse>();
+            CreateMap<ReceiptInfoResponse, ReceiptInfo>();
+
+            CreateMap<FileInfoRequest, FileScopeInfo>();
+            CreateMap<FileScopeInfo, FileInfoRequest>();
+
 
             //CreateMap<MonthInfo, MonthInfoResponse>();
             //CreateMap<MonthInfoResponse, MonthInfo>();

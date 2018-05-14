@@ -17,7 +17,7 @@ namespace XYHHumanInterfacePlugin
         {
             using (var scope = ApplicationContext.Current.Provider.GetRequiredService<IServiceScopeFactory>().CreateScope())
             {
-                var response = await scope.ServiceProvider.GetRequiredService<HumanInfoController>().SubmitContractCallback(Mapper.Map<XYHHumanPlugin.Dto.Response.ExamineResponse>(examineResponse));
+                var response = await scope.ServiceProvider.GetRequiredService<HumanInfoController>().SubmitHumanCallback(Mapper.Map<XYHHumanPlugin.Dto.Response.ExamineResponse>(examineResponse));
                 return Mapper.Map<GatewayInterface.Dto.ResponseMessage>(response);
             }
         }
@@ -26,7 +26,7 @@ namespace XYHHumanInterfacePlugin
         {
             using (var scope = ApplicationContext.Current.Provider.GetRequiredService<IServiceScopeFactory>().CreateScope())
             {
-                var response = await scope.ServiceProvider.GetRequiredService<HumanInfoController>().UpdateRecordContractCallback(Mapper.Map<XYHHumanPlugin.Dto.Response.ExamineResponse>(examineResponse));
+                var response = await scope.ServiceProvider.GetRequiredService<HumanInfoController>().UpdateRecordHumanCallback(Mapper.Map<XYHHumanPlugin.Dto.Response.ExamineResponse>(examineResponse));
                 return Mapper.Map<GatewayInterface.Dto.ResponseMessage>(response);
             }
         }

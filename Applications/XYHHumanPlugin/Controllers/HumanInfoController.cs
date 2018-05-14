@@ -189,9 +189,9 @@ namespace XYHHumanPlugin.Controllers
         }
 
         #region Flow
-        [HttpPost("audit/updatecontractcallback")]
+        [HttpPost("audit/updatehumancallback")]
         [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
-        public async Task<ResponseMessage> UpdateRecordContractCallback([FromBody] ExamineResponse examineResponse)
+        public async Task<ResponseMessage> UpdateRecordHumanCallback([FromBody] ExamineResponse examineResponse)
         {
             Logger.Warn($"审核回调接口(UpdateRecordSubmitCallback)：\r\n请求参数为：\r\n" + (examineResponse != null ? JsonHelper.ToJson(examineResponse) : ""));
 
@@ -218,9 +218,9 @@ namespace XYHHumanPlugin.Controllers
             return response;
         }
 
-        [HttpPost("audit/submitcontractcallback")]
+        [HttpPost("audit/submithumancallback")]
         [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
-        public async Task<ResponseMessage> SubmitContractCallback([FromBody] ExamineResponse examineResponse)
+        public async Task<ResponseMessage> SubmitHumanCallback([FromBody] ExamineResponse examineResponse)
         {
             Logger.Trace($"人事提交审核中心回调(SubmitContractCallback)：\r\n请求参数为：\r\n" + (examineResponse != null ? JsonHelper.ToJson(examineResponse) : ""));
 

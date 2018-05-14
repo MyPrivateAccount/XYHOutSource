@@ -10,8 +10,7 @@ namespace XYHChargePlugin.Models
         [Key]
         [MaxLength(127)]
         public string ID { get; set; }
-        [MaxLength(127)]
-        public string Name { get; set; }
+        
         [MaxLength(127)]
         public string Department { get; set; }
         [MaxLength(255)]

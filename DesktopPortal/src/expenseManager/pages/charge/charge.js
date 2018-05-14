@@ -53,7 +53,7 @@ class ChargeInfo extends Component {
                 let receiptinfos = [];
                 for (const ite in values) {
                     let ary = ite.split("_");
-                    if (ary.length > 0) {
+                    if (ary.length > 1) {
                         if (ary[1] === "reciepcomment") {
                             receiptinfos[+ary[0]] = Object.assign({}, receiptinfos[+ary[0]], {"comments": values[ite]});
                         } else if (ary[1] === "reciepmoney") {

@@ -158,7 +158,7 @@ class SearchCondition extends Component {
                 <div className='searchCondition'>
                     <Row>
                         <Col span={12}>
-                            <span>所有合同></span>
+                            <span>所有费用></span>
                             <span> {this.state.filterTags.map((tag, i) => <Tag closable onClose={e => this.handleTagClose(tag, i)} key={tag.label + i}>{tag.label}</Tag>)}</span>
                         </Col>
                         <Col span={4}>

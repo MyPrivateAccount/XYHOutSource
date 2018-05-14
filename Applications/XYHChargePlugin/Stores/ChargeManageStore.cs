@@ -142,7 +142,21 @@ namespace XYHHumanPlugin.Stores
         }
 
         public async Task UpdateExamineStatus(string modifyId, ExamineStatusEnum status, int type, CancellationToken cancellationToken = default(CancellationToken))
-        { }
+        {
+            ModifyInfo buildings = new ModifyInfo()
+            {
+                ID = modifyId,
+                ExamineTime = DateTime.Now,
+                ExamineStatus = (int)status,
+                Type = type
+            };
+            Context.Attach(buildings);
+            var entry = Context.Entry(buildings);
+            entry.Property(x => x.ExamineStatus).IsModified = true;
+            entry.Property(x => x.Type).IsModified = true;
+            entry.Property(x => x.ExamineTime).IsModified = true;
+            await Context.SaveChangesAsync(cancellationToken);
+        }
 
     }
 }

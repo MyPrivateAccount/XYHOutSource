@@ -7,7 +7,6 @@ namespace XYHChargePlugin.Dto.Response
     public class ChargeInfoResponse
     {
         public string ID { get; set; }
-        public string Name { get; set; }
         public string Department { get; set; }
         public string Note { get; set; }
         public DateTime? CreateTime { get; set; }
