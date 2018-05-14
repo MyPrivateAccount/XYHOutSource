@@ -15,13 +15,13 @@ const LoadableChargePage = Loadable({
 function ContentPage(props) {
     const { curMenuID } = props;
     console.log('curMenuID:', curMenuID);
-    if (curMenuID == "menu_index") {
+    if (curMenuID === "home") {
         return <LoadableIndexPage />;
     }
-    else if (curMenuID == "basicinfo") {
+    else if (curMenuID === "basicinfo") {
         return <LoadableChargePage />;
     }
-
+    return null;
 }
 
 

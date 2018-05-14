@@ -16,8 +16,9 @@ const menuDefine = [
     {
         menuID:'menu_index', displayName: '费用信息', menuIcon:'contacts', type:'subMenu',
         childMenu:[
+            { menuID:'home', displayName: '费用', menuIcon:'contacts', type:'item',},
             { menuID:'basicinfo', displayName: '录入信息', menuIcon:'contacts', type:'item',},
-            { menuID:'optin2', displayName: 'option2', menuIcon:'contacts', type:'item',},
+          
         ],
         subMenu:[{
             menuID:'sub1', displayName: 'sub1', menuIcon:'contacts', parent:'menu_index',type:'subMenu',
@@ -65,9 +66,9 @@ class ExpenseManagerIndex extends Component {
 
     state = {
         isCollapse: false,
-        activeMenu: menuDefine[0],
-        current: 'menu_index',
-        keyPath: [],
+        activeMenu: menuDefine[0].childMenu[0],
+        current: menuDefine[0].childMenu[0].menuID,
+        keyPath: [menuDefine[0].childMenu[0].menuID, menuDefine[0].menuID],
         openKeys: [],
         
     }
@@ -85,13 +86,17 @@ class ExpenseManagerIndex extends Component {
             }
             if(menu.subMenu){
                 for(let i = 0; i < menu.subMenu.length; i++){
-                    this.getMenuItem(menu.subMenu[i],key);
+                    let res = this.getMenuItem(menu.subMenu[i],key);
+                    if(res !== undefined){
+                        return res;
+                    }
                 }
             }
         }
     }
     handleMenuItemClick = (e) => {
         console.log('Clicked: ', e);
+        console.log('this.state.activeMenu:', this.state.activeMenu)
         this.setState({ current: e.key, keyPath: e.keyPath });
         
         if (e.key === this.state.activeMenu.menuID ) return;
@@ -114,8 +119,8 @@ class ExpenseManagerIndex extends Component {
        
       }
       onOpenChange = (openKeys) => {
-          console.log('openKeys:', openKeys);
-          console.log("state:", this.state);
+          //console.log('openKeys:', openKeys);
+          //console.log("state:", this.state);
         const state = this.state;
         const latestOpenKey = openKeys.find(key => !(state.openKeys.indexOf(key) > -1));
         const latestCloseKey = state.openKeys.find(key => !(openKeys.indexOf(key) > -1));
@@ -161,25 +166,46 @@ class ExpenseManagerIndex extends Component {
         this.setState({isCollapse: !this.state.isCollapse});
     }
 
-    handleNavigatorClick = (e) =>{
-        let navigator = this.props.navigator;
-
-        if(navigator.length > 0) {
-            if(navigator[navigator.length -1].id === 0) {
-                this.props.dispatch(closebreadPage(0));
+    handleNavigatorClick = (e, menu) =>{
+        //console.log('this.state.keyPath:', this.state.keyPath);
+        if(menu){
+            
+            if(menu.childMenu && menu.childMenu[0]){
+                let activeMenu = menu.childMenu[0];
+                let keyPath = this.state.keyPath;
+                let index = keyPath.findIndex(item => item === menu.menuID);
+                let newKeyPath = null;
+                if(index > -1){
+                    newKeyPath = keyPath.slice(-(keyPath.length -index) );
+                    newKeyPath.splice(0, 0, activeMenu.menuID);
+                }
+               // console.log('this.state.keyPath,current:', newKeyPath)
+                this.props.dispatch(changeMenu(activeMenu));
+                this.setState({ activeMenu:activeMenu, keyPath: newKeyPath || this.state.keyPath,current: activeMenu.menuID,});
             }
         }
+        // let navigator = this.props.navigator;
+
+        // if(navigator.length > 0) {
+        //     if(navigator[navigator.length -1].id === 0) {
+        //         this.props.dispatch(closebreadPage(0));
+        //     }
+        // }
     }
 
 
     getContentPage = () =>{
-        let navigator = this.props.navigator;
-        if (navigator.length > 0) {
-            if (navigator[navigator.length - 1].id === 0) {
-                return <ContentPage curMenuID='menu_index' />;
-            }
+        // let navigator = this.props.navigator;
+        // if (navigator.length > 0) {
+        //     if (navigator[navigator.length - 1].id === 0) {
+        //         return <ContentPage curMenuID='menu_index' />;
+        //     }
+        // }
+        if(this.state.activeMenu &&this.state.activeMenu.menuID)
+        {
+            return <ContentPage curMenuID={this.state.activeMenu.menuID} />;
         }
-       return <ContentPage curMenuID={this.state.activeMenu.menuID} />;
+      
     }
 
     getSubMenu = (menu) =>{
@@ -222,7 +248,7 @@ class ExpenseManagerIndex extends Component {
             while(i >= 0){
       
                 let item;
-                if(temp.childMenu)
+                if(temp&&temp.childMenu)
                 {
                     console.log('temp.child：',temp.childMenu );
                     item = (temp.childMenu || []).find(item => item.menuID === keyPath[i]);
@@ -290,7 +316,7 @@ class ExpenseManagerIndex extends Component {
 
                             {
                                 breadcrumbList.map((item, i) =>{
-                                    return <Breadcrumb.Item key={item.menuID}  style={homeStyle.navigator} onClick={this.handleNavigatorClick} >{item.displayName}</Breadcrumb.Item>
+                                    return <Breadcrumb.Item key={item.menuID}  style={homeStyle.navigator} onClick={(e) =>this.handleNavigatorClick(e, item)} >{item.displayName}</Breadcrumb.Item>
                                 })
                             }
                         </Breadcrumb>

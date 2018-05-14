@@ -21,7 +21,7 @@ class MainIndex extends Component {
     componentWillMount() {
         //字典数据获取...
 
-        this.props.dispatch(setLoadingVisible(true));//后面打开
+        //this.props.dispatch(setLoadingVisible(true));//后面打开
     }
 
        //是否有权限
