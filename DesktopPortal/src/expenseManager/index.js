@@ -292,6 +292,7 @@ class ExpenseManagerIndex extends Component {
                         theme="dark"
                         openKeys={this.state.openKeys}
                         defaultSelectedKeys = {['menu_index']}
+                        defaultOpenKeys={['menu_index']}
                         selectedKeys={[this.state.current]}
                         mode="inline"
                         //onClick={this.handleMenuClick}
