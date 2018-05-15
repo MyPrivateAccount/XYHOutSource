@@ -1,15 +1,15 @@
 import * as actionTypes from '../constants/actionType';
 import {handleActions} from 'redux-actions'
 const initState = {
-    showLoading: false,
+    showLoading: true,
     navigator:[],
-    searchKeyWord: '',
-    checkStatus: 0,//0 1 2
-    chargePrice: 0,//
+    keyWord: '',
+    checkStatu: 0,//0 1 2
+    chargePrice: 1,//
     orderRule: 0,//0不排 1升 2降
     pageIndex: 0,
     pageSize: 10,
-    searchResult: {extension: [{key: '1', id: 'tt', username: 'test', idcard: 'hhee'}], pageIndex: 0, pageSize: 10, totalCount: 1},//搜索结果
+    searchResult: {extension: [{key: '1', id: 'tt', chargetype: 'test', organize: 'hhee'}], pageIndex: 0, pageSize: 10, totalCount: 1},//搜索结果
 }
 
 
@@ -24,11 +24,11 @@ reducerMap[actionTypes.SET_SEARCH_LOADING] = function(state, action) {
 }
 
 reducerMap[actionTypes.UPDATE_SEARCHCONDITION] = function(state, action) {
-    return Object.assign(state, {searchResult: action.payload});
+    return Object.assign(state, {searchResult: action.payload, showLoading: false});
 }
 
 reducerMap[actionTypes.UPDATE_SEARCHCHECKSTATU] = function(state, action) {
-    return Object.assign(state, {checkStatus: action.payload});
+    return Object.assign(state, {checkStatu: action.payload});
 }
 
 reducerMap[actionTypes.UPDATE_SEARCHCHARGEPRICE] = function(state, action) {

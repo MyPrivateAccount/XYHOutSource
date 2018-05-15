@@ -58,16 +58,17 @@ export function* postChargeAsync(state) {
     }
 }
 
-export function* searchCondition(state) {
+export function* postsearchCondition(state) {
     let result = { isOk: false, extension: [], msg: '查询失败！' };
     let url = WebApiConfig.server.searchCharge;
 
     try {
+        
         let res = yield call(ApiClient.post, url, state.payload)
         getApiResult(res, result);
 
         if (result.isOk) {
-            yield put({ type: actionUtils.getActionType(actionTypes.UPDATE_SEARCHCONDITION), payload: result.extension });
+            yield put({ type: actionUtils.getActionType(actionTypes.UPDATE_SEARCHCONDITION), payload: result });
         }
     } catch (e) {
         result.msg = "查询接口调用异常！";
@@ -85,5 +86,5 @@ export function* searchCondition(state) {
 export default function* watchServerInterface() {
     yield takeLatest(actionUtils.getActionType(actionTypes.UPLOAD_CHARGEFILE), uploadFileAsync);
     yield takeLatest(actionUtils.getActionType(actionTypes.POST_CHARGEINFO), postChargeAsync);
-    yield takeLatest(actionUtils.getActionType(actionTypes.POST_SEARCHCONDITION), searchCondition);
+    yield takeLatest(actionUtils.getActionType(actionTypes.POST_SEARCHCONDITION), postsearchCondition);
 }

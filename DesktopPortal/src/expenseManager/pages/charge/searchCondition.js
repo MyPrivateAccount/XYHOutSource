@@ -1,10 +1,9 @@
 import {connect} from 'react-redux';
-import { setLoadingVisible, postSearchCondition} from '../actions/actionCreator';
+import { setLoadingVisible, postSearchCondition, updateSearchStatu, updateChargePrice} from '../../actions/actionCreator';
 import React, {Component} from 'react'
 import {Input, InputNumber, Select, Icon, Button, Row, Col, Checkbox, Tag, Spin, Radio, DatePicker} from 'antd'
 import './search.less';
 import moment from 'moment';
-import SearchBox from './searchBox';
 
 const Option = Select.Option;
 const styles = {
@@ -21,10 +20,10 @@ const styles = {
     }
 }
 export const PriceRanges = [
-    { value: 0, label: '不限'}, 
-    { value: 1, label: '1000以上'},
-    { value: 2, label: '2000岁以上'},
-    { value: 3, label: '3000岁以上'}
+    {key:0, value: 1, label: '不限'}, 
+    {key:1, value: 1000, label: '1000以上'},
+    {key:2, value: 2000, label: '2000以上'},
+    {key:3, value: 3000, label: '3000以上'}
 ]
 
 class SearchCondition extends Component {
@@ -33,12 +32,7 @@ class SearchCondition extends Component {
     }
 
     componentWillMount() {
-    }
-
-    componentDidMount() {
-    }
-
-    componentWillReceiveProps(newProps) {
+        this.props.dispatch(postSearchCondition(this.props.searchInfo));
     }
 
     handleSearchBoxToggle = (e) => {//筛选条件展开、收缩
@@ -54,12 +48,15 @@ class SearchCondition extends Component {
     }
 
     handleKeyChangeWord = (e) =>{
-        this.state.searchText = e.target.value;
+        this.props.searchInfo.keyWord = e.target.value;
     }
 
     handleCheckStatus = (e) => {
-        this.props.searchInfo.checkStatus = e.target.id;
-        this.setState(this.state);
+        this.props.dispatch(updateSearchStatu(e.target.id));
+    }
+
+    handlePriceRange = (e) => {
+        this.props.dispatch(updateChargePrice(e));
     }
 
     render() {
@@ -80,7 +77,7 @@ class SearchCondition extends Component {
                 <div className='searchCondition'>
                     <Row>
                         <Col span={12}>
-                            <span>所有费用></span>
+                            <span> 所有费用></span>
                             {/* <span> {this.state.filterTags.map((tag, i) => <Tag closable onClose={e => this.handleTagClose(tag, i)} key={tag.label + i}>{tag.label}</Tag>)}</span> */}
                         </Col>
                         <Col span={4}>
@@ -91,37 +88,27 @@ class SearchCondition extends Component {
                         <Row className="normalInfo">
                             <Col span={4}>
                                 <label>未审核：</label>
-                                    <Checkbox checked={this.props.searchInfo.checkStatus === 1?true:false} id={1} onChange={this.handleCheckStatus}></Checkbox>
+                                    <Checkbox checked={this.props.searchInfo.checkStatu === 1?true:false} id={1} onChange={this.handleCheckStatus}></Checkbox>
                             </Col>
                             <Col span={4}>
                                 <label>已审核：</label>
-                                    <Checkbox checked={this.props.searchInfo.checkStatus === 2?true:false} id={2} onChange={this.handleCheckStatus}></Checkbox>
+                                    <Checkbox checked={this.props.searchInfo.checkStatu === 2?true:false} id={2} onChange={this.handleCheckStatus}></Checkbox>
                             </Col>
                         </Row>
                         <Row className="normalInfo">
                             <Col span={24}>
                                 <label style={styles.conditionRow}>金额 ：</label>
                                 {
-                                    PriceRanges.map(age =>
-                                        <Button className={age.value === this.props.searchInfo.ageCondition ? "staffRangeBtn staffBtnActive" : "staffRangeBtn"}
-                                         key={age.value} onClick={(e) => this.handlePriceRange(age.value)}>{age.label}</Button>
+                                    PriceRanges.map(pri =>
+                                        <Button className={pri.value === this.props.searchInfo.chargePrice ? "RangeBtn BtnActive" : "RangeBtn"}
+                                         key={pri.value} onClick={(e) => this.handlePriceRange(pri.value)}>{pri.label}</Button>
                                     )
                                 }
                             </Col>
                         </Row>
-                        {      
-                            <Row className="normalInfo">
-                                <Col>
-                                    {activeMenu !== "menu_invalid" ?
-                                        <label><span style={{marginRight: '10px'}}>录入日期：</span>
-                                            <DatePicker disabledDate={this.disabledDate} value={createDateStart} onChange={(e, dateString) => this.handleCreateTime(dateString, 'createDateStart')} />- <DatePicker disabledDate={this.disabledDate} value={createDateEnd} onChange={(e, dateString) => this.handleCreateTime(dateString, 'createDateEnd')} />
-                                        </label> : null}
-                                </Col>
-                            </Row>
-                       }
                     </div>
                 </div>
-                {activeMenu === "menu_index" ? <p style={{marginBottom: '10px'}}>目前已为你筛选出<b>{dataSourceTotal}</b>条合同信息</p> : null}
+                {<p style={{marginBottom: '10px'}}>目前已为你筛选出<b>{this.props.searchInfo.searchResult.extension.length}</b>条费用信息</p>}
             </div>
         )
     }
@@ -130,7 +117,6 @@ class SearchCondition extends Component {
 function mapStateToProps(state) {
     return {
         searchInfo: state.search,
-        
     }
 }
 

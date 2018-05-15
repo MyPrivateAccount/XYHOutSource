@@ -18,8 +18,8 @@ namespace XYHChargePlugin.Dto.Request
         /// </summary>
         /// 
         public int CheckStatu { get; set; }
+        public int ChargePrice { get; set; }
         public string Organizate { get; set; }
-        public int AgeCondition { get; set; }
         public int SearchTimeType { get; set; }
         public DateTime? CreateDateStart { get; set; }
         public DateTime? CreateDateEnd { get; set; }

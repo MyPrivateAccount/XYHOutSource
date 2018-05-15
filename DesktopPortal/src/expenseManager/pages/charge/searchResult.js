@@ -1,6 +1,6 @@
 import {connect} from 'react-redux';
 import {setLoadingVisible, /*openComplement, searchStart, saveSearchCondition, 
-openAttachMent, openContractRecord, gotoThisContract, openContractRecordNavigator, getAllExportData, endExportAllData*/} from '../actions/actionCreator';
+openAttachMent, openContractRecord, gotoThisContract, openContractRecordNavigator, getAllExportData, endExportAllData*/} from '../../actions/actionCreator';
 import React, {Component} from 'react';
 import {Button, Row, Col, Table} from 'antd';
 
@@ -21,30 +21,27 @@ const rowSelection = {
 
 class SearchResult extends Component {
 
-    componentWillReceiveProps(newProps) {
+    componentWillMount() {
+        
     }
     
     handleChangePage = (pagination) => {
     }
 
     render() {
-        let dataSource = this.props.searchInfo.searchResult.extension ;
         const rowSelection = {
             onChange: (selectedRowKeys, selectedRows) => {
-                this.setState({checkList: selectedRows});
+                //this.setState({checkList: selectedRows});
             }
         };
-        let showSlection = false;
-        if (["menu_index"].includes(this.props.searchInfo.activeMenu)) {
-            showSlection = true;
-        }
+        
         return (
             <div id="searchResult">
                 <Table id= {"table"} rowKey={record => record.key} 
                  columns={columns} 
-                 pagination={this.props.searchInfo.searchResult} 
+                 pagination={this.props.searchInfoResult} 
                  onChange={this.handleChangePage} 
-                 dataSource={this.props.searchInfo.searchResult.extension} bordered size="middle" 
+                 dataSource={this.props.searchInfoResult.extension} bordered size="middle" 
                  rowSelection={rowSelection} />
             </div>
         )
@@ -53,7 +50,7 @@ class SearchResult extends Component {
 
 function mapStateToProps(state) {
     return {
-        searchInfo: state.search,
+        searchInfoResult: state.search.searchResult,
         showLoading: state.basicData.showLoading
     }
 }

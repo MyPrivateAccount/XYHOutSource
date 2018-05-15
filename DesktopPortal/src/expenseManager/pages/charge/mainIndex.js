@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { setLoadingVisible, adduserPage } from '../actions/actionCreator';
+import { setLoadingVisible, adduserPage } from '../../actions/actionCreator';
 import React, { Component } from 'react';
 import { Input, Menu, Icon, Row, Col, Spin, Checkbox, Button } from 'antd';
 //import {getDicParList} from '../actions/actionCreator';
@@ -67,11 +67,10 @@ class MainIndex extends Component {
 
 function mapStateToProps(state) {
     return {
-        basicData:state.basicData,
-        searchResult: state.search.searchResult,
+        // basicData:state.basicData,
         showLoading: state.search.showLoading,
-        searchCondition: state.search.searchCondition,
-        judgePermissions: state.judgePermissions
+        // searchCondition: state.search.searchCondition,
+        // judgePermissions: state.judgePermissions
     }
 }
 
