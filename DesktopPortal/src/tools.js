@@ -89,6 +89,13 @@ const tools = [
         component: ()=>createLoadableComponent(import('./expenseManager')),//() => createLoadableComponent(import('./personnelSystem')),
         cache: null,
         icon: <Icon type="book" className="icon"/>
+    },
+    {
+        id:'commissionManager',//佣金系统
+        mutipleInstance:false,
+        component: ()=>createLoadableComponent(import('./commissionManager')),//() => createLoadableComponent(import('./personnelSystem')),
+        cache: null,
+        icon: <Icon type="book" className="icon"/>
     }
 
 ]
