@@ -6,6 +6,7 @@ import WebApiConfig from '../constants/webapiConfig';
 import appAction from '../../utils/appUtils';
 import getApiResult from './sagaUtil';
 import { notification } from 'antd';
+import searchCondition from '../../contractManagement/pages/searchCondition';
 
 const actionUtils = appAction(actionTypes.ACTION_ROUTE)
 
@@ -57,8 +58,32 @@ export function* postChargeAsync(state) {
     }
 }
 
+export function* searchCondition(state) {
+    let result = { isOk: false, extension: [], msg: '查询失败！' };
+    let url = WebApiConfig.server.searchCharge;
+
+    try {
+        let res = yield call(ApiClient.post, url, state.payload)
+        getApiResult(res, result);
+
+        if (result.isOk) {
+            yield put({ type: actionUtils.getActionType(actionTypes.UPDATE_SEARCHCONDITION), payload: result.extension });
+        }
+    } catch (e) {
+        result.msg = "查询接口调用异常！";
+    }
+
+    if (!result.isOk) {
+        notification.error({
+            message: '查询参数',
+            description: result.msg,
+            duration: 3
+        });
+    }
+}
+
 export default function* watchServerInterface() {
     yield takeLatest(actionUtils.getActionType(actionTypes.UPLOAD_CHARGEFILE), uploadFileAsync);
     yield takeLatest(actionUtils.getActionType(actionTypes.POST_CHARGEINFO), postChargeAsync);
-
+    yield takeLatest(actionUtils.getActionType(actionTypes.POST_SEARCHCONDITION), searchCondition);
 }

@@ -17,6 +17,7 @@ const WebApiConfig = {
     server: {
         uploadImg: basicDataBaseApiUrl + "chargeinfo/uploadmore/",
         addCharge: basicDataBaseApiUrl + "chargeinfo/addcharge/",
+        searchCharge: basicDataBaseApiUrl + "chargeinfo/searchchargeinfo/",
     },
 }
 export default WebApiConfig;

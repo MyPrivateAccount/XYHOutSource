@@ -9,20 +9,18 @@ import SearchResult from './searchResult';
 
 
 const buttonDef = [
-    { buttonID:"checkin", buttonName:"录入", icon:'', type:'primary', size:'large', /*requirePermission:['RECORD_FUC']*/},
-    { buttonID:"addcharge", buttonName:"后补发票", icon:'', type:'primary', size:'large', /*requirePermission:['EXPORT_CONTRACT']*/},
-    { buttonID:"inport", buttonName:"导入", icon:'', type:'primary', size:'large', /*requirePermission:['INPORT_CONTRACT']*/},
-    { buttonID:"cost", buttonName:"付款", icon:'', type:'primary', size:'large', /*requirePermission:['EXPORT_CONTRACT']*/},
-    //{ buttonID:"uploadFile", buttonName:"附件上传", icon:'', type:'primary', size:'small',/*requirePermission:['UPLOAD_FILE']*/},
+    { buttonID:"checkin", buttonName:"录入", icon:'', type:'primary', size:'large',},
+    { buttonID:"addcharge", buttonName:"后补发票", icon:'', type:'primary', size:'large',},
+    { buttonID:"inport", buttonName:"导入", icon:'', type:'primary', size:'large',},
+    { buttonID:"cost", buttonName:"付款", icon:'', type:'primary', size:'large',},
 ];
+
+
 class MainIndex extends Component {
     state = {
-
     }
-    componentWillMount() {
-        //字典数据获取...
 
-        //this.props.dispatch(setLoadingVisible(true));//后面打开
+    componentWillMount() {
     }
 
     handleClickFucButton = (e) => {
