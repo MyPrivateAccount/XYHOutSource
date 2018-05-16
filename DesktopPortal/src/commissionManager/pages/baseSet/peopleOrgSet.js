@@ -101,8 +101,7 @@ function peoMapStateToProps(state){
     return {
         activeTreeNode: state.org.activeTreeNode,
         permissionOrgTree: state.org.permissionOrgTree,
-        ppFtSearchResult:state.ppft.ppFtSearchResult,
-        orgid:state.org.permissionOrgTree.AddUserTree[0].value
+        ppFtSearchResult:state.ppft.ppFtSearchResult
     }
 }
 
