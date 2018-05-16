@@ -21,7 +21,6 @@ export function* getPermissionOrgAsync(state) {
             result.msg = '部门获取成功!';
             yield put({ type: actionUtils.getActionType(actionTypes.ORG_GET_PERMISSION_TREE_UPDATE), payload: { permissionType: state.payload, extension: result.extension } });
         }
-        yield put({ type: actionUtils.getActionType(actionTypes.SET_SEARCH_LOADING), payload: false });
     } catch (e) {
         result.msg = '部门按权限获取接口调用异常!';
     }

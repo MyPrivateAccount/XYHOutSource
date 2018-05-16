@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 import {orgFtParamAdd, orgFtParamUpdate, orgFtParamSave, orgFtDialogClose} from '../../actions/actionCreator'
 import React, {Component} from 'react'
 import {globalAction} from 'redux-subspace';
-import {Select, Button, Checkbox, Modal, Row, Col, Form, Input, message,TreeSelect} from 'antd'
+import {Select, Button, Checkbox, Modal, Row, Col, Form, Input, InputNumber,message,TreeSelect} from 'antd'
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -38,6 +38,7 @@ class PeopleOrgFtEditor extends Component{
         this.props.form.validateFields((err, values) => {
             if (!err) {
                 console.log('Received values of form: ', values);
+                //调用保存接口，进行数据保存,待续
             }
         });
     };
@@ -92,9 +93,9 @@ class PeopleOrgFtEditor extends Component{
                             label={(<span>分摊比例</span>)}>
                             {getFieldDecorator('proportions', {
                                 initialValue: this.state.ppftInfo.proportions,
-                                rules: [{ required: true, message: '请填写分摊比例!' }]
+                                rules: [{required: true, message: '请填写分摊比例!' }]
                             })(
-                                <Input style={{float: 'left',width:300}} />
+                                <Input style={{float: 'left',width:300}}/>
                                 )}
                         </FormItem></Col>
                 </Row>

@@ -13,3 +13,5 @@ export const orgFtParamSave = createAction(actionTypes.ORG_FT_PARAM_SAVE);
 export const orgFtDialogClose = createAction(actionTypes.ORG_FT_DIALOG_CLOSE);
 //获取数据列表
 export const orgFtParamListGet = createAction(actionTypes.ORG_FT_PARAMLIST_GET);
+//删除数据
+export const orgFtParamDelete = createAction(actionTypes.ORG_FT_PARAM_DELETE);
