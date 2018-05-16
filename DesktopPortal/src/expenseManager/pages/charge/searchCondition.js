@@ -41,6 +41,7 @@ class SearchCondition extends Component {
     }
 
     handleSearch = () => {
+        this.props.dispatch(setLoadingVisible(true));
         this.props.dispatch(postSearchCondition(this.props.searchInfo));
     }
 
