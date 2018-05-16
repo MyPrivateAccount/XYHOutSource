@@ -13,10 +13,10 @@ const initState = {
     humanType: 0,//0不限 1在职 2离职 3黑名单
     orderRule: 0,//0不排 1升 2降
     ageCondition: 0,//0不限 1 20以上 2 30以上 3 40以上
-    searchResult: {extension: [{key: '1', id: 'tt', username: 'test', idcard: 'hhee'}], pageIndex: 0, pageSize: 10, totalCount: 1},//搜索结果
     expandSearchBox: true,
     pageIndex: 0,
-    pageSize: 10
+    pageSize: 10,
+    searchResult: {extension: [{key: '1', id: 'tt', username: 'test', idcard: 'hhee'}], pageIndex: 0, pageSize: 10, totalCount: 1},//搜索结果
 };
 let reducerMap = {};
 

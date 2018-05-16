@@ -181,7 +181,7 @@ namespace XYHChargePlugin.Managers
 
             if (condition?.OrderRule == 0 || condition?.OrderRule == null)
             {
-                sql += @" ORDER BY a.`Name`";
+                sql += @" ORDER BY a.`CreateTime`";
             }
             else if (condition?.OrderRule == 1)
             {

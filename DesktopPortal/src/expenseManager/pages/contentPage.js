@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import LoadableLoading from '../../components/LoadableLoading';
 
 const LoadableIndexPage = Loadable({
-    loader: () => import('./mainIndex'),
+    loader: () => import('./charge/mainIndex'),
     loading: () => <LoadableLoading />,
 });
 const LoadableChargePage = Loadable({

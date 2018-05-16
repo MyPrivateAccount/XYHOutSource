@@ -64,7 +64,7 @@ namespace XYHChargePlugin.Controllers
             return Response;
         }
 
-        [HttpGet("searchchargeinfo")]
+        [HttpPost("searchchargeinfo")]
         [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
         public async Task<ResponseMessage<List<ChargeInfoResponse>>> SearchChargeInfo(UserInfo User, [FromBody]ChargeSearchRequest condition)
         {

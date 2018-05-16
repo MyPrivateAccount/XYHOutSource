@@ -21,3 +21,7 @@ export const uploadFile = createAction(actionTypes.UPLOAD_CHARGEFILE);
 
 //服务接口
 export const postChargeInfo = createAction(actionTypes.POST_CHARGEINFO);
+
+export const postSearchCondition = createAction(actionTypes.POST_SEARCHCONDITION);
+export const updateSearchStatu = createAction(actionTypes.UPDATE_SEARCHCHECKSTATU);
+export const updateChargePrice = createAction(actionTypes.UPDATE_SEARCHCHARGEPRICE);
