@@ -4,9 +4,13 @@ import {routerReducer} from 'react-router-redux'
 import {reducer as oidcReducer} from 'redux-oidc';
 import ppFtReducer from './ppft'
 import treeReducer from './org'
+import orgParamReducer from './orgparam'
+import scaleReducer from './scale'
 export default combineReducers({
     router: routerReducer,
     oidc: oidcReducer,
     ppft: ppFtReducer,
-    org:  treeReducer
+    org:  treeReducer,
+    orgparam: orgParamReducer,
+    scale: scaleReducer
 });

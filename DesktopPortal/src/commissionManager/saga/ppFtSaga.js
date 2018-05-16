@@ -11,7 +11,7 @@ const actionUtils = appAction(actionTypes.ACTION_ROUTE);
 
 //获取列表数据
 export function* getPPFTDataListByOrgIdAsyncs(state){
-    let result = { isOk: false, msg: '根据组织id获取数据列表失败!' };
+    let result = { isOk: false, msg: '根据组织id获取分摊项数据列表失败!' };
     console.log(state)
     //等待数据接口
     yield put({ type: actionUtils.getActionType(actionTypes.ORG_FT_PARAMLIST_UPDATE), payload: result });
