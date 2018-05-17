@@ -25,10 +25,13 @@ class ChargeInfo extends Component {
         id: NewGuid(),
         costlist: [
             {
-                receiptID: NewGuid(),
-                previewVisible: false,
-                previewImage: '',
-                fileList: []
+                costID: NewGuid(),
+                receiptList: [{
+                    previewVisible: false,
+                    previewImage: '',
+                    receiptID: NewGuid(),
+                    fileList: []
+                }],
             }
         ],
         imgfilelist: []
@@ -49,25 +52,33 @@ class ChargeInfo extends Component {
         this.props.form.validateFields((err, values) => {
             if (!err) {
 
-                let costinfos = [];
+                let costinfos = [];//1_aa_1/1_aa_2
                 let receiptinfos = [];
                 for (const ite in values) {
                     let ary = ite.split("_");
                     if (ary.length > 1) {
+                        
                         if (ary[1] === "reciepcomment") {
-                            receiptinfos[+ary[0]] = Object.assign({}, receiptinfos[+ary[0]], {"comments": values[ite]});
+                            receiptinfos[+ary[3]] = Object.assign({}, receiptinfos[+ary[3]], {"comments": values[ite]});
                         } else if (ary[1] === "reciepmoney") {
-                            receiptinfos[+ary[0]] = Object.assign({}, receiptinfos[+ary[0]], {"receiptmoney": values[ite]});
+                            receiptinfos[+ary[3]] = Object.assign({}, receiptinfos[+ary[3]], {"receiptmoney": values[ite]});
                         } else if (ary[1] === "reciepnumber") {
-                            receiptinfos[+ary[0]] = Object.assign({}, receiptinfos[+ary[0]], {"reciepnumber": values[ite]});
+                            receiptinfos[+ary[3]] = Object.assign({}, receiptinfos[+ary[3]], {"reciepnumber": values[ite]});
+                            receiptinfos[+ary[3]] = Object.assign({},
+                                 receiptinfos[+ary[3]], {"id": self.state.costlist[+ary[0]].receiptList[+ary[2]].receiptID});
+                            receiptinfos[+ary[3]] = Object.assign({},
+                                 receiptinfos[+ary[3]], {"costid": self.state.costlist[+ary[0]].costID});
+                        
+                        
                         } else if (ary[1] === "costcomment") {
                             costinfos[+ary[0]] = Object.assign({}, costinfos[+ary[0]], {"comments": values[ite]});
                         } else if (ary[1] === "costmoney") {
                             costinfos[+ary[0]] = Object.assign({}, costinfos[+ary[0]], {"cost": values[ite]});
                         } else if (ary[1] === "costtype") {
                             costinfos[+ary[0]] = Object.assign({}, costinfos[+ary[0]], {"type": values[ite]});
-                        } 
-                            
+                            costinfos[+ary[0]] = Object.assign({}, costinfos[+ary[0]], {"id": self.state.costlist[+ary[0]].costID});
+                            costinfos[+ary[0]] = Object.assign({}, costinfos[+ary[0]], {"chargeid": self.state.id});
+                        }
                     }
                 }
                 let tf = {
@@ -89,12 +100,20 @@ class ChargeInfo extends Component {
 
     addCost = () => {
         let t = {
-            receiptID: NewGuid(),
-            previewVisible: false,
-            previewImage: '',
-            fileList: []
+            costID: NewGuid(),
+            receiptList: [{
+                previewVisible: false,
+                previewImage: '',
+                receiptID: NewGuid(),
+                fileList: []
+            }],
         }
         this.state.costlist.push(t);
+        this.setState({costlist: this.state.costlist});
+    }
+
+    addCharge = (i) => {
+        this.state.costlist[i].receiptList.push({receiptID: NewGuid(),fileList: []});
         this.setState({costlist: this.state.costlist});
     }
 
@@ -167,6 +186,7 @@ class ChargeInfo extends Component {
             </div>
           );
 
+          let nindex = 0;
           let self = this;
           const { getFieldDecorator, getFieldsError, getFieldsValue } = this.props.form;
         return (
@@ -196,34 +216,10 @@ class ChargeInfo extends Component {
                             let costtype = i+'_costtype';
                             let costmoney = i+'_costmoney';
                             let costcomment = i+'_costcomment';
-                            let reciepnumber = i+'_reciepnumber';
-                            let reciepmoney = i+'_reciepmoney';
-                            let reciepcomment = i+'_reciepcomment';
 
-                            let handleCancel = () => {
-                                self.state.costlist[i].previewVisible = false;
-                                self.setState(Object.assign({}, self.state));
-                            }
-
-                            let handlePreview = (file) => {
-                                self.state.costlist[i].previewImage = file.url || file.thumbUrl;
-                                self.state.costlist[i].previewVisible = true;
-                                self.setState(Object.assign({}, self.state));
-                            }
-
-                            let handleBeforeUpload = (pf) => {
-                                self.UploadFile(pf, (ufile) => {
-                                    ufile.receiptID = v.receiptID;
-                                    self.props.dispatch(uploadFile(ufile));
-
-                                });
-                                return true;
-                            }
-                        
-                            let handleChange = ({ fileList }) => {
-                                self.state.costlist[i].fileList = fileList;
-                                self.setState(Object.assign({}, self.state));
-                            }
+                            let reciepnumberroot = i+'_reciepnumber';
+                            let reciepmoneyroot = i+'_reciepmoney';
+                            let reciepcommentroot = i+'_reciepcomment';
 
                             return (
                                 <div key={i}>
@@ -238,11 +234,12 @@ class ChargeInfo extends Component {
                                         })(
                                             <Select placeholder="选择费用类型">
                                                 {
-                                                    self.props.chargeCostTypeList.map(
-                                                        function (params) {
-                                                            return <Option key={params.value} value={params.value}>{params.key}</Option>;
-                                                        }
-                                                    )
+                                                    (self.props.chargeCostTypeList && self.props.chargeCostTypeList.length > 0) ?
+                                                        self.props.chargeCostTypeList.map(
+                                                            function (params) {
+                                                                return <Option key={params.value} value={params.value+""}>{params.key}</Option>;
+                                                            }
+                                                        ):null
                                                 }
                                             </Select>
                                         )}
@@ -265,54 +262,102 @@ class ChargeInfo extends Component {
                                             <Input placeholder="请输入摘要" />
                                         )}
                                     </FormItem>
-                                    <FormItem {...formItemLayout1} label="发票号">
-                                        {getFieldDecorator(reciepnumber, {
-                                            reules: [{
-                                                required:true, message: 'please entry',
-                                            }]
-                                        })(
-                                            <Input placeholder="请输入发票号" />
-                                        )}
-                                    </FormItem>
-                                    <FormItem {...formItemLayout1} label="发票金额">
-                                        {getFieldDecorator(reciepmoney, {
-                                            reules: [{
-                                                required:true, message: 'please entry',
-                                            }]
-                                        })(
-                                            <InputNumber placeholder="请输入发票金额" style={{width: '100%'}} />
-                                        )}
-                                    </FormItem>
-                                    <FormItem {...formItemLayout1} label="备注">
-                                        {getFieldDecorator(reciepcomment, {
-                                            reules: [{
-                                                required:true, message: 'please entry',
-                                            }]
-                                        })(
-                                            <Input placeholder="请输入备注" />
-                                        )}
-                                    </FormItem>
-                                    <FormItem {...formItemLayout1} label="附件">
-                                        <div className="clearfix">
-                                            <Upload
-                                                action="//jsonplaceholder.typicode.com/posts/"
-                                                listType="picture-card"
-                                                fileList={v.fileList}
-                                                onPreview={handlePreview}
-                                                onChange={handleChange}
-                                                beforeUpload={handleBeforeUpload} 
-                                                >
-                                                {v.fileList.length >= 3 ? null : uploadButton}
-                                            </Upload>
-                                            <Modal visible={v.previewVisible} footer={null} onCancel={handleCancel}>
-                                                <img alt="example" style={{ width: '100%' }} src={v.previewImage} />
-                                            </Modal>
-                                        </div>
+                                    {
+                                        v.receiptList.map(
+                                            function(rv, ri) {
+                                                let reciepnumber = reciepnumberroot+'_'+ri+'_'+nindex;
+                                                let reciepmoney = reciepmoneyroot+'_'+ri+'_'+nindex;
+                                                let reciepcomment = reciepcommentroot+'_'+ri+'_'+nindex;
+
+                                                nindex++;
+
+                                                let handleCancel = () => {
+                                                    self.state.costlist[i].receiptList[ri].previewVisible = false;
+                                                    self.setState(Object.assign({}, self.state));
+                                                }
+                    
+                                                let handlePreview = (file) => {
+                                                    self.state.costlist[i].receiptList[ri].previewImage = file.url || file.thumbUrl;
+                                                    self.state.costlist[i].receiptList[ri].previewVisible = true;
+                                                    self.setState(Object.assign({}, self.state));
+                                                }
+                    
+                                                let handleChange = ({ fileList }) => {
+                                                    self.state.costlist[i].receiptList[ri].fileList = fileList;
+                                                    self.setState(Object.assign({}, self.state));
+                                                }
+
+                                                let handleBeforeUpload = (pf) => {
+                                                    self.UploadFile(pf, (ufile) => {
+                                                        ufile.receiptID = rv.receiptID;
+                                                        self.props.dispatch(uploadFile(ufile));//这里已经上传图片了，所以不需要记录
+                    
+                                                    });
+                                                    return true;
+                                                }
+
+                                                return (
+                                                    <div key={ri}>
+                                                        <FormItem {...formItemLayout}/>
+                                                        <FormItem {...formItemLayout}/>
+                                                        <FormItem {...formItemLayout1} label="发票号">
+                                                            {getFieldDecorator(reciepnumber, {
+                                                                reules: [{
+                                                                    required:true, message: 'please entry',
+                                                                }]
+                                                            })(
+                                                                <Input placeholder="请输入发票号" />
+                                                            )}
+                                                        </FormItem>
+                                                        <FormItem {...formItemLayout1} label="发票金额">
+                                                            {getFieldDecorator(reciepmoney, {
+                                                                reules: [{
+                                                                    required:true, message: 'please entry',
+                                                                }]
+                                                            })(
+                                                                <InputNumber placeholder="请输入发票金额" style={{width: '100%'}} />
+                                                            )}
+                                                        </FormItem>
+                                                        <FormItem {...formItemLayout1} label="备注">
+                                                            {getFieldDecorator(reciepcomment, {
+                                                                reules: [{
+                                                                    required:true, message: 'please entry',
+                                                                }]
+                                                            })(
+                                                                <Input placeholder="请输入备注" />
+                                                            )}
+                                                        </FormItem>
+                                                        <FormItem {...formItemLayout1} label="附件">
+                                                            <div className="clearfix">
+                                                                <Upload
+                                                                    action="//jsonplaceholder.typicode.com/posts/"
+                                                                    listType="picture-card"
+                                                                    fileList={rv.fileList}
+                                                                    onPreview={handlePreview}
+                                                                    onChange={handleChange}
+                                                                    beforeUpload={handleBeforeUpload} 
+                                                                    >
+                                                                    {rv.fileList.length >= 3 ? null : uploadButton}
+                                                                </Upload>
+                                                                <Modal visible={rv.previewVisible} footer={null} onCancel={handleCancel}>
+                                                                    <img alt="example" style={{ width: '100%' }} src={rv.previewImage} />
+                                                                </Modal>
+                                                            </div>
+                                                        </FormItem>
+                                                    </div>
+                                                );
+                                            }
+                                        )
+                                    }
+                                    <FormItem wrapperCol={{ span: 12, offset: 6 }}>
+                                        <Col span={6}><Button type="primary" icon="plus" onClick={self.addCharge.bind(self, i)} ></Button></Col>
                                     </FormItem>
                                 </div>
                             )}
                     )
                 }
+                <FormItem {...formItemLayout}/>
+                <FormItem {...formItemLayout}/>
                 <FormItem wrapperCol={{ span: 12, offset: 6 }}>
                     <Col span={6}><Button type="primary" icon="plus" onClick={this.addCost.bind(this)} ></Button></Col>
                 </FormItem>
