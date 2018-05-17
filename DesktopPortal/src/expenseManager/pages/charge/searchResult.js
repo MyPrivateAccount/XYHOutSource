@@ -37,7 +37,7 @@ class SearchResult extends Component {
         
         return (
             <div id="searchResult">
-                <Table id= {"table"} rowKey={record => record.key} 
+                <Table id= {"table"} rowKey={record => record.id} 
                  columns={columns} 
                  pagination={this.props.searchInfoResult} 
                  onChange={this.handleChangePage} 
