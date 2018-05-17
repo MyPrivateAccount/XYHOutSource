@@ -25,7 +25,7 @@ class MainIndex extends Component {
 
     handleClickFucButton = (e) => {
         if (e.target.id === "checkin") {
-            this.props.dispatch(adduserPage({menuID: 'basicinfo', disname: '录入信息'}));
+            this.props.dispatch(adduserPage({menuID: 'checkininfo', disname: '录入信息'}));
         }
     }
        //是否有权限

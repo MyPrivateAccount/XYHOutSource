@@ -18,7 +18,7 @@ function ContentPage(props) {
     if (curMenuID === "home") {
         return <LoadableIndexPage />;
     }
-    else if (curMenuID === "basicinfo") {
+    else if (curMenuID === "checkininfo") {
         return <LoadableChargePage />;
     }
     return null;
