@@ -6,11 +6,13 @@ import ppFtReducer from './ppft'
 import treeReducer from './org'
 import orgParamReducer from './orgparam'
 import scaleReducer from './scale'
+import acmReducer from './acm'
 export default combineReducers({
     router: routerReducer,
     oidc: oidcReducer,
     ppft: ppFtReducer,
     org:  treeReducer,
     orgparam: orgParamReducer,
-    scale: scaleReducer
+    scale: scaleReducer,
+    acm:acmReducer
 });

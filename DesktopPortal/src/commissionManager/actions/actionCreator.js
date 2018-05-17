@@ -28,3 +28,10 @@ export const incomeScaleSave = createAction(actionTypes.INCOME_SCALE_SAVE);
 export const incomeScaleDel = createAction(actionTypes.INCOME_SCALE_DEL);
 export const incomeScaleListGet = createAction(actionTypes.INCOME_SCALE_LIST_GET);
 export const incomeScaleDlgClose = createAction(actionTypes.INCOME_SCALE_DLGCLOSE);
+//业绩分摊项设置页面action
+export const acmentParamAdd = createAction(actionTypes.ACMENT_PARAM_ADD);
+export const acmentParamEdit = createAction(actionTypes.ACMENT_PARAM_EDIT);
+export const acmentParamSave = createAction(actionTypes.ACMENT_PARAM_SAVE);
+export const acmentParamDel = createAction(actionTypes.ACMENT_PARAM_DEL);
+export const acmentParamListGet = createAction(actionTypes.ACMENT_PARAM_LIST_GET);
+export const acmentParamDlgClose = createAction(actionTypes.ACMENT_PARAM_DLGCLOSE);

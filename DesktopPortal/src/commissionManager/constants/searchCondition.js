@@ -20,6 +20,12 @@ const SearchCondition = {
         keyWords: '',
         OrganizationId:'',//组织id
         rankPos:''//职位等级
+    },
+    acmentListCondition:{
+        pageIndex: 0,
+        pageSize: defaultPageSize,
+        keyWords: '',
+        OrganizationId:''
     }
 }
 
