@@ -2,6 +2,7 @@ export const ACTION_ROUTE = "ExpenseManagerIndex";
 
 //部门获取
 export const GET_ALLDEPARTMENT = 'GET_ALLDEPARTMENT';
+export const DIC_GET_ALL_ORG_LIST_COMPLETE = "DIC_GET_ALL_ORG_LIST_COMPLETE;"
 export const CHNAGE_MENU = 'CHANGE_MENU';
 
 //遮罩层

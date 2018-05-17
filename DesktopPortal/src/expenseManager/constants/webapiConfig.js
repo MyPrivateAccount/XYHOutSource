@@ -3,7 +3,8 @@ import { BaseApiUrl, basicDataBaseApiUrl, UploadUrl } from '../../constants/base
 const WebApiConfig = {
     dic: {
         ParList: basicDataBaseApiUrl + 'dictionarydefines/list',// 获取字典类型列表 get
-        AreaList: basicDataBaseApiUrl + "areadefines/list"//区域数据
+        AreaList: basicDataBaseApiUrl + "areadefines/list",//区域数据
+        permissionOrg: BaseApiUrl + 'Permission/'//有权限的部门,
     },
     msg: {
         sendMsg: basicDataBaseApiUrl + 'buildingnotice',//发送房源消息

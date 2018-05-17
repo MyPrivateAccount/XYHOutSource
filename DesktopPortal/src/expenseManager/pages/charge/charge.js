@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 import React, { Component } from 'react'
 import {Table, notification, Layout, Form, Modal, Cascader, Upload, InputNumber, Input, Select, Icon, Button, Col, Checkbox, Tag, Pagination, Spin} from 'antd'
 import { NewGuid } from '../../../utils/appUtils';
-import { getDicInfo, uploadFile, postChargeInfo } from '../../actions/actionCreator';
+import { getDicInfo, uploadFile, postChargeInfo ,getDepartment} from '../../actions/actionCreator';
 import WebApiConfig from '../../constants/webapiConfig';
 
 const Option = Select.Option;
@@ -38,12 +38,17 @@ class ChargeInfo extends Component {
     }
 
     componentWillMount() {
+        this.props.dispatch(getDepartment("PublicRoleOper"));
         this.props.dispatch(getDicInfo(["CHARGE_COST_TYPE"]));
         //this.props.dispatch(searchConditionType(SearchCondition.topteninfo));
     }
 
     componentDidMount() {
         this.props.form.setFieldsValue({id:this.state.id});
+    }
+
+    handleChooseDepartmentChange = (e) => {
+        this.state.department = e;
     }
 
     handleSubmit = (e) => {
@@ -122,7 +127,7 @@ class ChargeInfo extends Component {
     }
 
     UploadFile = (file, callback) => {
-        let id = this.state.userinfo.id;
+        let id = this.state.id;
         let uploadUrl = `${WebApiConfig.attach.uploadUrl}${id}`;
         let fileGuid = NewGuid();
         let fd = new FormData();
@@ -373,7 +378,8 @@ class ChargeInfo extends Component {
 function chargetableMapStateToProps(state) {
     return {
         department: state.basicData.eachDepartment,
-        chargeCostTypeList: state.basicData.chargeCostTypeList
+        chargeCostTypeList: state.basicData.chargeCostTypeList,
+        setContractOrgTree: state.basicData.departmentTree
     }
 }
 

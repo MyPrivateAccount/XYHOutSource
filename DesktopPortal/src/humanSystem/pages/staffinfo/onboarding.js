@@ -36,7 +36,7 @@ class OnBoarding extends Component {
 
     componentWillMount() {
         this.state.userinfo.id = NewGuid();
-        //this.props.dispatch(getallOrgTree('each'));
+        //this.props.dispatch(getallOrgTree('PublicRoleOper'));
     }
 
     componentDidMount() {
@@ -290,7 +290,7 @@ class OnBoarding extends Component {
                                     message: 'please entry Orgdepartment',
                                 }]
                             })(
-                                <Cascader options={this.props.setContractOrgTree}  onChange={this.handleChooseDepartmentChange } changeOnSelect  placeholder="归属部门"/>
+                                <Cascader options={this.props.setDepartmentOrgTree}  onChange={this.handleChooseDepartmentChange } changeOnSelect  placeholder="归属部门"/>
                             )}
                 </FormItem>
                 <FormItem {...formItemLayout} label="职位">
@@ -343,7 +343,7 @@ class OnBoarding extends Component {
 
 function stafftableMapStateToProps(state) {
     return {
-        
+        setDepartmentOrgTree: state.searchOrgTree
     }
 }
 

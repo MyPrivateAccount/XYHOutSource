@@ -32,6 +32,28 @@ export function* getParListAsync(state) {
     }
 }
 
+export function* getDepartmentListAsync(state) {
+    let result = {}
+    let url = WebApiConfig.dic.permissionOrg + state.payload;
+    
+    try {
+        const orgResult = yield call(ApiClient.get, url);
+        getApiResult(orgResult, result);
+
+        if (result.isOk) {
+            yield put({
+                 type: actionUtils.getActionType(actionTypes.DIC_GET_ALL_ORG_LIST_COMPLETE),
+                 payload: { extension: result.extension, type: state.payload }
+            });
+        }
+
+    } catch (e) {
+        result.msg = "获取所有可操作部门接口调用异常!";
+        console.log('getAllOrgsAsync error,url:', url);
+    }
+}
+
 export default function* watchGetAlldic() {
+    yield takeLatest(actionUtils.getActionType(actionTypes.GET_ALLDEPARTMENT), getDepartmentListAsync);
     yield takeLatest(actionUtils.getActionType(actionTypes.GET_CHARGEDICINFO), getParListAsync);
 }
