@@ -2,6 +2,7 @@ import {handleActions} from 'redux-actions';
 import * as actionTypes from '../constants/actionType';
 
 const initState = {
+    selchargeList: [],
     departmentTree: [],
     chargeCostTypeList: [{value: 0, key: "test"}],
     navigator: [{menuID: 'menu_index', disname: '费用信息'}, {menuID: 'home', disname: '费用'}]

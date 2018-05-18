@@ -109,7 +109,7 @@ class SearchCondition extends Component {
                         </Row>
                     </div>
                 </div>
-                {<p style={{marginBottom: '10px'}}>目前已为你筛选出<b>{this.props.searchInfo.searchResult.extension.length}</b>条费用信息</p>}
+                {<p style={{marginBottom: '10px'}}>目前已为你筛选出<b>{this.props.resultList.length}</b>条费用信息</p>}
             </div>
         )
     }
@@ -118,6 +118,7 @@ class SearchCondition extends Component {
 function mapStateToProps(state) {
     return {
         searchInfo: state.search,
+        resultList: state.search.searchResult.extension//我也不想，但是列表更新了只能通过这个来重新渲染
     }
 }
 
