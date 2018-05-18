@@ -30,16 +30,27 @@ class OrgSelect extends Component {
         this.props.dispatch(closeOrgSelect());
     }
 
+    isDisableOrgCheck = (org) =>{
+        let res = true;
+        if(this.props.permissionOrgTree && this.props.permissionOrgTree.searchOrgTree){
+            let perOrg = this.props.permissionOrgTree.searchOrgTree.find(item => item.id === org.id);
+            if(perOrg !== undefined){
+                res = false;
+            }
+        }
+        return res;
+       
+    }
     getChildOrg(orgInfo) {
         if (orgInfo) {
             if (orgInfo.children.length === 0) {
                 console.log('length===0:', orgInfo.organizationName);
                 return (<Menu.Item key={orgInfo.id}>
-                    <Checkbox onChange={(e) => this.handleOrgChecked(orgInfo, e.target.checked)}>{orgInfo.organizationName}</Checkbox>
+                    <Checkbox onChange={(e) => this.handleOrgChecked(orgInfo, e.target.checked)} disabled={this.isDisableOrgCheck(orgInfo)} >{orgInfo.organizationName}</Checkbox>
                 </Menu.Item>)
             } else {
                 console.log('length !==0:', orgInfo.organizationName);
-                return (<SubMenu key={orgInfo.id} title={<span><Checkbox onChange={(e) => this.handleOrgChecked(orgInfo, e.target.checked)}></Checkbox> {orgInfo.organizationName}</span>}>
+                return (<SubMenu key={orgInfo.id} title={<span><Checkbox onChange={(e) => this.handleOrgChecked(orgInfo, e.target.checked)} disabled={this.isDisableOrgCheck(orgInfo)}></Checkbox> {orgInfo.organizationName}</span>}>
                     {
                         orgInfo.children.map(org => this.getChildOrg(org))
                     }
@@ -49,12 +60,15 @@ class OrgSelect extends Component {
     }
 
     render() {
-        const orgList = this.props.permissionOrgTree.searchOrgTree;
-        const levelsCount = this.props.permissionOrgTree.levelCount;
-        let level = this.props.orgInfo.levelCount;
+        const searchOrgTree = this.props.permissionOrgTree.searchOrgTree;
+        // const levelsCount = this.props.permissionOrgTree.levelCount;
+        // let level = this.props.orgInfo.levelCount;
+        // let span = Math.round(24 / levelsCount);
+        const orgList = this.props.orgInfo.orgList;
+        const levelsCount = this.props.orgInfo.levelCount;
         let span = Math.round(24 / levelsCount);
-        console.log("部门选择:", orgList, Math.round( 24 / level));
-        console.log("部门选择2", this.props.orgInfo.orgList, span);
+        console.log("部门选择:", orgList, Math.round( 24 / levelsCount));
+        console.log("部门选择2", searchOrgTree);
         return (
             <div style={itemStyle.itemBorder}>
                 <Row style={itemStyle.autoHeight}>

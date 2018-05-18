@@ -44,7 +44,7 @@ namespace XYHContractPlugin.Managers
             var pagingResponse = new ContractSearchResponse<ContractInfoResponse>();
             var query = _icontractInfoStore.ContractInfoAll().Where(a => !a.IsDelete);
             query = SearchConditionFiltration(condition, query);
-            var organsPer = await _permissionExpansionManager.GetOrganizationOfPermission(user.Id, "SEARCH_CONTRACT");
+            var organsPer = await _permissionExpansionManager.GetOrganizationOfPermission(user.Id, "ContractSearchOrg");
             //查询部门
             if (!string.IsNullOrEmpty(condition.Organizate))
             {

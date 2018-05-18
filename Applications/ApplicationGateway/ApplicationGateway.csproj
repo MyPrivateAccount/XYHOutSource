@@ -31,7 +31,7 @@
 
   <ItemGroup>
     <Reference Include="XYH.Core">
-      <HintPath>..\..\..\OutSource\Applications\dll\XYH.Core.dll</HintPath>
+      <HintPath>..\dll\XYH.Core.dll</HintPath>
     </Reference>
   </ItemGroup>
 
