@@ -15,7 +15,20 @@ const itemStyle = {
         height: '100%'
     }
 }
-
+function getTreeDeepth(orgTreeSource, curLevel){
+    if(orgTreeSource.children){
+        curLevel += 1;
+        let tempLevel = curLevel;
+        for(let i =0; i < orgTreeSource.children.length; i ++){
+          let cnt = getTreeDeepth(orgTreeSource.children[i], tempLevel);
+          if(cnt > tempLevel){
+              tempLevel = cnt;
+          }
+        }
+        curLevel = tempLevel;
+    }
+    return curLevel;
+  }
 class OrgSelect extends Component {
     state = {
         checkedOrgs: []
@@ -32,8 +45,8 @@ class OrgSelect extends Component {
 
     isDisableOrgCheck = (org) =>{
         let res = true;
-        if(this.props.permissionOrgTree && this.props.permissionOrgTree.searchOrgTree){
-            let perOrg = this.props.permissionOrgTree.searchOrgTree.find(item => item.id === org.id);
+        if(this.props.permissionOrgTree && this.props.permissionOrgTree.searchOrgList){
+            let perOrg = this.props.permissionOrgTree.searchOrgList.find(item => item.id === org.id);
             if(perOrg !== undefined){
                 res = false;
             }
@@ -60,19 +73,24 @@ class OrgSelect extends Component {
     }
 
     render() {
+        const searchOrgList = this.props.permissionOrgTree.searchOrgList;
         const searchOrgTree = this.props.permissionOrgTree.searchOrgTree;
-        // const levelsCount = this.props.permissionOrgTree.levelCount;
-        // let level = this.props.orgInfo.levelCount;
-        // let span = Math.round(24 / levelsCount);
-        const orgList = this.props.orgInfo.orgList;
-        const levelsCount = this.props.orgInfo.levelCount;
+        const levelsCount = this.props.permissionOrgTree.levelCount;
+        const orgList = searchOrgTree;
+        let level = this.props.orgInfo.levelCount;
         let span = Math.round(24 / levelsCount);
-        console.log("部门选择:", orgList, Math.round( 24 / levelsCount));
-        console.log("部门选择2", searchOrgTree);
+        //let levelTest = getTreeDeepth(this.props.orgInfo.orgList, 1);
+        // console.log('this.props.orgInfo.orgList:', JSON.stringify(this.props.orgInfo.orgList));
+        // console.log('levelTest:', this.props.orgInfo.levelCount)
+        // const orgList = this.props.orgInfo.orgList;
+        // const levelsCount = this.props.orgInfo.levelCount;
+        //let span = Math.round(24 / levelsCount);
+       console.log("部门选择:", JSON.stringify(orgList) ,levelsCount);
+     
         return (
             <div style={itemStyle.itemBorder}>
                 <Row style={itemStyle.autoHeight}>
-                    <Col span={span} style={itemStyle.autoHeight}>
+                    <Col span={3} style={itemStyle.autoHeight}>
                         <Menu selectedKeys={this.state.checkedOrgs} style={itemStyle.autoHeight}>
                             <Menu.Item key="0"><Checkbox onChange={(e) => this.handleOrgChecked({ id: '0', organizationName: '不限' }, e.target.checked)}></Checkbox>不限</Menu.Item>
                             {orgList.map(org =>

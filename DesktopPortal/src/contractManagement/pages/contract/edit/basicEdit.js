@@ -199,13 +199,9 @@ class BasicEdit extends Component {
         }
     }
     render(){
-
-        //console.log("this.props.contractChooseVisible:", this.props.contractChooseVisible);
-        //console.log('this.props.curFollowContract:', this.props.curFollowContract);
-        let curFollowContract = this.props.curFollowContract || {};
+ 
         const { getFieldDecorator, getFieldsError, getFieldError, isFieldTouched } = this.props.form;
-        //let contractTypes = '1';
-        let basicOperType = this.props.basicOperType;
+  
         let basicInfo = this.props.basicInfo;
         const departMentInit = [];
         if(basicInfo.organizateID)
@@ -635,11 +631,7 @@ class BasicEdit extends Component {
 
 function mapStateToProps(state) {
     return {
-    //   dataSource: state.shop.buildingNoInfos,
-    //   basicInfo: state.shop.shopsInfo.basicInfo,
-    //   buildingList: state.shop.buildingList,
-    //   operInfo: state.shop.operInfo,
-    //   shopsInfo: state.shop.shopsInfo,
+    
 
         basicData: state.basicData,
         loadingState: state.contractData.basicloading,
@@ -650,7 +642,7 @@ function mapStateToProps(state) {
         contractChooseVisible: state.contractData.contractChooseVisible,
         complementInfo: state.contractData.contractInfo.complementInfo,
         curFollowContract: state.contractData.curFollowContract,
-        //setContractOrgTree: state.basicData.permissionOrgTree.setContractOrgTree,
+      
         setContractOrgTree:state.basicData.permissionOrgTree.searchOrgTree,
         isShowCompanyADialog: state.companyAData.isShowCompanyADialog,
     }
