@@ -2,13 +2,13 @@
 import { connect } from 'react-redux';
 import React,{Component} from 'react';
 import { Layout, Table, Button, Checkbox, Popconfirm, Tooltip, Row, Col, Input, Spin, Select, TreeSelect } from 'antd'
-
+import TradeManager from './tradeManager'
 const { Header, Content } = Layout;
 const Option = Select.Option;
 
 class MyDealRp extends Component{
     state = {
-
+        isShowManager:false
     }
     appTableColumns = [
         { title: '审批通过日期', dataIndex: 'passDate', key: 'passDate' },
@@ -45,7 +45,7 @@ class MyDealRp extends Component{
 
     }
     handleNew = (info)=>{
-
+        this.setState({isShowManager:true})
     }
     componentDidMount = ()=>{
 
@@ -65,10 +65,13 @@ class MyDealRp extends Component{
         };
         return (
             <Layout>
+                <div style={{display:!this.state.isShowManager?'block':'none'}}>
                 <Tooltip title="新增">
                     <Button type='primary' shape='circle' icon='plus' onClick={this.handleNew} style={{'margin':'10'}}/>
                 </Tooltip>
                 <Table rowSelection={rowSelection} columns={this.appTableColumns}></Table>
+                </div>
+                <TradeManager vs={this.state.isShowManager}/>
             </Layout>
         )
     }

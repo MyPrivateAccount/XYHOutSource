@@ -15,45 +15,49 @@ const { SubMenu } = Menu;
 
 const menuDefine = [
     {
-        subMenuID:"menu_tranrp",
+        menuID:"menu_tranrp",
         displayName:"成交报告",
         menuIcon:'contacts',
+        type:'subMenu',
         menuItems:[
-            {menuID:"menu_myrp",displayName:"我录入的成交报告",menuIcon:'contacts'},
-            {menuID:"menu_query",displayName:"成交报告综合查询",menuIcon:'contacts'}
+            {menuID:"menu_myrp",displayName:"我录入的成交报告",menuIcon:'contacts',type:'item'},
+            {menuID:"menu_query",displayName:"成交报告综合查询",menuIcon:'contacts',type:'item'}
         ]
     },
     {
-        subMenuID:"menu_fina",
+        menuID:"menu_fina",
         displayName:"财务",
-        menuIcon:'contacts',
+        menuIcon:'appstore-o',
+        type:'subMenu',
         menuItems:[
-            {menuID:"menu_sumbymonth",displayName:"月结",menuIcon:'contacts'},
-            {menuID:"menu_ps",displayName:"人员分摊表",menuIcon:'contacts'},
-            {menuID:"menu_yftcb",displayName:"应发提成表",menuIcon:'contacts'},
-            {menuID:"menu_sftcb",displayName:"实发提成表",menuIcon:'contacts'},
-            {menuID:"menu_tccbftb",displayName:"提成成本分摊表",menuIcon:'contacts'},
+            {menuID:"menu_sumbymonth",displayName:"月结",menuIcon:'contacts',type:'item'},
+            {menuID:"menu_ps",displayName:"人员分摊表",menuIcon:'contacts',type:'item'},
+            {menuID:"menu_yftcb",displayName:"应发提成表",menuIcon:'contacts',type:'item'},
+            {menuID:"menu_sftcb",displayName:"实发提成表",menuIcon:'contacts',type:'item'},
+            {menuID:"menu_tccbftb",displayName:"提成成本分摊表",menuIcon:'contacts',type:'item'},
         ]
     },
     {
-        subMenuID:"menu_rpt",
+        menuID:"menu_rpt",
         displayName:"报表",
-        menuIcon:'contacts',
+        menuIcon:'appstore-o',
+        type:'subMenu',
         menuItems:[
-            {menuID:"menu_fyxcb",displayName:"分佣详情表",menuIcon:'contacts'},
-            {menuID:"menu_yjtzmxb",displayName:"业绩调整明细汇总表",menuIcon:'contacts'},
-            {menuID:"menu_tymxb",displayName:"调佣明细表",menuIcon:'contacts'}
+            {menuID:"menu_fyxcb",displayName:"分佣详情表",menuIcon:'contacts',type:'item'},
+            {menuID:"menu_yjtzmxb",displayName:"业绩调整明细汇总表",menuIcon:'contacts',type:'item'},
+            {menuID:"menu_tymxb",displayName:"调佣明细表",menuIcon:'contacts',type:'item'}
         ]
     },
     {
-        subMenuID:"menu_bset",
+        menuID:"menu_bset",
         displayName:"基本设置",
-        menuIcon:'contacts',
+        menuIcon:'appstore-o',
+        type:'subMenu',
         menuItems:[
-            {menuID:"menu_yjftxsz",displayName:"业绩分摊项设置",menuIcon:'contacts'},
-            {menuID:"menu_rsftzzsz",displayName:"人数分摊组织设置",menuIcon:'contacts'},
-            {menuID:"menu_tcblsz",displayName:"提成比例设置",menuIcon:'contacts'},
-            {menuID:"menu_zzcssz",displayName:"组织参数设置",menuIcon:'contacts'}
+            {menuID:"menu_yjftxsz",displayName:"业绩分摊项设置",menuIcon:'contacts',type:'item'},
+            {menuID:"menu_rsftzzsz",displayName:"人数分摊组织设置",menuIcon:'contacts',type:'item'},
+            {menuID:"menu_tcblsz",displayName:"提成比例设置",menuIcon:'contacts',type:'item'},
+            {menuID:"menu_zzcssz",displayName:"组织参数设置",menuIcon:'contacts',type:'item'}
         ]
     }
 ];
@@ -110,19 +114,17 @@ class CommissionManagerIndex extends Component {
         return (
             <Layout className="page">
                 <Sider
-                    trigger={null}
                     collapsible
                     collapsed={this.state.collapsed}
                     onCollapse={this.toggle}>
-
-                    <div className="logo" />
                     <Menu mode="inline"
                         theme="dark"
                         onClick={this.handleMenuClick}
                         inlineCollapsed={this.state.collapsed}
-                        defaultSelectedKeys={["1"]}>
+                        defaultSelectedKeys={["menu_myrp"]}
+                        defaultOpenKeys={['menu_tranrp']}>
                         {menuDefine.map((submenu, i) =>
-                            <SubMenu key={submenu.subMenuID} title={<span><Icon type="user" />{submenu.displayName}</span>}>
+                            <SubMenu key={submenu.menuID} title={<span><Icon type={submenu.menuIcon} /><span>{submenu.displayName}</span></span>}>
                             {
                             submenu.menuItems.map((menu,j)=>
                                 <Menu.Item key={menu.menuID}>
