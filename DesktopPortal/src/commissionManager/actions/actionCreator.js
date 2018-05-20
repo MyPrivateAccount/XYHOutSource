@@ -35,3 +35,5 @@ export const acmentParamSave = createAction(actionTypes.ACMENT_PARAM_SAVE);
 export const acmentParamDel = createAction(actionTypes.ACMENT_PARAM_DEL);
 export const acmentParamListGet = createAction(actionTypes.ACMENT_PARAM_LIST_GET);
 export const acmentParamDlgClose = createAction(actionTypes.ACMENT_PARAM_DLGCLOSE);
+export const acmentParamItemSave = createAction(actionTypes.ACMENT_PARAM_ITEM_SAVE);
+export const acmentParamItemAdd = createAction(actionTypes.ACMENT_PARAM_ITEM_ADD);
