@@ -18,6 +18,9 @@ namespace XYHChargePlugin.Models
         public DateTime? CreateTime { get; set; }
         public DateTime? PostTime { get; set; }
         [MaxLength(127)]
+        public string PostDepartment { get; set; }
+        
+        [MaxLength(127)]
         public string CreateUser { get; set; }
         [MaxLength(127)]
         public string CreateUserName { get; set; }

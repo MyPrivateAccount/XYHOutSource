@@ -23,7 +23,11 @@ namespace XYHChargePlugin.Stores
 
         Task<TResult> GetChargeAsync<TResult>(Func<IQueryable<ChargeInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken));
 
+        Task<List<TResult>> GetRecieptListAsync<TResult>(Func<IQueryable<ReceiptInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken));
+
         Task UpdateExamineStatus(string modifyId, ExamineStatusEnum status, int type, CancellationToken cancellationToken = default(CancellationToken));
+
+        Task UpdatePostTime(string chargeid, string department, CancellationToken cancellationToken = default(CancellationToken));
 
     }
 }

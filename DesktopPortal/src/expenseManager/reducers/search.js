@@ -10,6 +10,7 @@ const initState = {
     pageIndex: 0,
     pageSize: 10,
     searchResult: {extension: [{key: '1', id: 'tt', chargetype: 'test', organize: 'hhee'}], pageIndex: 0, pageSize: 10, totalCount: 1},//搜索结果
+    recieptInfoList: [],//后补发票用的
 }
 
 
@@ -33,6 +34,10 @@ reducerMap[actionTypes.UPDATE_SEARCHCHECKSTATU] = function(state, action) {
 
 reducerMap[actionTypes.UPDATE_SEARCHCHARGEPRICE] = function(state, action) {
     return Object.assign(state, {chargePrice: action.payload});
+}
+
+reducerMap[actionTypes.UPDATE_RECIPTINFO] = function(state, action) {
+    return Object.assign(state, {recieptInfoList: action.payload});
 }
 
 export default handleActions(reducerMap, initState);

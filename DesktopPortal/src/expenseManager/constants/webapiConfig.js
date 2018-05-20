@@ -19,6 +19,9 @@ const WebApiConfig = {
         uploadImg: basicDataBaseApiUrl + "chargeinfo/uploadmore/",
         addCharge: basicDataBaseApiUrl + "chargeinfo/addcharge/",
         searchCharge: basicDataBaseApiUrl + "chargeinfo/searchchargeinfo/",
+        getRecieptInfo: basicDataBaseApiUrl + "chargeinfo/getrecipt/",
+        getChargeid: basicDataBaseApiUrl + "chargeinfo/chargeid/",
+        updatePostTime: basicDataBaseApiUrl + "chargeinfo/paymentcharge/",
     },
 }
 export default WebApiConfig;

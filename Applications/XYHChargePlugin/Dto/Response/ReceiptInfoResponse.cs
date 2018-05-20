@@ -8,7 +8,9 @@ namespace XYHChargePlugin.Dto.Response
     {
         public string ID { get; set; }
         public string CostID { get; set; }
+        public string ChargeID { get; set; }
         public string ReceiptNumber { get; set; }
+        public int Type { get; set; }
         public int? ReceiptMoney { get; set; }
         public string Comments { get; set; }
         public string CreateUser { get; set; }
