@@ -687,7 +687,7 @@ class SearchResult extends Component {
         this.props.dispatch(openComplement({record: record}));
      }
     handleClickFucButton = (buttonID) =>{
-        console.log('buttonID:', buttonID);
+        //console.log('buttonID:', buttonID);
         switch(buttonID){
             case 'record':
                 return this.onClickRecord;
@@ -732,7 +732,7 @@ class SearchResult extends Component {
                     buttonDef.map(
                         (button,i) => this.getMainButton(button,i))
                 }
-                <Table id= {"table"} rowKey={record => record.uid} columns={this.getTableColumns()} pagination={this.state.pagination} onChange={this.handleChangePage} dataSource={dataSource} bordered size="middle" rowSelection={showSlection ? rowSelection : null} />
+                <Table id= {"table"} rowKey={record => record.id} columns={this.getTableColumns()} pagination={this.state.pagination} onChange={this.handleChangePage} dataSource={dataSource} bordered size="middle" rowSelection={showSlection ? rowSelection : null} />
             </div>
         )
     }

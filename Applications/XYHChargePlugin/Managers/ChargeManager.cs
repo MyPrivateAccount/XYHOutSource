@@ -84,6 +84,26 @@ namespace XYHChargePlugin.Managers
 
         }
 
+        public virtual async Task<List<ReceiptInfoResponse>> GetRecieptbyID(UserInfo user, string chargeid, string department)
+        {
+            if (user == null)
+            {
+                throw new ArgumentNullException(nameof(user));
+            }
+
+            if (!string.IsNullOrEmpty(chargeid))
+            {
+                var tt = await _Store.GetRecieptListAsync(a=> a.Where(b => b.ChargeID == chargeid));
+                return _mapper.Map<List<ReceiptInfoResponse>>(tt);
+            }
+            return null;
+        }
+
+        public virtual async Task UpdateChargePostTime(string chargeid, string department, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            await _Store.UpdatePostTime(chargeid, department, cancellationToken);
+        }
+
         public virtual async Task<ChargeSearchResponse<ChargeInfoResponse>> SearchChargeInfo(UserInfo user, ChargeSearchRequest condition, bool Isself, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (condition == null)

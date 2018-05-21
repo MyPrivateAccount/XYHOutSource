@@ -4,6 +4,7 @@ import {Table, notification, Layout, Form, Modal, Cascader, Upload, InputNumber,
 import { NewGuid } from '../../../utils/appUtils';
 import { getDicInfo, uploadFile, postChargeInfo ,getDepartment} from '../../actions/actionCreator';
 import WebApiConfig from '../../constants/webapiConfig';
+import ApiClient from '../../../utils/apiClient';
 
 const Option = Select.Option;
 const FormItem = Form.Item;
@@ -38,6 +39,15 @@ class ChargeInfo extends Component {
     }
 
     componentWillMount() {
+        let tempthis = this;
+        let url = WebApiConfig.server.getChargeid;
+        ApiClient.get(url).then(function (f) {
+            if (f.data.code==0) {
+                tempthis.props.form.setFieldsValue({id: f.data.extension});
+                tempthis.state.id = f.data.extension;
+            }
+        });
+
         this.props.dispatch(getDepartment("PublicRoleOper"));
         this.props.dispatch(getDicInfo(["CHARGE_COST_TYPE"]));
         //this.props.dispatch(searchConditionType(SearchCondition.topteninfo));
@@ -73,7 +83,10 @@ class ChargeInfo extends Component {
                                  receiptinfos[+ary[3]], {"id": self.state.costlist[+ary[0]].receiptList[+ary[2]].receiptID});
                             receiptinfos[+ary[3]] = Object.assign({},
                                  receiptinfos[+ary[3]], {"costid": self.state.costlist[+ary[0]].costID});
-                        
+                            receiptinfos[+ary[3]] = Object.assign({},
+                                receiptinfos[+ary[3]], {"chargeid": self.state.id});
+                            receiptinfos[+ary[3]] = Object.assign({},
+                                receiptinfos[+ary[3]], {"type": values[ary[0]+"costtype"]});
                         
                         } else if (ary[1] === "costcomment") {
                             costinfos[+ary[0]] = Object.assign({}, costinfos[+ary[0]], {"comments": values[ite]});

@@ -25,3 +25,7 @@ export const postChargeInfo = createAction(actionTypes.POST_CHARGEINFO);
 export const postSearchCondition = createAction(actionTypes.POST_SEARCHCONDITION);
 export const updateSearchStatu = createAction(actionTypes.UPDATE_SEARCHCHECKSTATU);
 export const updateChargePrice = createAction(actionTypes.UPDATE_SEARCHCHARGEPRICE);
+
+export const getRecieptByID = createAction(actionTypes.GET_RECIEPTBYID);
+
+export const paymentCharge = createAction(actionTypes.POST_PAYMENTCHARGE);

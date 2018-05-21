@@ -95,7 +95,7 @@ export const contractComplementSave = createAction(actionTypes.CONTRACT_COMPLEME
 
 
 
-export const getAllPhone = createAction(actionTypes.GET_CUSTOMER_ALL_PHONE);
+
 
 
 
@@ -125,20 +125,10 @@ export const openFollowHistoryDialog = createAction(actionTypes.FOLLOW_HISTORY_D
 
 
 
-//调客处理
-export const openAdjustCustomer = createAction(actionTypes.OPEN_ADJUST_CUSTOMER);
-export const closeAdjustCustomer = createAction(actionTypes.CLOSE_ADJUST_CUSTOMER);
-export const adjustCustomer = createAction(actionTypes.ADJUST_CUSTOMER);
-export const getAuditList = createAction(actionTypes.GET_AUDIT_LIST);
-export const getCustomerByUserID = createAction(actionTypes.GET_CUSTOMER_OF_USERID);
-export const changeSourceOrg = createAction(actionTypes.CHANGE_SOURCE_ORG);
-export const changeTargetOrg = createAction(actionTypes.CHANGE_TARGET_ORG);
-export const openCustomerAuditDetail = createAction(actionTypes.OPEN_CUSTOMER_AUDIT_INFO);
-export const getAuditHistory = createAction(actionTypes.GET_AUDIT_HISTORY);//获取审核历史
 
 
-export const getRepeatJudgeInfo = createAction(actionTypes.GET_REPEAT_JUDGE_INFO);
-export const removeAdjustItem = createAction(actionTypes.REMOVE_ADJUST_REQUEST_ITEM);
+
+
 
 export const basicLoadingStart = createAction(actionTypes.LOADING_START_BASIC);
 export const basicLoadingEnd = createAction(actionTypes.LOADING_END_BASIC);

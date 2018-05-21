@@ -141,6 +141,31 @@ namespace XYHHumanPlugin.Stores
             return query.Invoke(Context.ChargeInfos.AsNoTracking()).SingleOrDefaultAsync(cancellationToken);
         }
 
+        public Task<List<TResult>> GetRecieptListAsync<TResult>(Func<IQueryable<ReceiptInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (query == null)
+            {
+                throw new ArgumentNullException(nameof(query));
+            }
+            return query.Invoke(Context.ReceiptInfos.AsNoTracking()).ToListAsync(cancellationToken);
+        }
+
+        public async Task UpdatePostTime(string chargeid, string department, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            ChargeInfo info = new ChargeInfo()
+            {
+                ID = chargeid,
+                PostTime = DateTime.Now,
+                PostDepartment = department
+            };
+
+            Context.Attach(info);
+            var entry = Context.Entry(info);
+            entry.Property(x => x.PostTime).IsModified = true;
+            entry.Property(x => x.PostDepartment).IsModified = true;
+            await Context.SaveChangesAsync(cancellationToken);
+        }
+
         public async Task UpdateExamineStatus(string modifyId, ExamineStatusEnum status, int type, CancellationToken cancellationToken = default(CancellationToken))
         {
             ModifyInfo buildings = new ModifyInfo()

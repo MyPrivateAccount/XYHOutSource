@@ -11,6 +11,7 @@ namespace XYHChargePlugin.Dto.Response
         public string Note { get; set; }
         public DateTime? CreateTime { get; set; }
         public DateTime? PostTime { get; set; }
+        public string PostDepartment { get; set; }
         public string CreateUser { get; set; }
         public string CreateUserName { get; set; }
     }

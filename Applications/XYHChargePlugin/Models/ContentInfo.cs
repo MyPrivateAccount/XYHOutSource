@@ -24,9 +24,12 @@ namespace XYHChargePlugin.Models
         [MaxLength(127)]
         public string ID { get; set; }
         [MaxLength(127)]
+        public string ChargeID { get; set; }
+        [MaxLength(127)]
         public string CostID { get; set; }
         [MaxLength(127)]
         public string ReceiptNumber { get; set; }
+        public int Type { get; set; }
         public int? ReceiptMoney { get; set; }
         [MaxLength(127)]
         public string Comments { get; set; }

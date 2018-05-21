@@ -34,11 +34,17 @@ namespace XYHChargePlugin.Controllers
         private readonly RestClient _restClient;
         protected PermissionExpansionManager _permissionExpansionManager { get; }
 
+        private static string _lastDate;
+        private static int _lastNumber;
+
         public ChargeInfoController(RestClient rsc, ChargeManager charge, PermissionExpansionManager per)
         {
             _permissionExpansionManager = per;
             _restClient = rsc;
             _chargeManager = charge;
+
+            _lastNumber = 0;
+            _restClient = rsc;
         }
 
         [HttpGet("testinfo")]
@@ -54,6 +60,37 @@ namespace XYHChargePlugin.Controllers
             try
             {
                 //Response.Extension = await _userTypeValueManager.FindByTypeAsync(user.Id, type, HttpContext.RequestAborted);
+            }
+            catch (Exception e)
+            {
+                Response.Code = ResponseCodeDefines.ServiceError;
+                Response.Message = "服务器错误：" + e.ToString();
+                Logger.Error("error");
+            }
+            return Response;
+        }
+
+        [HttpGet("chargeid")]
+        [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
+        public async Task<ResponseMessage<string>> GetChargeID()
+        {
+            var Response = new ResponseMessage<string>();
+            
+            try
+            {
+                var td = DateTime.Now;
+                if (td.Month.ToString() + td.Day.ToString() == _lastDate)
+                {
+                    _lastNumber++;
+                }
+                else
+                {
+                    _lastNumber = 0;
+                    _lastDate = td.Month.ToString() + td.Day.ToString();
+                }
+
+                Response.Extension = $"XYC-{td.Year.ToString()}{td.Month.ToString()}{td.Day.ToString()}-{_lastNumber}";
+                Response.Message = $"getchargenumber sucess";
             }
             catch (Exception e)
             {
@@ -99,7 +136,7 @@ namespace XYHChargePlugin.Controllers
 
         [HttpPost("addcharge")]
         [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
-        public async Task<ResponseMessage<List<ChargeInfoResponse>>> AddHumanInfo(UserInfo User, [FromBody]ContentRequest request)
+        public async Task<ResponseMessage<List<ChargeInfoResponse>>> AddChargeInfo(UserInfo User, [FromBody]ContentRequest request)
         {
             var Response = new ResponseMessage<List<ChargeInfoResponse>>();
             try
@@ -137,6 +174,52 @@ namespace XYHChargePlugin.Controllers
                 await _chargeManager.AddCharge(User, request, modifyid, "TEST", HttpContext.RequestAborted);
 
                 Response.Message = $"addchargeinfo sucess";
+            }
+            catch (Exception e)
+            {
+                Response.Code = ResponseCodeDefines.ServiceError;
+                Response.Message = "服务器错误：" + e.ToString();
+                Logger.Error("error");
+            }
+            return Response;
+        }
+
+        [HttpPost("paymentcharge/{chargeid}/{department}")]
+        [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
+        public async Task<ResponseMessage<string>> PaymentCharge(UserInfo User, [FromRoute]string chargeid, [FromRoute]string department)
+        {
+            var pagingResponse = new ResponseMessage<string>();
+            if (!ModelState.IsValid)
+            {
+                pagingResponse.Code = ResponseCodeDefines.ModelStateInvalid;
+                Logger.Warn($"用户{User?.UserName ?? ""}({User?.Id ?? ""})paymentcharge(PostCustomerListSaleMan)模型验证失败：\r\n{pagingResponse.Message ?? ""}，\r\n请求参数为：\r\n" + (chargeid != null ? JsonHelper.ToJson(chargeid) : ""));
+                return pagingResponse;
+            }
+
+            try
+            {
+                await _chargeManager.UpdateChargePostTime(chargeid, department, HttpContext.RequestAborted);
+                pagingResponse.Message = "updateposttime ok";
+            }
+            catch (Exception e)
+            {
+                pagingResponse.Code = ResponseCodeDefines.ServiceError;
+                pagingResponse.Message = "服务器错误:" + e.ToString();
+                Logger.Error($"用户{User?.UserName ?? ""}({User?.Id ?? ""})paymentcharge(PostCustomerListSaleMan)请求失败：\r\n{pagingResponse.Message ?? ""}，\r\n请求参数为：\r\n" + (chargeid != null ? JsonHelper.ToJson(chargeid) : ""));
+
+            }
+            return pagingResponse;
+        }
+
+        [HttpGet("getrecipt/{chargeid}")]
+        [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
+        public async Task<ResponseMessage<List<ReceiptInfoResponse>>> GetRecipt(UserInfo User, [FromRoute]string chargeid)
+        {
+            var Response = new ResponseMessage<List<ReceiptInfoResponse>>();
+            try
+            {
+                Response.Extension = await _chargeManager.GetRecieptbyID(User, chargeid);
+                Response.Message = $"getrecipt sucess";
             }
             catch (Exception e)
             {

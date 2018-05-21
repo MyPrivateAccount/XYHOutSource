@@ -13,17 +13,10 @@ const WebApiConfig = {
     search: {
         getContractList: basicDataBaseApiUrl+ 'contractlist/searchcontract',
         
-        getSaleManCustomerList: basicDataBaseApiUrl + 'customerInfo/listsaleman',// 业务员客户查询
-        getPoolCustomerList: basicDataBaseApiUrl + 'customerInfo/listpool',//公共池客户
-        getDealCustomerList: basicDataBaseApiUrl + 'customerInfo/listdeal',//成交客户
-        getLoosCustomerList: basicDataBaseApiUrl + 'customerInfo/listloss',//失效客户
-        //getCustomerDetail: basicDataBaseApiUrl + 'customerInfo/',//加载客户详情
-        getCustomerDetail: basicDataBaseApiUrl + 'customerInfo/retrieve/',//加载客户详情
-        adjustCustomer: basicDataBaseApiUrl + 'customerInfo/transfercustomer',//调客
-        getCustomerAllPhone: basicDataBaseApiUrl + 'customerInfo/GetUseridCustomerInfoPhone/',//获取所有电话号码
+
+
+
         getAuditList: basicDataBaseApiUrl + 'examines/submitlist',//提交的调客审核列表
-        getRepeatJudgeInfo: basicDataBaseApiUrl + 'customerInfo/customerheavy/',//获取重客判断信息
-        getCustomerByUserID: basicDataBaseApiUrl + 'customerInfo/salesmancustomer/',//根据用户ID获取客户列表
         getAuditHistory: basicDataBaseApiUrl + "examines/",//获取审核历史详细
     },
     contract:{

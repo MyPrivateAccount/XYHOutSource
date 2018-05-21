@@ -1,7 +1,8 @@
 import { connect } from 'react-redux';
 import React, { Component } from 'react'
-import {notification, Layout, Form, Modal, Upload, Input, Select, Icon, Button, Col, Checkbox, Tag} from 'antd'
+import {notification, Layout, Form, Modal, FormItem,DatePicker, Input, Icon, Button, Col, Cascader} from 'antd'
 import { NewGuid } from '../../../utils/appUtils';
+import { paymentCharge } from '../../actions/actionCreator';
 
 const formItemLayout1 = {
     labelCol:{ span:6},
@@ -15,9 +16,6 @@ class Payment extends Component {
     }
     
     componentDidMount() {
-        let dt = new Date();
-        let show = dt.getFullYear()+"/"+dt.getMonth()+"/"+dt.getDay();
-        this.props.form.setFieldsValue({time: show});
     }
 
     handleChooseDepartmentChange = (e) => {
@@ -29,7 +27,7 @@ class Payment extends Component {
         let self = this;
         this.props.form.validateFields((err, values) => {
             if (!err) {
-
+                self.props.dispatch(paymentCharge({department: values.department, chargeid: self.props.chargeList[0].id}));
             }
         });
     }
@@ -48,7 +46,7 @@ class Payment extends Component {
                             required:true, message: 'please entry Age',
                         }]
                     })(
-                        <Input disabled={true} />
+                        <DatePicker format='YYYY-MM-DD' style={{width: '100%'}} />
                     )}
                 </FormItem>
                 <FormItem {...formItemLayout1} label="付款单位">
