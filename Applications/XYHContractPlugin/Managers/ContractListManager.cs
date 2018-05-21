@@ -69,23 +69,23 @@ namespace XYHContractPlugin.Managers
             if (condition.CheckStatu > 0)
             {
                 int nCheckState = 0;
-                if ((condition.CheckStatu & 0x01) > 0)//1 2 4 8 未提交 审核中 通过 驳回
-                {
-                    nCheckState = (condition.CheckStatu & 0x01);
-                }
-                if ((condition.CheckStatu & 0x02) > 0)
-                {
-                    nCheckState = (condition.CheckStatu & 0x02);
-                }
-                if ((condition.CheckStatu & 0x04) > 0)
-                {
-                    nCheckState = (condition.CheckStatu & 0x04);
-                }
-                if ((condition.CheckStatu & 0x08) > 0)
-                {
-                    nCheckState = (condition.CheckStatu & 0x08);
-                }
-                query = query.Where(x => x.ExamineStatus == nCheckState);
+//                 if ((condition.CheckStatu & 0x01) > 0)//1 2 4 8 未提交 审核中 通过 驳回
+//                 {
+//                     nCheckState = (condition.CheckStatu & 0x01);
+//                 }
+//                 if ((condition.CheckStatu & 0x02) > 0)
+//                 {
+//                     nCheckState = (condition.CheckStatu & 0x02);
+//                 }
+//                 if ((condition.CheckStatu & 0x04) > 0)
+//                 {
+//                     nCheckState = (condition.CheckStatu & 0x04);
+//                 }
+//                 if ((condition.CheckStatu & 0x08) > 0)
+//                 {
+//                     nCheckState = (condition.CheckStatu & 0x08);
+//                 }
+                query = query.Where(x => (x.ExamineStatus.Value & condition.CheckStatu) > 0);
             }
             
             if (condition.pageIndex == -1)
