@@ -29,6 +29,7 @@ class Addreciept extends Component {
     handleSubmit = (e)=> {
         e.preventDefault();
         let self = this;
+        let chargeid = this.props.selchargeList[0].id;
         this.props.form.validateFields((err, values) => {
             if (!err) {
                 let receiptinfos = [];
@@ -37,19 +38,17 @@ class Addreciept extends Component {
                     if (ary.length > 1) {
                         
                         if (ary[1] === "reciepcomment") {
-                            receiptinfos[+ary[3]] = Object.assign({}, receiptinfos[+ary[3]], {"comments": values[ite]});
+                            receiptinfos[+ary[0]] = Object.assign({}, receiptinfos[+ary[0]], {"comments": values[ite]});
                         } else if (ary[1] === "reciepmoney") {
-                            receiptinfos[+ary[3]] = Object.assign({}, receiptinfos[+ary[3]], {"receiptmoney": values[ite]});
+                            receiptinfos[+ary[0]] = Object.assign({}, receiptinfos[+ary[0]], {"receiptmoney": values[ite]});
                         } else if (ary[1] === "reciepnumber") {
-                            receiptinfos[+ary[3]] = Object.assign({}, receiptinfos[+ary[3]], {"reciepnumber": values[ite]});
-                            receiptinfos[+ary[3]] = Object.assign({},
-                                 receiptinfos[+ary[3]], {"id": self.state.costlist[+ary[0]].receiptList[+ary[2]].receiptID});
-                            receiptinfos[+ary[3]] = Object.assign({},
-                                 receiptinfos[+ary[3]], {"costid": self.state.costlist[+ary[0]].costID});
-                            receiptinfos[+ary[3]] = Object.assign({},
-                                receiptinfos[+ary[3]], {"chargeid": self.state.id});
+                            receiptinfos[+ary[0]] = Object.assign({}, receiptinfos[+ary[0]], {"reciepnumber": values[ite]});
+                            receiptinfos[+ary[0]] = Object.assign({},
+                                 receiptinfos[+ary[0]], {"id": self.state.costlist[+ary[0]].receiptList[+ary[2]].receiptID});
+                            receiptinfos[+ary[0]] = Object.assign({},
+                                receiptinfos[+ary[0]], {"chargeid": chargeid});
                         } else if (ary[1] === "recieptype") {
-                            receiptinfos[+ary[3]] = Object.assign({}, receiptinfos[+ary[3]], {"receiptmoney": values[ite]});
+                            receiptinfos[+ary[0]] = Object.assign({}, receiptinfos[+ary[0]], {"receiptmoney": values[ite]});
                         }
                     }
                 }
@@ -162,10 +161,10 @@ class Addreciept extends Component {
                 {
                     this.props.recieptInfoList.map(
                         function(rv, i) {
-                            let reciepnumber = "reciepnumber_"+i;
-                            let reciepmoney = "reciepmoney_"+i;
-                            let reciepcomment = "reciepcomment_"+i;
-                            let recieptype = "recieptype_"+i;
+                            let reciepnumber = i+"_reciepnumber";
+                            let reciepmoney = i+"_reciepmoney";
+                            let reciepcomment = i+"_reciepcomment";
+                            let recieptype = i+"_recieptype";
 
                             let handleCancel = () => {
                                 self.props.recieptInfoList[i].previewVisible = false;
