@@ -13,6 +13,10 @@ acmReducerMap[actionTypes.ACMENT_PARAM_ADD] = function (state, action) {
     console.log("readucer新增业绩分摊" + JSON.stringify(action.payload));
     return Object.assign({}, state, { operInfo: { operType: 'add', dialogOpen: true } });
 }
+acmReducerMap[actionTypes.ACMENT_PARAM_ITEM_ADD] = function (state, action) {
+    console.log("readucer新增业绩分摊" + JSON.stringify(action.payload));
+    return Object.assign({}, state, { operInfo: { operType: 'itemadd', dialogOpen: true } });
+}
 acmReducerMap[actionTypes.ACMENT_PARAM_EDIT] = function (state, action) {
     console.log("readucer修改业绩分摊" + JSON.stringify(action.payload));
     return Object.assign({}, state, { operInfo: { operType: 'edit', dialogOpen: true },activeScale:state.payload});
@@ -24,5 +28,9 @@ acmReducerMap[actionTypes.ACMENT_PARAM_LIST_UPDATE] = function (state, action) {
 acmReducerMap[actionTypes.ACMENT_PARAM_DLGCLOSE] = function (state, action) {
     console.log("readucer退出dialog" + JSON.stringify(action.payload));
     return Object.assign({}, state, { operInfo: { objType: '', operType: ''} });
+}
+acmReducerMap[actionTypes.ACMENT_PARAM_ITEM_SAVEUPDATE] = function (state, action) {
+    console.log("reducer item update" + JSON.stringify(action.payload));
+    return Object.assign({}, state, { operInfo: { objType: '', operType: 'itemupdate'} });
 }
 export default handleActions(acmReducerMap, initState)

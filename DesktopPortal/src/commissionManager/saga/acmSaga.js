@@ -23,9 +23,15 @@ export function* delAcmentDataAsync(state){
     //等待数据接口
 }
 
+//保存数据
+export function* saveAcmentItemDataAsync(state){
+    let result = { isOk: false, msg: '新增分摊项保存数据失败!' };
+    //等待数据接口
+}
 export default function* watchAllAcmentAsync(){
     yield takeLatest(actionUtils.getActionType(actionTypes.ACMENT_PARAM_LIST_GET), getAcmentDataListAsyncs);
     yield takeLatest(actionUtils.getActionType(actionTypes.ACMENT_PARAM_SAVE), saveAcmentDataAsync);
     yield takeLatest(actionUtils.getActionType(actionTypes.ACMENT_PARAM_DEL), delAcmentDataAsync);
+    yield takeLatest(actionUtils.getActionType(actionTypes.ACMENT_PARAM_ITEM_SAVE), saveAcmentItemDataAsync);
 
 }

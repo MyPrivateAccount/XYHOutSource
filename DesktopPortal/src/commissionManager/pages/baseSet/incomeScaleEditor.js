@@ -98,7 +98,7 @@ class InComeScaleEditor extends Component{
                     <Col span={12}>
                         <FormItem
                             {...formItemLayout}
-                            label={(<span>结速业绩</span>)}>
+                            label={(<span>结束业绩</span>)}>
                             {getFieldDecorator('paramEdyj', {
                                 initialValue: this.state.paramInfo.paramEdyj,
                                 rules: [{required: true, message: '请填写结束业绩!' }]
