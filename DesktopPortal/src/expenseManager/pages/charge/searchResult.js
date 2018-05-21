@@ -1,5 +1,5 @@
 import {connect} from 'react-redux';
-import {setLoadingVisible, /*openComplement, searchStart, saveSearchCondition, 
+import {setLoadingVisible,selCharge,clearCharge, /*openComplement, searchStart, saveSearchCondition, 
 openAttachMent, openContractRecord, gotoThisContract, openContractRecordNavigator, getAllExportData, endExportAllData*/} from '../../actions/actionCreator';
 import React, {Component} from 'react';
 import {Button, Row, Col, Table} from 'antd';
@@ -24,14 +24,20 @@ class SearchResult extends Component {
     componentWillMount() {
         
     }
+
+    componentWillUnmount() {
+        //this.props.dispatch(clearCharge());
+    }
     
     handleChangePage = (pagination) => {
+
     }
 
     render() {
+        let self = this;
         const rowSelection = {
             onChange: (selectedRowKeys, selectedRows) => {
-                //this.setState({checkList: selectedRows});
+                self.props.dispatch(selCharge(selectedRows));
             }
         };
         

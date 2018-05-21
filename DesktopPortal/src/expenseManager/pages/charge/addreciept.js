@@ -1,10 +1,11 @@
 import { connect } from 'react-redux';
 import React, { Component } from 'react'
-import {Table, notification, Layout, Form, Modal, FormItem, Upload, InputNumber, Input, Select, Icon, Button, Col, Option, Spin} from 'antd'
+import {Table, notification, Layout, Form, Modal, Upload, InputNumber, Input, Select, Icon, Button, Col, Spin} from 'antd'
 import { NewGuid } from '../../../utils/appUtils';
-import { getDicInfo, uploadFile, postChargeInfo ,getDepartment, getRecieptByID} from '../../actions/actionCreator';
+import { postReciept, uploadFile, postChargeInfo ,getDepartment, getRecieptByID, clearCharge} from '../../actions/actionCreator';
 import WebApiConfig from '../../constants/webapiConfig';
-
+const FormItem = Form.Item;
+const Option = Select.Option;
 
 const formItemLayout1 = {
     labelCol:{ span:6},
@@ -20,23 +21,25 @@ class Addreciept extends Component {
     }
     
     componentWillMount() {
-        this.props.dispatch(getRecieptByID(this.props.selchargeList[0].id));//获取信息
+        this.props.dispatch(getRecieptByID(this.props.chargeList[0].id));//获取信息
     }
 
+    componentWillUnmount() {
+        this.props.dispatch(clearCharge());
+    }
     componentDidMount() {
     }
 
     handleSubmit = (e)=> {
         e.preventDefault();
         let self = this;
-        let chargeid = this.props.selchargeList[0].id;
+        let chargeid = this.props.chargeList[0].id;
         this.props.form.validateFields((err, values) => {
             if (!err) {
                 let receiptinfos = [];
                 for (const ite in values) {
                     let ary = ite.split("_");
                     if (ary.length > 1) {
-                        
                         if (ary[1] === "reciepcomment") {
                             receiptinfos[+ary[0]] = Object.assign({}, receiptinfos[+ary[0]], {"comments": values[ite]});
                         } else if (ary[1] === "reciepmoney") {
@@ -44,23 +47,15 @@ class Addreciept extends Component {
                         } else if (ary[1] === "reciepnumber") {
                             receiptinfos[+ary[0]] = Object.assign({}, receiptinfos[+ary[0]], {"reciepnumber": values[ite]});
                             receiptinfos[+ary[0]] = Object.assign({},
-                                 receiptinfos[+ary[0]], {"id": self.state.costlist[+ary[0]].receiptList[+ary[2]].receiptID});
+                                receiptinfos[+ary[0]], {"id": self.props.recieptInfoList[+ary[0]].id});
                             receiptinfos[+ary[0]] = Object.assign({},
                                 receiptinfos[+ary[0]], {"chargeid": chargeid});
                         } else if (ary[1] === "recieptype") {
-                            receiptinfos[+ary[0]] = Object.assign({}, receiptinfos[+ary[0]], {"receiptmoney": values[ite]});
+                            receiptinfos[+ary[0]] = Object.assign({}, receiptinfos[+ary[0]], {"type": values[ite]});
                         }
                     }
                 }
-                let tf = {
-                    chargeinfo: {
-                        id: self.state.id,
-                        department: values.department
-                    },
-                    costinfos: costinfos,
-                    receiptinfos: receiptinfos
-                }
-                this.props.dispatch(postChargeInfo(tf));
+                this.props.dispatch(postReciept(receiptinfos));
             }
         });
     }
@@ -83,6 +78,11 @@ class Addreciept extends Component {
 
     handleCancel = () => {
         this.setState({previewVisible: false});
+    }
+
+    addCharge = () => {
+        this.props.recieptInfoList.push({receiptID: NewGuid(),fileList: []});
+        this.setState(this.state);
     }
 
     hasErrors(fieldsError) {
@@ -261,6 +261,11 @@ class Addreciept extends Component {
                         }
                     )
                 }
+                <FormItem {...formItemLayout1}/>
+                <FormItem {...formItemLayout1}/>
+                <FormItem wrapperCol={{ span: 12, offset: 6 }}>
+                    <Col span={6}><Button type="primary" icon="plus" onClick={this.addCharge} ></Button></Col>
+                </FormItem>
                 <FormItem wrapperCol={{ span: 12, offset: 6 }}>
                     <Col span={6}><Button type="primary" htmlType="submit" disabled={this.hasErrors(getFieldsValue())} ></Button></Col>
                 </FormItem>

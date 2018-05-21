@@ -166,6 +166,44 @@ namespace XYHHumanPlugin.Stores
             await Context.SaveChangesAsync(cancellationToken);
         }
 
+        public async Task UpdateRecieptList(List<ReceiptInfo> lst, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            foreach (var item in lst)
+            {
+                if (Context.ReceiptInfos.Any(x=>x.ID == item.ID))
+                {
+                    Context.Attach(item);
+                    Context.Update(item);
+                }
+                else
+                {
+                    Context.Add(item);
+                }
+            }
+
+            await Context.SaveChangesAsync(cancellationToken);
+        }
+
+        public async Task SetLimit(string userid, int limit, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            LimitInfo var = new LimitInfo();
+            var.UserID = userid;
+            var.LimitType = 0;
+            var.CostLimit = limit;
+
+            if (Context.LimitInfos.Any(x=> x.UserID == userid))
+            {
+                Context.Attach(var);
+                Context.Update(var);
+            }
+            else
+            {
+                Context.Add(var);
+            }
+
+            await Context.SaveChangesAsync(cancellationToken);
+        }
+
         public async Task UpdateExamineStatus(string modifyId, ExamineStatusEnum status, int type, CancellationToken cancellationToken = default(CancellationToken))
         {
             ModifyInfo buildings = new ModifyInfo()

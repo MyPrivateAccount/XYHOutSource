@@ -16,23 +16,13 @@ const menuDefine = [
     {
         menuID:'menu_index', displayName: '费用信息', menuIcon:'contacts', type:'subMenu',
         childMenu:[
-            { menuID:'home', displayName: '费用', menuIcon:'contacts', type:'item',},
-            { menuID:'basicinfo', displayName: '信息', menuIcon:'contacts', type:'item',},
-          
+            { menuID:'home', displayName: '费用', menuIcon:'contacts', type:'item',}
         ],
-        subMenu:[{
-            menuID:'sub1', displayName: 'sub1', menuIcon:'contacts', parent:'menu_index',type:'subMenu',
-            childMenu:[
-                { menuID:'optin3', displayName: 'option3', menuIcon:'contacts', type:'item',},
-                { menuID:'optin4', displayName: 'option4', menuIcon:'contacts', type:'item',},
-            ],
-         }],
     },
     {
         menuID: "menu_limit", displayName: "额度设置", menuIcon: 'appstore-o',type:'subMenu',
         childMenu:[
             { menuID:'optin5', displayName: 'option5', menuIcon:'contacts', type:'item',},
-            { menuID:'optin6', displayName: 'option6', menuIcon:'contacts', type:'item',},
         ],
         subMenu:[{
             menuID:'sub2', displayName: 'sub2', menuIcon:'contacts', parent:'menu_limit',type:'subMenu',

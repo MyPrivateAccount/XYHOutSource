@@ -112,4 +112,12 @@ reducerMap[actionTypes.DIC_GET_ALL_ORG_LIST_COMPLETE] = function(state, action) 
     return Object.assign({}, state, {departmentTree: orgTreeSource});
 }
 
+reducerMap[actionTypes.SELECTCHARGE] = function(state, action) {
+    return Object.assign({}, state, {selchargeList: action.payload});
+}
+
+reducerMap[actionTypes.CLEARCHARGE] = function(state, action) {
+    return Object.assign({}, state, {selchargeList: []});
+}
+
 export default handleActions(reducerMap,initState);

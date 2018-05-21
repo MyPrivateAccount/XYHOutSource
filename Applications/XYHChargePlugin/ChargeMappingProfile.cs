@@ -24,6 +24,9 @@ namespace XYHChargePlugin
             CreateMap<FileInfoRequest, FileScopeInfo>();
             CreateMap<FileScopeInfo, FileInfoRequest>();
 
+            CreateMap<LimitInfo, LimitInfoResponse>();
+            CreateMap<LimitInfoResponse, LimitInfo>();
+
 
             //CreateMap<MonthInfo, MonthInfoResponse>();
             //CreateMap<MonthInfoResponse, MonthInfo>();

@@ -11,6 +11,14 @@ const LoadableChargePage = Loadable({
     loader: () => import('./charge/charge'),
     loading: () => <LoadableLoading />,
 });
+const LoadableRecieptPage = Loadable({
+    loader: () => import('./charge/addreciept'),
+    loading: () => <LoadableLoading />,
+});
+const LoadableCostPage = Loadable({
+    loader: () => import('./charge/payment'),
+    loading: () => <LoadableLoading />,
+});
 
 function ContentPage(props) {
     const { curMenuID } = props;
@@ -20,6 +28,10 @@ function ContentPage(props) {
     }
     else if (curMenuID === "checkininfo") {
         return <LoadableChargePage />;
+    } else if (curMenuID === "addreciept") {
+        return <LoadableRecieptPage />;
+    } else if (curMenuID === "costcharge") {
+        return <LoadableCostPage />;
     }
     return null;
 }

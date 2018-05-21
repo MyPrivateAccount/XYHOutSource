@@ -29,3 +29,9 @@ export const updateChargePrice = createAction(actionTypes.UPDATE_SEARCHCHARGEPRI
 export const getRecieptByID = createAction(actionTypes.GET_RECIEPTBYID);
 
 export const paymentCharge = createAction(actionTypes.POST_PAYMENTCHARGE);
+
+
+export const postReciept = createAction(actionTypes.POST_RECIEPTINFO);
+
+export const selCharge = createAction(actionTypes.SELECTCHARGE);
+export const clearCharge = createAction(actionTypes.CLEARCHARGE);

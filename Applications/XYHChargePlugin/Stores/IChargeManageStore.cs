@@ -29,5 +29,9 @@ namespace XYHChargePlugin.Stores
 
         Task UpdatePostTime(string chargeid, string department, CancellationToken cancellationToken = default(CancellationToken));
 
+        Task UpdateRecieptList(List<ReceiptInfo> lst, CancellationToken cancellationToken = default(CancellationToken));
+
+        Task SetLimit(string userid, int limit, CancellationToken cancellationToken = default(CancellationToken));
+
     }
 }

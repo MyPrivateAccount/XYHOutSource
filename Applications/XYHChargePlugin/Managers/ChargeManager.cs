@@ -84,7 +84,7 @@ namespace XYHChargePlugin.Managers
 
         }
 
-        public virtual async Task<List<ReceiptInfoResponse>> GetRecieptbyID(UserInfo user, string chargeid, string department)
+        public virtual async Task<List<ReceiptInfoResponse>> GetRecieptbyID(UserInfo user, string chargeid)
         {
             if (user == null)
             {
@@ -102,6 +102,22 @@ namespace XYHChargePlugin.Managers
         public virtual async Task UpdateChargePostTime(string chargeid, string department, CancellationToken cancellationToken = default(CancellationToken))
         {
             await _Store.UpdatePostTime(chargeid, department, cancellationToken);
+        }
+
+        public virtual async Task UpdateRecieptList(List<ReceiptInfoResponse> lstreciept, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            await _Store.UpdateRecieptList(_mapper.Map<List<ReceiptInfo>>(lstreciept), cancellationToken);
+        }
+
+        public virtual async Task UpdateLimit(string userid, int cost, CancellationToken cancellationToken = default(CancellationToken))
+        {
+
+            if (string.IsNullOrEmpty(userid))
+            {
+                throw new ArgumentNullException(nameof(userid));
+            }
+
+            await _Store.SetLimit(userid, cost, cancellationToken);
         }
 
         public virtual async Task<ChargeSearchResponse<ChargeInfoResponse>> SearchChargeInfo(UserInfo user, ChargeSearchRequest condition, bool Isself, CancellationToken cancellationToken = default(CancellationToken))

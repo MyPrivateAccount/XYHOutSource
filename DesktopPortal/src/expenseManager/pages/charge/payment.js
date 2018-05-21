@@ -1,9 +1,9 @@
 import { connect } from 'react-redux';
 import React, { Component } from 'react'
-import {notification, Layout, Form, Modal, FormItem,DatePicker, Input, Icon, Button, Col, Cascader} from 'antd'
+import {notification, Layout, Form, Modal, DatePicker, Input, Icon, Button, Col, Cascader} from 'antd'
 import { NewGuid } from '../../../utils/appUtils';
-import { paymentCharge } from '../../actions/actionCreator';
-
+import { paymentCharge , clearCharge} from '../../actions/actionCreator';
+const FormItem = Form.Item;
 const formItemLayout1 = {
     labelCol:{ span:6},
     wrapperCol:{ span:6 },
@@ -16,6 +16,10 @@ class Payment extends Component {
     }
     
     componentDidMount() {
+    }
+
+    componentWillUnmount() {
+        this.props.dispatch(clearCharge());
     }
 
     handleChooseDepartmentChange = (e) => {

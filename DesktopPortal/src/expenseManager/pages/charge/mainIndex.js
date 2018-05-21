@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import { setLoadingVisible, adduserPage } from '../../actions/actionCreator';
 import React, { Component } from 'react';
-import { Input, Menu, Icon, Row, Col, Spin, Checkbox, Button } from 'antd';
+import { Input, Spin, Checkbox, Button, notification } from 'antd';
 //import {getDicParList} from '../actions/actionCreator';
 
 import SearchCondition from './searchCondition';
@@ -10,9 +10,9 @@ import SearchResult from './searchResult';
 
 const buttonDef = [
     { buttonID:"checkin", buttonName:"录入", icon:'', type:'primary', size:'large',},
-    { buttonID:"addcharge", buttonName:"后补发票", icon:'', type:'primary', size:'large',},
+    { buttonID:"addreciept", buttonName:"后补发票", icon:'', type:'primary', size:'large',},
     { buttonID:"inport", buttonName:"导入", icon:'', type:'primary', size:'large',},
-    { buttonID:"cost", buttonName:"付款", icon:'', type:'primary', size:'large',},
+    { buttonID:"costed", buttonName:"付款", icon:'', type:'primary', size:'large',},
 ];
 
 
@@ -26,6 +26,18 @@ class MainIndex extends Component {
     handleClickFucButton = (e) => {
         if (e.target.id === "checkin") {
             this.props.dispatch(adduserPage({menuID: 'checkininfo', disname: '录入信息'}));
+        } else if (e.target.id === "addreciept") {
+             if (this.props.chargeList.length > 0)
+                this.props.dispatch(adduserPage({menuID: 'addreciept', disname: '后补发票'}));
+             else {
+                notification.error({
+                    message: '未选择指定发票',
+                    description: "请选择指定发票",
+                    duration: 3
+                });
+             }
+        } else if (e.target.id === "costed") {
+            this.props.dispatch(adduserPage({menuID: 'costcharge', disname: '付款信息'}));
         }
     }
        //是否有权限
@@ -68,6 +80,7 @@ class MainIndex extends Component {
 function mapStateToProps(state) {
     return {
         // basicData:state.basicData,
+        chargeList: state.basicData.selchargeList,
         showLoading: state.search.showLoading,
         // searchCondition: state.search.searchCondition,
         // judgePermissions: state.judgePermissions

@@ -134,6 +134,60 @@ namespace XYHChargePlugin.Controllers
             return pagingResponse;
         }
 
+        [HttpPost("setlimit")]
+        [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
+        public async Task<ResponseMessage<List<ChargeInfoResponse>>> SetLimit(UserInfo User, [FromBody]int cost)
+        {
+            var pagingResponse = new ChargeSearchResponse<ChargeInfoResponse>();
+            if (!ModelState.IsValid)
+            {
+                pagingResponse.Code = ResponseCodeDefines.ModelStateInvalid;
+                Logger.Warn($"用户{User?.UserName ?? ""}({User?.Id ?? ""})费用设定条件(PostCustomerListSaleMan)模型验证失败：\r\n{pagingResponse.Message ?? ""}，\r\n请求参数为：\r\n" );
+                return pagingResponse;
+            }
+
+            try
+            {
+                await _chargeManager.UpdateLimit(User.Id, cost, HttpContext.RequestAborted);
+                pagingResponse.Message = "SetLimit ok";
+            }
+            catch (Exception e)
+            {
+                pagingResponse.Code = ResponseCodeDefines.ServiceError;
+                pagingResponse.Message = "服务器错误:" + e.ToString();
+                Logger.Error($"用户{User?.UserName ?? ""}({User?.Id ?? ""})费用设定条件(PostCustomerListSaleMan)请求失败：\r\n{pagingResponse.Message ?? ""}，\r\n请求参数为：\r\n" );
+
+            }
+            return pagingResponse;
+        }
+
+        [HttpPost("setrecieptinfo")]
+        [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
+        public async Task<ResponseMessage<List<ChargeInfoResponse>>> PostRecieptInfo(UserInfo User, [FromBody]List<ReceiptInfoResponse> reciept)
+        {
+            var pagingResponse = new ChargeSearchResponse<ChargeInfoResponse>();
+            if (!ModelState.IsValid)
+            {
+                pagingResponse.Code = ResponseCodeDefines.ModelStateInvalid;
+                Logger.Warn($"用户{User?.UserName ?? ""}({User?.Id ?? ""})查询费用单条件(PostCustomerListSaleMan)模型验证失败：\r\n{pagingResponse.Message ?? ""}，\r\n请求参数为：\r\n" + (reciept != null ? JsonHelper.ToJson(reciept) : ""));
+                return pagingResponse;
+            }
+
+            try
+            {
+                await _chargeManager.UpdateRecieptList(reciept, HttpContext.RequestAborted);
+                pagingResponse.Message = "setrecieptinfo ok";
+            }
+            catch (Exception e)
+            {
+                pagingResponse.Code = ResponseCodeDefines.ServiceError;
+                pagingResponse.Message = "服务器错误:" + e.ToString();
+                Logger.Error($"用户{User?.UserName ?? ""}({User?.Id ?? ""})查询费用单条件(PostCustomerListSaleMan)请求失败：\r\n{pagingResponse.Message ?? ""}，\r\n请求参数为：\r\n" + (reciept != null ? JsonHelper.ToJson(reciept) : ""));
+
+            }
+            return pagingResponse;
+        }
+
         [HttpPost("addcharge")]
         [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
         public async Task<ResponseMessage<List<ChargeInfoResponse>>> AddChargeInfo(UserInfo User, [FromBody]ContentRequest request)

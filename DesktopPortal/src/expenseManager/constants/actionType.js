@@ -35,3 +35,10 @@ export const UPDATE_RECIPTINFO = "UPDATE_RECIPTINFO";
 
 //付款
 export const POST_PAYMENTCHARGE = "POST_PAYMENTCHARGE";
+
+//补充费用单
+export const POST_RECIEPTINFO = "POST_RECIEPTINFO";
+
+//选中项
+export const SELECTCHARGE = "SELECTCHARGE";
+export const CLEARCHARGE = "CLEARCHARGE";

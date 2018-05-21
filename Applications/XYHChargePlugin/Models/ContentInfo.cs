@@ -52,8 +52,6 @@ namespace XYHChargePlugin.Models
     {
         [Key]
         [MaxLength(127)]
-        public string ID { get; set; }
-        [MaxLength(127)]
         public string UserID { get; set; }
         public int? LimitType { get; set; }
         public int? CostLimit { get; set; }

@@ -22,6 +22,7 @@ const WebApiConfig = {
         getRecieptInfo: basicDataBaseApiUrl + "chargeinfo/getrecipt/",
         getChargeid: basicDataBaseApiUrl + "chargeinfo/chargeid/",
         updatePostTime: basicDataBaseApiUrl + "chargeinfo/paymentcharge/",
+        postreciept: basicDataBaseApiUrl + "chargeinfo/setrecieptinfo/",
     },
 }
 export default WebApiConfig;

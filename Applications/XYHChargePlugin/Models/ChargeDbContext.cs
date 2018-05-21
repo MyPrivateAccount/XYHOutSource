@@ -37,7 +37,7 @@ namespace XYHChargePlugin.Models
                 b.ToTable("XYH_CH_RECEIPT");
             });
             modelBuilder.Entity<LimitInfo>(b => {
-                b.HasKey(k => new { k.ID });
+                b.HasKey(k => new { k.UserID });
                 b.ToTable("XYH_CH_LIMIT");
             });
             modelBuilder.Entity<ModifyInfo>(b => {
