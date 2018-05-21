@@ -9,7 +9,7 @@ import SearchBox from './searchBox';
 // const CheckboxGroup = Checkbox.Group;
 // const ButtonGroup = Button.Group;
 const Option = Select.Option;
-const checkStateDefine = [{type: '1', key: '审核中'},{type: '8', key: '已审核'}];
+const checkStateDefine = [{type: 1, key: '审核中'},{type: 8, key: '已审核'},{type: 16, key: '驳回'}];
 let t = null;
 class SearchCondition extends Component {
     state = {
@@ -17,7 +17,7 @@ class SearchCondition extends Component {
         filterTags: [],
         condition: {
             keyWord: '',
-            checkStatu: null,//审核状态
+            checkStatu: 0,//审核状态
             //organizationName: [],//
             createDateStart: null,//录入时间
             createDateEnd: null,
@@ -132,21 +132,35 @@ class SearchCondition extends Component {
         this.setState({condition:condition}, () =>{this.handleSearch()});
     }
 
-    handleCheckChange = (e, type) =>{
-        //this.setState({checkedList:,});
-        console.log('e.target.checked:', e.target.checked);
-        
-        if(type === '1'){
-            console.log('1type:', type);
-            this.setState({isNowCheck:e.target.checked, isHasCheck:false});
-        }else if(type === '8'){
-            console.log('8type:', type);
-            this.setState({isNowCheck:false, isHasCheck:e.target.checked});
-        }
+    isChecked = (type) =>{
         let condition = {...this.state.condition};
-        condition.checkStatu = e.target.checked ? type : null;
+        let checkStatu = condition.checkStatu;
+        if((type & checkStatu) > 0){
+            return true;
+        }
+        return false;
+    }
+    handleCheckChange = (e, type) =>{
+        let condition = {...this.state.condition};
+        
+        condition.checkStatu = condition.checkStatu^type;
         this.setState({condition:condition}, () =>{this.handleSearch()});
     }
+    // handleCheckChange = (e, type) =>{
+    //     //this.setState({checkedList:,});
+    //     console.log('e.target.checked:', e.target.checked);
+        
+    //     if(type === '1'){
+    //         console.log('1type:', type);
+    //         this.setState({isNowCheck:e.target.checked, isHasCheck:false});
+    //     }else if(type === '8'){
+    //         console.log('8type:', type);
+    //         this.setState({isNowCheck:false, isHasCheck:e.target.checked});
+    //     }
+    //     let condition = {...this.state.condition};
+    //     condition.checkStatu = e.target.checked ? type : null;
+    //     this.setState({condition:condition}, () =>{this.handleSearch()});
+    // }
     render() {
         let expandSearchCondition = this.state.expandSearchCondition;
 
@@ -191,14 +205,25 @@ class SearchCondition extends Component {
                         <Row className="normalInfo">
             
                                 {/* <label>审核状态：</label> */}
-                                <Col span={4}>
+                                {/* <Col span={4}>
                                 <label>审核中：</label>
-                                    <Checkbox onChange={(e) =>this.handleCheckChange(e, "1")} checked={this.state.isNowCheck}></Checkbox>
+                                    <Checkbox onChange={(e) =>this.handleCheckChange(e, 1)} checked={this.isChecked(1)}></Checkbox>
                                 </Col>
                                 <Col span={4}>
                                     <label>审核通过：</label>
-                                    <Checkbox onChange={(e) =>this.handleCheckChange(e, "8")} checked={this.state.isHasCheck}></Checkbox>
-                                </Col>
+                                    <Checkbox onChange={(e) =>this.handleCheckChange(e, 8)} checked={this.isChecked(8)}></Checkbox>
+                                </Col> */}
+                                {
+                                    checkStateDefine.map((item, i) => {
+                                        return(
+                                            <Col span={4}>
+                                                <label>{item.key}:</label>
+                                                <Checkbox onChange={(e) =>this.handleCheckChange(e, item.type)} checked={this.isChecked(item.type)}></Checkbox>
+                                            </Col>
+                                        )
+                                    })
+                                }
+           
                         
                         </Row>
                         }
