@@ -1,9 +1,9 @@
-//业主信息组件
+//客户信息组件
 import { connect } from 'react-redux';
 import React, { Component } from 'react';
 import { Form, Span, Layout, Table, Button, Radio, Popconfirm, Tooltip, Row, Col, Input, Spin, Select, TreeSelect } from 'antd'
 
-class TradeBnsOwner extends Component{
+class TradeCustomer extends Component{
     render(){
         return (
             <Layout>
@@ -33,9 +33,17 @@ class TradeBnsOwner extends Component{
                         </Col>
                     </Row>
                     <Row style={{margin:10}}>
-                        <Col span={8} style={{marginLeft:-6}}>
-                          <span>Email:</span>
-                          <Input style={{width:250,marginLeft:5}}></Input>
+                        <Col span={8} style={{marginLeft:-22}}>
+                          <span>客户性质:</span>
+                          <Select style={{width:100,marginLeft:5}}></Select>
+                        </Col>
+                        <Col span={8} style={{marginLeft:20}}>
+                          <span>客源号:</span>
+                          <Input style={{width:100,marginLeft:5}}></Input>
+                        </Col>
+                        <Col span={6} style={{marginLeft:35}}>
+                          <span>置业次数:</span>
+                          <Input style={{width:100,marginLeft:5}}></Input>
                         </Col>
                     </Row>
                     <Row style={{margin:10}}>
@@ -67,4 +75,4 @@ class TradeBnsOwner extends Component{
         )
     }
 }
-export default TradeBnsOwner
+export default TradeCustomer

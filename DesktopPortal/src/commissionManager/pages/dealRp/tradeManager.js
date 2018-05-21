@@ -4,6 +4,8 @@ import { Modal, Layout, Table, Button, Checkbox, Tree, Tabs, Icon, Popconfirm, S
 import TradeContract from './tradeContract'
 import TradeEstate from './tradeEstate'
 import TradeBnsOwner from './tradeBnsOwer'
+import TradeCustomer from './tradeCustomer'
+import TradePerDis from './tradePerDis'
 
 const { Header, Sider, Content } = Layout;
 const TreeNode = Tree.TreeNode;
@@ -34,8 +36,10 @@ class TradeManager extends Component {
                                 <TradeBnsOwner/>
                             </TabPane>
                             <TabPane tab="客户信息" key="khxx">
+                               <TradeCustomer/>
                             </TabPane>
                             <TabPane tab="业绩分配" key="yjfp">
+                               <TradePerDis/>
                             </TabPane>
                             <TabPane tab="附件" key="fj">
                             </TabPane>
