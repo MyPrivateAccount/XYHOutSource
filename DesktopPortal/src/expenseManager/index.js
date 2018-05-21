@@ -22,7 +22,7 @@ const menuDefine = [
     {
         menuID: "menu_limit", displayName: "额度设置", menuIcon: 'appstore-o',type:'subMenu',
         childMenu:[
-            { menuID:'optin5', displayName: 'option5', menuIcon:'contacts', type:'item',},
+            { menuID:'limitindex', displayName: '费用限制', menuIcon:'contacts', type:'item',},
         ],
         subMenu:[{
             menuID:'sub2', displayName: 'sub2', menuIcon:'contacts', parent:'menu_limit',type:'subMenu',

@@ -19,6 +19,10 @@ const LoadableCostPage = Loadable({
     loader: () => import('./charge/payment'),
     loading: () => <LoadableLoading />,
 });
+const LoadableLimitPage = Loadable({
+    loader: () => import('./chargelimit/chargelimit'),
+    loading: () => <LoadableLoading />,
+});
 
 function ContentPage(props) {
     const { curMenuID } = props;
@@ -32,6 +36,8 @@ function ContentPage(props) {
         return <LoadableRecieptPage />;
     } else if (curMenuID === "costcharge") {
         return <LoadableCostPage />;
+    } else if (curMenuID === "limitindex") {
+        return <LoadableLimitPage />;
     }
     return null;
 }
