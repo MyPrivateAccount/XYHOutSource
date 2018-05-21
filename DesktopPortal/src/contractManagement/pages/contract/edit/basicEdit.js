@@ -135,7 +135,9 @@ class BasicEdit extends Component {
         }
     }
     handleChooseDepartmentChange =  (v, selectedOptions) => {
-        let organizateID = (v ||v != []) ? v[v.length -1].toString() : 0;
+        console.log('handleChooseDepartmentChangev:', v);
+        let organizateID = (v  && v.length > 0) ? v[v.length -1].toString() : 0;
+        console.log('organizateID:', organizateID);
         let departmentFullId = v? v.join('*'): '';
 
         let text = selectedOptions.map(item => {
@@ -198,22 +200,34 @@ class BasicEdit extends Component {
               });
         }
     }
+    getInitOrgFullId = () =>{
+        let departMentInit = this.props.basicInfo.organizateFullId ? this.props.basicInfo.organizateFullId.split('*') : [];
+        let newFullId = departMentInit;
+        departMentInit.map((item, i) => {
+            let temp = this.props.searchOrgList.find(org => org.id === item);
+            if(temp === undefined){
+                let index = newFullId.indexOf(item);
+                if(index > -1){
+                    newFullId.splice(index, 1);
+                }
+            }
+   
+        });
+
+        return newFullId;
+    }
     render(){
  
         const { getFieldDecorator, getFieldsError, getFieldError, isFieldTouched } = this.props.form;
   
         let basicInfo = this.props.basicInfo;
-        const departMentInit = [];
-        if(basicInfo.organizateID)
-        {
-            departMentInit.push(basicInfo.organizateID);
-        }
-        console.log('departMentInit:', departMentInit);
+        let departMentInit = this.getInitOrgFullId();
+     
         const formItemLayout = {
           labelCol: { span: 6 },
           wrapperCol: { span: 14 },
         };
-        console.log('this.props.basicData.orgInfo.orgList:', this.props.basicData.orgInfo.orgList);
+
         return (
           <div>
           <Form layout="horizontal" style={{padding: '25px 0', marginTop: "25px"}}>
@@ -482,7 +496,7 @@ class BasicEdit extends Component {
               <Col span={12}>
                         <FormItem {...formItemLayout} label={<span>申请部门</span>}>
                         {getFieldDecorator('organizate', {
-                                        initialValue: basicInfo.organizateFullId ? basicInfo.organizateFullId.split('*') : [],//departMentInit,//basicInfo.relation ? basicInfo.relation.split('*') : [],//["1", "1385f04d-3ac8-49c6-a310-fe759814a685", "120"],//basicInfo.organizete ? basicInfo.organizete.split('-') : [],
+                                        initialValue: departMentInit,//basicInfo.organizateFullId ? basicInfo.organizateFullId.split('*') : [],//departMentInit,//basicInfo.relation ? basicInfo.relation.split('*') : [],//["1", "1385f04d-3ac8-49c6-a310-fe759814a685", "120"],//basicInfo.organizete ? basicInfo.organizete.split('-') : [],
                                         rules:[{required:true, message:'请选择申请部门!'}]
                                         })(
                                             <Cascader options={this.props.setContractOrgTree}  onChange={this.handleChooseDepartmentChange } changeOnSelect  placeholder="归属部门"/>
@@ -644,6 +658,7 @@ function mapStateToProps(state) {
         curFollowContract: state.contractData.curFollowContract,
       
         setContractOrgTree:state.basicData.permissionOrgTree.searchOrgTree,
+        searchOrgList:state.basicData.permissionOrgTree.searchOrgList,
         isShowCompanyADialog: state.companyAData.isShowCompanyADialog,
     }
   }
