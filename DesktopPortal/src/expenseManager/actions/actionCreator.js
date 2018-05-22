@@ -35,3 +35,5 @@ export const postReciept = createAction(actionTypes.POST_RECIEPTINFO);
 
 export const selCharge = createAction(actionTypes.SELECTCHARGE);
 export const clearCharge = createAction(actionTypes.CLEARCHARGE);
+
+export const getLimitChargeHuman = createAction(actionTypes.GET_LIMITCHARGEHUMAN);

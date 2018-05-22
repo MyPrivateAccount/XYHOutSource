@@ -161,6 +161,25 @@ namespace XYHChargePlugin.Controllers
             return pagingResponse;
         }
 
+        [HttpGet("limithuman")]
+        [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
+        public async Task<ResponseMessage<string>> GetLimitChargeHumanLst()
+        {
+            var Response = new ResponseMessage<string>();
+            
+            try
+            {
+                Response.Message = $"getchargenumber sucess";
+            }
+            catch (Exception e)
+            {
+                Response.Code = ResponseCodeDefines.ServiceError;
+                Response.Message = "服务器错误：" + e.ToString();
+                Logger.Error("error");
+            }
+            return Response;
+        }
+
         [HttpPost("setrecieptinfo")]
         [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
         public async Task<ResponseMessage<List<ChargeInfoResponse>>> PostRecieptInfo(UserInfo User, [FromBody]List<ReceiptInfoResponse> reciept)

@@ -102,7 +102,7 @@ class ExpenseManagerIndex extends Component {
 
     handleNavigatorClick = (i, menu) =>{
         let navigator = this.props.navigator;
-        if(navigator.length > 0) {
+        if(navigator.length > 0 && menu.type === "item") {
             if(navigator[navigator.length -1].menuID !== menu.menuID) {
                 this.props.dispatch(setuserPageIndex(i));
             }

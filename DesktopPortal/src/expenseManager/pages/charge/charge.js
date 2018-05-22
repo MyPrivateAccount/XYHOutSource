@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 import React, { Component } from 'react'
 import {Table, notification, Layout, Form, Modal, Cascader, Upload, InputNumber, Input, Select, Icon, Button, Col, Checkbox, Tag, Pagination, Spin} from 'antd'
 import { NewGuid } from '../../../utils/appUtils';
-import { getDicInfo, uploadFile, postChargeInfo ,getDepartment} from '../../actions/actionCreator';
+import { getDicInfo, uploadFile, postChargeInfo} from '../../actions/actionCreator';
 import WebApiConfig from '../../constants/webapiConfig';
 import ApiClient from '../../../utils/apiClient';
 
@@ -47,8 +47,6 @@ class ChargeInfo extends Component {
                 tempthis.state.id = f.data.extension;
             }
         });
-
-        this.props.dispatch(getDepartment("PublicRoleOper"));
         this.props.dispatch(getDicInfo(["CHARGE_COST_TYPE"]));
         //this.props.dispatch(searchConditionType(SearchCondition.topteninfo));
     }

@@ -2,10 +2,11 @@ import {handleActions} from 'redux-actions';
 import * as actionTypes from '../constants/actionType';
 
 const initState = {
+    limitHumanlst:[],
     selchargeList: [],
     departmentTree: [],
     chargeCostTypeList: [{value: 0, key: "test"}],
-    navigator: [{menuID: 'menu_index', disname: '费用信息'}, {menuID: 'home', disname: '费用'}]
+    navigator: [{menuID: 'menu_index', disname: '费用信息', type:'subMenu'}, {menuID: 'home', disname: '费用', type:'item'}]
 };
 
 let reducerMap = {};
@@ -39,7 +40,7 @@ reducerMap[actionTypes.SET_USER_BREAD] = function(state, action) {
 reducerMap[actionTypes.SET_USER_BREADADD] = function(state, action) {
     let bfind = false;
     for (const itm of state.navigator) {
-        if (itm.menuID === action.menuID) 
+        if (itm.menuID === action.payload.menuID) 
             bfind = true;
     }
     if (!bfind) {
@@ -118,6 +119,10 @@ reducerMap[actionTypes.SELECTCHARGE] = function(state, action) {
 
 reducerMap[actionTypes.CLEARCHARGE] = function(state, action) {
     return Object.assign({}, state, {selchargeList: []});
+}
+
+reducerMap[actionTypes.UPDATE_LIMITCHARGEHUMAN] = function(state, action) {
+    return Object.assign({}, state, {limitHumanlst: action.payload});
 }
 
 export default handleActions(reducerMap,initState);

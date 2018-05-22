@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { setLoadingVisible, adduserPage } from '../../actions/actionCreator';
+import { setLoadingVisible, adduserPage, getDepartment } from '../../actions/actionCreator';
 import React, { Component } from 'react';
 import { Input, Spin, Checkbox, Button, notification } from 'antd';
 //import {getDicParList} from '../actions/actionCreator';
@@ -21,14 +21,15 @@ class MainIndex extends Component {
     }
 
     componentWillMount() {
+        this.props.dispatch(getDepartment("PublicRoleOper"));
     }
 
     handleClickFucButton = (e) => {
         if (e.target.id === "checkin") {
-            this.props.dispatch(adduserPage({menuID: 'checkininfo', disname: '录入信息'}));
+            this.props.dispatch(adduserPage({menuID: 'checkininfo', disname: '录入信息', type:'item'}));
         } else if (e.target.id === "addreciept") {
              if (this.props.chargeList.length > 0)
-                this.props.dispatch(adduserPage({menuID: 'addreciept', disname: '后补发票'}));
+                this.props.dispatch(adduserPage({menuID: 'addreciept', disname: '后补发票', type:'item'}));
              else {
                 notification.error({
                     message: '未选择指定发票',
@@ -37,7 +38,15 @@ class MainIndex extends Component {
                 });
              }
         } else if (e.target.id === "costed") {
-            this.props.dispatch(adduserPage({menuID: 'costcharge', disname: '付款信息'}));
+            if (this.props.chargeList.length > 0)
+                this.props.dispatch(adduserPage({menuID: 'costcharge', disname: '付款信息', type:'item'}));
+             else {
+                notification.error({
+                    message: '未选择指定发票',
+                    description: "请选择指定发票",
+                    duration: 3
+                });
+             }
         }
     }
        //是否有权限

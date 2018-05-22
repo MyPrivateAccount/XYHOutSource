@@ -33,7 +33,7 @@ export function* getParListAsync(state) {
 }
 
 export function* getDepartmentListAsync(state) {
-    let result = {}
+    let result = { isOk: false, extension: [], msg: '获取部门失败！' };
     let url = WebApiConfig.dic.permissionOrg + state.payload;
     
     try {
@@ -53,7 +53,29 @@ export function* getDepartmentListAsync(state) {
     }
 }
 
+export function* getLimitChargeHuman(state) {
+    let result = {}
+    let url = WebApiConfig.dic.permissionOrg + state.payload;
+    
+    try {
+        const orgResult = yield call(ApiClient.get, url);
+        getApiResult(orgResult, result);
+
+        if (result.isOk) {
+            yield put({
+                 type: actionUtils.getActionType(actionTypes.UPDATE_LIMITCHARGEHUMAN),
+                 payload: result.extension
+            });
+        }
+
+    } catch (e) {
+        result.msg = "获取限制名单接口调用异常!";
+        console.log('getAllOrgsAsync error,url:', url);
+    }
+}
+
 export default function* watchGetAlldic() {
     yield takeLatest(actionUtils.getActionType(actionTypes.GET_ALLDEPARTMENT), getDepartmentListAsync);
     yield takeLatest(actionUtils.getActionType(actionTypes.GET_CHARGEDICINFO), getParListAsync);
+    yield takeLatest(actionUtils.getActionType(actionTypes.GET_LIMITCHARGEHUMAN), getLimitChargeHuman);
 }
