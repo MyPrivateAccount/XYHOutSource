@@ -23,6 +23,10 @@ const LoadableDealRpPage = Loadable({//我录入的成交报告
     loader:()=>import('./dealRp/myDealRp'),
     loading:()=><LoadableLoading/>
 });
+const LoadableDealRpQueryPage = Loadable({//我录入的成交报告
+    loader:()=>import('./dealRp/dealRpQuery'),
+    loading:()=><LoadableLoading/>
+});
 
 function ContentPage(props) {
     const { curMenuID } = props;
@@ -45,6 +49,10 @@ function ContentPage(props) {
     else if(curMenuID === 'menu_myrp'){
         console.log("menu_myrp");
         return <LoadableDealRpPage/>;
+    }
+    else if(curMenuID === 'menu_query'){
+        console.log("menu_query");
+        return <LoadableDealRpQueryPage/>;
     }
     return null;
 }
