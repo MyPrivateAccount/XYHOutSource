@@ -47,7 +47,7 @@ class Addreciept extends Component {
                         } else if (ary[1] === "reciepnumber") {
                             receiptinfos[+ary[0]] = Object.assign({}, receiptinfos[+ary[0]], {"reciepnumber": values[ite]});
                             receiptinfos[+ary[0]] = Object.assign({},
-                                receiptinfos[+ary[0]], {"id": self.props.recieptInfoList[+ary[0]].id});
+                                receiptinfos[+ary[0]], {"id": self.props.recieptInfoList[+ary[0]].receiptID});
                             receiptinfos[+ary[0]] = Object.assign({},
                                 receiptinfos[+ary[0]], {"chargeid": chargeid});
                         } else if (ary[1] === "recieptype") {
@@ -249,7 +249,7 @@ class Addreciept extends Component {
                                                 onChange={handleChange}
                                                 beforeUpload={handleBeforeUpload} 
                                                 >
-                                                {rv.fileList.length >= 3 ? null : uploadButton}
+                                                {(rv.fileList==null||rv.fileList.length >= 3) ? null : uploadButton}
                                             </Upload>
                                             <Modal visible={rv.previewVisible} footer={null} onCancel={handleCancel}>
                                                 <img alt="example" style={{ width: '100%' }} src={rv.previewImage} />
@@ -267,7 +267,7 @@ class Addreciept extends Component {
                     <Col span={6}><Button type="primary" icon="plus" onClick={this.addCharge} ></Button></Col>
                 </FormItem>
                 <FormItem wrapperCol={{ span: 12, offset: 6 }}>
-                    <Col span={6}><Button type="primary" htmlType="submit" disabled={this.hasErrors(getFieldsValue())} ></Button></Col>
+                    <Col span={6}><Button type="primary" htmlType="submit" disabled={this.hasErrors(getFieldsValue())} >提交</Button></Col>
                 </FormItem>
             </Form>
         );

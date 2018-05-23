@@ -35,7 +35,7 @@ namespace XYHChargePlugin.Managers
                 modifyid, check, cancellationToken);
 
             await _Store.CreateCostListAsync(_mapper.Map<List<CostInfo>>(req.CostInfos), cancellationToken);
-            await _Store.CreateReceiptListAsync(_mapper.Map<List<ReceiptInfo>>(req.ReceiptInfos), cancellationToken);
+            await _Store.CreateReceiptListAsync(_mapper.Map<SimpleUser>(User), _mapper.Map<List<ReceiptInfo>>(req.ReceiptInfos), cancellationToken);
         }
 
         public virtual async Task CreateFilelistAsync(string userid, List<FileInfoCallbackRequest> fileInfoCallbackRequestList, CancellationToken cancellationToken = default(CancellationToken))
@@ -94,7 +94,19 @@ namespace XYHChargePlugin.Managers
             if (!string.IsNullOrEmpty(chargeid))
             {
                 var tt = await _Store.GetRecieptListAsync(a=> a.Where(b => b.ChargeID == chargeid));
-                return _mapper.Map<List<ReceiptInfoResponse>>(tt);
+                var retun =_mapper.Map<List<ReceiptInfoResponse>>(tt);
+
+                foreach (var item in retun)
+                {
+                    var scope = await _Store.GetScopeInfo(a => a.Where(b => b.ReceiptID == item.ID));
+                    foreach (var itm in scope)
+                    {
+                        var file = await _Store.GetFileInfo(a => a.Where(b => b.FileGuid == itm.FileGuid));
+                        item.FileList.Add(new SimpleList { uid = item.FileList.Count, name="", status="done", url=file.Uri});
+                    }
+                }
+
+                return retun;
             }
             return null;
         }

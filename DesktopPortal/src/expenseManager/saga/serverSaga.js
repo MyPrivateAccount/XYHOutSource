@@ -86,7 +86,7 @@ export function* postsearchCondition(state) {
 
 export function* getRecieptInfo(state) {
     let result = { isOk: false, extension: [], msg: '查询失败！' };
-    let url = WebApiConfig.server.getRecieptInfo + "/" + state.payload;
+    let url = WebApiConfig.server.getRecieptInfo + state.payload;
 
     try {
         
@@ -94,7 +94,7 @@ export function* getRecieptInfo(state) {
         getApiResult(res, result);
 
         if (result.isOk) {
-            yield put({ type: actionUtils.getActionType(actionTypes.UPDATE_RECIPTINFO), payload: result });
+            yield put({ type: actionUtils.getActionType(actionTypes.UPDATE_RECIPTINFO), payload: result.extension });
         }
     } catch (e) {
         result.msg = "查询接口调用异常！";
@@ -111,7 +111,7 @@ export function* getRecieptInfo(state) {
 
 export function* postPaymentCharge(state) {
     let result = { isOk: false, extension: [], msg: '查询失败！' };
-    let url = WebApiConfig.server.updatePostTime + "/" + state.payload.chargeid + "/" + state.payload.department;
+    let url = WebApiConfig.server.updatePostTime + state.payload.chargeid + "/" + state.payload.department;
 
     try {
         let res = yield call(ApiClient.post, url)

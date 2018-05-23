@@ -15,7 +15,7 @@ namespace XYHChargePlugin.Stores
         IEnumerable<T> DapperSelect<T>(string sql);
         Task<ChargeInfo> CreateChargeAsync(SimpleUser userinfo, ChargeInfo chargeinfo, string modifyid, string checkaction, CancellationToken cancellationToken = default(CancellationToken));
         Task CreateCostListAsync(List<CostInfo> costinfo, CancellationToken cancellationToken = default(CancellationToken));
-        Task CreateReceiptListAsync(List<ReceiptInfo> costinfo, CancellationToken cancellationToken = default(CancellationToken));
+        Task CreateReceiptListAsync(SimpleUser user, List<ReceiptInfo> costinfo, CancellationToken cancellationToken = default(CancellationToken));
 
         Task CreateFileListAsync(List<FileInfo> costinfo, CancellationToken cancellationToken = default(CancellationToken));
         Task CreateFileScopeAsync(string strid, List<FileScopeInfo> scope, CancellationToken cancellationToken = default(CancellationToken));
@@ -32,6 +32,9 @@ namespace XYHChargePlugin.Stores
         Task UpdateRecieptList(List<ReceiptInfo> lst, CancellationToken cancellationToken = default(CancellationToken));
 
         Task SetLimit(string userid, int limit, CancellationToken cancellationToken = default(CancellationToken));
+
+        Task<List<TResult>> GetScopeInfo<TResult>(Func<IQueryable<FileScopeInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken));
+        Task<TResult> GetFileInfo<TResult>(Func<IQueryable<FileInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken));
 
     }
 }
