@@ -112,4 +112,8 @@ reducerMap[actionTypes.UPDATE_ALLHUMANINFO] = function(state, action) {
     return Object.assign({}, state,{searchResult: action.payload} );
 }
 
+reducerMap[actionTypes.UPDATE_BLACKLST] = function(state, action) {
+    return Object.assign({}, state,{s} );
+}
+
 export default handleActions(reducerMap, initState);

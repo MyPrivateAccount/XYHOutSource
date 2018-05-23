@@ -136,9 +136,38 @@ export function* getMonthListAsync(state) {
     }
 }
 
+export function* getBlackListAsync(state) {
+    let result = {isOk: false, extension: {}, msg: '获取月结列表失败！'};
+    let url = WebApiConfig.search.getBlackList;
+
+    try {
+        let res = yield call(ApiClient.post, url, state.payload);
+        if (res.data.code == 0) {
+            result.isOk = true;
+            let lv = res.data.extension;
+            lv = lv.extension.map(function(v, k) {
+                return {};
+            });
+
+            // yield put ({type: actionUtils.getActionType(actionTypes.MONTH_UPDATEMONTHLIST),
+            //      payload: {extension: lv, pageIndex: lv.pageIndex, pageSize: lv.pageSize, totalCount: lv.totalCount, lastTime: lv.lastTime}});
+        }
+    } catch (e) {
+        result.msg = '检索关键字接口调用异常';
+    }
+
+    if (!result.isOk) {
+        notification.error({
+            description: result.msg,
+            duration: 3
+        });
+    }
+}
+
 export default function* watchAllSearchAsync() {
     yield takeLatest(actionUtils.getActionType(actionTypes.SEARCH_CUSTOMER), getCustomerListAsync);
     yield takeLatest(actionUtils.getActionType(actionTypes.SEARCH_CONDITION), getSearchConditionAsync);
     yield takeLatest(actionUtils.getActionType(actionTypes.GET_ALLHUMANINFO), getHumanListAsync);
     yield takeLatest(actionUtils.getActionType(actionTypes.MONTH_GETALLMONTHLIST), getMonthListAsync);
+    yield takeLatest(actionUtils.getActionType(actionTypes.GET_BLACKLST), getBlackListAsync);
 }
