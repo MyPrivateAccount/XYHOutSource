@@ -29,6 +29,7 @@ export const SET_SEARCH_LOADING = 'SET_SEARCH_LOADING';//获取待审核列表
 export const SET_USER_BREAD = 'SET_USER_BREAD';
 export const CLOSE_USER_BREAD = 'CLOSE_USER_BREAD';
 export const SET_USER_ONBOADING = 'SET_USER_ONBOADING';
+export const ADD_USER_BREAD = "ADD_USER_BREAD";
 
 //改变加载
 export const CHANGE_LOADING = 'CHANGE_LOADING';
@@ -61,3 +62,12 @@ export const MONTH_RECOVER = 'MONTH_RECOVER';
 export const MONTH_CREATE = 'MONTH_CREATE';
 
 export const MONTH_LAST = 'MONTH_LAST';
+
+//黑名单
+export const POST_ADDBLACKLST = "POST_ADDBLACKLST";
+export const GET_BLACKLST = "GET_BLACKLST";
+export const UPDATE_BLACKLST = "UPDATE_BLACKLST";
+
+//职位新建
+export const POST_CRATESTATION = "POST_CRATESTATION";
+

@@ -64,8 +64,7 @@ export function* postsearchCondition(state) {
     let url = WebApiConfig.server.searchCharge;
 
     try {
-        
-        let res = yield call(ApiClient.post, url, state.payload)
+        let res = yield call(ApiClient.post, url, state.payload);
         getApiResult(res, result);
 
         if (result.isOk) {

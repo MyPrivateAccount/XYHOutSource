@@ -59,7 +59,7 @@ namespace XYHHumanPlugin.Stores
             chargeinfo.CreateUser = userinfo.Id;
             chargeinfo.CreateUserName = userinfo.UserName;
             chargeinfo.Department = userinfo.OrganizationId;
-            chargeinfo.PostTime = DateTime.Now;
+            chargeinfo.CreateTime = DateTime.Now;
 
             Context.Add(modify);
             Context.Add(chargeinfo);

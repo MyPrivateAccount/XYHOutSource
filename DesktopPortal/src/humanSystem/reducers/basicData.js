@@ -193,7 +193,7 @@ reducerMap[actionTypes.SET_USER_BREAD] = function(state, action) {
     switch (action.payload)
     {
         case 0: {
-            return Object.assign({}, state, {navigator: [{id: action.payload, name: '入职'}]});
+            return Object.assign({}, state, {navigator: [{id: action.payload, name: '入职', type: 'menu'}]});
         } break;
     }
     return state;
@@ -201,6 +201,18 @@ reducerMap[actionTypes.SET_USER_BREAD] = function(state, action) {
 
 reducerMap[actionTypes.CLOSE_USER_BREAD] = function(state, action) {
     return Object.assign({}, state, {navigator: []});
+}
+
+reducerMap[actionTypes.ADD_USER_BREAD] = function(state, action) {
+    let bfind = false;
+    for (const itm of state.navigator) {
+        if (itm.menuID === action.payload.menuID) 
+            bfind = true;
+    }
+    if (!bfind) {
+        state.navigator.push(action.payload);
+    }
+    return Object.assign({}, state, {navigator: state.navigator.slice()});
 }
 
 reducerMap[actionTypes.SET_HUMANINFONUMBER] = function(state, action) {

@@ -15,12 +15,12 @@ const {Header, Sider, Content} = Layout;
 const menuDefine = [
     {menuID: "menu_user_mgr", displayName: "员工信息管理", menuIcon: 'contacts'},
     {menuID: "menu_month", displayName: "月结", menuIcon: 'calendar'},
-    {menuID: "menu_attendance", displayName: "考勤信息", menuIcon: 'pushpin-o'},
-    {menuID: "menu_statistics", displayName: "统计报表", menuIcon: 'global'},
     {menuID: "menu_black", displayName: "黑名单管理", menuIcon: 'lock'/*, requirePermission: ['PermissionItemCreate']*/},
     {menuID: "menu_station", displayName: "职位和岗位配置", menuIcon: 'solution'},
     {menuID: "menu_achievement", displayName: "职位薪酬管理", menuIcon: 'database'},
+    {menuID: "menu_attendance", displayName: "考勤信息", menuIcon: 'pushpin-o'},
     {menuID: "menu_organization", displayName: "组织架构管理", menuIcon: 'layout'},
+    {menuID: "menu_statistics", displayName: "统计报表", menuIcon: 'global'},
     {menuID: "menu_set", displayName: "设置", menuIcon: 'setting'},
     //{menuID: "menu_app", displayName: "应用管理", menuIcon: 'appstore', requirePermission: ['ApplicationCreate']}
 ];
@@ -90,6 +90,10 @@ const homeStyle = {
                     this.props.dispatch(closebreadPage(0));
                 }
             }
+        }
+
+        componentWillMount () {
+            this.props.dispatch(getOrgList("PublicRoleOper"));
         }
 
     render() {
