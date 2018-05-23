@@ -42,7 +42,7 @@ class SearchResult extends Component {
         
         return (
             <div>
-                {<p style={{marginBottom: '10px'}}>目前已为你筛选出<b>{this.props.searchInfoResult.length}</b>条费用信息</p>}
+                {<p style={{marginBottom: '10px'}}>目前已为你筛选出<b>{this.props.searchInfoResult.extension.length}</b>条费用信息</p>}
                 <div id="searchResult">
                     <Table id= {"table"} rowKey={record => record.id} 
                     columns={columns} 
@@ -58,7 +58,7 @@ class SearchResult extends Component {
 
 function mapStateToProps(state) {
     return {
-        searchInfoResult: state.search.searchResult,
+        searchInfoResult: state.search.blackList,
         showLoading: state.basicData.showLoading
     }
 }

@@ -3,6 +3,7 @@ import * as actionTypes from '../constants/actionType';
 import moment from 'moment';
 
 const initState = {
+    blackList: {extension: [{key: '1', idcard: 'tt', name: 'test'}], pageIndex: 0, pageSize: 10, totalCount: 1},//搜索结果
     showLoading: false,
     showOrgSelect: false,//部门选择
     navigator: [],//导航记录
@@ -113,7 +114,7 @@ reducerMap[actionTypes.UPDATE_ALLHUMANINFO] = function(state, action) {
 }
 
 reducerMap[actionTypes.UPDATE_BLACKLST] = function(state, action) {
-    return Object.assign({}, state,{s} );
+    return Object.assign({}, state, {blackList: action.payload} );
 }
 
 export default handleActions(reducerMap, initState);

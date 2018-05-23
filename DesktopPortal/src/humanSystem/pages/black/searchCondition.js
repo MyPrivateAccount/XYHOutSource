@@ -2,6 +2,7 @@ import {connect} from 'react-redux';
 import { setLoadingVisible, postSearchCondition, updateSearchStatu, updateChargePrice} from '../../actions/actionCreator';
 import React, {Component} from 'react'
 import {Input, InputNumber, Select, Icon, Button, Row, Col, Checkbox, Tag, Spin} from 'antd'
+import './search.less';
 
 const Option = Select.Option;
 const styles = {

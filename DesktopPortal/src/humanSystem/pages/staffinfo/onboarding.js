@@ -73,7 +73,7 @@ class OnBoarding extends Component {
         let url = WebApiConfig.server.GetWorkNumber;
         ApiClient.get(url).then(function (f) {
             if (f.data.code==0) {
-                tempthis.props.form.setFieldsValue({userid:f.data.extension});
+                tempthis.props.form.setFieldsValue({id:f.data.extension});
             }
         });
     }
@@ -245,7 +245,7 @@ class OnBoarding extends Component {
                     )}
                 </FormItem>
                 <FormItem {...formItemLayout1} label="工号">
-                    {getFieldDecorator('userid', {
+                    {getFieldDecorator('id', {
                         reules: [{
                             required:true,
                             message: 'please entry Worknumber',

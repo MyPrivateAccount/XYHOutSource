@@ -5,6 +5,7 @@ import { Input, Spin, Checkbox, Button, notification } from 'antd';
 //import {getDicParList} from '../actions/actionCreator';
 import SearchCondition from './searchCondition';
 import SearchResult from './searchResult';
+import './search.less';
 
 const buttonDef = [
     { buttonID:"addnew", buttonName:"新建", icon:'', type:'primary', size:'large',},
@@ -18,6 +19,7 @@ class MainIndex extends Component {
     }
 
     componentWillMount() {
+        this.props.dispatch(setLoadingVisible(false));//测试
     }
 
     handleClickFucButton = (e) => {
