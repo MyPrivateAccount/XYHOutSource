@@ -23,11 +23,11 @@ class MainIndex extends Component {
     }
 
     handleClickFucButton = (e) => {
-        if (e.target.id === "checkin") {
-            this.props.dispatch(adduserPage({menuID: 'checkininfo', disname: '录入信息', type:'item'}));
+        if (e.target.id === "addnew") {
+            this.props.dispatch(adduserPage({id: 11, menuID: 'menu_blackaddnew', disname: '新建黑名单', type:'item'}));
         } else if (e.target.id === "modify") {
-             if (this.props.chargeList.length > 0)
-                this.props.dispatch(adduserPage({menuID: 'addreciept', disname: '后补发票', type:'item'}));
+             if (this.props.selBlacklist.length > 0)
+                this.props.dispatch(adduserPage({id: 12, menuID: 'menu_blackmodify', disname: '修改黑名单', type:'item'}));
              else {
                 notification.error({
                     message: '未选择指定发票',
@@ -36,8 +36,9 @@ class MainIndex extends Component {
                 });
              }
         } else if (e.target.id === "delete") {
-            if (this.props.chargeList.length > 0)
-                this.props.dispatch(adduserPage({menuID: 'costcharge', disname: '付款信息', type:'item'}));
+            if (this.props.selBlacklist.length > 0) {
+                //this.props.dispatch(adduserPage({menuID: 'costcharge', disname: '删除黑名单', type:'item'}));//删除要个jb啊
+            }
              else {
                 notification.error({
                     message: '未选择指定发票',
@@ -72,7 +73,7 @@ class MainIndex extends Component {
                     {
                         buttonDef.map(
                             (button, i)=>this.hasPermission(button) ?
-                             <Button key = {i} id= {button.buttonID} style={{marginBottom: '10px', marginRight: '10px', border:0}}
+                             <Button key = {i} id= {button.buttonID} style={{marginTop: '10px', marginBottom: '10px', marginRight: '10px', border:0}}
                              onClick={this.handleClickFucButton} 
                              icon={button.icon} size={button.size} type={button.type}>{button.buttonName}</Button> : null
                         )
@@ -86,7 +87,7 @@ class MainIndex extends Component {
 
 function mapStateToProps(state) {
     return {
-        chargeList: state.basicData.selchargeList,
+        selBlacklist: state.basicData.selBlacklist,
         showLoading: state.basicData.showLoading,
     }
 }

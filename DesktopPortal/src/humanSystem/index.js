@@ -6,22 +6,22 @@ import reducers from './reducers';
 import ContentPage from './pages/contentPage';
 import {sagaMiddleware} from '../';
 import rootSaga from './saga/rootSaga';
-import {getOrgList, getOrgDetail, openOrgSelect, changeCustomerMenu,closebreadPage} from './actions/actionCreator';
+import {getOrgList, getOrgDetail, openOrgSelect, setbreadPageItem,closebreadPage} from './actions/actionCreator';
 import OrgSelect from './pages/orgSelect/orgSelect';
 sagaMiddleware.run(rootSaga);
 const {Header, Sider, Content} = Layout;
 
 
 const menuDefine = [
-    {menuID: "menu_user_mgr", displayName: "员工信息管理", menuIcon: 'contacts'},
-    {menuID: "menu_month", displayName: "月结", menuIcon: 'calendar'},
-    {menuID: "menu_black", displayName: "黑名单管理", menuIcon: 'lock'/*, requirePermission: ['PermissionItemCreate']*/},
-    {menuID: "menu_station", displayName: "职位和岗位配置", menuIcon: 'solution'},
-    {menuID: "menu_achievement", displayName: "职位薪酬管理", menuIcon: 'database'},
-    {menuID: "menu_attendance", displayName: "考勤信息", menuIcon: 'pushpin-o'},
-    {menuID: "menu_organization", displayName: "组织架构管理", menuIcon: 'layout'},
-    {menuID: "menu_statistics", displayName: "统计报表", menuIcon: 'global'},
-    {menuID: "menu_set", displayName: "设置", menuIcon: 'setting'},
+    {id: 20, menuID: "menu_user_mgr", displayName: "员工信息管理", menuIcon: 'contacts'},
+    {id: 21, menuID: "menu_month", displayName: "月结", menuIcon: 'calendar'},
+    {id: 22, menuID: "menu_black", displayName: "黑名单管理", menuIcon: 'lock'/*, requirePermission: ['PermissionItemCreate']*/},
+    {id: 23, menuID: "menu_station", displayName: "职位和岗位配置", menuIcon: 'solution'},
+    {id: 24, menuID: "menu_achievement", displayName: "职位薪酬管理", menuIcon: 'database'},
+    {id: 25, menuID: "menu_attendance", displayName: "考勤信息", menuIcon: 'pushpin-o'},
+    {id: 26, menuID: "menu_organization", displayName: "组织架构管理", menuIcon: 'layout'},
+    {id: 27, menuID: "menu_statistics", displayName: "统计报表", menuIcon: 'global'},
+    {id: 28, menuID: "menu_set", displayName: "设置", menuIcon: 'setting'},
     //{menuID: "menu_app", displayName: "应用管理", menuIcon: 'appstore', requirePermission: ['ApplicationCreate']}
 ];
 
@@ -50,9 +50,11 @@ const homeStyle = {
             console.log('click ', e);
             for (let i in menuDefine) {
                 if (menuDefine[i].menuID == e.key) {
-                    this.setState({
-                        activeMenu: menuDefine[i]
-                    });
+                    // this.setState({
+                    //     activeMenu: menuDefine[i]
+                    // });
+                    this.state.activeMenu = menuDefine[i];
+                    this.props.dispatch(setbreadPageItem(menuDefine[i]));
                     break;
                 }
             }
@@ -76,11 +78,15 @@ const homeStyle = {
         getContentPage() {
             let navigator = this.props.basicData.navigator;
             if (navigator.length > 0) {
-                if (navigator[navigator.length - 1].id === 0) {
-                    return <ContentPage curMenuID='Onboarding' />;
-                }
+                return <ContentPage curMenuID={navigator[navigator.length-1].menuID} />
             }
-           return <ContentPage curMenuID={this.state.activeMenu.menuID} />;
+            return <ContentPage curMenuID={this.state.activeMenu.menuID} />;
+        //     if (navigator.length > 0) {
+        //         if (navigator[navigator.length - 1].id === 0) {
+        //             return <ContentPage curMenuID='Onboarding' />;
+        //         }
+        //     }
+        //    return <ContentPage curMenuID={this.state.activeMenu.menuID} />;
         }
 
         handleNavClick() {
@@ -126,12 +132,13 @@ const homeStyle = {
                     this.props.showOrgSelect ? <OrgSelect /> :
                         <Layout>
                             <Header>
-                                <Breadcrumb separator=">" style={{fontSize: '0.8rem'}}>
-                                    <Breadcrumb.Item onClick={this.handleNavClick.bind(this)} key='home' style={homeStyle.navigator}>{this.state.activeMenu.displayName}</Breadcrumb.Item>
-                                    {
-                                        navigator.map(nav => <Breadcrumb.Item key={nav.id}>{nav.name}</Breadcrumb.Item>)
-                                    }
-                                </Breadcrumb>
+                            <Breadcrumb separator='>' style= {{fontSize:'0.8rem'}}> 
+                                {
+                                    navigator.map((item, i) =>{
+                                        return <Breadcrumb.Item key={i}  style={homeStyle.navigator} onClick={(e) =>this.handleNavClick(i, item)} >{item.disname}</Breadcrumb.Item>
+                                    })
+                                }
+                            </Breadcrumb>
                             </Header>
                             <Content className='content'>
                                 {/* {

@@ -1,13 +1,34 @@
 import { connect } from 'react-redux';
 import { createStation, getOrgList } from '../../actions/actionCreator';
 import React, { Component } from 'react'
-import {Table, Input, Select, Form, Cascader, Button, Row, Col, Checkbox, Pagination, Spin} from 'antd'
+import {Table, Input, Form, Cascader, Button, Row, Col, Spin} from 'antd'
 
 const FormItem = Form.Item;
-const ButtonGroup = Button.Group;
-const formItemLayout1 = {
-    labelCol:{ span:6},
-    wrapperCol:{ span:6 },
+
+const styles = {
+    conditionRow: {
+        width: '80px',
+        display: 'inline-block',
+        fontWeight: 'bold',
+    },
+    bSpan: {
+        fontWeight: 'bold',
+    },
+    otherbtn: {
+        padding: '0px, 5px',
+    }
+}
+const ListColums = [
+    { title: '职位名称', dataIndex: 'stationname', key: 'stationname' },
+]
+const rowSelection = {
+    onChange: (selectedRowKeys, selectedRows) => {
+      console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+    },
+    getCheckboxProps: record => ({
+      disabled: record.name === 'Disabled User', // Column configuration not to be checked
+      name: record.name,
+    }),
 };
 
 
@@ -40,41 +61,34 @@ class Station extends Component {
     render() {
         const { getFieldDecorator, getFieldsError, getFieldsValue, isFieldTouched } = this.props.form;
         return (
-            <div>
-                <Form onSubmit={this.handleSubmit}>
-                    <FormItem {...formItemLayout1}/>
-                    <FormItem {...formItemLayout1}/>
-                    <FormItem {...formItemLayout1} label="职位名称">
-                        {getFieldDecorator('station', {
-                            reules: [{
-                                required:true, message: 'please entry idcard',
-                            }]
-                        })(
-                            <Input placeholder="请输入身份证号码" />
-                        )}
-                    </FormItem>
-                    <FormItem {...formItemLayout1} label="所属组织">
-                        {getFieldDecorator('org', {
-                            reules: [{
-                                required:true, message: 'please entry name',
-                            }]
-                        })(
-                            <Cascader options={this.props.setContractOrgTree}  onChange={this.handleChooseDepartmentChange } changeOnSelect  placeholder="归属部门"/>
-                        )}
-                    </FormItem>
-                    <FormItem wrapperCol={{ span: 12, offset: 6 }}>
-                        <Col span={6}><Button type="primary" htmlType="submit" disabled={this.hasErrors(getFieldsValue())} >新建</Button></Col>
-                    </FormItem>
-                </Form>
+            <div style={{display: "block"}}>
+                <Row className='searchBox'>
+                    <Col span={12}>
+                        <label style={styles.conditionRow}>选择分公司 ：</label>
+                        <Cascader options={this.props.setContractOrgTree}  onChange={this.handleChooseDepartmentChange } changeOnSelect  placeholder="归属部门"/>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col span={6}>
+                        <Button type="primary" onClick={this.handleSearchBoxToggle}>新建</Button>
+                    </Col>
+                    <Col span={6}>
+                        <Button type="primary" onClick={this.handleSearchBoxToggle}>修改</Button>
+                    </Col>
+                    <Col span={6}>
+                        <Button type="primary" onClick={this.handleSearchBoxToggle}>删除</Button>
+                    </Col>
+                </Row>
+                <div style={{display: this.props.searchInfo.expandSearchBox ? "block" : "none"}}>
+                <Table rowSelection={rowSelection} rowKey={record => record.key} columns={ListColums} dataSource={this.props.searchInfo.searchResult.extension} onChange={this.handleTableChange} />
+                </div>
             </div>
-            
         );
     }
 }
 
 function tableMapStateToProps(state) {
     return {
-        setContractOrgTree: state.basicData.searchOrgTree
     }
 }
 

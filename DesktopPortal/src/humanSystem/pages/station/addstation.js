@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
-import { getDicParList, postBlackLst } from '../../actions/actionCreator';
+import { createStation, getOrgList } from '../../actions/actionCreator';
 import React, { Component } from 'react'
-import {Table, Input, Select, Form, Button, Row, Col, Checkbox, Pagination, Spin} from 'antd'
+import {Table, Input, Select, Form, Cascader, Button, Row, Col, Checkbox, Pagination, Spin} from 'antd'
 
 const FormItem = Form.Item;
 const ButtonGroup = Button.Group;
@@ -11,17 +11,13 @@ const formItemLayout1 = {
 };
 
 
-class Black extends Component {
-
-    componentWillMount() {
+class Station extends Component {
+    state = {
+        department: ''
     }
 
-    componentDidMount() {
-        let len = this.props.selBlacklist.length;
-        if (this.props.ismodify == 1) {//修改界面
-            this.props.form.setFieldsValue({idcard: this.props.selBlacklist[len-1].idcard});
-            this.props.form.setFieldsValue({name: this.props.selBlacklist[len-1].name});
-        }
+    componentWillMount() {
+        
     }
 
     hasErrors(fieldsError) {
@@ -32,9 +28,13 @@ class Black extends Component {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                this.props.dispatch(postBlackLst(values));
+                //this.props.dispatch(postBlackLst(values));
             }
         });
+    }
+
+    handleChooseDepartmentChange = (e) => {
+        this.state.department = e;
     }
 
     render() {
@@ -44,8 +44,8 @@ class Black extends Component {
                 <Form onSubmit={this.handleSubmit}>
                     <FormItem {...formItemLayout1}/>
                     <FormItem {...formItemLayout1}/>
-                    <FormItem {...formItemLayout1} label="身份证号码">
-                        {getFieldDecorator('idcard', {
+                    <FormItem {...formItemLayout1} label="职位名称">
+                        {getFieldDecorator('station', {
                             reules: [{
                                 required:true, message: 'please entry idcard',
                             }]
@@ -53,26 +53,17 @@ class Black extends Component {
                             <Input placeholder="请输入身份证号码" />
                         )}
                     </FormItem>
-                    <FormItem {...formItemLayout1} label="姓名">
-                        {getFieldDecorator('name', {
+                    <FormItem {...formItemLayout1} label="所属组织">
+                        {getFieldDecorator('org', {
                             reules: [{
                                 required:true, message: 'please entry name',
                             }]
                         })(
-                            <Input placeholder="请输入姓名" />
-                        )}
-                    </FormItem>
-                    <FormItem {...formItemLayout1} label="备注">
-                        {getFieldDecorator('reason', {
-                            reules: [{
-                                required:true, message: 'please entry name',
-                            }]
-                        })(
-                            <Input placeholder="请输入备注" />
+                            <Cascader options={this.props.setContractOrgTree}  onChange={this.handleChooseDepartmentChange } changeOnSelect  placeholder="归属部门"/>
                         )}
                     </FormItem>
                     <FormItem wrapperCol={{ span: 12, offset: 6 }}>
-                        <Col span={6}><Button type="primary" htmlType="submit" disabled={this.hasErrors(getFieldsValue())} >提交</Button></Col>
+                        <Col span={6}><Button type="primary" htmlType="submit" disabled={this.hasErrors(getFieldsValue())} >新建</Button></Col>
                     </FormItem>
                 </Form>
             </div>
@@ -83,7 +74,7 @@ class Black extends Component {
 
 function tableMapStateToProps(state) {
     return {
-        selBlacklist: state.basicData.selBlacklist,
+        setContractOrgTree: state.basicData.searchOrgTree
     }
 }
 
@@ -92,4 +83,4 @@ function tableMapDispatchToProps(dispatch) {
         dispatch
     };
 }
-export default connect(tableMapStateToProps, tableMapDispatchToProps)(Form.create()(Black));
+export default connect(tableMapStateToProps, tableMapDispatchToProps)(Form.create()(Station));

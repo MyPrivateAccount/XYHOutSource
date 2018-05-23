@@ -3,6 +3,7 @@ import * as actionTypes from '../constants/actionType';
 import appAction from '../../utils/appUtils';
 
 const initState = {
+    selBlacklist: [],//选中的黑名单列表
     showLoading: true,
     searchOrgTree: [],
     navigator: [],//导航记录
@@ -189,14 +190,20 @@ reducerMap[actionTypes.SET_SEARCH_LOADING] = function (state, action) {
     return Object.assign({}, state, { showLoading: action.payload });
 }
 
-reducerMap[actionTypes.SET_USER_BREAD] = function(state, action) {
+reducerMap[actionTypes.SET_USER_BREADINDEX] = function(state, action) {
     switch (action.payload)
     {
         case 0: {
-            return Object.assign({}, state, {navigator: [{id: action.payload, name: '入职', type: 'menu'}]});
+            state.navigator.push({id: action.payload, name: '入职', type: 'menu'});
+            return Object.assign({}, state, {navigator: state.navigator.slice()});
         } break;
+        default: break;
     }
     return state;
+}
+
+reducerMap[actionTypes.SET_USER_BREADITEM] = function(state, action) {
+    return Object.assign({}, state, {navigator: [action.payload]});
 }
 
 reducerMap[actionTypes.CLOSE_USER_BREAD] = function(state, action) {
@@ -226,6 +233,10 @@ reducerMap[actionTypes.MONTH_UPDATEMONTHLIST] = function(state, action) {
 
 reducerMap[actionTypes.CHANGE_LOADING] = function(state, action) {
     return Object.assign({}, state, {showLoading: action.payload});
+}
+
+reducerMap[actionTypes.SEL_BLACKLIST] = function(state, action) {
+    return Object.assign({}, state, {selBlacklist: action.payload});
 }
 
 export default handleActions(reducerMap, initState);

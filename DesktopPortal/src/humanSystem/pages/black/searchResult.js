@@ -1,5 +1,5 @@
 import {connect} from 'react-redux';
-import {setLoadingVisible} from '../../actions/actionCreator';
+import {setLoadingVisible, selBlackList} from '../../actions/actionCreator';
 import React, {Component} from 'react';
 import {Button, Row, Col, Table} from 'antd';
 
@@ -36,7 +36,7 @@ class SearchResult extends Component {
         let self = this;
         const rowSelection = {
             onChange: (selectedRowKeys, selectedRows) => {
-                //self.props.dispatch(selCharge(selectedRows));
+                self.props.dispatch(selBlackList(selectedRows));
             }
         };
         
@@ -44,7 +44,7 @@ class SearchResult extends Component {
             <div>
                 {<p style={{marginBottom: '10px'}}>目前已为你筛选出<b>{this.props.searchInfoResult.extension.length}</b>条费用信息</p>}
                 <div id="searchResult">
-                    <Table id= {"table"} rowKey={record => record.id} 
+                    <Table id= {"table"} rowKey={record => record.idcard} 
                     columns={columns} 
                     pagination={this.props.searchInfoResult} 
                     onChange={this.handleChangePage} 

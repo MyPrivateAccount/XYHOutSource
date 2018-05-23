@@ -3,7 +3,7 @@ import * as actionTypes from '../constants/actionType';
 import moment from 'moment';
 
 const initState = {
-    blackList: {extension: [{key: '1', idcard: 'tt', name: 'test'}], pageIndex: 0, pageSize: 10, totalCount: 1},//搜索结果
+    blackList: {extension: [{key: '1', idcard: 'tt', name: 'test', reason: "tta"}], pageIndex: 0, pageSize: 10, totalCount: 1},//搜索结果
     showLoading: false,
     showOrgSelect: false,//部门选择
     navigator: [],//导航记录
