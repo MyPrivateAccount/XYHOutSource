@@ -27,6 +27,38 @@ const LoadableDealRpQueryPage = Loadable({//我录入的成交报告
     loader:()=>import('./dealRp/dealRpQuery'),
     loading:()=><LoadableLoading/>
 });
+const LoadableMonthPage = Loadable({//月结
+    loader:()=>import('./fina/monthSumary'),
+    loading:()=><LoadableLoading/>
+});
+const LoadablePPFTPage = Loadable({//人员分摊
+    loader:()=>import('./fina/ppFtTable'),
+    loading:()=><LoadableLoading/>
+});
+const LoadableYFTCPage = Loadable({//应发提成
+    loader:()=>import('./fina/yfTcTable'),
+    loading:()=><LoadableLoading/>
+});
+const LoadableSFTCPage = Loadable({//实发提成
+    loader:()=>import('./fina/sfTcTable'),
+    loading:()=><LoadableLoading/>
+});
+const LoadableTCCBPage = Loadable({//提成成本
+    loader:()=>import('./fina/tcCbTable'),
+    loading:()=><LoadableLoading/>
+});
+const LoadableYFTCCJPage = Loadable({//应发提成冲减
+    loader:()=>import('./fina/yftcCjTable'),
+    loading:()=><LoadableLoading/>
+});
+const LoadableLZRYYJPage = Loadable({//离职人员业绩
+    loader:()=>import('./fina/lzryYjTable'),
+    loading:()=><LoadableLoading/>
+});
+const LoadableSFKJQRJPage = Loadable({//实发扣减确认
+    loader:()=>import('./fina/sfkjQrTable'),
+    loading:()=><LoadableLoading/>
+});
 
 function ContentPage(props) {
     const { curMenuID } = props;
@@ -53,6 +85,38 @@ function ContentPage(props) {
     else if(curMenuID === 'menu_query'){
         console.log("menu_query");
         return <LoadableDealRpQueryPage/>;
+    }
+    else if(curMenuID === 'menu_sumbymonth'){
+        console.log("menu_sumbymonth");
+        return <LoadableMonthPage/>;
+    }
+    else if(curMenuID === 'menu_ps'){
+        console.log("menu_ps");
+        return <LoadablePPFTPage/>;
+    }
+    else if(curMenuID === 'menu_yftcb'){
+        console.log("menu_yftcb");
+        return <LoadableYFTCPage/>;
+    }
+    else if(curMenuID === 'menu_sftcb'){
+        console.log("menu_sftcb");
+        return <LoadableSFTCPage/>;
+    }
+    else if(curMenuID === 'menu_tccbftb'){
+        console.log("menu_tccbftb");
+        return <LoadableTCCBPage/>;
+    }
+    else if(curMenuID === 'menu_yftccjb'){
+        console.log("menu_yftccjb");
+        return <LoadableYFTCCJPage/>;
+    }
+    else if(curMenuID === 'menu_lzryyjqrb'){
+        console.log("menu_lzryyjqrb");
+        return <LoadableLZRYYJPage/>;
+    }
+    else if(curMenuID === 'menu_sfkjqrb'){
+        console.log("menu_sfkjqrb");
+        return <LoadableSFKJQRJPage/>;
     }
     return null;
 }

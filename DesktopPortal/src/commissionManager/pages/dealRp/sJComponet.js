@@ -1,4 +1,4 @@
-//付款组件
+//收据组件
 import { connect } from 'react-redux';
 import React, { Component } from 'react'
 import {Select, Row, Col, Form, Input, Tooltip, Button, Modal, Layout,Tabs,DatePicker } from 'antd'
