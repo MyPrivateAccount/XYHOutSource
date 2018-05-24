@@ -343,7 +343,7 @@ class OnBoarding extends Component {
 
 function stafftableMapStateToProps(state) {
     return {
-        setDepartmentOrgTree: state.searchOrgTree
+        setDepartmentOrgTree: state.basicData.searchOrgTree
     }
 }
 
