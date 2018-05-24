@@ -59,7 +59,7 @@ namespace XYHHumanPlugin.Stores
             chargeinfo.CreateUser = userinfo.Id;
             chargeinfo.CreateUserName = userinfo.UserName;
             chargeinfo.Department = userinfo.OrganizationId;
-            chargeinfo.PostTime = DateTime.Now;
+            chargeinfo.CreateTime = DateTime.Now;
 
             Context.Add(modify);
             Context.Add(chargeinfo);
@@ -86,7 +86,7 @@ namespace XYHHumanPlugin.Stores
             return Context.SaveChangesAsync();
         }
 
-        public Task CreateReceiptListAsync(List<ReceiptInfo> costinfo, CancellationToken cancellationToken = default(CancellationToken))
+        public Task CreateReceiptListAsync(SimpleUser user, List<ReceiptInfo> costinfo, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (costinfo == null)
             {
@@ -99,6 +99,8 @@ namespace XYHHumanPlugin.Stores
                 {
                     item.ID = Guid.NewGuid().ToString();
                 }
+                item.CreateTime = DateTime.Now;
+                item.CreateUser = user.Id;
             }
 
             Context.AddRange(costinfo);
@@ -115,18 +117,17 @@ namespace XYHHumanPlugin.Stores
             return Context.SaveChangesAsync(cancellationToken);
         }
 
-        public Task CreateFileScopeAsync(string strid, List<FileScopeInfo> scope, CancellationToken cancellationToken = default(CancellationToken))
+        public Task CreateFileScopeAsync(string strid, FileScopeInfo scope, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (scope == null)
             {
                 throw new ArgumentNullException(nameof(scope));
             }
-            foreach (var item in scope)
-            {
-                item.ReceiptID = strid;
-            }
 
-            Context.AddRange(scope);
+            scope.ReceiptID = strid;
+            
+
+            Context.Add(scope);
             return Context.SaveChangesAsync(cancellationToken);
         }
         //public Task DeleteAsync(ChargeInfo userinfo, string contractid, CancellationToken cancellationToken = default(CancellationToken))
@@ -182,6 +183,25 @@ namespace XYHHumanPlugin.Stores
             }
 
             await Context.SaveChangesAsync(cancellationToken);
+        }
+
+
+        public Task<List<TResult>> GetScopeInfo<TResult>(Func<IQueryable<FileScopeInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (query == null)
+            {
+                throw new ArgumentNullException(nameof(query));
+            }
+            return query.Invoke(Context.FileScopeInfo.AsNoTracking()).ToListAsync(cancellationToken);
+        }
+
+        public Task<TResult> GetFileInfo<TResult>(Func<IQueryable<FileInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (query == null)
+            {
+                throw new ArgumentNullException(nameof(query));
+            }
+            return query.Invoke(Context.FileInfos.AsNoTracking()).SingleOrDefaultAsync(cancellationToken);
         }
 
         public async Task SetLimit(string userid, int limit, CancellationToken cancellationToken = default(CancellationToken))

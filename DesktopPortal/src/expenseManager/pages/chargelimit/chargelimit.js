@@ -21,9 +21,6 @@ class ChargeLimit extends Component {
     }
 
     componentDidMount() {
-        let dt = new Date();
-        let show = dt.getFullYear()+"/"+dt.getMonth()+"/"+dt.getDay();
-        this.props.form.setFieldsValue({time: show});
     }
 
     handleChooseDepartmentChange = (e) => {

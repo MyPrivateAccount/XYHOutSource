@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using XYHChargePlugin.Models;
 
 namespace XYHChargePlugin.Dto.Response
 {
@@ -15,5 +16,6 @@ namespace XYHChargePlugin.Dto.Response
         public string Comments { get; set; }
         public string CreateUser { get; set; }
         public DateTime? CreateTime { get; set; }
+        public List<SimpleList> FileList { get; set; }
     }
 }

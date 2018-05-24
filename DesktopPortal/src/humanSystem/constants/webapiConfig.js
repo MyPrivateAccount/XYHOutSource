@@ -17,6 +17,7 @@ const WebApiConfig = {
         LastMonth: basicDataBaseApiUrl + "month/lastmonth",
         RecoverMonth: basicDataBaseApiUrl + "month/backmonth",
         CreateMonth: basicDataBaseApiUrl + "month/createmonth",
+        SetBlacklst: basicDataBaseApiUrl + "humaninfo/setblack",
     },
     search: {
         searchHumanList: basicDataBaseApiUrl + 'humaninfo/searchhumaninfo',
@@ -25,6 +26,7 @@ const WebApiConfig = {
         getCustomerByUserID: basicDataBaseApiUrl + 'customerInfo/salesmancustomer/',//根据用户ID获取客户列表
         getAuditHistory: basicDataBaseApiUrl + "examines/",//获取审核历史详细
         getAllMonthList: basicDataBaseApiUrl + 'month/monthlist',
+        getBlackList: basicDataBaseApiUrl + 'humaninfo/getblacklist',
     },
     attach: {
         uploadUrl: `${UploadUrl}/file/upload/`,

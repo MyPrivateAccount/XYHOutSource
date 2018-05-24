@@ -100,7 +100,7 @@ class ChargeInfo extends Component {
                 let tf = {
                     chargeinfo: {
                         id: self.state.id,
-                        department: values.department
+                        department: values.department.join("/")
                     },
                     costinfos: costinfos,
                     receiptinfos: receiptinfos

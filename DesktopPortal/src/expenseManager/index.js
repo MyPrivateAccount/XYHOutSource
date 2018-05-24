@@ -24,13 +24,6 @@ const menuDefine = [
         childMenu:[
             { menuID:'limitindex', displayName: '费用限制', menuIcon:'contacts', type:'item',},
         ],
-        subMenu:[{
-            menuID:'sub2', displayName: 'sub2', menuIcon:'contacts', parent:'menu_limit',type:'subMenu',
-            childMenu:[
-                { menuID:'optin7', displayName: 'option7', menuIcon:'contacts', type:'item',},
-                { menuID:'optin8', displayName: 'option8', menuIcon:'contacts', type:'item',},
-            ],
-         }],
     },
     {menuID: "menu_ctrl", displayName: "费用管控表", menuIcon: 'contacts'},
     {menuID: "menu_total", displayName: "费用统计表", menuIcon: 'appstore-o', },

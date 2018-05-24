@@ -1,4 +1,4 @@
-import { BaseApiUrl, basicDataBaseApiUrl, UploadUrl } from '../../constants/baseConfig';
+import { BaseApiUrl, basicDataBaseApiUrl, UploadUrl, FlowChartApiUrl } from '../../constants/baseConfig';
 
 const WebApiConfig = {
     dic: {
@@ -13,10 +13,11 @@ const WebApiConfig = {
         uploadUrl: `${UploadUrl}/file/upload/`
     },
     userTypeValue: {
+        Permission: FlowChartApiUrl + 'Permission/retrivepermissionusers/',
         Base: basicDataBaseApiUrl + 'userTypeValue', // put 更新当前用户历史楼盘
     },
     server: {
-        uploadImg: basicDataBaseApiUrl + "chargeinfo/uploadmore/",
+        uploadImg: basicDataBaseApiUrl + "chargeinfo/charge/uploadmore/",
         addCharge: basicDataBaseApiUrl + "chargeinfo/addcharge/",
         searchCharge: basicDataBaseApiUrl + "chargeinfo/searchchargeinfo/",
         getRecieptInfo: basicDataBaseApiUrl + "chargeinfo/getrecipt/",

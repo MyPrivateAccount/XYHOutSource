@@ -31,8 +31,10 @@ export const saveSearchCondition = createAction(actionTypes.SAVE_SEARCH_CONDITIO
 export const expandSearchbox = createAction(actionTypes.SEARCH_BOX_EXPAND);
 
 //面包屑
-export const setbreadPage = createAction(actionTypes.SET_USER_BREAD);
+export const setbreadPageIndex = createAction(actionTypes.SET_USER_BREADINDEX);
+export const setbreadPageItem = createAction(actionTypes.SET_USER_BREADITEM);
 export const closebreadPage = createAction(actionTypes.CLOSE_USER_BREAD);
+export const adduserPage = createAction(actionTypes.ADD_USER_BREAD);
 
 //
 export const getworkNumbar = createAction(actionTypes.GET_HUMANINFONUMBER);
@@ -46,3 +48,10 @@ export const getAllMonthList = createAction(actionTypes.MONTH_GETALLMONTHLIST);
 export const recoverMonth = createAction(actionTypes.MONTH_RECOVER);
 export const createMonth = createAction(actionTypes.MONTH_CREATE);
 export const monthLast = createAction(actionTypes.MONTH_LAST);
+
+//黑名单
+export const postBlackLst = createAction(actionTypes.POST_ADDBLACKLST);
+export const selBlackList = createAction(actionTypes.SEL_BLACKLIST);
+
+//职位新建
+export const createStation = createAction(actionTypes.POST_CRATESTATION);

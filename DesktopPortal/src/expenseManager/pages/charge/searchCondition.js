@@ -117,6 +117,8 @@ class SearchCondition extends Component {
 
 function mapStateToProps(state) {
     return {
+        chargePrice: state.search.chargePrice,
+        checkStatu: state.search.checkStatu,
         searchInfo: state.search,
         resultList: state.search.searchResult.extension//我也不想，但是列表更新了只能通过这个来重新渲染
     }

@@ -27,6 +27,10 @@ const LoadableBlackPage = Loadable({
     loader: () => import('./black/black'),
     loading: () => <LoadableLoading />,
 });
+const LoadableAddBlackPage = Loadable({
+    loader: () => import('./black/addblack'),
+    loading: () => <LoadableLoading />,
+});
 const LoadableStationPage = Loadable({
     loader: () => import('./station/station'),
     loading: () => <LoadableLoading />,
@@ -60,6 +64,12 @@ function ContentPage(props) {
     }
     else if (curMenuID === "menu_black") {
         return <LoadableBlackPage />;
+    }
+    else if (curMenuID === "menu_blackaddnew") {
+        return <LoadableAddBlackPage ismodify="0" />;
+    }
+    else if (curMenuID === "menu_blackmodify") {
+        return <LoadableAddBlackPage ismodify="1" />;
     }
     else if (curMenuID === "menu_station") {
         return <LoadableStationPage />;

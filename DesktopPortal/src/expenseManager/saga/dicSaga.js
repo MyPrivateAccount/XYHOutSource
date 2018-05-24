@@ -55,7 +55,7 @@ export function* getDepartmentListAsync(state) {
 
 export function* getLimitChargeHuman(state) {
     let result = {}
-    let url = WebApiConfig.dic.permissionOrg + state.payload;
+    let url = WebApiConfig.userTypeValue.Permission;
     
     try {
         const orgResult = yield call(ApiClient.get, url);

@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { getDicParList, expandSearchbox, searchConditionType, searchCondition,setbreadPage, searchHumanType,searchAgeType,searchOrderType } from '../../actions/actionCreator';
+import { getDicParList, expandSearchbox, searchConditionType, searchCondition,setbreadPageIndex, searchHumanType,searchAgeType,searchOrderType } from '../../actions/actionCreator';
 import React, { Component } from 'react'
 import {Table, Layout, Input, Select, Icon, Button, Row, Col, Checkbox, Tag, Pagination, Spin} from 'antd'
 import '../search.less'
@@ -88,7 +88,7 @@ class Staffinfo extends Component {
     }
 
     handleOnboarding =(e)=> {
-        this.props.dispatch(setbreadPage(e));
+        this.props.dispatch(setbreadPageIndex(e));
     }
 
     render() {
