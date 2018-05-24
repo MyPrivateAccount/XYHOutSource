@@ -34,7 +34,10 @@ const menuDefine = [
             {menuID:"menu_ps",displayName:"人员分摊表",menuIcon:'contacts',type:'item'},
             {menuID:"menu_yftcb",displayName:"应发提成表",menuIcon:'contacts',type:'item'},
             {menuID:"menu_sftcb",displayName:"实发提成表",menuIcon:'contacts',type:'item'},
-            {menuID:"menu_tccbftb",displayName:"提成成本分摊表",menuIcon:'contacts',type:'item'},
+            {menuID:"menu_tccbftb",displayName:"提成成本表",menuIcon:'contacts',type:'item'},
+            {menuID:"menu_yftccjb",displayName:"应发提成冲减表",menuIcon:'contacts',type:'item'},
+            {menuID:"menu_lzryyjqrb",displayName:"离职人员业绩确认表",menuIcon:'contacts',type:'item'},
+            {menuID:"menu_sfkjqrb",displayName:"实发扣减确认表",menuIcon:'contacts',type:'item'},
         ]
     },
     {

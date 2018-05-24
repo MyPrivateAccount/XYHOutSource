@@ -6,6 +6,9 @@ import TradeEstate from './tradeEstate'
 import TradeBnsOwner from './tradeBnsOwer'
 import TradeCustomer from './tradeCustomer'
 import TradePerDis from './tradePerDis'
+import TradeAttact from './tradeAttact'
+import TradeTransfer from './tradeTransfer'
+import TradeAjust from './tradeAjust'
 
 const { Header, Sider, Content } = Layout;
 const TreeNode = Tree.TreeNode;
@@ -42,10 +45,13 @@ class TradeManager extends Component {
                                <TradePerDis/>
                             </TabPane>
                             <TabPane tab="附件" key="fj">
+                              <TradeAttact/>
                             </TabPane>
                             <TabPane tab="按揭过户" key="ajgh">
+                              <TradeTransfer/>
                             </TabPane>
                             <TabPane tab="业绩调整" key="yjtz">
+                              <TradeAjust/>
                             </TabPane>
                         </Tabs>
                     </Content>
