@@ -212,6 +212,13 @@ namespace XYHChargePlugin.Controllers
         public async Task<ResponseMessage<List<ChargeInfoResponse>>> AddChargeInfo(UserInfo User, [FromBody]ContentRequest request)
         {
             var Response = new ResponseMessage<List<ChargeInfoResponse>>();
+            if (!ModelState.IsValid)
+            {
+                Response.Code = ResponseCodeDefines.ModelStateInvalid;
+                Logger.Warn($"用户{User?.UserName ?? ""}({User?.Id ?? ""})paymentcharge(PostCustomerListSaleMan)模型验证失败：\r\n{Response.Message ?? ""}，\r\n请求参数为：\r\n" + (request != null ? JsonHelper.ToJson(request) : ""));
+                return Response;
+            }
+
             try
             {
                 string modifyid = Guid.NewGuid().ToString();
@@ -400,7 +407,7 @@ namespace XYHChargePlugin.Controllers
         [Authorize(AuthenticationSchemes = OAuthValidationDefaults.AuthenticationScheme)]
         [HttpPost("{dest}/uploadmore/{receiptid}/")]
         [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "FileUpload" })]
-        public async Task<ResponseMessage<string>> UploadFiles(UserInfo user, [FromBody]List<FileInfoRequest> fileInfoRequests, [FromRoute]string dest, [FromRoute]string receiptid)
+        public async Task<ResponseMessage<string>> UploadFiles(UserInfo user, [FromBody]FileInfoRequest fileInfoRequests, [FromRoute]string dest, [FromRoute]string receiptid)
         {
             ResponseMessage<string> response = new ResponseMessage<string>();
             if (fileInfoRequests == null)
@@ -413,16 +420,13 @@ namespace XYHChargePlugin.Controllers
 
             try
             {
-                foreach (var item in fileInfoRequests)
-                {
-                    NameValueCollection nameValueCollection = new NameValueCollection();
-                    var nwf = CreateNwf(user, "", item);
+                NameValueCollection nameValueCollection = new NameValueCollection();
+                var nwf = CreateNwf(user, "", fileInfoRequests);
 
-                    nameValueCollection.Add("appToken", "app:nwf");
-                    Logger.Info("nwf协议");
-                    string response2 = await _restClient.Post(ApplicationContext.Current.NWFUrl, nwf, "POST", nameValueCollection);
-                    Logger.Info("返回：\r\n{0}", response2);
-                }
+                nameValueCollection.Add("appToken", "app:nwf");
+                Logger.Info("nwf协议");
+                string response2 = await _restClient.Post(ApplicationContext.Current.NWFUrl, nwf, "POST", nameValueCollection);
+                Logger.Info("返回：\r\n{0}", response2);
 
                 await _chargeManager.CreateFileScopeAsync(user.Id, receiptid, fileInfoRequests, HttpContext.RequestAborted);
                 response.Message = "update ok";

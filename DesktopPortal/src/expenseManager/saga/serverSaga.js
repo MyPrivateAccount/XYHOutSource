@@ -80,6 +80,7 @@ export function* postsearchCondition(state) {
             description: result.msg,
             duration: 3
         });
+        yield put({type: actionUtils.getActionType(actionTypes.SET_SEARCH_LOADING), payload: false});
     }
 }
 

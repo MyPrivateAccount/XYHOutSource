@@ -22,9 +22,6 @@ class Payment extends Component {
         this.props.dispatch(clearCharge());
     }
 
-    handleChooseDepartmentChange = (e) => {
-        this.state.department = e;
-    }
 
     handleSubmit = (e)=> {
         e.preventDefault();
@@ -59,7 +56,7 @@ class Payment extends Component {
                             required:true, message: 'please entry department',
                         }]
                     })(
-                        <Cascader options={this.props.setContractOrgTree}  onChange={this.handleChooseDepartmentChange } changeOnSelect  placeholder="归属部门"/>
+                        <Input placeholder="请输入付款单位" />
                     )}
                 </FormItem>
                 <FormItem wrapperCol={{ span: 12, offset: 6 }}>
@@ -74,7 +71,7 @@ class Payment extends Component {
 function tableMapStateToProps(state) {
     return {
         chargeList: state.basicData.selchargeList,
-        setContractOrgTree: state.basicData.departmentTree
+        //setContractOrgTree: state.basicData.departmentTree
     }
 }
 

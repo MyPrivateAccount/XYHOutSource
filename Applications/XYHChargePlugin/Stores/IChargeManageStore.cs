@@ -18,7 +18,7 @@ namespace XYHChargePlugin.Stores
         Task CreateReceiptListAsync(SimpleUser user, List<ReceiptInfo> costinfo, CancellationToken cancellationToken = default(CancellationToken));
 
         Task CreateFileListAsync(List<FileInfo> costinfo, CancellationToken cancellationToken = default(CancellationToken));
-        Task CreateFileScopeAsync(string strid, List<FileScopeInfo> scope, CancellationToken cancellationToken = default(CancellationToken));
+        Task CreateFileScopeAsync(string strid, FileScopeInfo scope, CancellationToken cancellationToken = default(CancellationToken));
         //Task DeleteAsync(ChargeInfo userinfo, string contractid, CancellationToken cancellationToken = default(CancellationToken));
 
         Task<TResult> GetChargeAsync<TResult>(Func<IQueryable<ChargeInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken));

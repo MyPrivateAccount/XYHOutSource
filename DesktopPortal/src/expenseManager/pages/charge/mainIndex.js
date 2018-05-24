@@ -38,8 +38,17 @@ class MainIndex extends Component {
                 });
              }
         } else if (e.target.id === "costed") {
-            if (this.props.chargeList.length > 0)
-                this.props.dispatch(adduserPage({menuID: 'costcharge', disname: '付款信息', type:'item'}));
+            if (this.props.chargeList.length > 0) {
+                if (this.props.chargeList[this.props.chargeList.length-1].ispayed === "否") {
+                    this.props.dispatch(adduserPage({menuID: 'costcharge', disname: '付款信息', type:'item'}));    
+                } else {
+                    notification.error({
+                        message: '指定发票已付款',
+                        description: "请选择其它指定发票",
+                        duration: 3
+                    });
+                }
+            }
              else {
                 notification.error({
                     message: '未选择指定发票',
@@ -75,7 +84,7 @@ class MainIndex extends Component {
                         buttonDef.map(
                             (button, i)=>this.hasPermission(button) ?
                              <Button key = {i} id= {button.buttonID} style={{marginBottom: '10px', marginRight: '10px', border:0}}
-                             onClick={this.handleClickFucButton} 
+                             onClick={this.handleClickFucButton.bind(this)} 
                              icon={button.icon} size={button.size} type={button.type}>{button.buttonName}</Button> : null
                         )
                     }

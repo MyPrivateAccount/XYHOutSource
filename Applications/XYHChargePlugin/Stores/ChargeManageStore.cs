@@ -117,18 +117,17 @@ namespace XYHHumanPlugin.Stores
             return Context.SaveChangesAsync(cancellationToken);
         }
 
-        public Task CreateFileScopeAsync(string strid, List<FileScopeInfo> scope, CancellationToken cancellationToken = default(CancellationToken))
+        public Task CreateFileScopeAsync(string strid, FileScopeInfo scope, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (scope == null)
             {
                 throw new ArgumentNullException(nameof(scope));
             }
-            foreach (var item in scope)
-            {
-                item.ReceiptID = strid;
-            }
 
-            Context.AddRange(scope);
+            scope.ReceiptID = strid;
+            
+
+            Context.Add(scope);
             return Context.SaveChangesAsync(cancellationToken);
         }
         //public Task DeleteAsync(ChargeInfo userinfo, string contractid, CancellationToken cancellationToken = default(CancellationToken))

@@ -56,14 +56,14 @@ namespace XYHChargePlugin.Managers
             await _Store.CreateFileListAsync(fileInfos, cancellationToken);
         }
 
-        public virtual async Task CreateFileScopeAsync(string userid, string receiptid,  List<FileInfoRequest> filescop, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual async Task CreateFileScopeAsync(string userid, string receiptid, FileInfoRequest filescop, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (filescop == null)
             {
                 throw new ArgumentNullException(nameof(filescop));
             }
 
-           await _Store.CreateFileScopeAsync(receiptid, _mapper.Map<List<FileScopeInfo>>(filescop), cancellationToken);
+           await _Store.CreateFileScopeAsync(receiptid, _mapper.Map<FileScopeInfo>(filescop), cancellationToken);
         }
 
         public virtual async Task SubmitAsync(string modifyid, ExamineStatusEnum ext, CancellationToken cancellationToken = default(CancellationToken))
@@ -155,7 +155,7 @@ namespace XYHChargePlugin.Managers
 
                 if (!string.IsNullOrEmpty(condition?.KeyWord))
                 {
-                    sql += connectstr + @"LOCATE('" + condition.KeyWord + "', a.`Name`)>0";
+                    sql += connectstr + @"LOCATE('" + condition.KeyWord + "', a.`ID`)>0";
                     connectstr = " and ";
                 }
                 else if (condition?.KeyWord != null)
