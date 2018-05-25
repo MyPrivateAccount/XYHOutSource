@@ -7,6 +7,7 @@ import treeReducer from './org'
 import orgParamReducer from './orgparam'
 import scaleReducer from './scale'
 import acmReducer from './acm'
+import basicDataReducer from './basicData';
 export default combineReducers({
     router: routerReducer,
     oidc: oidcReducer,
@@ -14,5 +15,6 @@ export default combineReducers({
     org:  treeReducer,
     orgparam: orgParamReducer,
     scale: scaleReducer,
-    acm:acmReducer
+    acm:acmReducer,
+    base:basicDataReducer
 });

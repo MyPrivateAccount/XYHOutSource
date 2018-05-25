@@ -1,5 +1,7 @@
 //交易合同管理页面
+import { connect } from 'react-redux';
 import React, { Component } from 'react';
+import {getDicParList} from '../../../actions/actionCreator'
 import { Modal, Layout, Table, Button, Checkbox, Tree, Tabs, Icon, Popconfirm, Spin, Tooltip } from 'antd';
 import TradeContract from './tradeContract'
 import TradeEstate from './tradeEstate'
@@ -15,13 +17,17 @@ const TreeNode = Tree.TreeNode;
 const TabPane = Tabs.TabPane;
 
 class TradeManager extends Component {
+
+    componentDidMount=()=>{
+        
+    }
     render() {
         return (
             <div style={{ display: this.props.vs ? 'block' : 'none' }}>
                 <Layout>
                     <div>
                     <Tooltip title="返回">
-                        <Button type='primary' shape='circle'  icon='arrow-left' style={{ 'margin': 10,float:'left' }} />
+                        <Button type='primary' shape='circle'  icon='arrow-left' style={{ 'margin': 10,float:'left' }} onClick={this.props.handleback} />
                     </Tooltip>
                     <Tooltip title="保存">
                         <Button type='primary' shape='circle' icon='check' style={{ 'margin': 10 ,float:'left'}} />
@@ -60,4 +66,14 @@ class TradeManager extends Component {
         )
     }
 }
-export default TradeManager
+function MapStateToProps(state){
+    return {
+    }
+}
+
+function MapDispatchToProps(dispatch) {
+    return {
+        dispatch
+    };
+}
+export default connect(MapStateToProps, MapDispatchToProps)(TradeManager);

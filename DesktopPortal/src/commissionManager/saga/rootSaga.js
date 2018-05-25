@@ -3,6 +3,7 @@ import watchAllPPftAsync from './ppFtSaga'
 import watchAllOrgParamAsync from './orgParamSaga'
 import watchAllScaleAsync from './scaleSaga'
 import watchAllAcmentAsync from './acmSaga'
+import watchDicAllAsync from './dicSaga'
 //所有的中间件监听
 export default function* rootSaga() {
     yield [
@@ -10,6 +11,7 @@ export default function* rootSaga() {
         watchAllPPftAsync(),
         watchAllOrgParamAsync(),
         watchAllScaleAsync(),
-        watchAllAcmentAsync()
+        watchAllAcmentAsync(),
+        watchDicAllAsync()
     ]
 }

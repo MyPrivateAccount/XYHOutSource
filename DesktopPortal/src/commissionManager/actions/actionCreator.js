@@ -1,6 +1,10 @@
 //所有的action在这里创建
 import { createAction } from 'redux-actions';
 import * as actionTypes from '../constants/actionType';
+
+//基础字典数据
+export const getDicParList = createAction(actionTypes.DIC_GET_PARLIST);
+
 //部门组织树
 export const orgGetPermissionTree = createAction(actionTypes.ORG_GET_PERMISSION_TREE);
 //添加 
