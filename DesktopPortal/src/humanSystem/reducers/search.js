@@ -3,6 +3,7 @@ import * as actionTypes from '../constants/actionType';
 import moment from 'moment';
 
 const initState = {
+    selAchievementList: [{key: '1', org: "org", station: "station", baseSalary: "baseSalary", subsidy: "subsidy", clothesBack: "clothesBack", administrativeBack: "administrativeBack", portBack: "portBack"}],
     selStationList: [{key: '1', stationname: "stationname1"}, {key: '2', stationname: "stationname2"}],//选中的部门职位
     blackList: {extension: [{key: '1', idcard: 'tt', name: 'test', reason: "tta"}], pageIndex: 0, pageSize: 10, totalCount: 1},//黑名单结果
     showLoading: false,

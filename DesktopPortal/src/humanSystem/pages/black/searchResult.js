@@ -42,13 +42,13 @@ class SearchResult extends Component {
         
         return (
             <div>
-                {<p style={{marginBottom: '10px'}}>目前已为你筛选出<b>{this.props.searchInfoResult.extension.length}</b>条费用信息</p>}
+                {<p style={{marginBottom: '10px'}}>目前已为你筛选出<b>{this.props.searchInfoResult.blackList.length}</b>条费用信息</p>}
                 <div id="searchResult">
                     <Table id= {"table"} rowKey={record => record.idcard} 
                     columns={columns} 
                     pagination={this.props.searchInfoResult} 
                     onChange={this.handleChangePage} 
-                    dataSource={this.props.searchInfoResult.extension} bordered size="middle" 
+                    dataSource={this.props.searchInfoResult.blackList} bordered size="middle" 
                     rowSelection={rowSelection} />
                 </div>
             </div>
@@ -58,7 +58,7 @@ class SearchResult extends Component {
 
 function mapStateToProps(state) {
     return {
-        searchInfoResult: state.search.blackList,
+        searchInfoResult: state.search,
         showLoading: state.basicData.showLoading
     }
 }
