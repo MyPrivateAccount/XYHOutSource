@@ -1,137 +1,100 @@
 import { connect } from 'react-redux';
-import { getDicParList, postBlackLst } from '../../actions/actionCreator';
-import React, { Component } from 'react'
-import {Table, Input, Select, Form, Button, Row, Col, Checkbox, Pagination, Spin, Cascader, InputNumber } from 'antd'
+import { setLoadingVisible, adduserPage } from '../../actions/actionCreator';
+import React, { Component } from 'react';
+import { Input, Spin, Checkbox, Button, notification } from 'antd';
+//import {getDicParList} from '../actions/actionCreator';
+import SearchCondition from './searchCondition';
+import SearchResult from './searchResult';
+import './search.less';
 
-const FormItem = Form.Item;
-const Option = Select.Option;
-const ButtonGroup = Button.Group;
-const formItemLayout1 = {
-    labelCol:{ span:6},
-    wrapperCol:{ span:6 },
-};
+const buttonDef = [
+    { buttonID:"addnew", buttonName:"新建", icon:'', type:'primary', size:'large',},
+    { buttonID:"modify", buttonName:"修改", icon:'', type:'primary', size:'large',},
+    { buttonID:"delete", buttonName:"删除", icon:'', type:'primary', size:'large',},
+];
 
 
-class Achievement extends Component {
+class MainIndex extends Component {
+    state = {
+    }
 
     componentWillMount() {
+        this.props.dispatch(setLoadingVisible(false));//测试
     }
 
-    hasErrors(fieldsError) {
-        return !Object.keys(fieldsError).some(field => fieldsError[field]);
-    }
-
-    handleSubmit = (e) => {
-        e.preventDefault();
-        this.props.form.validateFields((err, values) => {
-            if (!err) {
-                //this.props.dispatch(postBlackLst(values));
+    handleClickFucButton = (e) => {
+        if (e.target.id === "addnew") {
+            this.props.dispatch(adduserPage({id: 11, menuID: 'menu_achievementnew', displayName: '新建薪酬', type:'item'}));
+        } else if (e.target.id === "modify") {
+            if (this.props.selBlacklist.length > 0)
+                this.props.dispatch(adduserPage({id: 12, menuID: 'menu_achievementmodify', displayName: '修改薪酬', type:'item'}));
+            else {
+                notification.error({
+                    message: '未选择指定发票',
+                    description: "请选择指定发票",
+                    duration: 3
+                });
             }
-        });
+        } else if (e.target.id === "delete") {
+            if (this.props.selBlacklist.length > 0) {
+                //this.props.dispatch(adduserPage({menuID: 'costcharge', disname: '删除黑名单', type:'item'}));//删除要个jb啊
+            }
+            else {
+                notification.error({
+                    message: '未选择指定发票',
+                    description: "请选择指定发票",
+                    duration: 3
+                });
+            }
+        }
     }
-
-    handleChooseDepartmentChange = (e) => {
-        this.state.department = e;
+       //是否有权限
+    hasPermission(buttonInfo) {
+        let hasPermission = false;
+        if (this.props.judgePermissions && buttonInfo.requirePermission) {
+            for (let i = 0; i < buttonInfo.requirePermission.length; i++) {
+                if (this.props.judgePermissions.includes(buttonInfo.requirePermission[i])) {
+                    hasPermission = true;
+                    break;
+                }
+            }
+        } else {
+            hasPermission = true;
+        }
+        return hasPermission;
     }
 
     render() {
-        const { getFieldDecorator, getFieldsError, getFieldsValue, isFieldTouched } = this.props.form;
-        let self = this;
+        let showLoading = this.props.showLoading;
         return (
-            <div>
-                <Form onSubmit={this.handleSubmit}>
-                    <FormItem {...formItemLayout1}/>
-                    <FormItem {...formItemLayout1}/>
-                    <FormItem {...formItemLayout1} label="选择组织">
-                        {getFieldDecorator('org', {
-                            reules: [{
-                                required:true, message: 'please entry',
-                            }]
-                        })(
-                            <Cascader options={this.props.setContractOrgTree}  onChange={this.handleChooseDepartmentChange } changeOnSelect  placeholder="归属部门"/>
-                        )}
-                    </FormItem>
-                    <FormItem {...formItemLayout1} label="选择职位">
-                        {getFieldDecorator('station', {
-                            reules: [{
-                                required:true, message: 'please entry',
-                            }]
-                        })(
-                            <Select placeholder="选择职位">
-                                {
-                                    (self.props.chargeCostTypeList && self.props.chargeCostTypeList.length > 0) ?
-                                        self.props.chargeCostTypeList.map(
-                                            function (params) {
-                                                return <Option key={params.value} value={params.value+""}>{params.key}</Option>;
-                                            }
-                                        ):null
-                                }
-                            </Select>
-                        )}
-                    </FormItem>
-                    <FormItem {...formItemLayout1} label="基本工资">
-                        {getFieldDecorator('baseSalary', {
-                            reules: [{
-                                required:true, message: 'please entry',
-                            }]
-                        })(
-                            <InputNumber placeholder="请输入基本工资" />
-                        )}
-                    </FormItem>
-                    <FormItem {...formItemLayout1} label="岗位补贴">
-                        {getFieldDecorator('subsidy', {
-                            reules: [{
-                                required:true, message: 'please entry',
-                            }]
-                        })(
-                            <InputNumber placeholder="请输入岗位补贴" />
-                        )}
-                    </FormItem>
-                    <FormItem {...formItemLayout1} label="工装扣款">
-                        {getFieldDecorator('clothesBack', {
-                            reules: [{
-                                required:true, message: 'please entry',
-                            }]
-                        })(
-                            <InputNumber placeholder="请输入工装扣款" />
-                        )}
-                    </FormItem>
-                    <FormItem {...formItemLayout1} label="行政扣款">
-                        {getFieldDecorator('administrativeBack', {
-                            reules: [{
-                                required:true, message: 'please entry',
-                            }]
-                        })(
-                            <InputNumber placeholder="请输入行政扣款" />
-                        )}
-                    </FormItem>
-                    <FormItem {...formItemLayout1} label="端口扣款">
-                        {getFieldDecorator('portBack', {
-                            reules: [{
-                                required:true, message: 'please entry',
-                            }]
-                        })(
-                            <InputNumber placeholder="请输入端口扣款" />
-                        )}
-                    </FormItem>
-                    <FormItem wrapperCol={{ span: 12, offset: 6 }}>
-                        <Col span={6}><Button type="primary" htmlType="submit" disabled={this.hasErrors(getFieldsValue())} >提交</Button></Col>
-                    </FormItem>
-                </Form>
+            <div >
+                <Spin spinning={showLoading}>
+                    <SearchCondition />
+                    {
+                        buttonDef.map(
+                            (button, i)=>this.hasPermission(button) ?
+                             <Button key = {i} id= {button.buttonID} style={{marginTop: '10px', marginBottom: '10px', marginRight: '10px', border:0}}
+                             onClick={this.handleClickFucButton} 
+                             icon={button.icon} size={button.size} type={button.type}>{button.buttonName}</Button> : null
+                        )
+                    }
+                    <SearchResult />
+                </Spin>
             </div>
-        );
+        )
     }
 }
 
-function tableMapStateToProps(state) {
+function mapStateToProps(state) {
     return {
-        setContractOrgTree: state.basicData.searchOrgTree
+        selBlacklist: state.basicData.selBlacklist,
+        showLoading: state.basicData.showLoading,
     }
 }
 
-function tableMapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch) {
     return {
         dispatch
     };
 }
-export default connect(tableMapStateToProps, tableMapDispatchToProps)(Form.create()(Achievement));
+export default connect(mapStateToProps, mapDispatchToProps)(MainIndex);

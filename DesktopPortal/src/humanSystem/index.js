@@ -6,7 +6,7 @@ import reducers from './reducers';
 import ContentPage from './pages/contentPage';
 import {sagaMiddleware} from '../';
 import rootSaga from './saga/rootSaga';
-import {getOrgList, getOrgDetail, openOrgSelect, setbreadPageItem,closebreadPage} from './actions/actionCreator';
+import {getOrgList, getOrgDetail, openOrgSelect, setbreadPageItem,closebreadPage, setbreadPageItemIndex} from './actions/actionCreator';
 import OrgSelect from './pages/orgSelect/orgSelect';
 sagaMiddleware.run(rootSaga);
 const {Header, Sider, Content} = Layout;
@@ -89,12 +89,13 @@ const homeStyle = {
         //    return <ContentPage curMenuID={this.state.activeMenu.menuID} />;
         }
 
-        handleNavClick() {
+        handleNavClick(i, itm) {
             let navigator = this.props.basicData.navigator;
             if(navigator.length > 0) {
-                if(navigator[navigator.length -1].id === 0) {
-                    this.props.dispatch(closebreadPage(0));
-                }
+                this.props.dispatch(setbreadPageItemIndex(i));
+                // if(navigator[navigator.length -1].id === 0) {
+                //     this.props.dispatch(closebreadPage(0));
+                // }
             }
         }
 
@@ -135,7 +136,7 @@ const homeStyle = {
                             <Breadcrumb separator='>' style= {{fontSize:'0.8rem'}}> 
                                 {
                                     navigator.map((item, i) =>{
-                                        return <Breadcrumb.Item key={i}  style={homeStyle.navigator} onClick={(e) =>this.handleNavClick(i, item)} >{item.disname}</Breadcrumb.Item>
+                                        return <Breadcrumb.Item key={i}  style={homeStyle.navigator} onClick={(e) =>this.handleNavClick(i, item)} >{item.displayName}</Breadcrumb.Item>
                                     })
                                 }
                             </Breadcrumb>

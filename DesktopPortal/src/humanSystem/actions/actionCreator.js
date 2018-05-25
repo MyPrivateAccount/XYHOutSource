@@ -32,9 +32,11 @@ export const expandSearchbox = createAction(actionTypes.SEARCH_BOX_EXPAND);
 
 //面包屑
 export const setbreadPageIndex = createAction(actionTypes.SET_USER_BREADINDEX);
+export const setbreadPageItemIndex = createAction(actionTypes.SET_USER_BREADITEMINDEX);
 export const setbreadPageItem = createAction(actionTypes.SET_USER_BREADITEM);
 export const closebreadPage = createAction(actionTypes.CLOSE_USER_BREAD);
 export const adduserPage = createAction(actionTypes.ADD_USER_BREAD);
+
 
 //
 export const getworkNumbar = createAction(actionTypes.GET_HUMANINFONUMBER);

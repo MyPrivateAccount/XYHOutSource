@@ -24,10 +24,10 @@ class MainIndex extends Component {
 
     handleClickFucButton = (e) => {
         if (e.target.id === "addnew") {
-            this.props.dispatch(adduserPage({id: 11, menuID: 'menu_blackaddnew', disname: '新建黑名单', type:'item'}));
+            this.props.dispatch(adduserPage({id: 11, menuID: 'menu_blackaddnew', displayName: '新建黑名单', type:'item'}));
         } else if (e.target.id === "modify") {
              if (this.props.selBlacklist.length > 0)
-                this.props.dispatch(adduserPage({id: 12, menuID: 'menu_blackmodify', disname: '修改黑名单', type:'item'}));
+                this.props.dispatch(adduserPage({id: 12, menuID: 'menu_blackmodify', displayName: '修改黑名单', type:'item'}));
              else {
                 notification.error({
                     message: '未选择指定发票',

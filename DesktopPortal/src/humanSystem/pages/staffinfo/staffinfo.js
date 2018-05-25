@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { getDicParList, expandSearchbox, searchConditionType, searchCondition,setbreadPageIndex, searchHumanType,searchAgeType,searchOrderType } from '../../actions/actionCreator';
+import { getDicParList, expandSearchbox, searchConditionType, searchCondition,setbreadPageIndex, searchHumanType,searchAgeType,searchOrderType, adduserPage } from '../../actions/actionCreator';
 import React, { Component } from 'react'
 import {Table, Layout, Input, Select, Icon, Button, Row, Col, Checkbox, Tag, Pagination, Spin} from 'antd'
 import '../search.less'
@@ -88,7 +88,7 @@ class Staffinfo extends Component {
     }
 
     handleOnboarding =(e)=> {
-        this.props.dispatch(setbreadPageIndex(e));
+        this.props.dispatch(adduserPage({id: "0", menuID: "Onboarding", displayName: '入职', type: 'item'}));
     }
 
     render() {

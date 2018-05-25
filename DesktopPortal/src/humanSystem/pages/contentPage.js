@@ -39,6 +39,10 @@ const LoadableAchievementPage = Loadable({
     loader: () => import('./achievement/achievement'),
     loading: () => <LoadableLoading />,
 });
+const LoadableAddAchievementPage = Loadable({
+    loader: () => import('./achievement/addachievement'),
+    loading: () => <LoadableLoading />,
+});
 const LoadableOrganizationPage = Loadable({
     loader: () => import('./organization/organization'),
     loading: () => <LoadableLoading />,
@@ -76,6 +80,12 @@ function ContentPage(props) {
     }
     else if (curMenuID === "menu_achievement") {
         return <LoadableAchievementPage />;
+    }
+    else if(curMenuID === "menu_achievementnew") {
+        return <LoadableAddAchievementPage ismodify="0" />;
+    }
+    else if(curMenuID === "menu_achievementmodify") {
+        return <LoadableAddAchievementPage ismodify="1" />;
     }
     else if (curMenuID === "menu_organization") {
         return <LoadableOrganizationPage />;
