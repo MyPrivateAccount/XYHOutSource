@@ -3,14 +3,12 @@ import {setLoadingVisible, selBlackList} from '../../actions/actionCreator';
 import React, {Component} from 'react';
 import {Button, Row, Col, Table} from 'antd';
 
+//{key: "1", time: "tt", name: "tt", idcard: "tta", signed: "today"}
 const columns = [
-    {title: '组织(分公司)',dataIndex: 'org',key: 'org',},
-    {title: '职位',dataIndex: 'station',key: 'station'},
-    {title: '基本工资',dataIndex: 'baseSalary',key: 'baseSalary'},
-    {title: '岗位补贴',dataIndex: 'subsidy',key: 'subsidy'},
-    {title: '工装扣款',dataIndex: 'clothesBack',key: 'clothesBack'},
-    {title: '行政扣款',dataIndex: 'administrativeBack',key: 'administrativeBack'},
-    {title: '端口扣款',dataIndex: 'portBack',key: 'portBack'},
+    {title: '日期',dataIndex: 'time',key: 'time',},
+    {title: '姓名',dataIndex: 'name',key: 'name'},
+    {title: '身份证号',dataIndex: 'idcard',key: 'idcard'},
+    {title: '签到记录',dataIndex: 'signed',key: 'signed'},
 ];
 
 
@@ -48,13 +46,13 @@ class SearchResult extends Component {
         
         return (
             <div>
-                {<p style={{marginBottom: '10px'}}>目前已为你筛选出<b>{this.props.searchInfoResult.achievementList.length}</b>条职位薪酬信息</p>}
+                {<p style={{marginBottom: '10px'}}>目前已为你筛选出<b>{this.props.searchInfoResult.attendanceList.length}</b>条考勤信息</p>}
                 <div id="searchResult">
-                    <Table id= {"table"} rowKey={record => record.key} 
+                    <Table id= {"table"} rowKey={record => record.idcard} 
                     columns={columns} 
                     pagination={this.props.searchInfoResult} 
                     onChange={this.handleChangePage} 
-                    dataSource={this.props.searchInfoResult.achievementList} bordered size="middle" 
+                    dataSource={this.props.searchInfoResult.attendanceList} bordered size="middle" 
                     rowSelection={rowSelection} />
                 </div>
             </div>

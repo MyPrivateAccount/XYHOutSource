@@ -17,6 +17,19 @@ class Achievement extends Component {
     componentWillMount() {
     }
 
+    componentDidMount() {
+        let len = this.props.selAchievementList.length;
+        if (this.props.ismodify == 1) {//修改界面
+            this.props.form.setFieldsValue({org: this.props.selAchievementList[len-1].org});
+            this.props.form.setFieldsValue({station: this.props.selAchievementList[len-1].station});
+            this.props.form.setFieldsValue({baseSalary: this.props.selAchievementList[len-1].baseSalary});
+            this.props.form.setFieldsValue({subsidy: this.props.selAchievementList[len-1].subsidy});
+            this.props.form.setFieldsValue({clothesBack: this.props.selAchievementList[len-1].clothesBack});
+            this.props.form.setFieldsValue({administrativeBack: this.props.selAchievementList[len-1].administrativeBack});
+            this.props.form.setFieldsValue({portBack: this.props.selAchievementList[len-1].portBack});
+        }
+    }
+
     hasErrors(fieldsError) {
         return !Object.keys(fieldsError).some(field => fieldsError[field]);
     }
@@ -125,6 +138,7 @@ class Achievement extends Component {
 
 function tableMapStateToProps(state) {
     return {
+        selAchievementList: state.basicData.selAchievementList,
         setContractOrgTree: state.basicData.searchOrgTree
     }
 }

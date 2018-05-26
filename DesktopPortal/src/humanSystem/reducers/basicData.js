@@ -3,6 +3,8 @@ import * as actionTypes from '../constants/actionType';
 import appAction from '../../utils/appUtils';
 
 const initState = {
+    selAttendanceList: [],
+    selAchievementList: [],
     selBlacklist: [],//选中的黑名单列表
     showLoading: true,
     searchOrgTree: [],

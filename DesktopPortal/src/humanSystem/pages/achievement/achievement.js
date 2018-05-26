@@ -26,12 +26,12 @@ class MainIndex extends Component {
         if (e.target.id === "addnew") {
             this.props.dispatch(adduserPage({id: 11, menuID: 'menu_achievementnew', displayName: '新建薪酬', type:'item'}));
         } else if (e.target.id === "modify") {
-            if (this.props.selBlacklist.length > 0)
+            if (this.props.selAchievementList.length > 0)
                 this.props.dispatch(adduserPage({id: 12, menuID: 'menu_achievementmodify', displayName: '修改薪酬', type:'item'}));
             else {
                 notification.error({
-                    message: '未选择指定发票',
-                    description: "请选择指定发票",
+                    message: '未选择指定职位薪酬',
+                    description: "请选择指定职位薪酬",
                     duration: 3
                 });
             }
@@ -41,8 +41,8 @@ class MainIndex extends Component {
             }
             else {
                 notification.error({
-                    message: '未选择指定发票',
-                    description: "请选择指定发票",
+                    message: '未选择指定职位薪酬',
+                    description: "请选择指定职位薪酬",
                     duration: 3
                 });
             }
@@ -87,7 +87,7 @@ class MainIndex extends Component {
 
 function mapStateToProps(state) {
     return {
-        selBlacklist: state.basicData.selBlacklist,
+        selAchievementList: state.search.selAchievementList,
         showLoading: state.basicData.showLoading,
     }
 }
