@@ -70,7 +70,7 @@ class Station extends Component {
             },
         ]
 
-        this.cacheData = this.props.selStationList.map(item => ({ ...item }));
+        this.cacheData = this.props.stationList.map(item => ({ ...item }));
     }
     
     renderColumns(text, record, column) {
@@ -84,7 +84,7 @@ class Station extends Component {
     }
 
     handleChange(value, key, column) {
-        const newData = [...this.props.selStationList];
+        const newData = [...this.props.stationList];
         const target = newData.filter(item => key === item.key)[0];
         if (target) {
             target[column] = value;
@@ -93,7 +93,7 @@ class Station extends Component {
     }
 
     edit(key) {
-        const newData = [...this.props.selStationList];
+        const newData = [...this.props.stationList];
         const target = newData.filter(item => key === item.key)[0];
         if (target) {
             target.editable = true;
@@ -102,12 +102,12 @@ class Station extends Component {
     }
 
     delete(key) {
-        this.props.selStationList.splice(this.props.selStationList.findIndex(item => key === item.key), 1);
+        this.props.stationList.splice(this.props.stationList.findIndex(item => key === item.key), 1);
         this.forceUpdate();
     }
 
     save(key) {
-        const newData = [...this.props.selStationList];
+        const newData = [...this.props.stationList];
         const target = newData.filter(item => key === item.key)[0];
         if (target) {
             delete target.editable;
@@ -117,7 +117,7 @@ class Station extends Component {
     }
 
     cancel(key) {
-        const newData = [...this.props.selStationList];
+        const newData = [...this.props.stationList];
         const target = newData.filter(item => key === item.key)[0];
         if (target) {
             Object.assign(target, this.cacheData.filter(item => key === item.key)[0]);
@@ -149,7 +149,7 @@ class Station extends Component {
 
     handleSearchBoxToggle1 = (e) => {
         //暂时写个测试
-        this.props.selStationList.push({key: this.props.selStationList.length+10+'', stationname: "stationname6"});
+        this.props.stationList.push({key: this.props.stationList.length+10+'', stationname: "stationname6"});
         this.forceUpdate();
         //this.props.dispatch(adduserPage({id: 11, menuID: 'menu_blackaddnew', disname: '新建黑名单', type:'item'}));
     }
@@ -168,7 +168,7 @@ class Station extends Component {
                         <Button className="searchButton" type="primary" onClick={this.handleSearchBoxToggle1}>新建</Button>
                     </Col>
                 </Row>
-                <Table rowSelection={rowSelection} rowKey={record => record.key} dataSource={this.props.selStationList} columns={this.ListColums} onChange={this.handleTableChange} bordered />
+                <Table rowSelection={rowSelection} rowKey={record => record.key} dataSource={this.props.stationList} columns={this.ListColums} onChange={this.handleTableChange} bordered />
                 {/* dataSource={} */}
             </div>
         );
@@ -177,7 +177,7 @@ class Station extends Component {
 
 function tableMapStateToProps(state) {
     return {
-        selStationList: state.search.selStationList,
+        stationList: state.search.stationList,
         setDepartmentOrgTree: state.basicData.searchOrgTree
     }
 }

@@ -38,15 +38,17 @@ class SearchCondition extends Component {
         let expandSearchCondition = this.state.expandSearchCondition;
 
         return (
-            <div className="searchBox">
-                <Row type="flex">
-                    <Col span={12}>
-                        <Input placeholder={'请输入名称'} onChange = {this.handleKeyChangeWord}/> 
-                    </Col>
-                    <Col span={8}>
-                        <Button type='primary' className='searchButton' onClick={this.handleSearch}>查询</Button>
-                    </Col>
-                </Row>
+            <div>
+                <div className="searchBox">
+                    <Row type="flex">
+                        <Col span={12}>
+                            <Input placeholder={'请输入名称'} onChange = {this.handleKeyChangeWord}/> 
+                        </Col>
+                        <Col span={8}>
+                            <Button type='primary' className='searchButton' onClick={this.handleSearch}>查询</Button>
+                        </Col>
+                    </Row>
+                </div>
             </div>
         )
     }
