@@ -43,7 +43,7 @@ namespace XYHChargePlugin.Controllers
             _restClient = rsc;
             _chargeManager = charge;
 
-            _lastNumber = 0;
+            _lastNumber = 1;
             _restClient = rsc;
         }
 
@@ -89,7 +89,7 @@ namespace XYHChargePlugin.Controllers
                     _lastDate = td.Month.ToString() + td.Day.ToString();
                 }
 
-                Response.Extension = $"XYC-{td.Year.ToString()}{td.Month.ToString()}{td.Day.ToString()}-{_lastNumber}";
+                Response.Extension = $"FY-{td.Year.ToString()}{td.Month.ToString()}{td.Day.ToString()}-{_lastNumber}";
                 Response.Message = $"getchargenumber sucess";
             }
             catch (Exception e)

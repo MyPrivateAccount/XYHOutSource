@@ -52,7 +52,11 @@ class ChargeInfo extends Component {
     }
 
     componentDidMount() {
-        this.props.form.setFieldsValue({id:this.state.id});
+        if (this.props.isdetail) {
+            //this.props.form.setFieldsValue({id:this.state.id});
+        } else {
+            this.props.form.setFieldsValue({id:this.state.id});
+        }
     }
 
     handleChooseDepartmentChange = (e) => {
@@ -111,7 +115,7 @@ class ChargeInfo extends Component {
     }
     
     handleReset = ()=> {
-
+        this.props.form.resetFields();
     }
 
     addCost = () => {
@@ -195,7 +199,7 @@ class ChargeInfo extends Component {
       }
 
     render() {
-        const uploadButton = (
+        const uploadButton = this.props.isdetail?null:(
             <div>
               <Icon type='plus' />
               <div className="ant-upload-text">Upload</div>
@@ -374,13 +378,20 @@ class ChargeInfo extends Component {
                 }
                 <FormItem {...formItemLayout}/>
                 <FormItem {...formItemLayout}/>
-                <FormItem wrapperCol={{ span: 12, offset: 6 }}>
-                    <Col span={6}><Button type="primary" icon="plus" onClick={this.addCost.bind(this)} ></Button></Col>
-                </FormItem>
-                <FormItem wrapperCol={{ span: 12, offset: 6 }}>
-                    <Col span={6}><Button type="primary" htmlType="submit" disabled={this.hasErrors(getFieldsValue())} >提交</Button></Col>
-                    <Col span={6}><Button type="primary" onClick={this.handleReset}>清空</Button></Col>
-                </FormItem>
+                {
+                    this.props.isdetail?null:(
+                        <div>
+                            <FormItem wrapperCol={{ span: 12, offset: 6 }}>
+                                <Col span={6}><Button type="primary" icon="plus" onClick={this.addCost.bind(this)} ></Button></Col>
+                            </FormItem>
+                            <FormItem wrapperCol={{ span: 12, offset: 6 }}>
+                                <Col span={6}><Button type="primary" htmlType="submit" disabled={this.hasErrors(getFieldsValue())} >提交</Button></Col>
+                                <Col span={6}><Button type="primary" onClick={this.handleReset}>清空</Button></Col>
+                            </FormItem>
+                        </div>
+                    )
+                }
+                
             </Form>
         );
     }

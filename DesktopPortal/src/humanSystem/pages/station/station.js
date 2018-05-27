@@ -59,10 +59,10 @@ class Station extends Component {
                     {
                       editable ?
                         <span>
-                          <a onClick={() => this.save(record.key)}>Save</a>
-                          <a onClick={()=>this.cancel(record.key)}>Cancel</a>
+                          <a onClick={() => this.save(record.key)}>保存</a>
+                          <a onClick={()=>this.cancel(record.key)}>取消</a>
                         </span>
-                        : <span> <a onClick={() => this.edit(record.key)}>Edit</a> <a onClick={() => this.delete(record.key)}>Delete</a> </span>
+                        : <span> <a onClick={() => this.edit(record.key)}>编辑</a> <a onClick={() => this.delete(record.key)}>删除</a> </span>
                     }
                   </div>
                 );
