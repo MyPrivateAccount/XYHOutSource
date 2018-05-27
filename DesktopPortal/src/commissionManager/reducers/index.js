@@ -8,6 +8,7 @@ import orgParamReducer from './orgparam'
 import scaleReducer from './scale'
 import acmReducer from './acm'
 import basicDataReducer from './basicData';
+import rpReducerMap from './dealRp/rp'
 export default combineReducers({
     router: routerReducer,
     oidc: oidcReducer,
@@ -16,5 +17,6 @@ export default combineReducers({
     orgparam: orgParamReducer,
     scale: scaleReducer,
     acm:acmReducer,
-    base:basicDataReducer
+    base:basicDataReducer,
+    rp:rpReducerMap
 });

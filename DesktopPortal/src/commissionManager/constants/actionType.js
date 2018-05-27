@@ -53,3 +53,19 @@ export const GET_ORG_USERLIST = 'GET_ORG_USERLIST';//获取部门用户列表
 export const GET_ORG_USERLIST_COMPLETE = 'GET_ORG_USERLIST_COMPLETE';//获取部门用户列表
 export const DIC_GET_ALL_ORG_LIST = 'DIC_GET_ALL_ORG_LIST';
 export const DIC_GET_ALL_ORG_LIST_COMPLETE = 'DIC_GET_ALL_ORG_LIST_COMPLETE';
+
+//成交报告－交易合同页面
+export const DEALRP_RP_SAVE = 'DEALRP_RP_SAVE';//交易合同保存
+export const DEALRP_RP_SAVEUPDATE = 'DEALRP_RP_SAVEUPDATE';//交易合同保存成功
+//成交报告-物业页面
+export const DEALRP_WY_SAVE = 'DEALRP_WY_SAVE';
+export const DEALRP_WY_SAVEUPDATE = 'DEALRP_WY_SAVEUPDATE';
+//成交报告-业主页面
+export const DEALRP_YZ_SAVE = 'DEALRP_YZ_SAVE';
+export const DEALRP_YZ_SAVEUPDATE = 'DEALRP_YZ_SAVEUPDATE';
+//成交报告-客户页面
+export const DEALRP_KH_SAVE = 'DEALRP_KH_SAVE';
+export const DEALRP_KH_SAVEUPDATE = 'DEALRP_KH_SAVEUPDATE';
+//成交报告-过户页面
+export const DEALRP_GH_SAVE = 'DEALRP_GH_SAVE';
+export const DEALRP_GH_SAVEUPDATE = 'DEALRP_GH_SAVEUPDATE';

@@ -10,7 +10,6 @@ class TradePerDis extends Component{
     render(){
         return (
             <Layout>
-                <div>
                     <Row style={{margin:10}}>
                         <Col span={12} style={{textAlign:'center'}}>
                           <span>业主应收：</span>
@@ -49,7 +48,6 @@ class TradePerDis extends Component{
                     <Row>
                         <TradeNTable/>
                     </Row>
-                </div>
             </Layout>
         )
     }

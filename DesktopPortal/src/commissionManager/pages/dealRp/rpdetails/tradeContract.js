@@ -2,38 +2,64 @@
 //合同列表
 import { connect } from 'react-redux';
 import React, { Component } from 'react';
-import { getDicParList } from '../../../actions/actionCreator'
-import { DatePicker, Form, Span, Layout, Table, Button, Radio, Popconfirm, Tooltip, Row, Col, Input, Spin, Select, TreeSelect } from 'antd'
+import { getDicParList,dealRpSave } from '../../../actions/actionCreator'
+import {notification, DatePicker, Form, Span, Layout, Table, Button, Radio, Popconfirm, Tooltip, Row, Col, Input, Spin, Select, TreeSelect } from 'antd'
 import './trade.less'
 
-const { Header, Content } = Layout;
-const Option = Select.Option;
 const RadioGroup = Radio.Group;
-const options = [
-    { label: '自行划转', value: '1' },
-    { label: '通过资金监管', value: '2' },
-];
 const FormItem = Form.Item;
-const rowstyle = {
-
-}
 class TradeContract extends Component {
     state = {
-
+        isDataLoading:false
     }
     componentWillMount = () => {
+        this.setState({isDataLoading:true,tip:'信息初始化中...'})
         this.props.dispatch(getDicParList(['COMMISSION_BSWY_CATEGORIES', 'COMMISSION_CJBG_TYPE', 'COMMISSION_JY_TYPE', 'COMMISSION_PAY_TYPE', 'COMMISSION_PROJECT_TYPE', 'COMMISSION_CONTRACT_TYPE', 'COMMISSION_OWN_TYPE', 'COMMISSION_TRADEDETAIL_TYPE', 'COMMISSION_SFZJJG_TYPE']));
     }
-    componentWillReceiveProps(props) {
-
+    componentWillReceiveProps(newProps) {
+        this.setState({ isDataLoading: false });
+        if(newProps.operInfo.operType === 'HTSAVE_UPDATE'){
+            notification.success({
+                message: '提示',
+                description: '保存成交报告交易合同信息成功!',
+                duration: 3
+            });
+            newProps.operInfo.operType = ''
+        }
     }
     handleSave = (e) => {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                console.log(values)
+                values.id = this.props.rpId;
+                values.cjrq = this.state.cjrq;
+                values.yxsqyrq = this.state.yxsqyrq;
+                values.yjfksj = this.state.yjfksj;
+                values.kflfrq = this.state.kflfrq;
+                values.htqyrq = this.state.htqyrq;
+
+                console.log(values);
+                this.setState({isDataLoading:true,tip:'保存信息中...'})
+                this.props.dispatch(dealRpSave(values));
             }
         });
+    }
+    cjrq_dateChange=(value,dateString)=>{
+        console.log(dateString)
+        this.setState({cjrq:dateString})
+    }
+    wqrq_dateChange=(value,dateString)=>{
+        console.log(dateString)
+        this.setState({yxsqyrq:dateString})
+    }
+    yjfksj_dateChange=(value,dateString)=>{
+        this.setState({yjfksj:dateString})
+    }
+    kflfrq_dateChange=(value,dateString)=>{
+        this.setState({kflfrq:dateString})
+    }
+    htqyrq_dateChange=(value,dateString)=>{
+        this.setState({htqyrq:dateString})
     }
     render() {
         const { getFieldDecorator } = this.props.form;
@@ -58,11 +84,7 @@ class TradeContract extends Component {
                         <Col span={12} pull={1}>
                             <FormItem {...formItemLayout} label={(<span>成交报备</span>)}>
                                 {
-                                    getFieldDecorator('cjbb', {
-                                        rules: [{ required: false }],
-                                    })(
                                         <Input style={{ width: 200 }}></Input>
-                                    )
                                 }
                             </FormItem>
                         </Col>
@@ -70,16 +92,18 @@ class TradeContract extends Component {
                             <Button>选择</Button>
                         </Col>
                     </Row>
+                    <Spin spinning={this.state.isDataLoading} tip={this.state.tip}>
                     <Row>
                         <Col span={24} pull={4}>
                             <FormItem {...formItemLayout} label={(<span>报数物业分类</span>)}>
                                 {
                                     getFieldDecorator('bswylx', {
                                         rules: [{ required: false }],
+                                        initialValue: '',
                                     })(
                                         <RadioGroup>
                                             {
-                                                bswyTypes.map(tp => <Radio key={tp.key} value={tp.value}>{tp.key}</Radio>)
+                                                bswyTypes.map(tp => <Radio key={tp.key} value={tp.key}>{tp.key}</Radio>)
                                             }
                                         </RadioGroup>
                                     )
@@ -93,10 +117,11 @@ class TradeContract extends Component {
                                 {
                                     getFieldDecorator('cjbglx', {
                                         rules: [{ required: false }],
+                                        initialValue: '',
                                     })(
                                         <RadioGroup>
                                             {
-                                                cjbgTypes.map(tp => <Radio key={tp.key} value={tp.value}>{tp.key}</Radio>)
+                                                cjbgTypes.map(tp => <Radio key={tp.key} value={tp.key}>{tp.key}</Radio>)
                                             }
                                         </RadioGroup>
                                     )
@@ -109,7 +134,8 @@ class TradeContract extends Component {
                             <FormItem {...formItemLayout} label={(<span>公司名称</span>)}>
                                 {
                                     getFieldDecorator('gsmc', {
-                                        rules: [{ required: true, message: '请填写公司名称!' }],
+                                        rules: [{ required: false, message: '请填写公司名称!' }],
+                                        initialValue: '',
                                     })(
                                         <Input style={{ width: 200 }}></Input>
                                     )
@@ -122,7 +148,8 @@ class TradeContract extends Component {
                             <FormItem {...formItemLayout} label={(<span>分行名称</span>)}>
                                 {
                                     getFieldDecorator('fyzId', {
-                                        rules: [{ required: true, message: '请填写分行名称!' }],
+                                        rules: [{ required: false, message: '请填写分行名称!' }],
+                                        initialValue: '',
                                     })(
                                         <Input style={{ width: 200 }}></Input>
                                     )
@@ -133,7 +160,8 @@ class TradeContract extends Component {
                             <FormItem {...formItemLayout} label={(<span>成交人</span>)}>
                                 {
                                     getFieldDecorator('cjrId', {
-                                        rules: [{ required: true, message: '请填写成交人!' }],
+                                        rules: [{ required: false, message: '请填写成交人!' }],
+                                        initialValue: '',
                                     })(
                                         <Input style={{ width: 200 }}></Input>
                                     )
@@ -144,9 +172,36 @@ class TradeContract extends Component {
                             <FormItem {...formItemLayout} label={(<span>成交日期</span>)}>
                                 {
                                     getFieldDecorator('cjrq', {
-                                        rules: [{ required: true, message: '请选择成交日期!' }],
+                                        rules: [{ required: false, message: '请选择成交日期!' }],
+                                        initialValue: '',
                                     })(
-                                        <DatePicker style={{ width: 200 }}></DatePicker>
+                                        <DatePicker style={{ width: 200 }}  onChange={this.cjrq_dateChange}></DatePicker>
+                                    )
+                                }
+                            </FormItem>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col span={8}>
+                            <FormItem {...formItemLayout} label={(<span>成交报告编号</span>)}>
+                                {
+                                    getFieldDecorator('cjbgbh', {
+                                        rules: [{ required: false }],
+                                        initialValue: '',
+                                    })(
+                                        <Input style={{ width: 200 }}></Input>
+                                    )
+                                }
+                            </FormItem>
+                        </Col>
+                        <Col span={8}>
+                            <FormItem {...formItemLayout} label={(<span>附加说明</span>)}>
+                                {
+                                    getFieldDecorator('fjsm', {
+                                        rules: [{ required: false }],
+                                        initialValue: '',
+                                    })(
+                                        <Input style={{ width: 200 }}></Input>
                                     )
                                 }
                             </FormItem>
@@ -158,6 +213,7 @@ class TradeContract extends Component {
                                 {
                                     getFieldDecorator('bz', {
                                         rules: [{ required: false }],
+                                        initialValue: '',
                                     })(
                                         <Input.TextArea rows={4} style={{ width: 510 }}></Input.TextArea>
                                     )
@@ -171,10 +227,11 @@ class TradeContract extends Component {
                                 {
                                     getFieldDecorator('jylx', {
                                         rules: [{ required: false }],
+                                        initialValue: '',
                                     })(
                                         <RadioGroup>
                                             {
-                                                tradeTypes.map(tp => <Radio key={tp.key} value={tp.value}>{tp.key}</Radio>)
+                                                tradeTypes.map(tp => <Radio key={tp.key} value={tp.key}>{tp.key}</Radio>)
                                             }
                                         </RadioGroup>
                                     )
@@ -188,10 +245,11 @@ class TradeContract extends Component {
                                 {
                                     getFieldDecorator('xmlx', {
                                         rules: [{ required: false }],
+                                        initialValue: '',
                                     })(
                                         <RadioGroup>
                                             {
-                                                projectTypes.map(tp => <Radio key={tp.key} value={tp.value}>{tp.key}</Radio>)
+                                                projectTypes.map(tp => <Radio key={tp.key} value={tp.key}>{tp.key}</Radio>)
                                             }
                                         </RadioGroup>
                                     )
@@ -205,10 +263,11 @@ class TradeContract extends Component {
                                 {
                                     getFieldDecorator('xxjylx', {
                                         rules: [{ required: false }],
+                                        initialValue: '',
                                     })(
                                         <RadioGroup>
                                             {
-                                                tradeDetailTypes.map(tp => <Radio key={tp.key} value={tp.value}>{tp.key}</Radio>)
+                                                tradeDetailTypes.map(tp => <Radio key={tp.key} value={tp.key}>{tp.key}</Radio>)
                                             }
                                         </RadioGroup>
                                     )
@@ -222,10 +281,11 @@ class TradeContract extends Component {
                                 {
                                     getFieldDecorator('cqlx', {
                                         rules: [{ required: false }],
+                                        initialValue: '',
                                     })(
                                         <RadioGroup>
                                             {
-                                                ownTypes.map(tp => <Radio key={tp.key} value={tp.value}>{tp.key}</Radio>)
+                                                ownTypes.map(tp => <Radio key={tp.key} value={tp.key}>{tp.key}</Radio>)
                                             }
                                         </RadioGroup>
                                     )
@@ -238,7 +298,8 @@ class TradeContract extends Component {
                             <FormItem {...formItemLayout} label={(<span>成交总价</span>)}>
                                 {
                                     getFieldDecorator('cjzj', {
-                                        rules: [{ required: true, message: '请选择成交日期!' }],
+                                        rules: [{ required: false, message: '请选择成交日期!' }],
+                                        initialValue: 0,
                                     })(
                                         <Input style={{ width: 200 }}></Input>
                                     )
@@ -248,8 +309,9 @@ class TradeContract extends Component {
                         <Col span={8}>
                             <FormItem {...formItemLayout} label={(<span>佣金</span>)}>
                                 {
-                                    getFieldDecorator('yj', {
-                                        rules: [{ required: true, message: '请选择成交日期!' }],
+                                    getFieldDecorator('ycjyj', {
+                                        rules: [{ required: false, message: '请选择成交日期!' }],
+                                        initialValue: 0,
                                     })(
                                         <Input style={{ width: 200 }}></Input>
                                     )
@@ -263,10 +325,11 @@ class TradeContract extends Component {
                                 {
                                     getFieldDecorator('fkfs', {
                                         rules: [{ required: false }],
+                                        initialValue: '',
                                     })(
                                         <RadioGroup>
                                             {
-                                                payTypes.map(tp => <Radio key={tp.key} value={tp.value}>{tp.key}</Radio>)
+                                                payTypes.map(tp => <Radio key={tp.key} value={tp.key}>{tp.key}</Radio>)
                                             }
                                         </RadioGroup>
                                     )
@@ -275,13 +338,38 @@ class TradeContract extends Component {
                         </Col>
                     </Row>
                     <Row>
-                        <Col span={24} pull={4}>
+                        <Col span={8}>
                             <FormItem {...formItemLayout} label={(<span>网签日期</span>)}>
                                 {
-                                    getFieldDecorator('wqrq', {
+                                    getFieldDecorator('yxsqyrq', {
                                         rules: [{ required: false }],
+                                        initialValue: '',
                                     })(
-                                        <DatePicker style={{ width: 200 }}></DatePicker>
+                                        <DatePicker style={{ width: 200 }} onChange={this.wqrq_dateChange}></DatePicker>
+                                    )
+                                }
+                            </FormItem>
+                        </Col>
+                        <Col span={8}>
+                            <FormItem {...formItemLayout} label={(<span>预计放款日期</span>)}>
+                                {
+                                    getFieldDecorator('yjfksj', {
+                                        rules: [{ required: false }],
+                                        initialValue: '',
+                                    })(
+                                        <DatePicker style={{ width: 200 }} onChange={this.yjfksj_dateChange}></DatePicker>
+                                    )
+                                }
+                            </FormItem>
+                        </Col>
+                        <Col span={8}>
+                            <FormItem {...formItemLayout} label={(<span>预计放款金额</span>)}>
+                                {
+                                    getFieldDecorator('yjfkje', {
+                                        rules: [{ required: false }],
+                                        initialValue: 0,
+                                    })(
+                                        <Input style={{ width: 200 }}></Input>
                                     )
                                 }
                             </FormItem>
@@ -293,10 +381,11 @@ class TradeContract extends Component {
                                 {
                                     getFieldDecorator('sfzjjg', {
                                         rules: [{ required: false }],
+                                        initialValue: '',
                                     })(
                                         <RadioGroup>
                                             {
-                                                sfzjjgTypes.map(tp => <Radio key={tp.key} value={tp.value}>{tp.key}</Radio>)
+                                                sfzjjgTypes.map(tp => <Radio key={tp.key} value={tp.key}>{tp.key}</Radio>)
                                             }
                                         </RadioGroup>
                                     )
@@ -310,8 +399,9 @@ class TradeContract extends Component {
                                 {
                                     getFieldDecorator('kflfrq', {
                                         rules: [{ required: false }],
+                                        initialValue: '',
                                     })(
-                                        <DatePicker style={{ width: 200 }}></DatePicker>
+                                        <DatePicker style={{ width: 200 }} onChange={this.kflfrq_dateChange}></DatePicker>
                                     )
                                 }
                             </FormItem>
@@ -321,8 +411,9 @@ class TradeContract extends Component {
                                 {
                                     getFieldDecorator('htqyrq', {
                                         rules: [{ required: false }],
+                                        initialValue: '',
                                     })(
-                                        <DatePicker style={{ width: 200 }}></DatePicker>
+                                        <DatePicker style={{ width: 200 }} onChange={this.htqyrq_dateChange}></DatePicker>
                                     )
                                 }
                             </FormItem>
@@ -332,10 +423,11 @@ class TradeContract extends Component {
                                 {
                                     getFieldDecorator('htlx', {
                                         rules: [{ required: false }],
+                                        initialValue: '',
                                     })(
                                         <RadioGroup>
                                             {
-                                                contractTypes.map(tp => <Radio key={tp.key} value={tp.value}>{tp.key}</Radio>)
+                                                contractTypes.map(tp => <Radio key={tp.key} value={tp.key}>{tp.key}</Radio>)
                                             }
                                         </RadioGroup>
                                     )
@@ -349,6 +441,7 @@ class TradeContract extends Component {
                                 {
                                     getFieldDecorator('jjjgxybh', {
                                         rules: [{ required: false }],
+                                        initialValue: '',
                                     })(
                                         <Input style={{ width: 200 }}></Input>
                                     )
@@ -360,6 +453,7 @@ class TradeContract extends Component {
                                 {
                                     getFieldDecorator('mmjjhtbh', {
                                         rules: [{ required: false }],
+                                        initialValue: '',
                                     })(
                                         <Input style={{ width: 200 }}></Input>
                                     )
@@ -371,6 +465,7 @@ class TradeContract extends Component {
                                 {
                                     getFieldDecorator('zzht', {
                                         rules: [{ required: false }],
+                                        initialValue: '',
                                     })(
                                         <Input style={{ width: 200 }}></Input>
                                     )
@@ -383,6 +478,7 @@ class TradeContract extends Component {
                             <Button type='primary' onClick={this.handleSave}>保存</Button>
                         </Col>
                     </Row>
+                    </Spin>
                 </div>
             </Layout>
         )
@@ -391,7 +487,8 @@ class TradeContract extends Component {
 function MapStateToProps(state) {
 
     return {
-        basicData: state.base
+        basicData: state.base,
+        operInfo:state.rp.operInfo
     }
 }
 

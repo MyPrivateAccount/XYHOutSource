@@ -39,6 +39,13 @@ const WebApiConfig = {
         ParList: basicDataBaseApiUrl + 'dictionarydefines/list',// 获取字典类型列表 get
         AreaList: basicDataBaseApiUrl + "areadefines/list"//区域数据
     },
+    rp:{
+        rpAdd:basicDataBaseApiUrl + 'yj/report',//保存成交报告交易合同
+        rpWyAdd:basicDataBaseApiUrl+'yj/reportwy',//保存物业信息
+        rpYzAdd:basicDataBaseApiUrl+'yj/reportyz',//保存业主信息
+        rpKhAdd:basicDataBaseApiUrl+'yj/reportkh',//保存客户信息
+        rpGhAdd:basicDataBaseApiUrl+'yj/reportgh'//保存过户信息
+    }
 
 }
 
