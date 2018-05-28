@@ -29,7 +29,7 @@ const LoadableChargeDetailPage = Loadable({
 });
 
 function ContentPage(props) {
-    const { curMenuID } = props;
+    const { curMenuID, extra } = props;
     //console.log('curMenuID:', curMenuID);
     if (curMenuID === "home") {
         return <LoadableIndexPage />;
@@ -43,7 +43,7 @@ function ContentPage(props) {
     } else if (curMenuID === "limitindex") {
         return <LoadableLimitPage />;
     } else if (curMenuID === "chargedetailinfo") {
-        return <LoadableChargePage isdetail={true} />;
+        return <LoadableChargePage isdetail={true} chargeid={extra} />;
     }
     return null;
 }

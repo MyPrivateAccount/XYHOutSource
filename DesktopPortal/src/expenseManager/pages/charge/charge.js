@@ -38,23 +38,33 @@ class ChargeInfo extends Component {
     }
 
     componentWillMount() {
-        let tempthis = this;
-        let url = WebApiConfig.server.getChargeid;
-        ApiClient.get(url).then(function (f) {
-            if (f.data.code==0) {
-                tempthis.props.form.setFieldsValue({id: f.data.extension});
-                tempthis.state.id = f.data.extension;
-            }
-        });
+        
         this.props.dispatch(getDicInfo(["CHARGE_COST_TYPE"]));
         //this.props.dispatch(searchConditionType(SearchCondition.topteninfo));
     }
 
     componentDidMount() {
         if (this.props.isdetail) {
+            let tempthis = this;
+            let url = WebApiConfig.server.getChargeDetail+this.props.chargeid;
+            ApiClient.get(url).then(function (f) {
+            if (f.data.code==0) {
+                tempthis.state.id = f.data.extension.chargeInfo.id;
+                tempthis.costlist = f.data.extension.costInfos;
+                //tempthis.props.form.setFieldsValue({id:f.data.extension});
+            }
+        });
             //this.props.form.setFieldsValue({id:this.state.id});
         } else {
-            this.props.form.setFieldsValue({id:this.state.id});
+            let tempthis = this;
+            let url = WebApiConfig.server.getChargeid;
+            ApiClient.get(url).then(function (f) {
+                if (f.data.code==0) {
+                    tempthis.props.form.setFieldsValue({id: f.data.extension});
+                    tempthis.state.id = f.data.extension;
+                }
+            });
+//            this.props.form.setFieldsValue({id:this.state.id});
         }
     }
 
@@ -215,7 +225,7 @@ class ChargeInfo extends Component {
                     {getFieldDecorator('id', {
                         reules: [{
                             required:true, message: 'please entry IDcard',
-                        }]
+                        }],
                     })(
                         <Input disabled={true} />
                     )}
@@ -249,7 +259,8 @@ class ChargeInfo extends Component {
                                         {getFieldDecorator(costtype, {
                                             reules: [{
                                                 required:true, message: 'please entry Age',
-                                            }]
+                                            }],
+                                            initialValue: self.props.isdetail? null: v.type
                                         })(
                                             <Select placeholder="选择费用类型">
                                                 {
@@ -267,7 +278,8 @@ class ChargeInfo extends Component {
                                         {getFieldDecorator(costmoney, {
                                             reules: [{
                                                 required:true, message: 'please entry',
-                                            }]
+                                            }],
+                                            initialValue: self.props.isdetail? null: v.cost
                                         })(
                                             <InputNumber placeholder="请输入金额" style={{width: '100%'}} />
                                         )}
@@ -276,7 +288,8 @@ class ChargeInfo extends Component {
                                         {getFieldDecorator(costcomment, {
                                             reules: [{
                                                 required:true, message: 'please entry',
-                                            }]
+                                            }],
+                                            initialValue: self.props.isdetail? null: v.comments
                                         })(
                                             <Input placeholder="请输入摘要" />
                                         )}
@@ -323,7 +336,8 @@ class ChargeInfo extends Component {
                                                             {getFieldDecorator(reciepnumber, {
                                                                 reules: [{
                                                                     required:true, message: 'please entry',
-                                                                }]
+                                                                }],
+                                                                initialValue: self.props.isdetail? null: rv.receiptNumber
                                                             })(
                                                                 <Input placeholder="请输入发票号" />
                                                             )}
@@ -332,7 +346,8 @@ class ChargeInfo extends Component {
                                                             {getFieldDecorator(reciepmoney, {
                                                                 reules: [{
                                                                     required:true, message: 'please entry',
-                                                                }]
+                                                                }],
+                                                                initialValue: self.props.isdetail? null: rv.receiptMoney
                                                             })(
                                                                 <InputNumber placeholder="请输入发票金额" style={{width: '100%'}} />
                                                             )}
@@ -341,7 +356,8 @@ class ChargeInfo extends Component {
                                                             {getFieldDecorator(reciepcomment, {
                                                                 reules: [{
                                                                     required:true, message: 'please entry',
-                                                                }]
+                                                                }],
+                                                                initialValue: self.props.isdetail? null: rv.comments
                                                             })(
                                                                 <Input placeholder="请输入备注" />
                                                             )}

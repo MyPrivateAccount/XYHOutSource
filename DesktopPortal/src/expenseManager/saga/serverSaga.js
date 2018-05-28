@@ -157,6 +157,7 @@ export function* postRecieptInfo(state) {
     }
 }
 
+
 export default function* watchServerInterface() {
     yield takeLatest(actionUtils.getActionType(actionTypes.UPLOAD_CHARGEFILE), uploadFileAsync);
     yield takeLatest(actionUtils.getActionType(actionTypes.POST_CHARGEINFO), postChargeAsync);

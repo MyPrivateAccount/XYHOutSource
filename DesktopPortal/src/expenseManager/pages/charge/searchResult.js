@@ -26,15 +26,15 @@ class SearchResult extends Component {
             {title: "操作", dataIndex: "operation", key: "operation",
             render: (text, record) => {
                 return (
-                    <span> <a onClick={() => this.show(record.key)}>显示详细</a> </span>
+                    <span> <a onClick={() => this.show(record)}>显示详细</a> </span>
                 );
               }
             },
         ];
     }
 
-    show = () => {
-        this.props.dispatch(adduserPage({menuID: 'chargedetailinfo', disname: '费用信息', type:'item'}));
+    show = (e) => {
+        this.props.dispatch(adduserPage({menuID: 'chargedetailinfo', disname: '费用信息', type:'item', extra: e.id}));
     }
 
     componentWillMount() {
