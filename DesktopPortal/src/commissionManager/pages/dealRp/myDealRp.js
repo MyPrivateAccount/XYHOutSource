@@ -20,6 +20,9 @@ class MyDealRp extends Component{
     handleNew = (info)=>{
         this.setState({isShowManager:true})
     }
+    handleBack = (e)=>{
+        this.setState({isShowManager:false})
+    }
     componentDidMount = ()=>{
 
     }
@@ -44,7 +47,7 @@ class MyDealRp extends Component{
                 </Tooltip>
                 <DealRpTable/>
                 </div>
-                <TradeManager vs={this.state.isShowManager}/>
+                <TradeManager vs={this.state.isShowManager} handleback={this.handleBack}/>
             </Layout>
         )
     }
