@@ -35,7 +35,6 @@ class ChargeInfo extends Component {
                 }],
             }
         ],
-        imgfilelist: []
     }
 
     componentWillMount() {
@@ -399,6 +398,7 @@ class ChargeInfo extends Component {
 
 function chargetableMapStateToProps(state) {
     return {
+        selchargeList: state.basicData.selchargeList,
         department: state.basicData.eachDepartment,
         chargeCostTypeList: state.basicData.chargeCostTypeList,
         setContractOrgTree: state.basicData.departmentTree
