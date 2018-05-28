@@ -28,4 +28,8 @@ rpReducerMap[actionTypes.DEALRP_GH_SAVEUPDATE] = function (state, action) {
     console.log("readucer更新过户信息" + JSON.stringify(action.payload));
     return Object.assign({}, state, { ext:action.payload ,operInfo:{operType:'GHSAVE_UPDATE'}});
 }
+rpReducerMap[actionTypes.DEALRP_FP_SAVEUPDATE] = function (state, action) {
+    console.log("readucer更新业绩分配信息" + JSON.stringify(action.payload));
+    return Object.assign({}, state, { ext:action.payload ,operInfo:{operType:'FPSAVE_UPDATE'}});
+}
 export default handleActions(rpReducerMap, initState)

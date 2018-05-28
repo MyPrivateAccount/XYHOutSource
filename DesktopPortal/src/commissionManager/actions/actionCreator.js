@@ -51,3 +51,5 @@ export const dealYzSave = createAction(actionTypes.DEALRP_YZ_SAVE);
 export const dealKhSave = createAction(actionTypes.DEALRP_KH_SAVE);
 //过户页面action
 export const dealGhSave = createAction(actionTypes.DEALRP_GH_SAVE);
+//业绩分配页面action
+export const dealFpSave = createAction(actionTypes.DEALRP_FP_SAVE);

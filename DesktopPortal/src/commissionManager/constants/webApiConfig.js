@@ -44,7 +44,8 @@ const WebApiConfig = {
         rpWyAdd:basicDataBaseApiUrl+'yj/reportwy',//保存物业信息
         rpYzAdd:basicDataBaseApiUrl+'yj/reportyz',//保存业主信息
         rpKhAdd:basicDataBaseApiUrl+'yj/reportkh',//保存客户信息
-        rpGhAdd:basicDataBaseApiUrl+'yj/reportgh'//保存过户信息
+        rpGhAdd:basicDataBaseApiUrl+'yj/reportgh',//保存过户信息
+        rpFpAdd:basicDataBaseApiUrl+'yj/reportyjfp',//保存业绩分配信息
     }
 
 }

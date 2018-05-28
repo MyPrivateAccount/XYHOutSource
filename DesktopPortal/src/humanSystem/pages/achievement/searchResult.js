@@ -48,13 +48,13 @@ class SearchResult extends Component {
         
         return (
             <div>
-                {<p style={{marginBottom: '10px'}}>目前已为你筛选出<b>{this.props.searchInfoResult.achievementList.length}</b>条职位薪酬信息</p>}
+                {<p style={{marginBottom: '10px'}}>目前已为你筛选出<b>{this.props.searchInfoResult.achievementList.extension.length}</b>条职位薪酬信息</p>}
                 <div id="searchResult">
                     <Table id= {"table"} rowKey={record => record.key} 
                     columns={columns} 
                     pagination={this.props.searchInfoResult} 
                     onChange={this.handleChangePage} 
-                    dataSource={this.props.searchInfoResult.achievementList} bordered size="middle" 
+                    dataSource={this.props.searchInfoResult.achievementList.extension} bordered size="middle" 
                     rowSelection={rowSelection} />
                 </div>
             </div>

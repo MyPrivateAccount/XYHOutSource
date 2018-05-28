@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {withReducer} from 'react-redux-dynamic-reducer';
-import {Layout, Menu, Icon, Button, Breadcrumb} from 'antd';
+import {Layout, Menu, Icon, Button, Breadcrumb, notification} from 'antd';
 import {connect} from 'react-redux';
 import reducers from './reducers';
 import ContentPage from './pages/contentPage';
@@ -17,7 +17,7 @@ const menuDefine = [
     {id: 21, menuID: "menu_month", displayName: "月结", menuIcon: 'calendar'},
     {id: 22, menuID: "menu_black", displayName: "黑名单管理", menuIcon: 'lock'/*, requirePermission: ['PermissionItemCreate']*/},
     {id: 23, menuID: "menu_station", displayName: "职位和岗位配置", menuIcon: 'solution'},
-    {id: 24, menuID: "menu_achievement", displayName: "职位薪酬管理", menuIcon: 'database'},
+    {id: 24, menuID: "menu_achievement", displayName: "薪酬管理", menuIcon: 'database'},
     {id: 25, menuID: "menu_attendance", displayName: "考勤信息", menuIcon: 'pushpin-o'},
     {id: 26, menuID: "menu_organization", displayName: "组织架构管理", menuIcon: 'layout'},
     {id: 27, menuID: "menu_statistics", displayName: "统计报表", menuIcon: 'global'},
@@ -53,6 +53,13 @@ const homeStyle = {
                     // this.setState({
                     //     activeMenu: menuDefine[i]
                     // });
+                    if (e.key == "menu_organization" || e.key == "menu_statistics" || e.key == "menu_set") {
+                        notification.error({
+                            message: "no page",
+                            duration: 3
+                        });
+                        return ;
+                    }
                     this.state.activeMenu = menuDefine[i];
                     this.props.dispatch(setbreadPageItem(menuDefine[i]));
                     break;

@@ -91,6 +91,18 @@ class Staffinfo extends Component {
         this.props.dispatch(adduserPage({id: "0", menuID: "Onboarding", displayName: '入职', type: 'item'}));
     }
 
+    handleBecome = ()=> {
+        this.props.dispatch(adduserPage({id: "1", menuID: "BecomeStaff", displayName: '转正', type: 'item'}));
+    }
+
+    handleChangeSalary = () => {
+        this.props.dispatch(adduserPage({id: "1", menuID: "changestation", displayName: '异动调薪', type: 'item'}));
+    }
+
+    handleLeft = () => {
+        this.props.dispatch(adduserPage({id: "1", menuID: "leftstation", displayName: '离职', type: 'item'}));
+    }
+
     render() {
         const searchInfo = this.props.searchInfo || {};
         const showLoading = searchInfo.showLoading;
@@ -153,12 +165,12 @@ class Staffinfo extends Component {
                     <Row className="groupButton">
                         <Col span={24}>
                             <Button type="primary" className="statuButton" onClick={(e) => this.handleOnboarding(0)}>入职</Button>
-                            <Button type="primary" className="statuButton" onClick={(e) => this.handleSearch(1)}>转正</Button>
-                            <Button type="primary" className="statuButton" onClick={(e) => this.handleSearch(2)}>异动调薪</Button>
-                            <Button type="primary" className="statuButton" onClick={(e) => this.handleSearch(3)}>离职</Button>
-                            <Button type="primary" className="statuButton" onClick={(e) => this.handleSearch(4)}>合同上传</Button>
-                            <Button type="primary" className="statuButton" onClick={(e) => this.handleSearch(5)}>加入黑名单</Button>
-                            <Button type="primary" className="statuButton" onClick={(e) => this.handleSearch()}>历史信息</Button>
+                            <Button type="primary" className="statuButton" onClick={(e) => this.handleBecome()}>转正</Button>
+                            <Button type="primary" className="statuButton" onClick={(e) => this.handleChangeSalary()}>异动调薪</Button>
+                            <Button type="primary" className="statuButton" onClick={(e) => this.handleLeft()}>离职</Button>
+                            <Button type="primary" className="statuButton" onClick={(e) => this.handleUploadContract()}>合同上传</Button>
+                            <Button type="primary" className="statuButton" onClick={(e) => this.handleAddBlack()}>加入黑名单</Button>
+                            <Button type="primary" className="statuButton" onClick={(e) => this.handleHistory()}>历史信息</Button>
                         </Col>
                     </Row>
                     <p style={{padding: '15px 10px', borderBottom: '1px solid #e0e0e0', fontSize: '1.4rem', fontWeight: 'bold'}}>目前已为你筛选出<b style={{color: '#f36366'}}> {humanList.length || 0} </b>条员工信息</p>

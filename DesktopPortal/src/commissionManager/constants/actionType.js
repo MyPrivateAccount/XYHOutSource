@@ -69,3 +69,6 @@ export const DEALRP_KH_SAVEUPDATE = 'DEALRP_KH_SAVEUPDATE';
 //成交报告-过户页面
 export const DEALRP_GH_SAVE = 'DEALRP_GH_SAVE';
 export const DEALRP_GH_SAVEUPDATE = 'DEALRP_GH_SAVEUPDATE';
+//成交报告-业绩分配页面
+export const DEALRP_FP_SAVE = 'DEALRP_FP_SAVE';
+export const DEALRP_FP_SAVEUPDATE = 'DEALRP_FP_SAVEUPDATE';

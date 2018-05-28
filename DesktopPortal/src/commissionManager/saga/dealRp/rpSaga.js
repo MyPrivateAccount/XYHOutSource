@@ -144,10 +144,38 @@ export function* saveRpGhDataAsync(state){
         });
     }
 }
+//保存业绩分配
+export function* saveRpFpDataAsync(state){
+    let result = { isOk: false, extension: [], msg: '保存成交报告业绩分配信息失败！' };
+    let url = WebApiConfig.rp.rpFpAdd;
+    try {
+        console.log(url)
+        console.log('saveRpFpDataAsync:', state);
+        let res = yield call(ApiClient.put, url, state.payload);
+       
+        //console.log(res, '获取参数列表');
+        getApiResult(res, result);
+        if (result.isOk) {
+            yield put({ type: actionUtils.getActionType(actionTypes.DEALRP_FP_SAVEUPDATE), payload: result.extension });
+            // yield put({ type: actionUtils.getActionType(actionTypes.SET_SEARCH_LOADING), payload: false });
+        }
+    } catch (e) {
+        result.msg = "保存成交报告业绩分配接口调用异常！";
+    }
+    if (!result.isOk) {
+        console.log(result.msg)
+        notification.error({
+            message: '系统参数',
+            description: '保存成交报告业绩分配信息失败!',
+            duration: 3
+        });
+    }
+}
 export default function* watchAllRpAsync(){
     yield takeLatest(actionUtils.getActionType(actionTypes.DEALRP_RP_SAVE), saveRpDataAsync);
     yield takeLatest(actionUtils.getActionType(actionTypes.DEALRP_WY_SAVE), saveRpWyDataAsync);
     yield takeLatest(actionUtils.getActionType(actionTypes.DEALRP_YZ_SAVE), saveRpYzDataAsync);
     yield takeLatest(actionUtils.getActionType(actionTypes.DEALRP_KH_SAVE), saveRpKhDataAsync);
     yield takeLatest(actionUtils.getActionType(actionTypes.DEALRP_GH_SAVE), saveRpGhDataAsync);
+    yield takeLatest(actionUtils.getActionType(actionTypes.DEALRP_FP_SAVE), saveRpFpDataAsync);
 }
