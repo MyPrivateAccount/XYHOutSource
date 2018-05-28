@@ -171,6 +171,168 @@ export function* saveRpFpDataAsync(state){
         });
     }
 }
+//获取交易合同
+export function* getRpDataAsync(state){
+    let result = { isOk: false, extension: [], msg: '获取成交报告交易合同信息失败！' };
+    let url = WebApiConfig.rp.rpGet+state.payload;
+    try {
+        console.log(url)
+        console.log('getRpDataAsync:', state);
+        let res = yield call(ApiClient.get, url, state.payload);
+       
+        //console.log(res, '获取参数列表');
+        getApiResult(res, result);
+        if (result.isOk) {
+            yield put({ type: actionUtils.getActionType(actionTypes.DEALRP_RP_GETUPDATE), payload: result.extension });
+            // yield put({ type: actionUtils.getActionType(actionTypes.SET_SEARCH_LOADING), payload: false });
+        }
+    } catch (e) {
+        result.msg = "获取成交报告交易合同接口调用异常！";
+    }
+    if (!result.isOk) {
+        console.log(result.msg)
+        notification.error({
+            message: '提示',
+            description: '获取成交报告交易合同信息失败!',
+            duration: 3
+        });
+    }
+}
+//获取物业信息
+export function* getRpWyDataAsync(state){
+    let result = { isOk: false, extension: [], msg: '获取成交报告物业信息失败！' };
+    let url = WebApiConfig.rp.wyGet+state.payload;
+    try {
+        console.log(url)
+        console.log('getRpWyDataAsync:', state);
+        let res = yield call(ApiClient.get, url, state.payload);
+       
+        //console.log(res, '获取参数列表');
+        getApiResult(res, result);
+        if (result.isOk) {
+            yield put({ type: actionUtils.getActionType(actionTypes.DEALRP_WY_GETUPDATE), payload: result.extension });
+            // yield put({ type: actionUtils.getActionType(actionTypes.SET_SEARCH_LOADING), payload: false });
+        }
+    } catch (e) {
+        result.msg = "获取成交报告物业接口调用异常！";
+    }
+    if (!result.isOk) {
+        console.log(result.msg)
+        notification.error({
+            message: '提示',
+            description: '获取成交报告物业信息失败!',
+            duration: 3
+        });
+    }
+}
+//获取业主信息
+export function* getRpYzDataAsync(state){
+    let result = { isOk: false, extension: [], msg: '获取成交报告业主信息失败！' };
+    let url = WebApiConfig.rp.yzGet+state.payload;
+    try {
+        console.log(url)
+        console.log('getRpYzDataAsync:', state);
+        let res = yield call(ApiClient.get, url, state.payload);
+       
+        //console.log(res, '获取参数列表');
+        getApiResult(res, result);
+        if (result.isOk) {
+            yield put({ type: actionUtils.getActionType(actionTypes.DEALRP_YZ_GETUPDATE), payload: result.extension });
+            // yield put({ type: actionUtils.getActionType(actionTypes.SET_SEARCH_LOADING), payload: false });
+        }
+    } catch (e) {
+        result.msg = "获取成交报告业主接口调用异常！";
+    }
+    if (!result.isOk) {
+        console.log(result.msg)
+        notification.error({
+            message: '提示',
+            description: '获取成交报告业主信息失败!',
+            duration: 3
+        });
+    }
+}
+//获取客户信息
+export function* getRpKhDataAsync(state){
+    let result = { isOk: false, extension: [], msg: '获取成交报告客户信息失败！' };
+    let url = WebApiConfig.rp.khGet+state.payload;
+    try {
+        console.log(url)
+        console.log('getRpKhDataAsync:', state);
+        let res = yield call(ApiClient.get, url, state.payload);
+       
+        //console.log(res, '获取参数列表');
+        getApiResult(res, result);
+        if (result.isOk) {
+            yield put({ type: actionUtils.getActionType(actionTypes.DEALRP_KH_GETUPDATE), payload: result.extension });
+            // yield put({ type: actionUtils.getActionType(actionTypes.SET_SEARCH_LOADING), payload: false });
+        }
+    } catch (e) {
+        result.msg = "获取成交报告客户信息接口调用异常！";
+    }
+    if (!result.isOk) {
+        console.log(result.msg)
+        notification.error({
+            message: '提示',
+            description: '获取成交报告客户信息失败!',
+            duration: 3
+        });
+    }
+}
+//获取过户信息
+export function* getRpGhDataAsync(state){
+    let result = { isOk: false, extension: [], msg: '获取成交报告过户信息失败！' };
+    let url = WebApiConfig.rp.ghGet+state.payload;
+    try {
+        console.log(url)
+        console.log('getRpGhDataAsync:', state);
+        let res = yield call(ApiClient.get, url, state.payload);
+       
+        //console.log(res, '获取参数列表');
+        getApiResult(res, result);
+        if (result.isOk) {
+            yield put({ type: actionUtils.getActionType(actionTypes.DEALRP_GH_GETUPDATE), payload: result.extension });
+            // yield put({ type: actionUtils.getActionType(actionTypes.SET_SEARCH_LOADING), payload: false });
+        }
+    } catch (e) {
+        result.msg = "获取成交报告过户信息接口调用异常！";
+    }
+    if (!result.isOk) {
+        console.log(result.msg)
+        notification.error({
+            message: '提示',
+            description: '获取成交报告过户信息失败!',
+            duration: 3
+        });
+    }
+}
+//获取业绩分配信息
+export function* getRpFpDataAsync(state){
+    let result = { isOk: false, extension: [], msg: '获取成交报告业绩分配信息失败！' };
+    let url = WebApiConfig.rp.fpGet+state.payload;
+    try {
+        console.log(url)
+        console.log('getRpFpDataAsync:', state);
+        let res = yield call(ApiClient.get, url, state.payload);
+       
+        //console.log(res, '获取参数列表');
+        getApiResult(res, result);
+        if (result.isOk) {
+            yield put({ type: actionUtils.getActionType(actionTypes.DEALRP_FP_GETUPDATE), payload: result.extension });
+            // yield put({ type: actionUtils.getActionType(actionTypes.SET_SEARCH_LOADING), payload: false });
+        }
+    } catch (e) {
+        result.msg = "获取成交报告过户信息接口调用异常！";
+    }
+    if (!result.isOk) {
+        console.log(result.msg)
+        notification.error({
+            message: '提示',
+            description: '获取成交报告过户信息失败!',
+            duration: 3
+        });
+    }
+}
 export default function* watchAllRpAsync(){
     yield takeLatest(actionUtils.getActionType(actionTypes.DEALRP_RP_SAVE), saveRpDataAsync);
     yield takeLatest(actionUtils.getActionType(actionTypes.DEALRP_WY_SAVE), saveRpWyDataAsync);
@@ -178,4 +340,11 @@ export default function* watchAllRpAsync(){
     yield takeLatest(actionUtils.getActionType(actionTypes.DEALRP_KH_SAVE), saveRpKhDataAsync);
     yield takeLatest(actionUtils.getActionType(actionTypes.DEALRP_GH_SAVE), saveRpGhDataAsync);
     yield takeLatest(actionUtils.getActionType(actionTypes.DEALRP_FP_SAVE), saveRpFpDataAsync);
+
+    yield takeLatest(actionUtils.getActionType(actionTypes.DEALRP_RP_GET), getRpDataAsync);
+    yield takeLatest(actionUtils.getActionType(actionTypes.DEALRP_WY_GET), getRpWyDataAsync);
+    yield takeLatest(actionUtils.getActionType(actionTypes.DEALRP_YZ_GET), getRpYzDataAsync);
+    yield takeLatest(actionUtils.getActionType(actionTypes.DEALRP_KH_GET), getRpKhDataAsync);
+    yield takeLatest(actionUtils.getActionType(actionTypes.DEALRP_GH_GET), getRpGhDataAsync);
+    yield takeLatest(actionUtils.getActionType(actionTypes.DEALRP_FP_GET), getRpFpDataAsync);
 }

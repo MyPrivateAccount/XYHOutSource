@@ -46,6 +46,13 @@ const WebApiConfig = {
         rpKhAdd:basicDataBaseApiUrl+'yj/reportkh',//保存客户信息
         rpGhAdd:basicDataBaseApiUrl+'yj/reportgh',//保存过户信息
         rpFpAdd:basicDataBaseApiUrl+'yj/reportyjfp',//保存业绩分配信息
+        //获取接口
+        rpGet:basicDataBaseApiUrl+'yj/report/',
+        wyGet:basicDataBaseApiUrl+'yj/reportwy/',
+        yzGet:basicDataBaseApiUrl+'yj/reportyz/',
+        khGet:basicDataBaseApiUrl+'yj/reportkh/',
+        ghGet:basicDataBaseApiUrl+'yj/reportgh/',
+        fpGet:basicDataBaseApiUrl+'yj/reportyjfp/'
     }
 
 }

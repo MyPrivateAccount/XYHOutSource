@@ -57,18 +57,30 @@ export const DIC_GET_ALL_ORG_LIST_COMPLETE = 'DIC_GET_ALL_ORG_LIST_COMPLETE';
 //成交报告－交易合同页面
 export const DEALRP_RP_SAVE = 'DEALRP_RP_SAVE';//交易合同保存
 export const DEALRP_RP_SAVEUPDATE = 'DEALRP_RP_SAVEUPDATE';//交易合同保存成功
+export const DEALRP_RP_GET = 'DEALRP_RP_GET';//异步获取报告数据
+export const DEALRP_RP_GETUPDATE = 'DEALRP_RP_GETUPDATE';//获取报告数据更新
 //成交报告-物业页面
 export const DEALRP_WY_SAVE = 'DEALRP_WY_SAVE';
 export const DEALRP_WY_SAVEUPDATE = 'DEALRP_WY_SAVEUPDATE';
+export const DEALRP_WY_GET = 'DEALRP_WY_GET';
+export const DEALRP_WY_GETUPDATE = 'DEALRP_WY_GETUPDATE';
 //成交报告-业主页面
 export const DEALRP_YZ_SAVE = 'DEALRP_YZ_SAVE';
 export const DEALRP_YZ_SAVEUPDATE = 'DEALRP_YZ_SAVEUPDATE';
+export const DEALRP_YZ_GET = 'DEALRP_YZ_GET';
+export const DEALRP_YZ_GETUPDATE = 'DEALRP_YZ_GETUPDATE';
 //成交报告-客户页面
 export const DEALRP_KH_SAVE = 'DEALRP_KH_SAVE';
 export const DEALRP_KH_SAVEUPDATE = 'DEALRP_KH_SAVEUPDATE';
+export const DEALRP_KH_GET = 'DEALRP_KH_GET';
+export const DEALRP_KH_GETUPDATE = 'DEALRP_KH_GETUPDATE';
 //成交报告-过户页面
 export const DEALRP_GH_SAVE = 'DEALRP_GH_SAVE';
 export const DEALRP_GH_SAVEUPDATE = 'DEALRP_GH_SAVEUPDATE';
+export const DEALRP_GH_GET = 'DEALRP_GH_GET';
+export const DEALRP_GH_GETUPDATE = 'DEALRP_GH_GETUPDATE';
 //成交报告-业绩分配页面
 export const DEALRP_FP_SAVE = 'DEALRP_FP_SAVE';
 export const DEALRP_FP_SAVEUPDATE = 'DEALRP_FP_SAVEUPDATE';
+export const DEALRP_FP_GET = 'DEALRP_FP_GET';
+export const DEALRP_FP_GETUPDATE = 'DEALRP_FP_GETUPDATE';

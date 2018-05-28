@@ -43,13 +43,19 @@ export const acmentParamItemSave = createAction(actionTypes.ACMENT_PARAM_ITEM_SA
 export const acmentParamItemAdd = createAction(actionTypes.ACMENT_PARAM_ITEM_ADD);
 //交易合同页面action
 export const dealRpSave = createAction(actionTypes.DEALRP_RP_SAVE);
+export const dealRpGet  = createAction(actionTypes.DEALRP_RP_GET);
 //物业页面action
 export const dealWySave = createAction(actionTypes.DEALRP_WY_SAVE);
+export const dealWyGet = createAction(actionTypes.DEALRP_WY_GET);
 //业主页面action
 export const dealYzSave = createAction(actionTypes.DEALRP_YZ_SAVE);
+export const dealYzGet = createAction(actionTypes.DEALRP_YZ_GET);
 //客户页面action
 export const dealKhSave = createAction(actionTypes.DEALRP_KH_SAVE);
+export const dealKhGet = createAction(actionTypes.DEALRP_KH_GET);
 //过户页面action
 export const dealGhSave = createAction(actionTypes.DEALRP_GH_SAVE);
+export const dealGhGet = createAction(actionTypes.DEALRP_GH_GET);
 //业绩分配页面action
 export const dealFpSave = createAction(actionTypes.DEALRP_FP_SAVE);
+export const dealFpGet = createAction(actionTypes.DEALRP_FP_GET);

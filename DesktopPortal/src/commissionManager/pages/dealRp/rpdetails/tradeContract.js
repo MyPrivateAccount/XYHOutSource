@@ -2,7 +2,7 @@
 //合同列表
 import { connect } from 'react-redux';
 import React, { Component } from 'react';
-import { getDicParList,dealRpSave } from '../../../actions/actionCreator'
+import { getDicParList,dealRpSave} from '../../../actions/actionCreator'
 import {notification, DatePicker, Form, Span, Layout, Table, Button, Radio, Popconfirm, Tooltip, Row, Col, Input, Spin, Select, TreeSelect } from 'antd'
 import './trade.less'
 
@@ -10,20 +10,28 @@ const RadioGroup = Radio.Group;
 const FormItem = Form.Item;
 class TradeContract extends Component {
     state = {
-        isDataLoading:false
+        isDataLoading:false,
+        rpData:{}
     }
     componentWillMount = () => {
         this.setState({isDataLoading:true,tip:'信息初始化中...'})
         this.props.dispatch(getDicParList(['COMMISSION_BSWY_CATEGORIES', 'COMMISSION_CJBG_TYPE', 'COMMISSION_JY_TYPE', 'COMMISSION_PAY_TYPE', 'COMMISSION_PROJECT_TYPE', 'COMMISSION_CONTRACT_TYPE', 'COMMISSION_OWN_TYPE', 'COMMISSION_TRADEDETAIL_TYPE', 'COMMISSION_SFZJJG_TYPE']));
     }
+    componentDidMount=()=>{
+    }
     componentWillReceiveProps(newProps) {
         this.setState({ isDataLoading: false });
-        if(newProps.operInfo.operType === 'HTSAVE_UPDATE'){
+
+        if(newProps.operInfo.operType === 'HTSAVE_UPDATE'){//信息保存成功
             notification.success({
                 message: '提示',
                 description: '保存成交报告交易合同信息成功!',
                 duration: 3
             });
+            newProps.operInfo.operType = ''
+        }
+        else if(newProps.operInfo.operType === 'HTGET_UPDATE'){//信息获取成功
+            this.setState({ rpData: newProps.ext});
             newProps.operInfo.operType = ''
         }
     }
@@ -99,7 +107,7 @@ class TradeContract extends Component {
                                 {
                                     getFieldDecorator('bswylx', {
                                         rules: [{ required: false }],
-                                        initialValue: '',
+                                        initialValue: this.state.rpData.bswylx,
                                     })(
                                         <RadioGroup>
                                             {
@@ -117,7 +125,7 @@ class TradeContract extends Component {
                                 {
                                     getFieldDecorator('cjbglx', {
                                         rules: [{ required: false }],
-                                        initialValue: '',
+                                        initialValue: this.state.rpData.cjbglx,
                                     })(
                                         <RadioGroup>
                                             {
@@ -135,7 +143,7 @@ class TradeContract extends Component {
                                 {
                                     getFieldDecorator('gsmc', {
                                         rules: [{ required: false, message: '请填写公司名称!' }],
-                                        initialValue: '',
+                                        initialValue: this.state.rpData.gsmc,
                                     })(
                                         <Input style={{ width: 200 }}></Input>
                                     )
@@ -149,7 +157,7 @@ class TradeContract extends Component {
                                 {
                                     getFieldDecorator('fyzId', {
                                         rules: [{ required: false, message: '请填写分行名称!' }],
-                                        initialValue: '',
+                                        initialValue: this.state.rpData.fyzId,
                                     })(
                                         <Input style={{ width: 200 }}></Input>
                                     )
@@ -161,7 +169,7 @@ class TradeContract extends Component {
                                 {
                                     getFieldDecorator('cjrId', {
                                         rules: [{ required: false, message: '请填写成交人!' }],
-                                        initialValue: '',
+                                        initialValue: this.state.rpData.cjrId,
                                     })(
                                         <Input style={{ width: 200 }}></Input>
                                     )
@@ -173,7 +181,7 @@ class TradeContract extends Component {
                                 {
                                     getFieldDecorator('cjrq', {
                                         rules: [{ required: false, message: '请选择成交日期!' }],
-                                        initialValue: '',
+                                        initialValue: this.state.rpData.cjrq,
                                     })(
                                         <DatePicker style={{ width: 200 }}  onChange={this.cjrq_dateChange}></DatePicker>
                                     )
@@ -187,7 +195,7 @@ class TradeContract extends Component {
                                 {
                                     getFieldDecorator('cjbgbh', {
                                         rules: [{ required: false }],
-                                        initialValue: '',
+                                        initialValue: this.state.rpData.cjbgbh,
                                     })(
                                         <Input style={{ width: 200 }}></Input>
                                     )
@@ -199,7 +207,7 @@ class TradeContract extends Component {
                                 {
                                     getFieldDecorator('fjsm', {
                                         rules: [{ required: false }],
-                                        initialValue: '',
+                                        initialValue: this.state.rpData.fjsm,
                                     })(
                                         <Input style={{ width: 200 }}></Input>
                                     )
@@ -213,7 +221,7 @@ class TradeContract extends Component {
                                 {
                                     getFieldDecorator('bz', {
                                         rules: [{ required: false }],
-                                        initialValue: '',
+                                        initialValue: this.state.rpData.bz,
                                     })(
                                         <Input.TextArea rows={4} style={{ width: 510 }}></Input.TextArea>
                                     )
@@ -227,7 +235,7 @@ class TradeContract extends Component {
                                 {
                                     getFieldDecorator('jylx', {
                                         rules: [{ required: false }],
-                                        initialValue: '',
+                                        initialValue: this.state.rpData.jylx,
                                     })(
                                         <RadioGroup>
                                             {
@@ -245,7 +253,7 @@ class TradeContract extends Component {
                                 {
                                     getFieldDecorator('xmlx', {
                                         rules: [{ required: false }],
-                                        initialValue: '',
+                                        initialValue: this.state.rpData.xmlx,
                                     })(
                                         <RadioGroup>
                                             {
@@ -263,7 +271,7 @@ class TradeContract extends Component {
                                 {
                                     getFieldDecorator('xxjylx', {
                                         rules: [{ required: false }],
-                                        initialValue: '',
+                                        initialValue: this.state.rpData.xxjylx,
                                     })(
                                         <RadioGroup>
                                             {
@@ -281,7 +289,7 @@ class TradeContract extends Component {
                                 {
                                     getFieldDecorator('cqlx', {
                                         rules: [{ required: false }],
-                                        initialValue: '',
+                                        initialValue: this.state.rpData.cqlx,
                                     })(
                                         <RadioGroup>
                                             {
@@ -299,7 +307,7 @@ class TradeContract extends Component {
                                 {
                                     getFieldDecorator('cjzj', {
                                         rules: [{ required: false, message: '请选择成交日期!' }],
-                                        initialValue: 0,
+                                        initialValue: this.state.rpData.cjzj,
                                     })(
                                         <Input style={{ width: 200 }}></Input>
                                     )
@@ -311,7 +319,7 @@ class TradeContract extends Component {
                                 {
                                     getFieldDecorator('ycjyj', {
                                         rules: [{ required: false, message: '请选择成交日期!' }],
-                                        initialValue: 0,
+                                        initialValue: this.state.rpData.ycjyj,
                                     })(
                                         <Input style={{ width: 200 }}></Input>
                                     )
@@ -325,7 +333,7 @@ class TradeContract extends Component {
                                 {
                                     getFieldDecorator('fkfs', {
                                         rules: [{ required: false }],
-                                        initialValue: '',
+                                        initialValue: this.state.rpData.fkfs,
                                     })(
                                         <RadioGroup>
                                             {
@@ -343,7 +351,7 @@ class TradeContract extends Component {
                                 {
                                     getFieldDecorator('yxsqyrq', {
                                         rules: [{ required: false }],
-                                        initialValue: '',
+                                        initialValue: this.state.rpData.yxsqyrq,
                                     })(
                                         <DatePicker style={{ width: 200 }} onChange={this.wqrq_dateChange}></DatePicker>
                                     )
@@ -355,7 +363,7 @@ class TradeContract extends Component {
                                 {
                                     getFieldDecorator('yjfksj', {
                                         rules: [{ required: false }],
-                                        initialValue: '',
+                                        initialValue: this.state.rpData.yjfksj,
                                     })(
                                         <DatePicker style={{ width: 200 }} onChange={this.yjfksj_dateChange}></DatePicker>
                                     )
@@ -367,7 +375,7 @@ class TradeContract extends Component {
                                 {
                                     getFieldDecorator('yjfkje', {
                                         rules: [{ required: false }],
-                                        initialValue: 0,
+                                        initialValue: this.state.rpData.yjfkje,
                                     })(
                                         <Input style={{ width: 200 }}></Input>
                                     )
@@ -381,7 +389,7 @@ class TradeContract extends Component {
                                 {
                                     getFieldDecorator('sfzjjg', {
                                         rules: [{ required: false }],
-                                        initialValue: '',
+                                        initialValue: this.state.rpData.sfzjjg,
                                     })(
                                         <RadioGroup>
                                             {
@@ -399,7 +407,7 @@ class TradeContract extends Component {
                                 {
                                     getFieldDecorator('kflfrq', {
                                         rules: [{ required: false }],
-                                        initialValue: '',
+                                        initialValue: this.state.rpData.kflfrq,
                                     })(
                                         <DatePicker style={{ width: 200 }} onChange={this.kflfrq_dateChange}></DatePicker>
                                     )
@@ -411,7 +419,7 @@ class TradeContract extends Component {
                                 {
                                     getFieldDecorator('htqyrq', {
                                         rules: [{ required: false }],
-                                        initialValue: '',
+                                        initialValue: this.state.rpData.htqyrq,
                                     })(
                                         <DatePicker style={{ width: 200 }} onChange={this.htqyrq_dateChange}></DatePicker>
                                     )
@@ -423,7 +431,7 @@ class TradeContract extends Component {
                                 {
                                     getFieldDecorator('htlx', {
                                         rules: [{ required: false }],
-                                        initialValue: '',
+                                        initialValue: this.state.rpData.htlx,
                                     })(
                                         <RadioGroup>
                                             {
@@ -441,7 +449,7 @@ class TradeContract extends Component {
                                 {
                                     getFieldDecorator('jjjgxybh', {
                                         rules: [{ required: false }],
-                                        initialValue: '',
+                                        initialValue: this.state.rpData.jjjgxybh,
                                     })(
                                         <Input style={{ width: 200 }}></Input>
                                     )
@@ -453,7 +461,7 @@ class TradeContract extends Component {
                                 {
                                     getFieldDecorator('mmjjhtbh', {
                                         rules: [{ required: false }],
-                                        initialValue: '',
+                                        initialValue: this.state.rpData.mmjjhtbh,
                                     })(
                                         <Input style={{ width: 200 }}></Input>
                                     )
@@ -465,7 +473,7 @@ class TradeContract extends Component {
                                 {
                                     getFieldDecorator('zzht', {
                                         rules: [{ required: false }],
-                                        initialValue: '',
+                                        initialValue: this.state.rpData.zzht,
                                     })(
                                         <Input style={{ width: 200 }}></Input>
                                     )
@@ -488,7 +496,8 @@ function MapStateToProps(state) {
 
     return {
         basicData: state.base,
-        operInfo:state.rp.operInfo
+        operInfo:state.rp.operInfo,
+        ext:state.rp.ext
     }
 }
 

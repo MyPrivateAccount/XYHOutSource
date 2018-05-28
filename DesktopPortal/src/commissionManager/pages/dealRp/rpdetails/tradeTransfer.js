@@ -13,7 +13,8 @@ class TradeTransfer extends Component {
         ghFkrq:'',//付款日期
         ghGhrq:'',//过户日期
         ghJbrq:'',//解保日期
-        isDataLoading:false
+        isDataLoading:false,
+        rpData:{}
     }
     componentWillMount = () => {
         this.setState({isDataLoading:true,tip:'信息初始化中...'})
@@ -27,6 +28,10 @@ class TradeTransfer extends Component {
                 description: '保存成交报告过户信息成功!',
                 duration: 3
             });
+            newProps.operInfo.operType = ''
+        }
+        else if(newProps.operInfo.operType === 'GHGET_UPDATE'){//信息获取成功
+            this.setState({ rpData: newProps.ext});
             newProps.operInfo.operType = ''
         }
     }
@@ -94,7 +99,7 @@ class TradeTransfer extends Component {
                                 {
                                     getFieldDecorator('ghSsqy', {
                                         rules: [{ required: false }],
-                                        initialValue: '',
+                                        initialValue: this.state.rpData.ghSsqy,
                                     })(
                                         <Select style={{ width: 200 }}>
                                         {
@@ -110,7 +115,7 @@ class TradeTransfer extends Component {
                                 {
                                     getFieldDecorator('ghFkfs', {
                                         rules: [{ required: false }],
-                                        initialValue: '',
+                                        initialValue: this.state.rpData.ghFkfs,
                                     })(
                                         <Select style={{ width: 200 }}>
                                         {
@@ -128,7 +133,7 @@ class TradeTransfer extends Component {
                                 {
                                     getFieldDecorator('ghQydbgs', {
                                         rules: [{ required: false, message: '请填写分行名称!' }],
-                                        initialValue: '',
+                                        initialValue: this.state.rpData.ghQydbgs,
                                     })(
                                         <Select style={{ width: 200 }}>
                                           <Option key='1' value='1'>是</Option>
@@ -143,7 +148,7 @@ class TradeTransfer extends Component {
                                 {
                                     getFieldDecorator('ghDbgs', {
                                         rules: [{ required: false, message: '请填写成交人!' }],
-                                        initialValue: '',
+                                        initialValue: this.state.rpData.ghDbgs,
                                     })(
                                         <Input style={{ width: 200 }}></Input>
                                     )
@@ -155,7 +160,7 @@ class TradeTransfer extends Component {
                                 {
                                     getFieldDecorator('ghDkyh', {
                                         rules: [{ required: false, message: '请选择成交日期!' }],
-                                        initialValue: '',
+                                        initialValue: this.state.rpData.ghDkyh,
                                     })(
                                         <Input style={{ width: 200 }}></Input>
                                     )
@@ -169,7 +174,7 @@ class TradeTransfer extends Component {
                                 {
                                     getFieldDecorator('ghDbfje', {
                                         rules: [{ required: false, message: '请填写分行名称!' }],
-                                        initialValue: '',
+                                        initialValue: this.state.rpData.ghDbfje,
                                     })(
                                         <Input style={{ width: 200 }}></Input>
                                     )
@@ -183,7 +188,7 @@ class TradeTransfer extends Component {
                                 {
                                     getFieldDecorator('ghDkzh', {
                                         rules: [{ required: false, message: '请选择成交日期!' }],
-                                        initialValue: '',
+                                        initialValue: this.state.rpData.ghDkzh,
                                     })(
                                         <Input style={{ width: 200 }}></Input>
                                     )
@@ -197,7 +202,7 @@ class TradeTransfer extends Component {
                                 {
                                     getFieldDecorator('ghDkcs', {
                                         rules: [{ required: false, message: '请填写分行名称!' }],
-                                        initialValue: '',
+                                        initialValue: this.state.rpData.ghDkcs,
                                     })(
                                         <Input style={{ width: 200 }}></Input>
                                     )
@@ -209,7 +214,7 @@ class TradeTransfer extends Component {
                                 {
                                     getFieldDecorator('ghDkje', {
                                         rules: [{ required: false, message: '请填写成交人!' }],
-                                        initialValue: '',
+                                        initialValue: this.state.rpData.ghDkje,
                                     })(
                                         <Input style={{ width: 200 }}></Input>
                                     )
@@ -221,7 +226,7 @@ class TradeTransfer extends Component {
                                 {
                                     getFieldDecorator('ghDknx', {
                                         rules: [{ required: false, message: '请选择成交日期!' }],
-                                        initialValue: '',
+                                        initialValue: this.state.rpData.ghDknx,
                                     })(
                                             <Select style={{ width: 80 }}>
                                             {
@@ -239,7 +244,7 @@ class TradeTransfer extends Component {
                                 {
                                     getFieldDecorator('ghPggs', {
                                         rules: [{ required: false, message: '请填写分行名称!' }],
-                                        initialValue: '',
+                                        initialValue: this.state.rpData.ghPggs,
                                     })(
                                         <Input style={{ width: 200 }}></Input>
                                     )
@@ -251,7 +256,7 @@ class TradeTransfer extends Component {
                                 {
                                     getFieldDecorator('ghZjjgje', {
                                         rules: [{ required: false, message: '请填写成交人!' }],
-                                        initialValue: '',
+                                        initialValue: this.state.rpData.ghZjjgje,
                                     })(
                                         <Input style={{ width: 200 }}></Input>
                                     )
@@ -263,7 +268,7 @@ class TradeTransfer extends Component {
                                 {
                                     getFieldDecorator('ghYzqk', {
                                         rules: [{ required: false, message: '请选择成交日期!' }],
-                                        initialValue: '',
+                                        initialValue: this.state.rpData.ghYzqk,
                                     })(
                                         <Input style={{ width: 200 }}></Input>
                                     )
@@ -289,7 +294,7 @@ class TradeTransfer extends Component {
                                 {
                                     getFieldDecorator('ghSllx', {
                                         rules: [{ required: false, message: '请填写成交人!' }],
-                                        initialValue: '',
+                                        initialValue: this.state.rpData.ghSllx,
                                     })(
                                         <Input style={{ width: 200 }}></Input>
                                     )
@@ -301,7 +306,7 @@ class TradeTransfer extends Component {
                                 {
                                     getFieldDecorator('ghDbje', {
                                         rules: [{ required: false, message: '请选择成交日期!' }],
-                                        initialValue: '',
+                                        initialValue: this.state.rpData.ghDbje,
                                     })(
                                         <Input style={{ width: 200 }}></Input>
                                     )
@@ -315,7 +320,7 @@ class TradeTransfer extends Component {
                                 {
                                     getFieldDecorator('ghDyhzh', {
                                         rules: [{ required: false, message: '请填写分行名称!' }],
-                                        initialValue: '',
+                                        initialValue: this.state.rpData.ghDyhzh,
                                     })(
                                         <Input style={{ width: 200 }}></Input>
                                     )
@@ -327,7 +332,7 @@ class TradeTransfer extends Component {
                                 {
                                     getFieldDecorator('ghGhhzh', {
                                         rules: [{ required: false, message: '请填写成交人!' }],
-                                        initialValue: '',
+                                        initialValue: this.state.rpData.ghGhhzh,
                                     })(
                                         <Input style={{ width: 200 }}></Input>
                                     )
@@ -339,7 +344,7 @@ class TradeTransfer extends Component {
                                 {
                                     getFieldDecorator('ghZzyh', {
                                         rules: [{ required: false, message: '请选择成交日期!' }],
-                                        initialValue: '',
+                                        initialValue: this.state.rpData.ghZzyh,
                                     })(
                                         <Select style={{ width: 200 }}>
                                         <Option key='1' value='true'>是</Option>
@@ -356,7 +361,7 @@ class TradeTransfer extends Component {
                                 {
                                     getFieldDecorator('ghFkrq', {
                                         rules: [{ required: false, message: '请填写分行名称!' }],
-                                        initialValue: '',
+                                        initialValue: this.state.rpData.ghFkrq,
                                     })(
                                         <DatePicker style={{ width: 200 }} onChange={this.ghFkrq_dateChange}></DatePicker>
                                     )
@@ -368,7 +373,7 @@ class TradeTransfer extends Component {
                                 {
                                     getFieldDecorator('ghJbrq', {
                                         rules: [{ required: false, message: '请填写成交人!' }],
-                                        initialValue: '',
+                                        initialValue: this.state.rpData.ghJbrq,
                                     })(
                                         <DatePicker style={{ width: 200 }} onChange={this.ghJbrq_dateChange}></DatePicker>
                                     )
@@ -380,7 +385,7 @@ class TradeTransfer extends Component {
                                 {
                                     getFieldDecorator('ghZzdb', {
                                         rules: [{ required: false, message: '请选择成交日期!' }],
-                                        initialValue: '',
+                                        initialValue: this.state.rpData.ghZzdb,
                                     })(
                                         <Select style={{ width: 200 }}>
                                           <Option key='1' value='true'>是</Option>
@@ -397,7 +402,7 @@ class TradeTransfer extends Component {
                                 {
                                     getFieldDecorator('ghGhrq', {
                                         rules: [{ required: false, message: '请填写成交人!' }],
-                                        initialValue: '',
+                                        initialValue: this.state.rpData.ghGhrq,
                                     })(
                                         <DatePicker style={{ width: 200 }} onChange={this.ghGhrq_dateChange}></DatePicker>
                                     )
@@ -409,7 +414,7 @@ class TradeTransfer extends Component {
                                 {
                                     getFieldDecorator('ghGhczdz', {
                                         rules: [{ required: false, message: '请选择成交日期!' }],
-                                        initialValue: '',
+                                        initialValue: this.state.rpData.ghGhczdz,
                                     })(
                                         <Input style={{ width: 200 }}></Input>
                                     )
@@ -423,7 +428,7 @@ class TradeTransfer extends Component {
                                 {
                                     getFieldDecorator('ghGhjg', {
                                         rules: [{ required: false, message: '请填写分行名称!' }],
-                                        initialValue: '',
+                                        initialValue: this.state.rpData.ghGhjg,
                                     })(
                                         <Input style={{ width: 200 }}></Input>
                                     )
@@ -435,7 +440,7 @@ class TradeTransfer extends Component {
                                 {
                                     getFieldDecorator('ghGhyzdh', {
                                         rules: [{ required: false, message: '请填写成交人!' }],
-                                        initialValue: '',
+                                        initialValue: this.state.rpData.ghGhyzdh,
                                     })(
                                         <Input style={{ width: 200 }}></Input>
                                     )
@@ -447,7 +452,7 @@ class TradeTransfer extends Component {
                                 {
                                     getFieldDecorator('ghGhkhdh', {
                                         rules: [{ required: false, message: '请选择成交日期!' }],
-                                        initialValue: '',
+                                        initialValue: this.state.rpData.ghGhkhdh,
                                     })(
                                         <Input style={{ width: 200 }}></Input>
                                     )
@@ -461,7 +466,7 @@ class TradeTransfer extends Component {
                                 {
                                     getFieldDecorator('ghBz', {
                                         rules: [{ required: false }],
-                                        initialValue: '',
+                                        initialValue: this.state.rpData.ghBz,
                                     })(
                                         <Input.TextArea rows={4} style={{ width: 510 }}></Input.TextArea>
                                     )
@@ -484,7 +489,8 @@ function MapStateToProps(state) {
 
     return {
         basicData: state.base,
-        operInfo:state.rp.operInfo
+        operInfo:state.rp.operInfo,
+        ext:state.rp.ext
     }
 }
 

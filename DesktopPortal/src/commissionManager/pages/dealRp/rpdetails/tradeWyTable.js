@@ -9,10 +9,10 @@ class TradeWyTable extends Component {
         count:0
     }
     appTableColumns = [
-        { title: '款项类型', dataIndex: 'orgName', key: 'orgName' },
-        { title: '收付对象', dataIndex: 'paramName', key: 'paramName' },
-        { title: '备注', dataIndex: 'paramVal', key: 'paramVal' },
-        { title: '金额', dataIndex: 'paramVal', key: 'paramVal' },
+        { title: '款项类型', dataIndex: 'kxlx', key: 'kxlx' },
+        { title: '收付对象', dataIndex: 'sfdx', key: 'sfdx' },
+        { title: '备注', dataIndex: 'bz', key: 'bz' },
+        { title: '金额', dataIndex: 'je', key: 'je' },
         {
             title: '操作', dataIndex: 'edit', key: 'edit', render: (text, recored) => (
                 <span>
@@ -36,7 +36,8 @@ class TradeWyTable extends Component {
             kxlx: `平台费`,
             sfdx: '11',
             bz: `11111`,
-            je:'1'
+            je:'1',
+            edit:''
         };
         this.setState({
             dataSource: [...dataSource, newData],

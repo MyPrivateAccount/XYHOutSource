@@ -47,7 +47,7 @@ class MyDealRp extends Component{
                 </Tooltip>
                 <DealRpTable/>
                 </div>
-                <TradeManager vs={this.state.isShowManager} handleback={this.handleBack}/>
+                <TradeManager vs={this.state.isShowManager} rpId='96f8f381f4cc43ad887f7b7ab1cf07e8' handleback={this.handleBack}/>
             </Layout>
         )
     }
