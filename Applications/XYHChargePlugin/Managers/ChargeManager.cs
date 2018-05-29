@@ -111,6 +111,22 @@ namespace XYHChargePlugin.Managers
             return null;
         }
 
+        public virtual async Task<ChargeDetailInfoResponse> GetChargeDetailInfo(string chargeid)
+        {
+            var info = new ChargeDetailInfoResponse();
+            if (!string.IsNullOrEmpty(chargeid))
+            {
+                info.ChargeInfo = _mapper.Map<ChargeInfoResponse>(await _Store.GetChargeAsync(a => a.Where(b => b.ID == chargeid)));
+                info.CostInfos = _mapper.Map<List<CostInfoResponseEx>>(await _Store.GetCostListAsync(a => a.Where(b => b.ChargeID == chargeid)));
+                foreach (var item in info.CostInfos)
+                {
+                    item.ReceiptList = _mapper.Map<List<ReceiptInfoResponse>>(await _Store.GetRecieptListAsync(a => a.Where(b => b.CostID == item.ID)));
+                }
+            }
+
+            return info;
+        }
+
         public virtual async Task UpdateChargePostTime(string chargeid, string department, CancellationToken cancellationToken = default(CancellationToken))
         {
             await _Store.UpdatePostTime(chargeid, department, cancellationToken);
@@ -130,6 +146,16 @@ namespace XYHChargePlugin.Managers
             }
 
             await _Store.SetLimit(userid, cost, cancellationToken);
+        }
+
+        public virtual async Task<LimitInfoResponse> GetLimitInfo(string userid, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (string.IsNullOrEmpty(userid))
+            {
+                throw new ArgumentNullException(nameof(userid));
+            }
+
+            return _mapper.Map< LimitInfoResponse >( await _Store.GetLimitAsync(a => a.Where(b => b.UserID == userid)));
         }
 
         public virtual async Task<ChargeSearchResponse<ChargeInfoResponse>> SearchChargeInfo(UserInfo user, ChargeSearchRequest condition, bool Isself, CancellationToken cancellationToken = default(CancellationToken))
@@ -252,6 +278,18 @@ namespace XYHChargePlugin.Managers
             Response.PageIndex = condition.pageIndex;
             Response.PageSize = condition.pageSize;
             Response.Extension = _mapper.Map<List<ChargeInfoResponse>>(result);
+
+            foreach (var item in Response.Extension)
+            {
+                //sql = @"SELECT FORMAT(SUM(Cost),2) FROM xyh_ch_cost WHERE ChargeID='" + item.ID+"'";
+                if (!string.IsNullOrEmpty(item.CurrentModify))
+                {
+                    var t = await _Store.GetModifyAsync(a => a.Where(b => b.ID == item.CurrentModify));
+                    item.CheckStatus = t.ExamineStatus.GetValueOrDefault();
+                }
+                
+                item.TotalCost = _Store.CostSum(item.ID).GetValueOrDefault();
+            }
             
             return Response;
 

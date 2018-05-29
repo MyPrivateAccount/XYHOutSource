@@ -29,6 +29,11 @@ namespace XYHHumanPlugin.Stores
             return Context.Database.GetDbConnection().Query<T>(sql);
         }
 
+        public int? CostSum(string id)
+        {
+            return Context.CostInfos.Where(a => a.ChargeID == id).Sum(b=>b.Cost);
+        }
+
         public async Task<ChargeInfo> CreateChargeAsync(SimpleUser userinfo, ChargeInfo chargeinfo, string modifyid, string checkaction, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (chargeinfo == null)
@@ -60,6 +65,7 @@ namespace XYHHumanPlugin.Stores
             chargeinfo.CreateUserName = userinfo.UserName;
             chargeinfo.Department = userinfo.OrganizationId;
             chargeinfo.CreateTime = DateTime.Now;
+            chargeinfo.CurrentModify = modifyid;
 
             Context.Add(modify);
             Context.Add(chargeinfo);
@@ -142,6 +148,15 @@ namespace XYHHumanPlugin.Stores
             return query.Invoke(Context.ChargeInfos.AsNoTracking()).SingleOrDefaultAsync(cancellationToken);
         }
 
+        public Task<TResult> GetModifyAsync<TResult>(Func<IQueryable<ModifyInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (query == null)
+            {
+                throw new ArgumentNullException(nameof(query));
+            }
+            return query.Invoke(Context.ModifyInfos.AsNoTracking()).SingleOrDefaultAsync(cancellationToken);
+        }
+
         public Task<List<TResult>> GetRecieptListAsync<TResult>(Func<IQueryable<ReceiptInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (query == null)
@@ -149,6 +164,16 @@ namespace XYHHumanPlugin.Stores
                 throw new ArgumentNullException(nameof(query));
             }
             return query.Invoke(Context.ReceiptInfos.AsNoTracking()).ToListAsync(cancellationToken);
+        }
+
+        public Task<List<TResult>> GetCostListAsync<TResult>(Func<IQueryable<CostInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (query == null)
+            {
+                throw new ArgumentNullException(nameof(query));
+            }
+
+            return query.Invoke(Context.CostInfos.AsNoTracking()).ToListAsync(cancellationToken);
         }
 
         public async Task UpdatePostTime(string chargeid, string department, CancellationToken cancellationToken = default(CancellationToken))
@@ -202,6 +227,15 @@ namespace XYHHumanPlugin.Stores
                 throw new ArgumentNullException(nameof(query));
             }
             return query.Invoke(Context.FileInfos.AsNoTracking()).SingleOrDefaultAsync(cancellationToken);
+        }
+
+        public Task<TResult> GetLimitAsync<TResult>(Func<IQueryable<LimitInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (query == null)
+            {
+                throw new ArgumentNullException(nameof(query));
+            }
+            return query.Invoke(Context.LimitInfos.AsNoTracking()).SingleOrDefaultAsync(cancellationToken);
         }
 
         public async Task SetLimit(string userid, int limit, CancellationToken cancellationToken = default(CancellationToken))

@@ -55,8 +55,6 @@ namespace XYHChargePlugin.Models
         public string UserID { get; set; }
         public int? LimitType { get; set; }
         public int? CostLimit { get; set; }
-        [MaxLength(127)]
-        public string ContentLimit { get; set; }
     }
 
     public class ModifyInfo

@@ -24,7 +24,8 @@ const WebApiConfig = {
         getChargeid: basicDataBaseApiUrl + "chargeinfo/chargeid/",
         updatePostTime: basicDataBaseApiUrl + "chargeinfo/paymentcharge/",
         postreciept: basicDataBaseApiUrl + "chargeinfo/setrecieptinfo/",
-        limitChargeHum: basicDataBaseApiUrl + "chargeinfo/limithuman/",
+        setlimitHum: basicDataBaseApiUrl + "chargeinfo/setlimit/",
+        getlimitInfo: basicDataBaseApiUrl + "chargeinfo/limitinfo/",
         getChargeDetail: basicDataBaseApiUrl + "chargeinfo/chargedetail/",
     },
 }

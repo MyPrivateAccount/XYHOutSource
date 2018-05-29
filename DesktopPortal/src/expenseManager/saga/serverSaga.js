@@ -157,6 +157,29 @@ export function* postRecieptInfo(state) {
     }
 }
 
+export function* setLimitHumanInfo(state) {
+    let result = { isOk: false, extension: [], msg: '设置失败！' };
+    let url = WebApiConfig.server.setlimitHum;
+
+    try {
+        let res = yield call(ApiClient.post, url, state.payload);
+        getApiResult(res, result);
+
+        if (result.isOk) {
+            //yield put({ type: actionUtils.getActionType(actionTypes.SET_USER_BREADINDEX), payload: 1 });
+        }
+    } catch (e) {
+        result.msg = "查询接口调用异常！";
+    }
+
+    if (!result.isOk) {
+        notification.error({
+            message: '查询参数',
+            description: result.msg,
+            duration: 3
+        });
+    }
+}
 
 export default function* watchServerInterface() {
     yield takeLatest(actionUtils.getActionType(actionTypes.UPLOAD_CHARGEFILE), uploadFileAsync);
@@ -165,4 +188,5 @@ export default function* watchServerInterface() {
     yield takeLatest(actionUtils.getActionType(actionTypes.GET_RECIEPTBYID), getRecieptInfo);
     yield takeLatest(actionUtils.getActionType(actionTypes.POST_PAYMENTCHARGE), postPaymentCharge);
     yield takeLatest(actionUtils.getActionType(actionTypes.POST_RECIEPTINFO), postRecieptInfo);
+    yield takeLatest(actionUtils.getActionType(actionTypes.SET_LIMITCHARGEHUMAN), setLimitHumanInfo);
 }

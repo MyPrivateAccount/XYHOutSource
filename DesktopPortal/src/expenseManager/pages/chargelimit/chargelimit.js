@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 import React, { Component } from 'react'
 import {notification, Layout, Form, Modal, Input, Icon, Select, Button, Col, InputNumber} from 'antd'
 import { NewGuid } from '../../../utils/appUtils';
-import { getLimitChargeHuman } from '../../actions/actionCreator';
+import { getLimitChargeHuman, setLimitHuman} from '../../actions/actionCreator';
 const FormItem = Form.Item;
 const Option = Select.Option;
 const formItemLayout1 = {
@@ -17,7 +17,7 @@ class ChargeLimit extends Component {
     }
     
     componentWillMount() {
-        this.props.dispatch(getLimitChargeHuman());
+        this.props.dispatch(getLimitChargeHuman("EXPENSE_TOOL_COSTLIMIT"));
     }
 
     componentDidMount() {
@@ -32,7 +32,8 @@ class ChargeLimit extends Component {
         let self = this;
         this.props.form.validateFields((err, values) => {
             if (!err) {
-
+                self.props.dispatch(setLimitHuman(values));
+                self.props.form.resetFields();
             }
         });
     }
@@ -49,7 +50,7 @@ class ChargeLimit extends Component {
                 <FormItem {...formItemLayout1}/>
                 <FormItem {...formItemLayout1}/>
                 <FormItem {...formItemLayout1} label="选择员工">
-                    {getFieldDecorator('member', {
+                    {getFieldDecorator('ID', {
                         reules: [{
                             required:true, message: 'please entry member',
                         }]
@@ -58,8 +59,8 @@ class ChargeLimit extends Component {
                             {
                                 (self.props.limitHumanlst && self.props.limitHumanlst.length > 0) ?
                                     self.props.limitHumanlst.map(
-                                        function (params) {
-                                            return <Option key={params.value} value={params.value+""}>{params.key}</Option>;
+                                        function (params, k) {
+                                            return <Option key={k} value={params.id}>{params.trueName+"/"+params.userName}</Option>;
                                         }
                                     ):null
                             }
@@ -67,7 +68,7 @@ class ChargeLimit extends Component {
                     )}
                 </FormItem>
                 <FormItem {...formItemLayout1} label="额度设置">
-                    {getFieldDecorator('limit', {
+                    {getFieldDecorator('costLimit', {
                         reules: [{
                             required:true, message: 'please entry limit',
                         }]
