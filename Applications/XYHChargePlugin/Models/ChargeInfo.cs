@@ -26,5 +26,6 @@ namespace XYHChargePlugin.Models
         public string CreateUserName { get; set; }
         [MaxLength(127)]
         public string CurrentModify { get; set; }
+        public int TotalCost { get; set; }
     }
 }

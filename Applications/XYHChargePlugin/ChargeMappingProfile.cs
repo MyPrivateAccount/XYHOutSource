@@ -30,6 +30,8 @@ namespace XYHChargePlugin
             CreateMap<LimitInfo, LimitInfoResponse>();
             CreateMap<LimitInfoResponse, LimitInfo>();
 
+            CreateMap<FileInfoCallbackRequest, FileInfo>();
+            CreateMap<FileInfo, FileInfoCallbackRequest>();
 
             //CreateMap<MonthInfo, MonthInfoResponse>();
             //CreateMap<MonthInfoResponse, MonthInfo>();

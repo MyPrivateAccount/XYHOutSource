@@ -11,7 +11,7 @@ const WebApiConfig = {
         permissionOrg: BaseApiUrl + 'Permission/'//有权限的部门,
     },
     server: {
-        PostHumanPicture: basicDataBaseApiUrl + "humaninfo/humaninfo/uploadmore/",
+        PostHumanPicture: basicDataBaseApiUrl + "humanfile/humaninfo/uploadmore/",
         PostHumaninfo: basicDataBaseApiUrl + "humaninfo/addhuman",
         GetWorkNumber: basicDataBaseApiUrl + "humaninfo/jobnumber",
         LastMonth: basicDataBaseApiUrl + "month/lastmonth",

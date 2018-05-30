@@ -102,7 +102,12 @@ namespace XYHChargePlugin.Managers
                     foreach (var itm in scope)
                     {
                         var file = await _Store.GetFileInfo(a => a.Where(b => b.FileGuid == itm.FileGuid));
-                        item.FileList.Add(new SimpleList { uid = item.FileList.Count, name="", status="done", url=file.Uri});
+                        if (file != null)
+                        {
+                            if (item.FileList == null) {item.FileList = new List<SimpleList>();}
+                            item.FileList.Add(new SimpleList { uid = item.FileList.Count, name="", status="done", url=file.Uri});
+                        }
+                        
                     }
                 }
 
@@ -170,7 +175,7 @@ namespace XYHChargePlugin.Managers
             var sql = @"SELECT a.* from XYH_CH_CHARGEMANAGE as a where";
             if (condition?.CheckStatu > 0 )
             {
-                sql = @"SELECT a.* from XYH_CH_CHARGEMANAGE as a LEFT JOIN XYH_CH_MODIFY as b ON a.`RecentModify`=b.`ID` where";
+                sql = @"SELECT a.* from XYH_CH_CHARGEMANAGE as a LEFT JOIN XYH_CH_MODIFY as b ON a.`CurrentModify`=b.`ID` where";
             }
             string connectstr = " ";
 
@@ -218,6 +223,12 @@ namespace XYHChargePlugin.Managers
                         break;
                 }
 
+            }
+
+            if (condition?.ChargePrice > 0)
+            {
+                sql += connectstr + @"a.`TotalCost`>"+condition.ChargePrice;
+                connectstr = " and ";
             }
 
             if (condition?.CheckStatu > 0)
@@ -287,8 +298,6 @@ namespace XYHChargePlugin.Managers
                     var t = await _Store.GetModifyAsync(a => a.Where(b => b.ID == item.CurrentModify));
                     item.CheckStatus = t.ExamineStatus.GetValueOrDefault();
                 }
-                
-                item.TotalCost = _Store.CostSum(item.ID).GetValueOrDefault();
             }
             
             return Response;

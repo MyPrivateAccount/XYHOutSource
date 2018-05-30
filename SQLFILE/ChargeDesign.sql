@@ -14,6 +14,7 @@ CREATE TABLE `XYH_CH_CHARGEMANAGE` (
   `CreateUser` varchar(127) DEFAULT NULL,
   `CreateUserName` varchar(127) DEFAULT NULL,
   `CurrentModify` varchar(127) DEFAULT NULL,
+  `TotalCost` int(11) NOT NULL DEFAULT 0,
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -49,8 +50,8 @@ CREATE TABLE `XYH_CH_FILESCOPE` (
   PRIMARY KEY (`ReceiptID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `XYH_HU_FILEINFOS`;
-CREATE TABLE `XYH_HU_FILEINFOS` (/*关联表和文件表放一起  先写关联信息，回调写文件信息*/
+DROP TABLE IF EXISTS `XYH_CH_FILEINFOS`;
+CREATE TABLE `XYH_CH_FILEINFOS` (/*关联表和文件表放一起  先写关联信息，回调写文件信息*/
   `FileGuid` varchar(127) NOT NULL,
   `Name` varchar(255) DEFAULT NULL,
   `Size` double NOT NULL,

@@ -45,7 +45,7 @@ namespace XYHChargePlugin.Models
                 b.ToTable("XYH_CH_MODIFY");
             });
             modelBuilder.Entity<FileInfo>(b => {
-                b.ToTable("XYH_HU_FILEINFOS");
+                b.ToTable("XYH_CH_FILEINFOS");
                 b.HasKey(k => new { k.FileGuid, k.FileExt, k.Type });
             });
             modelBuilder.Entity<FileScopeInfo>(b => {

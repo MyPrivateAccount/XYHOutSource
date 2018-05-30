@@ -21,7 +21,7 @@
       <HintPath>..\..\..\OutSource\Applications\dll\Microsoft.Extensions.Identity.Stores.dll</HintPath>
     </Reference>
     <Reference Include="XYH.Core">
-      <HintPath>..\..\..\OutSource\Applications\dll\XYH.Core.dll</HintPath>
+      <HintPath>..\dll\XYH.Core.dll</HintPath>
     </Reference>
   </ItemGroup>
 

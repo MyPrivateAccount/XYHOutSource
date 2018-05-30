@@ -17,7 +17,7 @@ const WebApiConfig = {
         Base: basicDataBaseApiUrl + 'userTypeValue', // put 更新当前用户历史楼盘
     },
     server: {
-        uploadImg: basicDataBaseApiUrl + "chargeinfo/charge/uploadmore/",
+        uploadImg: basicDataBaseApiUrl + "chargefile/charge/uploadmore/",
         addCharge: basicDataBaseApiUrl + "chargeinfo/addcharge/",
         searchCharge: basicDataBaseApiUrl + "chargeinfo/searchchargeinfo/",
         getRecieptInfo: basicDataBaseApiUrl + "chargeinfo/getrecipt/",
