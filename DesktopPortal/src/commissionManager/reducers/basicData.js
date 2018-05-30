@@ -28,7 +28,9 @@ const initState = {
     //客户
     khKhxzTypes:[],
     //过户
-    ghDknxTypes:[]
+    ghDknxTypes:[],
+    //业绩分配
+    sfdxTypes:[]//收付对象
 
 };
 let reducerMap = {};
@@ -60,6 +62,8 @@ reducerMap[actionTypes.DIC_GET_PARLIST_COMPLETE] = function (state, action) {
     let khKhxzTypes = [...state.khKhxzTypes];
     //
     let ghDknxTypes = [...state.ghDknxTypes];
+    //
+    let sfdxTypes = [...state.sfdxTypes];
     
     console.log('字典数据：', action.payload);
     action.payload.map((group) => {
@@ -147,6 +151,10 @@ reducerMap[actionTypes.DIC_GET_PARLIST_COMPLETE] = function (state, action) {
             group.dictionaryDefines = group.dictionaryDefines.sort((aItem, bItem) => aItem.order - bItem.order);
             ghDknxTypes = group.dictionaryDefines;
         }
+        else if(group.groupId === 'COMMISSION_FP_SFDX'){
+            group.dictionaryDefines = group.dictionaryDefines.sort((aItem, bItem) => aItem.order - bItem.order);
+            sfdxTypes = group.dictionaryDefines;
+        }
   
 
     });
@@ -171,7 +179,8 @@ reducerMap[actionTypes.DIC_GET_PARLIST_COMPLETE] = function (state, action) {
         wyCxTypes:wyCxTypes,//朝向
         yzChtscTypes:yzChtscTypes,
         khKhxzTypes:khKhxzTypes,
-        ghDknxTypes:ghDknxTypes
+        ghDknxTypes:ghDknxTypes,
+        sfdxTypes:sfdxTypes
     });
 }
 

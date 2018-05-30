@@ -1,18 +1,75 @@
 //外佣表格组件
 import { connect } from 'react-redux';
 import React, { Component } from 'react';
-import { Table, Button, Tooltip } from 'antd'
+import { Table, Button, Tooltip, Input,Select } from 'antd'
+import { getDicParList} from '../../../actions/actionCreator'
 
+const testItems = {
+    kxlxItems:[
+        {
+            key:'平台费',
+            percent:0.3
+        },
+        {
+            key:'其它费用',
+            percent:0.5
+        }
+    ],
+    sfdxItems:[
+        {
+            key:'业主'
+        },
+        {
+            key:'客户'
+        }
+    ]
+}
 class TradeWyTable extends Component {
-    state={
-        dataSource:[],
-        count:0
+    constructor(props) {
+        super(props);
+        this.state={
+            dataSource:[],
+            count:0,
+            kxlxItems:[],
+            sfdxItems:[],
+            totalyj:0
+        }
+        this.onCellChange = this.onCellChange.bind(this)
+        this.onCellChange2 = this.onCellChange2.bind(this)
     }
     appTableColumns = [
-        { title: '款项类型', dataIndex: 'kxlx', key: 'kxlx' },
-        { title: '收付对象', dataIndex: 'sfdx', key: 'sfdx' },
-        { title: '备注', dataIndex: 'bz', key: 'bz' },
-        { title: '金额', dataIndex: 'je', key: 'je' },
+        { title: '款项类型', dataIndex: 'moneyType', key: 'moneyType' ,
+        render: (text, recored) => (
+            <span>
+                <Select style={{width:80}} onChange={this.onCellChange(recored.key,'moneyType')}>
+                {
+                    text.map(tp => <Select.Option key={tp.key} value={tp.key}>{tp.key}</Select.Option>)
+                }
+                </Select>
+            </span>
+        )},
+        { title: '收付对象', dataIndex: 'object', key: 'object' ,
+        render: (text, recored) => (
+            <span>
+                <Select style={{width:80}} onChange={this.onCellChange2(recored.key,'object')}>
+                {
+                    text.map(tp => <Select.Option key={tp.key} value={tp.key}>{tp.key}</Select.Option>)
+                }
+                </Select>
+            </span>
+        )},
+        { title: '备注', dataIndex: 'remark', key: 'remark' ,
+        render: (text, recored) => (
+            <span>
+                <Input style={{width:80}} />
+            </span>
+        )},
+        { title: '金额', dataIndex: 'money', key: 'money' ,
+        render: (text, recored) => (
+            <span>
+                <Input style={{width:80}} value={text}/>
+            </span>
+        )},
         {
             title: '操作', dataIndex: 'edit', key: 'edit', render: (text, recored) => (
                 <span>
@@ -24,32 +81,117 @@ class TradeWyTable extends Component {
             )
         }
     ];
+    componentWillMount(){
+        //this.setState({isDataLoading:true,tip:'信息初始化中...'})
+        //this.props.dispatch(getDicParList(['COMMISSION_FP_SFDX']));
+    }
     componentDidMount(){
         this.props.onWyTableRef(this)
+        this.setState({kxlxItems:testItems.kxlxItems,sfdxItems:testItems.sfdxItems})
     }
     componentWillReceiveProps(newProps) {
 
     }
+    //选择了款项类型
+    onCellChange=(key,dataIndex)=>{
+        return (value) => {
+            console.log("key"+key)
+            console.log("dataIndex"+dataIndex)
+            const dataSource = [...this.state.dataSource];
+            const target = dataSource.find(item => item.key === key);
+            if (target) {
+              target['money'] = this.getPercent(value)*(this.state.totalyj==null?0:this.state.totalyj);
+              target['selectMoneyType'] = value
+              this.setState({ dataSource });
+              this.props.onCountJyj()
+            }
+          };
+    }
+    onCellChange2=(key,dataIndex)=>{
+        return (value) => {
+            console.log("key"+key)
+            console.log("dataIndex"+dataIndex)
+            const dataSource = [...this.state.dataSource];
+            const target = dataSource.find(item => item.key === key);
+            if (target) {
+              target['selectObject'] = value
+              this.setState({ dataSource });
+            }
+          };
+    }
+    //新增
     handleAdd = () => {
         const { count, dataSource } = this.state;
         const newData = {
             key: count,
-            kxlx: `平台费`,
-            sfdx: '11',
-            bz: `11111`,
-            je:'1',
-            edit:''
+            moneyType: this.state.kxlxItems,
+            object: this.state.sfdxItems,
+            selectMoneyType:'',
+            selectObject:'',
+            remark: "",
+            money: 0,
+            edit:""
         };
         this.setState({
             dataSource: [...dataSource, newData],
             count: count + 1,
         });
+        console.log("datasource:"+this.state.dataSource)
+    }
+    //设置总佣金
+    setZyj=(yj)=>{
+        this.setState({totalyj:yj})
+    }
+    //获取总的外佣
+    getTotalWyj=()=>{
+        var Wyj = 0;
+        const dataSource = [...this.state.dataSource];
+        for(var i=0;i<dataSource.length;i++){
+            Wyj=Wyj+dataSource[i].money
+        }
+        return Wyj;
+
+    }
+    //获取表格数据
+    getData=(id)=>{
+        var dt = [];
+        const dataSource = [...this.state.dataSource];
+        for(var i=0;i<dataSource.length;i++){
+            let temp = {id:id,moneyType:dataSource[i].selectMoneyType,money:dataSource[i].money,object:dataSource[i].selectObject,remark:dataSource[i].remark}
+            dt[i] = temp
+        }
+        return dt;
+    }
+    getPercent(key){
+        let items = testItems.kxlxItems;
+        console.log("getPercent:"+key)
+        for(let i=0;i<items.length;i++){
+            if(items[i].key === key){
+                console.log(items[i].percent)
+                return items[i].percent
+            }
+        }
+        return 0
     }
     render() {
         const { dataSource } = this.state;
         return (
-            <Table columns={this.appTableColumns} dataSource={dataSource}></Table>
+            <Table bordered columns={this.appTableColumns} dataSource={dataSource}></Table>
         )
     }
 }
-export default TradeWyTable
+function MapStateToProps(state) {
+
+    return {
+        basicData: state.base,
+        operInfo:state.rp.operInfo,
+        ext:state.rp.ext
+    }
+}
+
+function MapDispatchToProps(dispatch) {
+    return {
+        dispatch
+    };
+}
+export default connect(MapStateToProps, MapDispatchToProps)(TradeWyTable);

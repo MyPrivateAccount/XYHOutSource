@@ -9,12 +9,24 @@ import TradeNTable from './tradeNTable'
 const FormItem = Form.Item;
 class TradePerDis extends Component {
 
-    state={
-        isDataLoading:false,
-        rpData:{}
+    constructor(props) {
+        super(props);
+        this.state={
+            isDataLoading:false,
+            rpData:{
+                yjYzys:0,
+                yjKhys:0
+            },
+            totalyj:0,
+            yjKhyjdqr:'',
+            yjYzyjdqr:''
+        }
+        this.handleYzchange = this.handleYzchange.bind(this)
+        this.handleKhchange = this.handleKhchange.bind(this)
     }
     componentWillMount = () => {
-
+    }
+    componentDidMount=()=>{
     }
     componentWillReceiveProps(newProps) {
         this.setState({ isDataLoading: false });
@@ -27,7 +39,9 @@ class TradePerDis extends Component {
             newProps.operInfo.operType = ''
         }
         else if(newProps.operInfo.operType === 'FPGET_UPDATE'){//信息获取成功
-            this.setState({ rpData: newProps.ext});
+            if(JSON.stringify(newProps.ext)!=='[]'){
+                this.setState({ rpData: newProps.ext});
+            }
             newProps.operInfo.operType = ''
         }
     }
@@ -36,6 +50,24 @@ class TradePerDis extends Component {
         this.props.form.validateFields((err, values) => {
             if (!err) {
                 values.id = this.props.rpId;
+                let wyDatas = this.wytb.getData(values.id);
+                let fpDatas = this.fptb.getData(values.id);
+                values.reportOutsides = wyDatas;
+                values.reportInsides = fpDatas;
+
+                if(this.state.yjYzyjdqr!==''){
+                    values.yjYzyjdqr = this.state.yjYzyjdqr;
+                }
+                else{
+                    values.yjYzyjdqr = this.state.rpData.yjYzyjdqr;
+                }
+                if(this.state.yjKhyjdqr!==''){
+                    values.yjKhyjdqr = this.state.yjKhyjdqr;
+                }
+                else{
+                    values.yjKhyjdqr = this.state.rpData.yjKhyjdqr;
+                }
+
                 console.log(values);
             }
         });
@@ -44,8 +76,15 @@ class TradePerDis extends Component {
         e.preventDefault();
         this.wytb.handleAdd();
     }
+    handleAddNbFp = (e)=>{
+        e.preventDefault();
+        this.fptb.handleAdd();
+    }
     onWyTableRef = (ref) => {
         this.wytb = ref
+    }
+    onFpTableRef = (ref) =>{
+        this.fptb = ref
     }
     getInvalidDate=(dt)=>{
         var newdt = ''+dt;
@@ -55,6 +94,45 @@ class TradePerDis extends Component {
             return newdt;
         }
         return dt
+    }
+    handleYzchange=(e)=>{
+        console.log("handleYzchange");
+        console.log(e.target.value)
+        let temp = this.state.rpData;
+        temp.yjYzys = e.target.value;
+        this.setState({rpData:temp});
+        this.reCountZyj()
+    }
+    handleKhchange=(e)=>{
+        console.log("handleKhchange");
+        console.log(e.target.value)
+        let temp = this.state.rpData;
+        temp.yjKhys = e.target.value
+        this.setState({rpData:temp})
+        this.reCountZyj()
+    }
+    //计算总佣金
+    reCountZyj=(e)=>{
+        let totalyj = parseFloat(this.state.rpData.yjYzys,10)+parseFloat(this.state.rpData.yjKhys,10);
+        this.props.form.setFieldsValue({'yjZcjyj':totalyj})
+        this.wytb.setZyj(totalyj)
+        this.fptb.setZyj(totalyj)
+        this.reCountJyj()
+    }
+    //计算净佣金
+    reCountJyj=(e)=>{
+        let zwyj = this.wytb.getTotalWyj()
+        let totalyj = this.props.form.getFieldValue('yjZcjyj')
+        let Jyj = totalyj-zwyj
+        this.props.form.setFieldsValue({'yjJyj':Jyj})
+    }
+    yjYzyjdqr_dateChange=(value,dateString)=>{
+        console.log(dateString)
+        this.setState({yjYzyjdqr:dateString})
+    }
+    yjKhyjdqr_dateChange=(value,dateString)=>{
+        console.log(dateString)
+        this.setState({yjKhyjdqr:dateString})
     }
     render() {
         const { getFieldDecorator } = this.props.form;
@@ -76,7 +154,7 @@ class TradePerDis extends Component {
                                 getFieldDecorator('yjYzys', {
                                     initialValue: this.state.rpData.yjYzys,
                                 })(
-                                    <Input style={{ width: 200 }}></Input>
+                                    <Input style={{ width: 200 }} onChange={this.handleYzchange}></Input>
                                 )
                             }
                         </FormItem>
@@ -88,7 +166,7 @@ class TradePerDis extends Component {
                                     rules: [{ required: false, message: '请选择成交日期!' }],
                                     initialValue: moment(this.getInvalidDate(this.state.rpData.yjYzyjdqr)),
                                 })(
-                                    <DatePicker style={{ width: 200 }}></DatePicker>
+                                    <DatePicker style={{ width: 200 }} onChange={this.yjYzyjdqr_dateChange}></DatePicker>
                                 )
                             }
                         </FormItem>
@@ -101,7 +179,7 @@ class TradePerDis extends Component {
                                 getFieldDecorator('yjKhys', {
                                     initialValue: this.state.rpData.yjKhys,
                                 })(
-                                    <Input style={{ width: 200 }}></Input>
+                                    <Input style={{ width: 200 }} onChange={this.handleKhchange}></Input>
                                 )
                             }
                         </FormItem>
@@ -113,7 +191,7 @@ class TradePerDis extends Component {
                                     rules: [{ required: false, message: '请选择成交日期!' }],
                                     initialValue: moment(this.getInvalidDate(this.state.rpData.yjKhyjdqr)),
                                 })(
-                                    <DatePicker style={{ width: 200 }}></DatePicker>
+                                    <DatePicker style={{ width: 200 }} onChange={this.yjKhyjdqr_dateChange}></DatePicker>
                                 )
                             }
                         </FormItem>
@@ -125,9 +203,9 @@ class TradePerDis extends Component {
                             {
                                 getFieldDecorator('yjZcjyj', {
                                     rules: [{ required: false, message: '请选择成交日期!' }],
-                                    initialValue: this.state.rpData.yjZcjyj,
+                                    initialValue:this.state.totalyj
                                 })(
-                                    <Input style={{ width: 200 }}></Input>
+                                    <Input style={{ width: 200 }} disabled={true}></Input>
                                 )
                             }
                         </FormItem>
@@ -137,13 +215,26 @@ class TradePerDis extends Component {
                     <Col span={3}><Button type='primary' onClick={this.handleAddWy}>新增外佣</Button></Col>
                 </Row>
                 <Row>
-                    <TradeWyTable onWyTableRef={this.onWyTableRef}/>
+                    <TradeWyTable onWyTableRef={this.onWyTableRef} totalyj = {this.state.yjZcjyj} onCountJyj={this.reCountJyj}/>
+                </Row>
+                <Row style={{margin:10,marginLeft:-30}}>
+                    <Col span={12} pull={1}>
+                        <FormItem {...formItemLayout} label={(<span>净佣金</span>)}>
+                            {
+                                getFieldDecorator('yjJyj', {
+                                    initialValue: 0,
+                                })(
+                                    <Input style={{ width: 200 }} disabled={true}></Input>
+                                )
+                            }
+                        </FormItem>
+                    </Col>
                 </Row>
                 <Row>
-                    <Col span={3}><Button type='primary'>新增内部分配</Button></Col>
+                    <Col span={3}><Button type='primary' onClick={this.handleAddNbFp}>新增内部分配</Button></Col>
                 </Row>
                 <Row>
-                    <TradeNTable/>
+                    <TradeNTable onFpTableRef={this.onFpTableRef}/>
                 </Row>
                 <Row>
                     <Col span={24} style={{ textAlign: 'center' }}>
