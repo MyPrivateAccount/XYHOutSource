@@ -193,7 +193,7 @@ class OnBoarding extends Component {
         return (
             <Form className="onboardContent" onSubmit={this.handleSubmit}>
                 <FormItem {...formItemLayout}/>
-                <FormItem {...formItemLayout} label="身份证号" >
+                <FormItem {...formItemLayout1} label="身份证号" >
                     {getFieldDecorator('idcard', {
                         reules: [{
                             required:true, message: 'please entry IDcard',
@@ -280,7 +280,7 @@ class OnBoarding extends Component {
                                 initialValue: moment()
                             }]
                         })(
-                            <DatePicker format='YYYY-MM-DD' style={{width: '100%'}} />
+                            <DatePicker format='YYYY-MM-DD' style={{ width: '70%' }} />
                         )}
                 </FormItem>
                 <FormItem {...formItemLayout} label="所属部门">
@@ -290,7 +290,7 @@ class OnBoarding extends Component {
                                     message: 'please entry Orgdepartment',
                                 }]
                             })(
-                                <Cascader options={this.props.setDepartmentOrgTree}  onChange={this.handleChooseDepartmentChange } changeOnSelect  placeholder="归属部门"/>
+                                <Cascader style={{ width: '70%' }} options={this.props.setDepartmentOrgTree}  onChange={this.handleChooseDepartmentChange } changeOnSelect  placeholder="归属部门"/>
                             )}
                 </FormItem>
                 <FormItem {...formItemLayout} label="职位">
@@ -307,27 +307,27 @@ class OnBoarding extends Component {
                 </FormItem>
                 <FormItem {...formItemLayout1} label="基本工资">
                     {getFieldDecorator('basicsalary')(
-                                    <InputNumber style={{width: '100%'}} />
+                                    <InputNumber style={{ width: '70%' }} />
                                 )}
                 </FormItem>
                 <FormItem {...formItemLayout1} label="岗位补贴">
                     {getFieldDecorator('subsidy')(
-                                        <InputNumber style={{width: '100%'}} />
+                                        <InputNumber style={{ width: '70%' }} />
                                     )}
                 </FormItem>
                 <FormItem {...formItemLayout1} label="工装扣款">
                     {getFieldDecorator('clothesback')(
-                                    <InputNumber style={{width: '100%'}} />
+                                    <InputNumber style={{width: '70%'}} />
                                 )}
                 </FormItem>
                 <FormItem {...formItemLayout1} label="行政扣款">
                     {getFieldDecorator('administrativeback')(
-                                    <InputNumber style={{width: '100%'}} />
+                                    <InputNumber style={{width: '70%'}} />
                                 )}
                 </FormItem>
                 <FormItem {...formItemLayout1} label="端口扣款">
                     {getFieldDecorator('portback')(
-                                    <InputNumber style={{width: '100%'}} />
+                                    <InputNumber style={{width: '70%'}} />
                                 )}
                 </FormItem>
                 <FormItem wrapperCol={{ span: 12, offset: 6 }}>
@@ -353,4 +353,4 @@ function stafftableMapDispatchToProps(dispatch) {
     };
 }
 
-export default connect(null, stafftableMapDispatchToProps)(Form.create()(OnBoarding));
+export default connect(stafftableMapStateToProps, stafftableMapDispatchToProps)(Form.create()(OnBoarding));

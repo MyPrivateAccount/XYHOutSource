@@ -5,7 +5,7 @@ import moment from 'moment';
 const initState = {
     attendanceList: {extension: [{key: "1", time: "tt", name: "tt", idcard: "tta", signed: "today"}], pageIndex: 0, pageSize: 10, totalCount: 1},
     achievementList: {extension: [{key: '1', org: "org", station: "station", baseSalary: "baseSalary", subsidy: "subsidy", clothesBack: "clothesBack", administrativeBack: "administrativeBack", portBack: "portBack"}], pageIndex: 0, pageSize: 10, totalCount: 1},
-    stationList: [{key: '1', stationname: "stationname1"}, {key: '2', stationname: "stationname2"}],//选中的部门职位
+    stationList: [],//选中的部门职位
     blackList: {extension: [{key: '1', idcard: 'tt', name: 'test', reason: "tta"}], pageIndex: 0, pageSize: 10, totalCount: 1},//黑名单结果
     showLoading: false,
     showOrgSelect: false,//部门选择
@@ -89,6 +89,13 @@ reducerMap[actionTypes.SEARCH_CUSTOMER_COMPLETE] = function (state, action) {
         }
     });
     return Object.assign({}, state, {searchResult: result});
+}
+
+reducerMap[actionTypes.UPDATE_STATIONLIST] = function (state, action) {
+    let f = action.payload.map(function(v, i) {
+        return {key: i+"", stationname: v.positionName, isnew: false};
+    });
+    return Object.assign({}, state, {stationList: f, showLoading: false});
 }
 
 //保存查询条件

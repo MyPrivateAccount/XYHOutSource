@@ -18,6 +18,8 @@ const WebApiConfig = {
         RecoverMonth: basicDataBaseApiUrl + "month/backmonth",
         CreateMonth: basicDataBaseApiUrl + "month/createmonth",
         SetBlacklst: basicDataBaseApiUrl + "humaninfo/setblack",
+        SetStation: basicDataBaseApiUrl + "humanstation/setstation",
+        DeleteStation: basicDataBaseApiUrl + "humanstation/deletestation",
     },
     search: {
         searchHumanList: basicDataBaseApiUrl + 'humaninfo/searchhumaninfo',
@@ -27,6 +29,7 @@ const WebApiConfig = {
         getAuditHistory: basicDataBaseApiUrl + "examines/",//获取审核历史详细
         getAllMonthList: basicDataBaseApiUrl + 'month/monthlist',
         getBlackList: basicDataBaseApiUrl + 'humaninfo/getblacklist',
+        getStationList: basicDataBaseApiUrl + 'humanstation/stationlist',
     },
     attach: {
         uploadUrl: `${UploadUrl}/file/upload/`,

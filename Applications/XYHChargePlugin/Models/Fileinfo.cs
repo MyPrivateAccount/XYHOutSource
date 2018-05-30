@@ -8,7 +8,6 @@ namespace XYHChargePlugin.Models
 {
     public class FileInfo
     {
-        [Key]
         [MaxLength(127)]
         public string FileGuid { get; set; }
         public string Name { get; set; }

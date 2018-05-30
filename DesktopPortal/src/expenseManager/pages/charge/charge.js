@@ -41,7 +41,7 @@ class ChargeInfo extends Component {
 
     componentWillMount() {
         
-        this.props.dispatch(getDicInfo(["CHARGE_COST_TYPE"]));
+        //this.props.dispatch(getDicInfo(["CHARGE_COST_TYPE"]));
         if (this.props.isdetail) {
             let tempthis = this;
             let url = WebApiConfig.server.getChargeDetail+this.props.chargeid;
@@ -102,9 +102,9 @@ class ChargeInfo extends Component {
                         if (ary[1] === "reciepcomment") {
                             receiptinfos[+ary[3]] = Object.assign({}, receiptinfos[+ary[3]], {"comments": values[ite]});
                         } else if (ary[1] === "reciepmoney") {
-                            receiptinfos[+ary[3]] = Object.assign({}, receiptinfos[+ary[3]], {"receiptmoney": values[ite]});
+                            receiptinfos[+ary[3]] = Object.assign({}, receiptinfos[+ary[3]], {"receiptMoney": values[ite]});
                         } else if (ary[1] === "reciepnumber") {
-                            receiptinfos[+ary[3]] = Object.assign({}, receiptinfos[+ary[3]], {"reciepnumber": values[ite]});
+                            receiptinfos[+ary[3]] = Object.assign({}, receiptinfos[+ary[3]], {"reciepNumber": values[ite]});
                             receiptinfos[+ary[3]] = Object.assign({},
                                  receiptinfos[+ary[3]], {"id": self.state.costlist[+ary[0]].receiptList[+ary[2]].receiptID});
                             receiptinfos[+ary[3]] = Object.assign({},
@@ -295,7 +295,7 @@ class ChargeInfo extends Component {
                                                     (self.props.chargeCostTypeList && self.props.chargeCostTypeList.length > 0) ?
                                                         self.props.chargeCostTypeList.map(
                                                             function (params) {
-                                                                return <Option key={params.value} value={params.value+""}>{params.key}</Option>;
+                                                                return <Option key={+params.value} value={params.value+""}>{params.key}</Option>;
                                                             }
                                                         ):null
                                                 }

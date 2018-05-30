@@ -187,6 +187,51 @@ namespace XYHHumanPlugin.Controllers
             }
             return Response;
         }
+        private NWF CreateNwf(UserInfo user, string source, FileInfoRequest fileInfoRequest)
+        {
+            NWF nwf = new NWF();
+            var bodyinfo = new BodyInfoType();
+            var header = new HeaderType();
+            bodyinfo.FileInfo = new List<FileInfoType>();
+
+            nwf.BodyInfo = bodyinfo;
+            nwf.Header = header;
+
+
+            header.TaskGuid = "";
+            header.ContentGuid = fileInfoRequest.SourceId;
+            header.Action = "ImageProcess";
+            header.SourceSystem = source;
+
+            header.ExtraAttribute = new List<AttributeType>();
+            header.ExtraAttribute.Add(new AttributeType() { Name = "UserID", Value = user.Id });
+            header.ExtraAttribute.Add(new AttributeType() { Name = "SubSystem", Value = "humanfile" });
+            bodyinfo.Priority = 0;
+            bodyinfo.TaskName = fileInfoRequest.Name;
+            if (String.IsNullOrEmpty(bodyinfo.TaskName))
+            {
+                bodyinfo.TaskName = $"{user.UserName}-{source ?? ""}";
+            }
+
+            var extra = new List<AttributeType>();
+            extra.Add(new AttributeType { Name = "WXAppID", Value = fileInfoRequest.AppId });
+            extra.Add(new AttributeType { Name = "From", Value = fileInfoRequest.From });
+            extra.Add(new AttributeType { Name = "Source", Value = fileInfoRequest.Source });
+            extra.Add(new AttributeType { Name = "Name", Value = fileInfoRequest.Name });
+            extra.Add(new AttributeType { Name = "FileExt", Value = fileInfoRequest.FileExt });
+            bodyinfo.ExtraAttribute = extra;
+
+            FileInfoType fileInfoType = new FileInfoType();
+            fileInfoType.FilePath = fileInfoRequest.WXPath;
+            fileInfoType.FileExt = fileInfoRequest.FileExt;
+            fileInfoType.FileGuid = fileInfoRequest.FileGuid;
+            fileInfoType.QualityType = 0;
+            fileInfoType.FileTypeId = "ROW";
+            fileInfoType.ExtraAttribute = new List<AttributeType>();
+
+            nwf.BodyInfo.FileInfo.Add(fileInfoType);
+            return nwf;
+        }
 
         #region Flow
         [HttpPost("audit/updatehumancallback")]

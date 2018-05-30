@@ -73,7 +73,7 @@ namespace XYHHumanPlugin.Models
         public string ID { get; set; }
         [MaxLength(127)]
         public string PositionName { get; set; }
-        [MaxLength(127)]
+        [MaxLength(255)]
         public string ParentID { get; set; }
     }
 

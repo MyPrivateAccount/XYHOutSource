@@ -119,7 +119,7 @@ namespace XYHHumanPlugin.Controllers
 
             header.ExtraAttribute = new List<AttributeType>();
             header.ExtraAttribute.Add(new AttributeType() { Name = "UserID", Value = user.Id });
-            header.ExtraAttribute.Add(new AttributeType() { Name = "SubSystem", Value = "humaninfo" });
+            header.ExtraAttribute.Add(new AttributeType() { Name = "SubSystem", Value = "humanfile" });
             bodyinfo.Priority = 0;
             bodyinfo.TaskName = fileInfoRequest.Name;
             if (String.IsNullOrEmpty(bodyinfo.TaskName))

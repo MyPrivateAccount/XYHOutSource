@@ -56,4 +56,6 @@ export const postBlackLst = createAction(actionTypes.POST_ADDBLACKLST);
 export const selBlackList = createAction(actionTypes.SEL_BLACKLIST);
 
 //职位新建
-export const createStation = createAction(actionTypes.POST_CRATESTATION);
+export const getcreateStation = createAction(actionTypes.GET_CRATESTATION);
+export const setStation = createAction(actionTypes.SET_STATION);
+export const deleteStation = createAction(actionTypes.DELETE_STATION);
