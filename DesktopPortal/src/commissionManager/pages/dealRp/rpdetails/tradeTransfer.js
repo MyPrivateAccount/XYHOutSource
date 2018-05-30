@@ -1,6 +1,7 @@
 //按揭过户组件
 import { connect } from 'react-redux';
 import React, { Component } from 'react';
+import moment from 'moment'
 import { getDicParList,dealGhSave } from '../../../actions/actionCreator'
 import { notification, DatePicker, Form, Span, Layout, Table, Button, Radio, Popconfirm, Tooltip, Row, Col, Input, Spin, Select, TreeSelect } from 'antd'
 
@@ -40,9 +41,25 @@ class TradeTransfer extends Component {
         this.props.form.validateFields((err, values) => {
             if (!err) {
                 values.id = this.props.rpId;
-                values.ghFkrq = this.state.ghFkrq;
-                values.ghGhrq = this.state.ghGhrq;
-                values.ghJbrq = this.state.ghJbrq;
+                if(this.state.ghFkrq!==''){
+                    values.ghFkrq = this.state.ghFkrq;
+                }
+                else{
+                    values.ghFkrq = this.state.rpData.ghFkrq;
+                }
+                if(this.state.ghGhrq!==''){
+                    values.ghGhrq = this.state.ghGhrq;
+                }
+                else{
+                    values.ghGhrq = this.state.rpData.ghGhrq;
+                }
+                if(this.state.ghJbrq!==''){
+                    values.ghJbrq = this.state.ghJbrq;
+                }
+                else{
+                    values.ghJbrq = this.state.rpData.ghJbrq;
+                }
+                ///////
                 if(values.ghZzyh === 'true'){
                     values.ghZzyh = 1
                 }
@@ -79,6 +96,15 @@ class TradeTransfer extends Component {
     ghGhrq_dateChange=(value,dateString)=>{
         this.setState({ghGhrq:dateString})
     }
+    getInvalidDate=(dt)=>{
+        var newdt = ''+dt;
+        if(newdt.indexOf('T')!==-1){
+            newdt = newdt.substr(0,newdt.length-9);
+            console.log("newdt:"+newdt)
+            return newdt;
+        }
+        return dt
+    }
     render() {
         const formItemLayout = {
             labelCol: { span: 6 },
@@ -88,6 +114,7 @@ class TradeTransfer extends Component {
         let ghDknxTypes = this.props.basicData.ghDknxTypes;
         let wyCqTypes = this.props.basicData.wyCqTypes;
         let payTypes = this.props.basicData.payTypes;
+        const dateFormat = 'YYYY-MM-DD'
 
         return (
             <Layout>
@@ -361,7 +388,7 @@ class TradeTransfer extends Component {
                                 {
                                     getFieldDecorator('ghFkrq', {
                                         rules: [{ required: false, message: '请填写分行名称!' }],
-                                        initialValue: this.state.rpData.ghFkrq,
+                                        initialValue: moment(this.getInvalidDate(this.state.rpData.ghFkrq))
                                     })(
                                         <DatePicker style={{ width: 200 }} onChange={this.ghFkrq_dateChange}></DatePicker>
                                     )
@@ -373,7 +400,7 @@ class TradeTransfer extends Component {
                                 {
                                     getFieldDecorator('ghJbrq', {
                                         rules: [{ required: false, message: '请填写成交人!' }],
-                                        initialValue: this.state.rpData.ghJbrq,
+                                        initialValue: moment(this.getInvalidDate(this.state.rpData.ghJbrq)),
                                     })(
                                         <DatePicker style={{ width: 200 }} onChange={this.ghJbrq_dateChange}></DatePicker>
                                     )
@@ -402,7 +429,7 @@ class TradeTransfer extends Component {
                                 {
                                     getFieldDecorator('ghGhrq', {
                                         rules: [{ required: false, message: '请填写成交人!' }],
-                                        initialValue: this.state.rpData.ghGhrq,
+                                        initialValue: moment(this.getInvalidDate(this.state.rpData.ghGhrq)),
                                     })(
                                         <DatePicker style={{ width: 200 }} onChange={this.ghGhrq_dateChange}></DatePicker>
                                     )

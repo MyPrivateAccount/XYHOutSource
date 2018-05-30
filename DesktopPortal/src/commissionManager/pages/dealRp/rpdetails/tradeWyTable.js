@@ -24,10 +24,11 @@ class TradeWyTable extends Component {
             )
         }
     ];
+    componentDidMount(){
+        this.props.onWyTableRef(this)
+    }
     componentWillReceiveProps(newProps) {
-        if (newProps.add) {
-            this.handleAdd()
-        }
+
     }
     handleAdd = () => {
         const { count, dataSource } = this.state;

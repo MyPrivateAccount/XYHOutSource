@@ -125,4 +125,5 @@ reducerMap[actionTypes.UPDATE_LIMITCHARGEHUMAN] = function(state, action) {
     return Object.assign({}, state, {limitHumanlst: action.payload});
 }
 
+
 export default handleActions(reducerMap,initState);

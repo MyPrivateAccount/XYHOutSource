@@ -13,6 +13,7 @@ CREATE TABLE `XYH_CH_CHARGEMANAGE` (
   `PostDepartment` varchar(127) DEFAULT '', /*付款单位*/
   `CreateUser` varchar(127) DEFAULT NULL,
   `CreateUserName` varchar(127) DEFAULT NULL,
+  `CurrentModify` varchar(127) DEFAULT NULL,
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -74,11 +75,9 @@ CREATE TABLE `XYH_HU_FILEINFOS` (/*关联表和文件表放一起  先写关联�
 
 DROP TABLE IF EXISTS `XYH_CH_LIMIT`;
 CREATE TABLE `XYH_CH_LIMIT` (
-  `ID` varchar(127) DEFAULT '',/*工号*/
   `UserID` varchar(127) DEFAULT '',/*工号*/
   `LimitType` int(11) NOT NULL DEFAULT 0, /*限制类型*/
   `CostLimit` int(11) NOT NULL DEFAULT 0, /*金额限制*/
-  `ContentLimit` varchar(127) DEFAULT '',/*限制内容*/
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

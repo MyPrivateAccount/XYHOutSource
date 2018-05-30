@@ -24,6 +24,8 @@ class ChargeInfo extends Component {
 
     state = {
         id: NewGuid(),
+        department: "",
+        costlimit: 0,
         costlist: [
             {
                 costID: NewGuid(),
@@ -35,27 +37,48 @@ class ChargeInfo extends Component {
                 }],
             }
         ],
-        imgfilelist: []
     }
 
     componentWillMount() {
-        let tempthis = this;
-        let url = WebApiConfig.server.getChargeid;
-        ApiClient.get(url).then(function (f) {
-            if (f.data.code==0) {
-                tempthis.props.form.setFieldsValue({id: f.data.extension});
-                tempthis.state.id = f.data.extension;
-            }
-        });
+        
         this.props.dispatch(getDicInfo(["CHARGE_COST_TYPE"]));
+        if (this.props.isdetail) {
+            let tempthis = this;
+            let url = WebApiConfig.server.getChargeDetail+this.props.chargeid;
+            ApiClient.get(url).then(function (f) {
+                if (f.data.code==0) {
+                    tempthis.state.id = f.data.extension.chargeInfo.id;
+                    tempthis.state.department = f.data.extension.chargeInfo.department;
+                    tempthis.state.costlist = f.data.extension.costInfos;
+                    tempthis.forceUpdate();
+                    //tempthis.props.form.setFieldsValue({id:f.data.extension});
+                }
+            });
+            //this.props.form.setFieldsValue({id:this.state.id});
+        }
+        else {
+            let tempthis = this;
+            let url = WebApiConfig.server.getlimitInfo;
+            ApiClient.get(url).then(function (f) {
+                if (f.data.code==0) {
+                    tempthis.setState({costlimit: f.data.extension.costLimit});
+                }
+            });
+        }
         //this.props.dispatch(searchConditionType(SearchCondition.topteninfo));
     }
 
     componentDidMount() {
-        if (this.props.isdetail) {
-            //this.props.form.setFieldsValue({id:this.state.id});
-        } else {
-            this.props.form.setFieldsValue({id:this.state.id});
+         if (!this.props.isdetail) {
+            let tempthis = this;
+            let url = WebApiConfig.server.getChargeid;
+            ApiClient.get(url).then(function (f) {
+                if (f.data.code==0) {
+                    tempthis.props.form.setFieldsValue({id: f.data.extension});
+                    tempthis.state.id = f.data.extension;
+                }
+            });
+//            this.props.form.setFieldsValue({id:this.state.id});
         }
     }
 
@@ -137,7 +160,7 @@ class ChargeInfo extends Component {
         this.setState({costlist: this.state.costlist});
     }
 
-    hasErrors(fieldsError) {
+    hasErrors(fieldsError) { 
         return !Object.keys(fieldsError).some(field => fieldsError[field]);
     }
 
@@ -216,7 +239,8 @@ class ChargeInfo extends Component {
                     {getFieldDecorator('id', {
                         reules: [{
                             required:true, message: 'please entry IDcard',
-                        }]
+                        }],
+                        initialValue: self.props.isdetail? self.state.id:null
                     })(
                         <Input disabled={true} />
                     )}
@@ -225,9 +249,10 @@ class ChargeInfo extends Component {
                     {getFieldDecorator('department', {
                         reules: [{
                             required:true, message: 'please entry department',
-                        }]
+                        }],
+                        initialValue: self.props.isdetail? self.state.department:null
                     })(
-                        <Cascader options={this.props.setContractOrgTree}  onChange={this.handleChooseDepartmentChange } changeOnSelect  placeholder="归属部门"/>
+                        <Cascader options={this.props.setContractOrgTree} disabled={self.props.isdetail} onChange={this.handleChooseDepartmentChange } changeOnSelect  placeholder="归属部门"/>
                     )}
                 </FormItem>
                 {
@@ -244,15 +269,15 @@ class ChargeInfo extends Component {
                             return (
                                 <div key={i}>
                                     <FormItem {...formItemLayout}/>
-                                    <FormItem {...formItemLayout}/>
-                                    <FormItem {...formItemLayout}/>
+                                    {i==0?<FormItem {...formItemLayout} colon={false} label={"限定金额: "+self.state.costlimit}/>:<FormItem {...formItemLayout}/> }
                                     <FormItem {...formItemLayout1} label="费用类型">
                                         {getFieldDecorator(costtype, {
                                             reules: [{
                                                 required:true, message: 'please entry Age',
-                                            }]
+                                            }],
+                                            initialValue: self.props.isdetail? v.type+"":null
                                         })(
-                                            <Select placeholder="选择费用类型">
+                                            <Select disabled={self.props.isdetail} placeholder="选择费用类型">
                                                 {
                                                     (self.props.chargeCostTypeList && self.props.chargeCostTypeList.length > 0) ?
                                                         self.props.chargeCostTypeList.map(
@@ -268,18 +293,20 @@ class ChargeInfo extends Component {
                                         {getFieldDecorator(costmoney, {
                                             reules: [{
                                                 required:true, message: 'please entry',
-                                            }]
+                                            }],
+                                            initialValue: self.props.isdetail? v.cost:null
                                         })(
-                                            <InputNumber placeholder="请输入金额" style={{width: '100%'}} />
+                                            <InputNumber disabled={self.props.isdetail} placeholder="请输入金额" style={{width: '100%'}} />
                                         )}
                                     </FormItem>
                                     <FormItem {...formItemLayout1} label="摘要">
                                         {getFieldDecorator(costcomment, {
                                             reules: [{
                                                 required:true, message: 'please entry',
-                                            }]
+                                            }],
+                                            initialValue: self.props.isdetail? v.comments:null
                                         })(
-                                            <Input placeholder="请输入摘要" />
+                                            <Input disabled={self.props.isdetail} placeholder="请输入摘要" />
                                         )}
                                     </FormItem>
                                     {
@@ -324,27 +351,30 @@ class ChargeInfo extends Component {
                                                             {getFieldDecorator(reciepnumber, {
                                                                 reules: [{
                                                                     required:true, message: 'please entry',
-                                                                }]
+                                                                }],
+                                                                initialValue: self.props.isdetail? rv.receiptNumber:null
                                                             })(
-                                                                <Input placeholder="请输入发票号" />
+                                                                <Input disabled={self.props.isdetail} placeholder="请输入发票号" />
                                                             )}
                                                         </FormItem>
                                                         <FormItem {...formItemLayout1} label="发票金额">
                                                             {getFieldDecorator(reciepmoney, {
                                                                 reules: [{
                                                                     required:true, message: 'please entry',
-                                                                }]
+                                                                }],
+                                                                initialValue: self.props.isdetail? rv.receiptMoney:null
                                                             })(
-                                                                <InputNumber placeholder="请输入发票金额" style={{width: '100%'}} />
+                                                                <InputNumber disabled={self.props.isdetail} placeholder="请输入发票金额" style={{width: '100%'}} />
                                                             )}
                                                         </FormItem>
                                                         <FormItem {...formItemLayout1} label="备注">
                                                             {getFieldDecorator(reciepcomment, {
                                                                 reules: [{
                                                                     required:true, message: 'please entry',
-                                                                }]
+                                                                }],
+                                                                initialValue: self.props.isdetail?rv.comments:null
                                                             })(
-                                                                <Input placeholder="请输入备注" />
+                                                                <Input disabled={self.props.isdetail} placeholder="请输入备注" />
                                                             )}
                                                         </FormItem>
                                                         <FormItem {...formItemLayout1} label="附件">
@@ -357,7 +387,7 @@ class ChargeInfo extends Component {
                                                                     onChange={handleChange}
                                                                     beforeUpload={handleBeforeUpload} 
                                                                     >
-                                                                    {rv.fileList.length >= 3 ? null : uploadButton}
+                                                                    {(rv.fileList && rv.fileList.length >= 3) ? null : uploadButton}
                                                                 </Upload>
                                                                 <Modal visible={rv.previewVisible} footer={null} onCancel={handleCancel}>
                                                                     <img alt="example" style={{ width: '100%' }} src={rv.previewImage} />
@@ -369,9 +399,13 @@ class ChargeInfo extends Component {
                                             }
                                         )
                                     }
-                                    <FormItem wrapperCol={{ span: 12, offset: 6 }}>
-                                        <Col span={6}><Button type="primary" icon="plus" onClick={self.addCharge.bind(self, i)} ></Button></Col>
-                                    </FormItem>
+                                    {
+                                        self.props.isdetail?null: (
+                                            <FormItem wrapperCol={{ span: 12, offset: 6 }}>
+                                                <Col span={6}><Button type="primary" icon="plus" onClick={self.addCharge.bind(self, i)} ></Button></Col>
+                                            </FormItem>
+                                        )
+                                    }
                                 </div>
                             )}
                     )
@@ -399,6 +433,7 @@ class ChargeInfo extends Component {
 
 function chargetableMapStateToProps(state) {
     return {
+        selchargeList: state.basicData.selchargeList,
         department: state.basicData.eachDepartment,
         chargeCostTypeList: state.basicData.chargeCostTypeList,
         setContractOrgTree: state.basicData.departmentTree

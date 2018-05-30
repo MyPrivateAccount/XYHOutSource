@@ -22,19 +22,22 @@ class SearchResult extends Component {
             {title: '创建时间',dataIndex: 'createtime',key: 'createtime'},
             {title: '创建用户',dataIndex: 'createname',key: 'createname'},
             {title: '报销门店',dataIndex: 'organize',key: 'organize',},
+            {title: '报销金额',dataIndex: 'cost',key: 'cost',},
+            {title: '付款日期',dataIndex: 'posttime',key: 'posttime',},
             {title: "是否付款", dataIndex: "ispayed", key: "ispayed"},
+            {title: "审核状态", dataIndex: "checkstatus", key: "checkstatus"},
             {title: "操作", dataIndex: "operation", key: "operation",
             render: (text, record) => {
                 return (
-                    <span> <a onClick={() => this.show(record.key)}>显示详细</a> </span>
+                    <span> <a onClick={() => this.show(record)}>显示详细</a> </span>
                 );
               }
             },
         ];
     }
 
-    show = () => {
-        this.props.dispatch(adduserPage({menuID: 'chargedetailinfo', disname: '费用信息', type:'item'}));
+    show = (e) => {
+        this.props.dispatch(adduserPage({menuID: 'chargedetailinfo', disname: '费用信息', type:'item', extra: e.id}));
     }
 
     componentWillMount() {

@@ -24,5 +24,7 @@ namespace XYHChargePlugin.Models
         public string CreateUser { get; set; }
         [MaxLength(127)]
         public string CreateUserName { get; set; }
+        [MaxLength(127)]
+        public string CurrentModify { get; set; }
     }
 }

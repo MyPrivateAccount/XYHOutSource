@@ -13,6 +13,7 @@ namespace XYHChargePlugin.Stores
     public interface IChargeManageStore
     {
         IEnumerable<T> DapperSelect<T>(string sql);
+        int? CostSum(string id);
         Task<ChargeInfo> CreateChargeAsync(SimpleUser userinfo, ChargeInfo chargeinfo, string modifyid, string checkaction, CancellationToken cancellationToken = default(CancellationToken));
         Task CreateCostListAsync(List<CostInfo> costinfo, CancellationToken cancellationToken = default(CancellationToken));
         Task CreateReceiptListAsync(SimpleUser user, List<ReceiptInfo> costinfo, CancellationToken cancellationToken = default(CancellationToken));
@@ -22,7 +23,9 @@ namespace XYHChargePlugin.Stores
         //Task DeleteAsync(ChargeInfo userinfo, string contractid, CancellationToken cancellationToken = default(CancellationToken));
 
         Task<TResult> GetChargeAsync<TResult>(Func<IQueryable<ChargeInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken));
-
+        Task<TResult> GetModifyAsync<TResult>(Func<IQueryable<ModifyInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken));
+        Task<TResult> GetLimitAsync<TResult>(Func<IQueryable<LimitInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken));
+        Task<List<TResult>> GetCostListAsync<TResult>(Func<IQueryable<CostInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken));
         Task<List<TResult>> GetRecieptListAsync<TResult>(Func<IQueryable<ReceiptInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken));
 
         Task UpdateExamineStatus(string modifyId, ExamineStatusEnum status, int type, CancellationToken cancellationToken = default(CancellationToken));

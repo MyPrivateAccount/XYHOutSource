@@ -9,13 +9,20 @@ const initState = {
     orderRule: 0,//0不排 1升 2降
     pageIndex: 0,
     pageSize: 10,
-    searchResult: {extension: [{key: '1', id: 'tt', createtime:"", createname: 'test', organize: 'hhee', ispayed: "否"}], pageIndex: 0, pageSize: 10, totalCount: 1},//搜索结果
+    searchResult: {extension: [{key: '1', id: 'tt', createtime:"", createname: 'test', organize: 'hhee', cost: 0, posttime:"", ispayed: "否", checkstatus: ""}], pageIndex: 0, pageSize: 10, totalCount: 1},//搜索结果
     recieptInfoList: [],//后补发票用的
 }
 // {title: 'ID',dataIndex: 'id',key: 'id',},
 // {title: '创建用户',dataIndex: 'createname',key: 'createname'},
 // {title: '报销门店',dataIndex: 'organize',key: 'organize',},
 // {title: "是否付款", dataIndex: "ispayed", key: "ispayed"},];
+
+const STATUSINFO = {
+    0: "未提交",
+    1: "审核中",
+    8: "审核通过",
+    16: "驳回"
+};
 
 let reducerMap = {};
 
@@ -30,7 +37,17 @@ reducerMap[actionTypes.SET_SEARCH_LOADING] = function(state, action) {
 reducerMap[actionTypes.UPDATE_SEARCHCONDITION] = function(state, action) {
     if (action.payload.extension.length > 0) {
         action.payload.extension = action.payload.extension.map(function(v, i) {
-            return {key: i, id: v.id, createtime: v.createTime?v.createTime.replace("T", " "):'', createname: v.createUserName, organize: v.department, ispayed: v.postTime == null ? "否":"是"};
+            return {
+                key: i, 
+                id: v.id, 
+                createtime: v.createTime?v.createTime.replace("T", " "):'', 
+                createname: v.createUserName, 
+                organize: v.department, 
+                cost: v.totalCost,
+                posttime: v.postTime == null ? "":v.postTime.replace("T", " "),
+                ispayed: v.postTime == null ? "否":"是", 
+                checkstatus: STATUSINFO[v.checkStatus]
+            };
         });
     }
     return Object.assign(state, {searchResult: action.payload, showLoading: false});

@@ -12,4 +12,14 @@ namespace XYHChargePlugin.Dto.Response
         public int? Cost { get; set; }
         public string Comments { get; set; }
     }
+
+    public class CostInfoResponseEx
+    {
+        public string ID { get; set; }
+        public string ChargeID { get; set; }
+        public int? Type { get; set; }
+        public int? Cost { get; set; }
+        public string Comments { get; set; }
+        public List<ReceiptInfoResponse> ReceiptList { get; set; }
+    }
 }

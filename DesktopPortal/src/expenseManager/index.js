@@ -106,7 +106,7 @@ class ExpenseManagerIndex extends Component {
         let navigator = this.props.navigator;
 
         if (navigator.length > 0) {
-                return <ContentPage curMenuID={navigator[navigator.length - 1].menuID} />;
+                return <ContentPage curMenuID={navigator[navigator.length - 1].menuID} extra={navigator[navigator.length - 1].extra} />;
         }
         return <ContentPage curMenuID={this.state.activeMenu.menuID} />;
     }

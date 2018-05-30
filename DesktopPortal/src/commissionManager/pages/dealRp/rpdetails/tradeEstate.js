@@ -1,8 +1,9 @@
 //成交物业组件
 import { connect } from 'react-redux';
 import React, { Component } from 'react';
+import moment from 'moment'
 import { getDicParList ,dealWySave} from '../../../actions/actionCreator'
-import { notification,Form, Span, Layout, Table, Button, Radio, Popconfirm, Tooltip, Row, Col, Input, Spin, Select, TreeSelect } from 'antd'
+import {DatePicker, notification,Form, Span, Layout, Table, Button, Radio, Popconfirm, Tooltip, Row, Col, Input, Spin, Select, TreeSelect } from 'antd'
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -10,6 +11,7 @@ const Option = Select.Option;
 class TradeEstate extends Component {
     state = {
         isDataLoading:false,
+        wyCqzqdsj:'',
         rpData:{}
     }
     componentWillMount = () => {
@@ -39,10 +41,34 @@ class TradeEstate extends Component {
             if (!err) {
                 values.id = this.props.rpId;
                 console.log(values);
+                if(values.wySfhz === '1'){
+                    values.wySfhz = 1
+                }
+                else{
+                    values.wySfhz = 2
+                }
+                if(this.state.wyCqzqdsj!==''){
+                    values.wyCqzqdsj = this.state.wyCqzqdsj;
+                }
+                else{
+                    values.wyCqzqdsj = this.state.rpData.wyCqzqdsj;
+                }
                 this.setState({isDataLoading:true,tip:'保存信息中...'})
                 this.props.dispatch(dealWySave(values));
             }
         });
+    }
+    wyCqzqdsj_dateChange=(value,dateString)=>{
+        this.setState({wyCqzqdsj:dateString})
+    }
+    getInvalidDate=(dt)=>{
+        var newdt = ''+dt;
+        if(newdt.indexOf('T')!==-1){
+            newdt = newdt.substr(0,newdt.length-9);
+            console.log("newdt:"+newdt)
+            return newdt;
+        }
+        return dt
     }
     render() {
         const { getFieldDecorator } = this.props.form;
@@ -96,7 +122,7 @@ class TradeEstate extends Component {
                         <Col span={3} style={{ textAlign: 'left' }}>
                             <FormItem>
                                 {
-                                    getFieldDecorator('wqPq', {
+                                    getFieldDecorator('wyPq', {
                                         rules: [{ required: false }],
                                         initialValue: this.state.rpData.wqRq,
                                     })(
@@ -112,7 +138,7 @@ class TradeEstate extends Component {
                         <Col span={3} style={{ textAlign: 'left' }}>
                             <FormItem>
                                 {
-                                    getFieldDecorator('wqMc', {
+                                    getFieldDecorator('wyMc', {
                                         rules: [{ required: false }],
                                         initialValue: this.state.rpData.wqMc,
                                     })(
@@ -310,7 +336,7 @@ class TradeEstate extends Component {
                         <Col span={8}>
                             <FormItem {...formItemLayout} label={(<span>均价</span>)}>
                                 {
-                                    getFieldDecorator('wyJj', {
+                                    getFieldDecorator('wyWyJj', {
                                         rules: [{ required: false }],
                                         initialValue: this.state.rpData.wyJj,
                                     })(
@@ -386,9 +412,9 @@ class TradeEstate extends Component {
                                 {
                                     getFieldDecorator('wyCqzqdsj', {
                                         rules: [{ required: false, message: '请填写分行名称!' }],
-                                        initialValue: this.state.wyCqzqdsj,
+                                        initialValue: moment(this.getInvalidDate(this.state.rpData.wyCqzqdsj)),
                                     })(
-                                        <Input style={{ width: 180 }}></Input>
+                                        <DatePicker style={{ width: 180 }} onChange={this.wyCqzqdsj_dateChange}></DatePicker>
                                     )
                                 }
                             </FormItem>
@@ -410,7 +436,7 @@ class TradeEstate extends Component {
                                 {
                                     getFieldDecorator('wySfhz', {
                                         rules: [{ required: false, message: '请选择成交日期!' }],
-                                        initialValue: this.state.rpData.wySfhz,
+                                        initialValue: this.state.rpData.wySfhz===1?'1':'2',
                                     })(
                                         <Select style={{ width: 180 }}>
                                             <Option key='1' value='1'>是</Option>

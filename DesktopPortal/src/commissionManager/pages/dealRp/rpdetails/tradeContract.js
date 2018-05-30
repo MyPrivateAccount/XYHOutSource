@@ -2,6 +2,7 @@
 //合同列表
 import { connect } from 'react-redux';
 import React, { Component } from 'react';
+import moment from 'moment'
 import { getDicParList,dealRpSave} from '../../../actions/actionCreator'
 import {notification, DatePicker, Form, Span, Layout, Table, Button, Radio, Popconfirm, Tooltip, Row, Col, Input, Spin, Select, TreeSelect } from 'antd'
 import './trade.less'
@@ -11,7 +12,12 @@ const FormItem = Form.Item;
 class TradeContract extends Component {
     state = {
         isDataLoading:false,
-        rpData:{}
+        rpData:{},
+        cjrq:'',
+        yxsqyrq:'',
+        yjfksj:'',
+        kflfrq:'',
+        htqyrq:''
     }
     componentWillMount = () => {
         this.setState({isDataLoading:true,tip:'信息初始化中...'})
@@ -40,12 +46,36 @@ class TradeContract extends Component {
         this.props.form.validateFields((err, values) => {
             if (!err) {
                 values.id = this.props.rpId;
-                values.cjrq = this.state.cjrq;
-                values.yxsqyrq = this.state.yxsqyrq;
-                values.yjfksj = this.state.yjfksj;
-                values.kflfrq = this.state.kflfrq;
-                values.htqyrq = this.state.htqyrq;
-
+                if(this.state.cjrq!==''){
+                    values.cjrq = this.state.cjrq;
+                }
+                else{
+                    values.cjrq = this.state.rpData.cjrq;
+                }
+                if(this.state.yxsqyrq!==''){
+                    values.yxsqyrq = this.state.yxsqyrq;
+                }
+                else{
+                    values.yxsqyrq = this.state.rpData.yxsqyrq;
+                }
+                if(this.state.yjfksj!==''){
+                    values.yjfksj = this.state.yjfksj;
+                }
+                else{
+                    values.yjfksj = this.state.rpData.yjfksj;
+                }
+                if(this.state.kflfrq!==''){
+                    values.kflfrq = this.state.kflfrq;
+                }
+                else{
+                    values.kflfrq = this.state.rpData.kflfrq;
+                }
+                if(this.state.htqyrq!==''){
+                    values.htqyrq = this.state.htqyrq;
+                }
+                else{
+                    values.htqyrq = this.state.rpData.htqyrq;
+                }
                 console.log(values);
                 this.setState({isDataLoading:true,tip:'保存信息中...'})
                 this.props.dispatch(dealRpSave(values));
@@ -68,6 +98,15 @@ class TradeContract extends Component {
     }
     htqyrq_dateChange=(value,dateString)=>{
         this.setState({htqyrq:dateString})
+    }
+    getInvalidDate=(dt)=>{
+        var newdt = ''+dt;
+        if(newdt.indexOf('T')!==-1){
+            newdt = newdt.substr(0,newdt.length-9);
+            console.log("newdt:"+newdt)
+            return newdt;
+        }
+        return dt
     }
     render() {
         const { getFieldDecorator } = this.props.form;
@@ -181,7 +220,7 @@ class TradeContract extends Component {
                                 {
                                     getFieldDecorator('cjrq', {
                                         rules: [{ required: false, message: '请选择成交日期!' }],
-                                        initialValue: this.state.rpData.cjrq,
+                                        initialValue: moment(this.getInvalidDate(this.state.rpData.cjrq)),
                                     })(
                                         <DatePicker style={{ width: 200 }}  onChange={this.cjrq_dateChange}></DatePicker>
                                     )
@@ -351,7 +390,7 @@ class TradeContract extends Component {
                                 {
                                     getFieldDecorator('yxsqyrq', {
                                         rules: [{ required: false }],
-                                        initialValue: this.state.rpData.yxsqyrq,
+                                        initialValue: moment(this.getInvalidDate(this.state.rpData.yxsqyrq)),
                                     })(
                                         <DatePicker style={{ width: 200 }} onChange={this.wqrq_dateChange}></DatePicker>
                                     )
@@ -363,7 +402,7 @@ class TradeContract extends Component {
                                 {
                                     getFieldDecorator('yjfksj', {
                                         rules: [{ required: false }],
-                                        initialValue: this.state.rpData.yjfksj,
+                                        initialValue: moment(this.getInvalidDate(this.state.rpData.yjfksj)),
                                     })(
                                         <DatePicker style={{ width: 200 }} onChange={this.yjfksj_dateChange}></DatePicker>
                                     )
@@ -407,7 +446,7 @@ class TradeContract extends Component {
                                 {
                                     getFieldDecorator('kflfrq', {
                                         rules: [{ required: false }],
-                                        initialValue: this.state.rpData.kflfrq,
+                                        initialValue: moment(this.getInvalidDate(this.state.rpData.kflfrq)),
                                     })(
                                         <DatePicker style={{ width: 200 }} onChange={this.kflfrq_dateChange}></DatePicker>
                                     )
@@ -419,7 +458,7 @@ class TradeContract extends Component {
                                 {
                                     getFieldDecorator('htqyrq', {
                                         rules: [{ required: false }],
-                                        initialValue: this.state.rpData.htqyrq,
+                                        initialValue: moment(this.getInvalidDate(this.state.rpData.htqyrq)),
                                     })(
                                         <DatePicker style={{ width: 200 }} onChange={this.htqyrq_dateChange}></DatePicker>
                                     )
@@ -471,9 +510,9 @@ class TradeContract extends Component {
                         <Col span={8}>
                             <FormItem {...formItemLayout} label={(<span>自制合同</span>)}>
                                 {
-                                    getFieldDecorator('zzht', {
+                                    getFieldDecorator('zzhtbh', {
                                         rules: [{ required: false }],
-                                        initialValue: this.state.rpData.zzht,
+                                        initialValue: this.state.rpData.zzhtbh,
                                     })(
                                         <Input style={{ width: 200 }}></Input>
                                     )
