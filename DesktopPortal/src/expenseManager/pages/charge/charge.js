@@ -94,6 +94,7 @@ class ChargeInfo extends Component {
 
                 let costinfos = [];//1_aa_1/1_aa_2
                 let receiptinfos = [];
+                let ncostmoney = 0;
                 for (const ite in values) {
                     let ary = ite.split("_");
                     if (ary.length > 1) {
@@ -117,6 +118,7 @@ class ChargeInfo extends Component {
                             costinfos[+ary[0]] = Object.assign({}, costinfos[+ary[0]], {"comments": values[ite]});
                         } else if (ary[1] === "costmoney") {
                             costinfos[+ary[0]] = Object.assign({}, costinfos[+ary[0]], {"cost": values[ite]});
+                            ncostmoney += values[ite];
                         } else if (ary[1] === "costtype") {
                             costinfos[+ary[0]] = Object.assign({}, costinfos[+ary[0]], {"type": values[ite]});
                             costinfos[+ary[0]] = Object.assign({}, costinfos[+ary[0]], {"id": self.state.costlist[+ary[0]].costID});
@@ -124,9 +126,20 @@ class ChargeInfo extends Component {
                         }
                     }
                 }
+
+                if (ncostmoney > self.state.costlimit) {
+                    notification.error({
+                        message: '金额设置错误',
+                        description: "超出限定",
+                        duration: 3
+                    });
+                    return;
+                }
+
                 let tf = {
                     chargeinfo: {
                         id: self.state.id,
+                        totalcost: ncostmoney,
                         department: values.department.join("/")
                     },
                     costinfos: costinfos,

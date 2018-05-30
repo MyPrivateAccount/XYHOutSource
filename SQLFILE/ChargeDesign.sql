@@ -14,6 +14,7 @@ CREATE TABLE `XYH_CH_CHARGEMANAGE` (
   `CreateUser` varchar(127) DEFAULT NULL,
   `CreateUserName` varchar(127) DEFAULT NULL,
   `CurrentModify` varchar(127) DEFAULT NULL,
+  `TotalCost` int(11) NOT NULL DEFAULT 0,
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
