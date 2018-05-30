@@ -1,26 +1,27 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection;
 using ApplicationCore;
 using ApplicationCore.Dto;
 using ApplicationCore.Filters;
-using GatewayInterface;
-using XYH.Core.Log;
-using XYHContractPlugin.Dto.Response;
-using XYHContractPlugin.Managers;
 using AspNet.Security.OAuth.Validation;
-using XYHContractPlugin.Models;
-using System.Linq;
-using XYHContractPlugin.Dto.Request;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using XYH.Core.Log;
+using System.Text;
 using System.Collections.Specialized;
-using XYHContractPlugin.Dto;
+using System.Threading.Tasks;
+using XYH.Core.Log;
+using XYHChargePlugin.Dto.Request;
+using XYHChargePlugin.Dto.Response;
+using Microsoft.Extensions.DependencyInjection;
+using GatewayInterface;
+using XYHChargePlugin.Dto.Common;
+using XYHChargePlugin.Managers;
+using ApplicationCore.Managers;
 
-namespace XYHContractPlugin.Controllers
+namespace XYHChargePlugin.Controllers
 {
     [Produces("application/json")]
     [Route("api/chargefile")]
