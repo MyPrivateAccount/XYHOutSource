@@ -139,7 +139,7 @@ class ChargeInfo extends Component {
                 let tf = {
                     chargeinfo: {
                         id: self.state.id,
-                        totalcost: ncostmoney,
+                        totalCost: ncostmoney,
                         department: values.department.join("/")
                     },
                     costinfos: costinfos,
