@@ -102,7 +102,12 @@ namespace XYHChargePlugin.Managers
                     foreach (var itm in scope)
                     {
                         var file = await _Store.GetFileInfo(a => a.Where(b => b.FileGuid == itm.FileGuid));
-                        item.FileList.Add(new SimpleList { uid = item.FileList.Count, name="", status="done", url=file.Uri});
+                        if (file != null)
+                        {
+                            if (item.FileList == null) {item.FileList = new List<SimpleList>();}
+                            item.FileList.Add(new SimpleList { uid = item.FileList.Count, name="", status="done", url=file.Uri});
+                        }
+                        
                     }
                 }
 
