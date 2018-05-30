@@ -11,6 +11,18 @@ const LoadableOnboardPage = Loadable({
     loader: () => import('./staffinfo/onboarding'),
     loading: () => <LoadableLoading />,
 });
+const LoadableBecomeStaffdPage = Loadable({
+    loader: () => import('./staffinfo/becomeStaff'),
+    loading: () => <LoadableLoading />,
+});
+const LoadableLeftdPage = Loadable({
+    loader: () => import('./staffinfo/left'),
+    loading: () => <LoadableLoading />,
+});
+const LoadableChangedPage = Loadable({
+    loader: () => import('./staffinfo/change'),
+    loading: () => <LoadableLoading />,
+});
 const LoadableMonthPage = Loadable({
     loader: () => import('./month/month'),
     loading: () => <LoadableLoading />,
@@ -95,6 +107,15 @@ function ContentPage(props) {
     }
     else if (curMenuID === "Onboarding") {
         return <LoadableOnboardPage />;
+    }
+    else if (curMenuID === "BecomeStaff") {
+        return <LoadableBecomeStaffdPage />;
+    }
+    else if (curMenuID === "changestation") {
+        return <LoadableChangedPage />;
+    }
+    else if (curMenuID === "leftstation") {
+        return <LoadableLeftdPage />;
     }
     else {
         return <LoadableStaffPage />;

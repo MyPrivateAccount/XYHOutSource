@@ -37,3 +37,5 @@ export const selCharge = createAction(actionTypes.SELECTCHARGE);
 export const clearCharge = createAction(actionTypes.CLEARCHARGE);
 
 export const getLimitChargeHuman = createAction(actionTypes.GET_LIMITCHARGEHUMAN);
+
+export const setLimitHuman = createAction(actionTypes.SET_LIMITCHARGEHUMAN);

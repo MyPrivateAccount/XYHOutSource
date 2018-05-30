@@ -43,7 +43,7 @@ namespace XYHChargePlugin.Controllers
             _restClient = rsc;
             _chargeManager = charge;
 
-            _lastNumber = 0;
+            _lastNumber = 1;
             _restClient = rsc;
         }
 
@@ -89,7 +89,35 @@ namespace XYHChargePlugin.Controllers
                     _lastDate = td.Month.ToString() + td.Day.ToString();
                 }
 
-                Response.Extension = $"XYC-{td.Year.ToString()}{td.Month.ToString()}{td.Day.ToString()}-{_lastNumber}";
+                Response.Extension = $"FY-{td.Year.ToString()}{td.Month.ToString()}{td.Day.ToString()}-{_lastNumber}";
+                Response.Message = $"getchargenumber sucess";
+            }
+            catch (Exception e)
+            {
+                Response.Code = ResponseCodeDefines.ServiceError;
+                Response.Message = "服务器错误：" + e.ToString();
+                Logger.Error("error");
+            }
+            return Response;
+        }
+
+        [HttpGet("chargedetail/{chargeid}")]
+        [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
+        public async Task<ResponseMessage<ChargeDetailInfoResponse>> GetChargeDetail(UserInfo User, string chargeid)
+        {
+            var Response = new ResponseMessage<ChargeDetailInfoResponse>();
+
+            if (!ModelState.IsValid)
+            {
+                Response.Code = ResponseCodeDefines.ModelStateInvalid;
+                Logger.Warn($"用户{User?.UserName ?? ""}({User?.Id ?? ""})查询人事条件(PostCustomerListSaleMan)模型验证失败：\r\n{Response.Message ?? ""}，\r\n请求参数为：\r\n" + (chargeid != null ? JsonHelper.ToJson(chargeid) : ""));
+                return Response;
+            }
+
+            try
+            {
+                Response.Extension = await _chargeManager.GetChargeDetailInfo(chargeid);
+                //Response.Extension = $"FY-{td.Year.ToString()}{td.Month.ToString()}{td.Day.ToString()}-{_lastNumber}";
                 Response.Message = $"getchargenumber sucess";
             }
             catch (Exception e)
@@ -136,7 +164,7 @@ namespace XYHChargePlugin.Controllers
 
         [HttpPost("setlimit")]
         [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
-        public async Task<ResponseMessage<List<ChargeInfoResponse>>> SetLimit(UserInfo User, [FromBody]int cost)
+        public async Task<ResponseMessage<List<ChargeInfoResponse>>> SetLimit(UserInfo User, [FromBody]LimitHumanRequest cost)
         {
             var pagingResponse = new ChargeSearchResponse<ChargeInfoResponse>();
             if (!ModelState.IsValid)
@@ -148,7 +176,7 @@ namespace XYHChargePlugin.Controllers
 
             try
             {
-                await _chargeManager.UpdateLimit(User.Id, cost, HttpContext.RequestAborted);
+                await _chargeManager.UpdateLimit(cost.ID, cost.CostLimit, HttpContext.RequestAborted);
                 pagingResponse.Message = "SetLimit ok";
             }
             catch (Exception e)
@@ -161,15 +189,16 @@ namespace XYHChargePlugin.Controllers
             return pagingResponse;
         }
 
-        [HttpGet("limithuman")]
+        [HttpGet("limitinfo")]
         [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
-        public async Task<ResponseMessage<string>> GetLimitChargeHumanLst()
+        public async Task<ResponseMessage<LimitInfoResponse>> GetLimitChargeHumanLst(UserInfo User)
         {
-            var Response = new ResponseMessage<string>();
+            var Response = new ResponseMessage<LimitInfoResponse>();
             
             try
             {
-                Response.Message = $"getchargenumber sucess";
+                Response.Extension = await _chargeManager.GetLimitInfo(User.Id, HttpContext.RequestAborted);
+                Response.Message = $"limitinfo sucess";
             }
             catch (Exception e)
             {

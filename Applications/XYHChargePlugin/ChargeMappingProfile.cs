@@ -18,6 +18,9 @@ namespace XYHChargePlugin
             CreateMap<CostInfo, CostInfoResponse>();
             CreateMap<CostInfoResponse, CostInfo>();
 
+            CreateMap<CostInfo, CostInfoResponseEx>();
+            CreateMap<CostInfoResponseEx, CostInfo>();
+
             CreateMap<ReceiptInfo, ReceiptInfoResponse>();
             CreateMap<ReceiptInfoResponse, ReceiptInfo>();
 

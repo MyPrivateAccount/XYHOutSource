@@ -14,5 +14,8 @@ namespace XYHChargePlugin.Dto.Response
         public string PostDepartment { get; set; }
         public string CreateUser { get; set; }
         public string CreateUserName { get; set; }
+        public string CurrentModify { get; set; }
+        public int CheckStatus { get; set; }
+        public int TotalCost { get; set; }
     }
 }
