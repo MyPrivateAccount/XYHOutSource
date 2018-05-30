@@ -81,7 +81,7 @@ class Addreciept extends Component {
     }
 
     addCharge = () => {
-        this.props.recieptInfoList.push({receiptID: NewGuid(),fileList: []});
+        this.props.recieptInfoList.push({receiptID: NewGuid(), isadd: true, fileList: []});
         this.setState(this.state);
     }
 
@@ -199,8 +199,9 @@ class Addreciept extends Component {
                                             reules: [{
                                                 required:true, message: 'please entry Age',
                                             }]
+                                            , initialValue: rv.type
                                         })(
-                                            <Select placeholder="选择费用类型">
+                                            <Select disabled={!rv.isadd} placeholder="选择费用类型">
                                                 {
                                                     (self.props.chargeCostTypeList && self.props.chargeCostTypeList.length > 0) ?
                                                         self.props.chargeCostTypeList.map(
@@ -217,8 +218,9 @@ class Addreciept extends Component {
                                             reules: [{
                                                 required:true, message: 'please entry',
                                             }]
+                                            , initialValue: rv.receiptNumber
                                         })(
-                                            <Input placeholder="请输入发票号" />
+                                            <Input disabled={!rv.isadd} placeholder="请输入发票号" />
                                         )}
                                     </FormItem>
                                     <FormItem {...formItemLayout1} label="发票金额">
@@ -226,8 +228,9 @@ class Addreciept extends Component {
                                             reules: [{
                                                 required:true, message: 'please entry',
                                             }]
+                                            , initialValue: rv.receiptMoney
                                         })(
-                                            <InputNumber placeholder="请输入发票金额" style={{width: '100%'}} />
+                                            <InputNumber disabled={!rv.isadd} placeholder="请输入发票金额" style={{width: '100%'}} />
                                         )}
                                     </FormItem>
                                     <FormItem {...formItemLayout1} label="备注">
@@ -235,8 +238,9 @@ class Addreciept extends Component {
                                             reules: [{
                                                 required:true, message: 'please entry',
                                             }]
+                                            , initialValue: rv.comments
                                         })(
-                                            <Input placeholder="请输入备注" />
+                                            <Input disabled={!rv.isadd} placeholder="请输入备注" />
                                         )}
                                     </FormItem>
                                     <FormItem {...formItemLayout1} label="附件">
@@ -244,12 +248,12 @@ class Addreciept extends Component {
                                             <Upload
                                                 action="//jsonplaceholder.typicode.com/posts/"
                                                 listType="picture-card"
-                                                fileList={rv.fileList}
-                                                onPreview={handlePreview}
-                                                onChange={handleChange}
+                                                fileList={rv.fileList} 
+                                                onPreview={handlePreview} 
+                                                onChange={handleChange} 
                                                 beforeUpload={handleBeforeUpload} 
                                                 >
-                                                {(rv.fileList==null||rv.fileList.length >= 3) ? null : uploadButton}
+                                                {(rv.fileList==null||rv.fileList.length >= 3||!rv.isadd) ? null : uploadButton}
                                             </Upload>
                                             <Modal visible={rv.previewVisible} footer={null} onCancel={handleCancel}>
                                                 <img alt="example" style={{ width: '100%' }} src={rv.previewImage} />
