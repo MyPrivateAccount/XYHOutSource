@@ -1,4 +1,4 @@
-﻿using ApplicationCore;
+using ApplicationCore;
 using ApplicationCore.Dto;
 using ApplicationCore.Filters;
 using AspNet.Security.OAuth.Validation;
@@ -13,20 +13,18 @@ using XYHHumanPlugin.Dto.Request;
 using XYHHumanPlugin.Dto.Response;
 using XYHHumanPlugin.Managers;
 
-using PositionInfoRequest = XYHHumanPlugin.Dto.Response.PositionInfoResponse;
-
 namespace XYHHumanPlugin.Controllers
 {
     [Authorize(AuthenticationSchemes = OAuthValidationDefaults.AuthenticationScheme)]
     [Produces("application/json")]
-    [Route("api/humanstation")]
-    public class StationController : Controller
+    [Route("api/humansalary")]
+    public class SalaryController : Controller
     {
         private readonly ILogger Logger = LoggerManager.GetLogger("XYHHumaninfo");
         private readonly StationManager _stationManage;
         private readonly RestClient _restClient;
 
-        public StationController(RestClient rsc, StationManager sta)
+        public SalaryController(RestClient rsc, StationManager sta)
         {
             _restClient = rsc;
             _stationManage = sta;
