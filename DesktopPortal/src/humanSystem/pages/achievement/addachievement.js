@@ -39,6 +39,7 @@ class Achievement extends Component {
         this.props.form.validateFields((err, values) => {
             if (!err) {
                 //this.props.dispatch(postBlackLst(values));
+                this.props.selAchievementList[len-1].id;
             }
         });
     }
@@ -56,7 +57,7 @@ class Achievement extends Component {
                     <FormItem {...formItemLayout1}/>
                     <FormItem {...formItemLayout1}/>
                     <FormItem {...formItemLayout1} label="选择组织">
-                        {getFieldDecorator('org', {
+                        {getFieldDecorator('organize', {
                             reules: [{
                                 required:true, message: 'please entry',
                             }]
@@ -65,7 +66,7 @@ class Achievement extends Component {
                         )}
                     </FormItem>
                     <FormItem {...formItemLayout1} label="选择职位">
-                        {getFieldDecorator('station', {
+                        {getFieldDecorator('positionID', {
                             reules: [{
                                 required:true, message: 'please entry',
                             }]
