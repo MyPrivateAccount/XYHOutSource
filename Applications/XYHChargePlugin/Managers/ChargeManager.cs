@@ -105,7 +105,7 @@ namespace XYHChargePlugin.Managers
                         if (file != null)
                         {
                             if (item.FileList == null) {item.FileList = new List<SimpleList>();}
-                            item.FileList.Add(new SimpleList { uid = item.FileList.Count, name="", status="done", url=file.Uri});
+                            item.FileList.Add(new SimpleList { uid = item.FileList.Count, name="", status="done", url=ConvertToSimpleFile(file.Uri)});
                         }
                         
                     }
@@ -135,7 +135,7 @@ namespace XYHChargePlugin.Managers
                             if (file != null)
                             {
                                 if (it.FileList == null) { it.FileList = new List<SimpleList>(); }
-                                it.FileList.Add(new SimpleList { uid = it.FileList.Count, name = "", status = "done", url = file.Uri });
+                                it.FileList.Add(new SimpleList { uid = it.FileList.Count, name = "", status = "done", url = ConvertToSimpleFile(file.Uri) });
                             }
 
                         }
@@ -144,6 +144,44 @@ namespace XYHChargePlugin.Managers
             }
 
             return info;
+        }
+
+        private string ConvertToSimpleFile(string file)
+        {
+            string fr = ApplicationCore.ApplicationContext.Current.FileServerRoot;
+            fr = (fr ?? "").TrimEnd('/');
+            retun fr + "/" + file.TrimStart('/');
+        }
+
+        private FileItemResponse ConvertToFileItem(string fileGuid, List<FileInfo> fl)
+        {
+            FileItemResponse fi = new FileItemResponse();
+            fi.FileGuid = fileGuid;
+            fi.Group = fl.FirstOrDefault()?.Group;
+            fi.Icon = fl.FirstOrDefault(x => x.Type == "ICON")?.Uri;
+            fi.Original = fl.FirstOrDefault(x => x.Type == "ORIGINAL")?.Uri;
+            fi.Medium = fl.FirstOrDefault(x => x.Type == "MEDIUM")?.Uri;
+            fi.Small = fl.FirstOrDefault(x => x.Type == "SMALL")?.Uri;
+
+            string fr = ApplicationCore.ApplicationContext.Current.FileServerRoot;
+            fr = (fr ?? "").TrimEnd('/');
+            if (!String.IsNullOrEmpty(fi.Icon))
+            {
+                fi.Icon = fr + "/" + fi.Icon.TrimStart('/');
+            }
+            if (!String.IsNullOrEmpty(fi.Original))
+            {
+                fi.Original = fr + "/" + fi.Original.TrimStart('/');
+            }
+            if (!String.IsNullOrEmpty(fi.Medium))
+            {
+                fi.Medium = fr + "/" + fi.Medium.TrimStart('/');
+            }
+            if (!String.IsNullOrEmpty(fi.Small))
+            {
+                fi.Small = fr + "/" + fi.Small.TrimStart('/');
+            }
+            return fi;
         }
 
         public virtual async Task UpdateChargePostTime(string chargeid, string department, CancellationToken cancellationToken = default(CancellationToken))
