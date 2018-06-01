@@ -26,6 +26,10 @@ const SearchCondition = {
         pageSize: defaultPageSize,
         keyWords: '',
         OrganizationId:''
+    },
+    rpListCondition:{
+        pageIndex: 0,
+        pageSize: defaultPageSize,
     }
 }
 

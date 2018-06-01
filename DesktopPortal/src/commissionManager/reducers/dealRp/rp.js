@@ -4,7 +4,9 @@ import * as actionTypes from '../../constants/actionType';
 const initState = {
     showLoading: false,
     operInfo: { operType: ''},
-    ext:[]
+    ext:[],
+    rpSearchResult:[],
+    searchCondition:{}
 };
 let rpReducerMap = {};
 //保存接口反馈
@@ -56,5 +58,17 @@ rpReducerMap[actionTypes.DEALRP_GH_GETUPDATE] = function (state, action) {
 rpReducerMap[actionTypes.DEALRP_FP_GETUPDATE] = function (state, action) {
     console.log("readucer获取到业绩分配信息" + JSON.stringify(action.payload));
     return Object.assign({}, state, { ext:action.payload ,operInfo:{operType:'FPGET_UPDATE'}});
+}
+rpReducerMap[actionTypes.DEALRP_MYREPORT_GETUPDATE] = function (state, action) {
+    console.log("readucer获取到成交报告列表信息" + JSON.stringify(action.payload));
+    return Object.assign({}, state, { rpSearchResult:action.payload ,operInfo:{operType:'DEALRP_MYREPORT_GETUPDATE'}});
+}
+rpReducerMap[actionTypes.DEALRP_REPORT_SEARCH_UPDATE] = function (state, action) {
+    console.log("readucer搜索到成交报告列表信息" + JSON.stringify(action.payload));
+    return Object.assign({}, state, { rpSearchResult:action.payload ,operInfo:{operType:'DEALRP_REPORT_SEARCH_UPDATE'}});
+}
+rpReducerMap[actionTypes.DEALRP_ATTACT_UPLOAD_COMPLETE] = function (state, action) {
+    console.log("readucer上传文件成功" + JSON.stringify(action.payload));
+    return Object.assign({}, state, { ext:action.payload ,operInfo:{operType:'DEALRP_ATTACT_UPLOAD_COMPLETE'}});
 }
 export default handleActions(rpReducerMap, initState)

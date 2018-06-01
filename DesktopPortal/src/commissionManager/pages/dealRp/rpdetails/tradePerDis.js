@@ -2,6 +2,7 @@
 import { connect } from 'react-redux';
 import React, { Component } from 'react';
 import moment from 'moment'
+import {dealFpSave} from '../../../actions/actionCreator'
 import {DatePicker,notification, Form, Span, Layout, Table, Button, Radio, Popconfirm, Tooltip, Row, Col, Input, Spin, Select, TreeSelect } from 'antd'
 import TradeWyTable from './tradeWyTable'
 import TradeNTable from './tradeNTable'
@@ -41,6 +42,7 @@ class TradePerDis extends Component {
         else if(newProps.operInfo.operType === 'FPGET_UPDATE'){//信息获取成功
             if(JSON.stringify(newProps.ext)!=='[]'){
                 this.setState({ rpData: newProps.ext});
+                this.reCountZyj()
             }
             newProps.operInfo.operType = ''
         }
@@ -69,6 +71,8 @@ class TradePerDis extends Component {
                 }
 
                 console.log(values);
+                this.setState({isDataLoading:true,tip:'保存信息中...'})
+                this.props.dispatch(dealFpSave(values))
             }
         });
     }

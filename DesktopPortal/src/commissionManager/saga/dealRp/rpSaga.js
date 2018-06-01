@@ -200,7 +200,7 @@ export function* getRpDataAsync(state){
 }
 //获取物业信息
 export function* getRpWyDataAsync(state){
-    let result = { isOk: false, extension: [], msg: '获取成交报告物业信息失败！' };
+    let result = { isOk: false, extension: [], msg: '获取成交报告物业信息成功！' };
     let url = WebApiConfig.rp.wyGet+state.payload;
     try {
         console.log(url)
@@ -333,6 +333,87 @@ export function* getRpFpDataAsync(state){
         });
     }
 }
+///上传文件
+export function* uploadFileAsync(state) {
+    let result = { isOk: false, extension: [], msg: '文件上传失败！' };
+    let url = WebApiConfig.server.uploadImg + state.payload.sourceId+'/upload/' + state.payload.fileGuid;
+
+    try {
+        let res = yield call(ApiClient.post, url, state.payload)
+        getApiResult(res, result);
+         if (result.isOk) {
+             console.log("uploadFile成功:"+result)
+             yield put({ type: actionUtils.getActionType(actionTypes.DEALRP_ATTACT_UPLOAD_COMPLETE), payload: result.extension });
+        }
+    } catch (e) {
+        result.msg = "文件上传接口调用异常！";
+    }
+
+    if (!result.isOk) {
+        notification.error({
+            message: '文件上传',
+            description: result.msg,
+            duration: 3
+        });
+    }
+}
+////
+//获取交易合同
+export function* getMyRpDataAsync(state){
+    let result = { isOk: false, extension: [], msg: '获取我的成交报告列表信息成功！' };
+    let url = WebApiConfig.rp.myrpGet;
+    try {
+        console.log(url)
+        console.log('getMyRpDataAsync:', state);
+        let res = yield call(ApiClient.post, url,state.payload);
+       
+        //console.log(res, '获取参数列表');
+        getApiResult(res, result);
+        if (result.isOk) {
+            console.log('getMyRpDataAsync返回成功:',result)
+            yield put({ type: actionUtils.getActionType(actionTypes.DEALRP_MYREPORT_GETUPDATE), payload: result });
+            // yield put({ type: actionUtils.getActionType(actionTypes.SET_SEARCH_LOADING), payload: false });
+        }
+    } catch (e) {
+        result.msg = "获取我的成交报告列表信息异常!";
+    }
+    if (!result.isOk) {
+        console.log(result.msg)
+        notification.error({
+            message: '提示',
+            description: '获取我的成交报告列表信息失败!',
+            duration: 3
+        });
+    }
+}
+//获取交易合同
+export function* searchRpDataAsync(state){
+    let result = { isOk: false, extension: [], msg: '搜索成交报告列表信息成功！' };
+    let url = WebApiConfig.rp.searchRp;
+    try {
+        console.log(url)
+        console.log('searchRpDataAsync:', state);
+        let res = yield call(ApiClient.post, url,state.payload);
+       
+        //console.log(res, '获取参数列表');
+        getApiResult(res, result);
+        if (result.isOk) {
+            console.log('searchRpDataAsync返回成功:',result)
+            yield put({ type: actionUtils.getActionType(actionTypes.DEALRP_REPORT_SEARCH_UPDATE), payload: result });
+            // yield put({ type: actionUtils.getActionType(actionTypes.SET_SEARCH_LOADING), payload: false });
+        }
+    } catch (e) {
+        result.msg = "搜索成交报告列表信息异常!";
+    }
+    if (!result.isOk) {
+        console.log(result.msg)
+        notification.error({
+            message: '提示',
+            description: '搜索成交报告列表信息失败!',
+            duration: 3
+        });
+    }
+}
 export default function* watchAllRpAsync(){
     yield takeLatest(actionUtils.getActionType(actionTypes.DEALRP_RP_SAVE), saveRpDataAsync);
     yield takeLatest(actionUtils.getActionType(actionTypes.DEALRP_WY_SAVE), saveRpWyDataAsync);
@@ -347,4 +428,8 @@ export default function* watchAllRpAsync(){
     yield takeLatest(actionUtils.getActionType(actionTypes.DEALRP_KH_GET), getRpKhDataAsync);
     yield takeLatest(actionUtils.getActionType(actionTypes.DEALRP_GH_GET), getRpGhDataAsync);
     yield takeLatest(actionUtils.getActionType(actionTypes.DEALRP_FP_GET), getRpFpDataAsync);
+
+    yield takeLatest(actionUtils.getActionType(actionTypes.DEALRP_ATTACT_UPLOADFILE), uploadFileAsync);
+    yield takeLatest(actionUtils.getActionType(actionTypes.DEALRP_MYREPORT_GET), getMyRpDataAsync);
+    yield takeLatest(actionUtils.getActionType(actionTypes.DEALRP_REPORT_SEARCH), searchRpDataAsync);
 }

@@ -4,12 +4,15 @@ import React,{Component} from 'react';
 import { Layout, Table, Button, Checkbox, Popconfirm, Tooltip, Row, Col, Input, Spin, Select, TreeSelect } from 'antd'
 import TradeManager from './rpdetails/tradeManager'
 import DealRpTable  from './dealRpTable'
+import SearchCondition from '../../constants/searchCondition'
+
 const { Header, Content } = Layout;
 const Option = Select.Option;
 
 class MyDealRp extends Component{
     state = {
-        isShowManager:false
+        isShowManager:false,
+        cd:SearchCondition.rpListCondition
     }
     handleDelClick = (info) =>{
 
@@ -23,11 +26,17 @@ class MyDealRp extends Component{
     handleBack = (e)=>{
         this.setState({isShowManager:false})
     }
+    componentWillMount=()=>{
+
+    }
     componentDidMount = ()=>{
 
     }
     componentWillReceiveProps = (newProps)=>{
 
+    }
+    onRpTable=(ref)=> {
+        this.rptb = ref
     }
     render(){
         const rowSelection = {
@@ -45,11 +54,22 @@ class MyDealRp extends Component{
                 <Tooltip title="新增">
                     <Button type='primary' shape='circle' icon='plus' onClick={this.handleNew} style={{'margin':'10'}}/>
                 </Tooltip>
-                <DealRpTable/>
+                <DealRpTable SearchCondition={this.state.cd} onRpTable={this.onRpTable}/>
                 </div>
                 <TradeManager vs={this.state.isShowManager} rpId='96f8f381f4cc43ad887f7b7ab1cf07e8' handleback={this.handleBack}/>
             </Layout>
         )
     }
 }
-export default MyDealRp
+function MapStateToProps(state) {
+
+    return {
+    }
+}
+
+function MapDispatchToProps(dispatch) {
+    return {
+        dispatch
+    };
+}
+export default connect(MapStateToProps, MapDispatchToProps)(MyDealRp);

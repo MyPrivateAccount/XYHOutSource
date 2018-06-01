@@ -59,3 +59,8 @@ export const dealGhGet = createAction(actionTypes.DEALRP_GH_GET);
 //业绩分配页面action
 export const dealFpSave = createAction(actionTypes.DEALRP_FP_SAVE);
 export const dealFpGet = createAction(actionTypes.DEALRP_FP_GET);
+//附件上传文件
+export const uploadFile = createAction(actionTypes.DEALRP_ATTACT_UPLOADFILE);
+//
+export const myReportGet = createAction(actionTypes.DEALRP_MYREPORT_GET);
+export const searchReport = createAction(actionTypes.DEALRP_REPORT_SEARCH)
