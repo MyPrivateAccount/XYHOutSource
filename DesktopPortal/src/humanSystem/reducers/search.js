@@ -127,4 +127,8 @@ reducerMap[actionTypes.UPDATE_BLACKLST] = function(state, action) {
     return Object.assign({}, state, {blackList: action.payload} );
 }
 
+reducerMap[actionTypes.UPDATE_SALARYINFO] = function(state, action) {
+    return Object.assign({}, state, {achievementList: action.payload} );
+}
+
 export default handleActions(reducerMap, initState);

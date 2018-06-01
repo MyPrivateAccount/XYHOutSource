@@ -59,3 +59,11 @@ export const selBlackList = createAction(actionTypes.SEL_BLACKLIST);
 export const getcreateStation = createAction(actionTypes.GET_CRATESTATION);
 export const setStation = createAction(actionTypes.SET_STATION);
 export const deleteStation = createAction(actionTypes.DELETE_STATION);
+export const getStationType = createAction(actionTypes.GET_STATIONTYPELIST);
+
+//薪酬管理
+export const getSalaryList = createAction(actionTypes.GET_SALARYLIST);
+export const setSalaryInfo = createAction(actionTypes.SET_SALARYINFO);
+//export const updateSalaryInfo = createAction(actionTypes.UPDATE_SALARYINFO);
+export const setSelSalaryList = createAction(actionTypes.SET_SELSALARYLIST);
+export const deleteSalaryInfo = createAction(actionTypes.DELETE_SALARYINFO);

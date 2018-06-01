@@ -164,10 +164,46 @@ export function* getBlackListAsync(state) {
     }
 }
 
+export function* getSalaryListAsync(state) {
+    let result = {isOk: false, extension: {}, msg: '获取薪酬列表失败！'};
+    let url = WebApiConfig.search.getBlackList;
+
+    try {
+        let res = yield call(ApiClient.post, url, state.payload);
+        if (res.data.code === 0) {
+            result.isOk = true;
+
+            let lv = res.data.extension;
+            let data = lv.map(function(v, k) {
+                return {key: k, id: v.id, organize: v.organize,
+                     position: v.position, baseSalary: v.baseSalary,
+                     subsidy: v.subsidy, clothesBack: v.clothesBack, administrativeBack: v.administrativeBack,
+                     portBack: v.portBack};
+            });
+            let re = {extension: data, 
+               pageIndex: res.data.pageIndex, 
+               pageSize: res.data.pageSize,
+               totalCount: res.data.totalCount};
+
+            yield put ({type: actionUtils.getActionType(actionTypes.UPDATE_SALARYINFO), payload: re});
+        }
+    } catch (e) {
+        result.msg = '检索关键字接口调用异常';
+    }
+
+    if (!result.isOk) {
+        notification.error({
+            description: result.msg,
+            duration: 3
+        });
+    }
+}
+
 export default function* watchAllSearchAsync() {
     yield takeLatest(actionUtils.getActionType(actionTypes.SEARCH_CUSTOMER), getCustomerListAsync);
     yield takeLatest(actionUtils.getActionType(actionTypes.SEARCH_CONDITION), getSearchConditionAsync);
     yield takeLatest(actionUtils.getActionType(actionTypes.GET_ALLHUMANINFO), getHumanListAsync);
     yield takeLatest(actionUtils.getActionType(actionTypes.MONTH_GETALLMONTHLIST), getMonthListAsync);
     yield takeLatest(actionUtils.getActionType(actionTypes.GET_BLACKLST), getBlackListAsync);
+    yield takeLatest(actionUtils.getActionType(actionTypes.GET_SALARYLIST), getSalaryListAsync);
 }

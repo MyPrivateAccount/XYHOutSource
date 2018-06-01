@@ -8,6 +8,7 @@ const initState = {
     selBlacklist: [],//选中的黑名单列表
     showLoading: true,
     searchOrgTree: [],
+    stationTypeList: [],
     navigator: [{id: 20, menuID: "menu_user_mgr", displayName: "员工信息管理", menuIcon: 'contacts'}],//导航记录
     monthresult: {extension: [{key: '1', last: 'tt', monthtime: 'test', operater: 'hhee'}], pageIndex: 0, pageSize: 10, totalCount: 1},
     monthlast: '2018.5',
@@ -19,6 +20,8 @@ reducerMap[actionTypes.DIC_GET_PARLIST_COMPLETE] = function (state, action) {
     let customerSource = [...state.customerSource], businessTypes = [...state.businessTypes], customerLevels = [...state.customerLevels];
     let requirementLevels = [...state.requirementLevels], requirementType = [...state.requirementType];
     let invalidResions = [...state.invalidResions], followUpTypes = [...state.followUpTypes], rateProgress = [...state.rateProgress];
+    let stationTypeList = [...state.stationTypeList];
+
     action.payload.map((group) => {
         if (group.groupId === "CUSTOMER_SOURCE") {
             group.dictionaryDefines = group.dictionaryDefines.sort((aItem, bItem) => aItem.order - bItem.order);
@@ -68,8 +71,13 @@ reducerMap[actionTypes.DIC_GET_PARLIST_COMPLETE] = function (state, action) {
             group.dictionaryDefines = group.dictionaryDefines.sort((aItem, bItem) => aItem.order - bItem.order);
             requirementType = group.dictionaryDefines;
         }
+        else if(group.groupId === "POSITION_TYPE") {
+            group.dictionaryDefines = group.dictionaryDefines.sort((aItem, bItem) => aItem.order - bItem.order);
+            stationTypeList = group.dictionaryDefines;
+        }
     });
     return Object.assign({}, state, {
+        stationTypeList: stationTypeList,
         customerSource: customerSource,
         businessTypes: businessTypes,
         customerLevels: customerLevels,
@@ -213,6 +221,10 @@ reducerMap[actionTypes.CLOSE_USER_BREAD] = function(state, action) {
     return Object.assign({}, state, {navigator: []});
 }
 
+reducerMap[actionTypes.MINUS_USER_BREAD] = function(state, action) {
+    return Object.assign({}, state, {navigator: state.navigator.splice(state.navigator.length-1, 1)});
+}
+
 reducerMap[actionTypes.SET_USER_BREADITEMINDEX] = function(state, action) {
     return Object.assign({}, state, {navigator: state.navigator.slice(0, action.payload+1)});
 }
@@ -244,6 +256,14 @@ reducerMap[actionTypes.CHANGE_LOADING] = function(state, action) {
 
 reducerMap[actionTypes.SEL_BLACKLIST] = function(state, action) {
     return Object.assign({}, state, {selBlacklist: action.payload});
+}
+
+reducerMap[actionTypes.SET_SELSALARYLIST] = function(state, action) {
+    return Object.assign({}, state, {selAchievementList: action.payload});
+}
+
+reducerMap[actionTypes.UPDATE_STATIONTYPELIST] = function(state, action) {
+    return Object.assign({}, state, {stationTypeList: action.payload});
 }
 
 export default handleActions(reducerMap, initState);

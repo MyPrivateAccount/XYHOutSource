@@ -1,9 +1,10 @@
 import { connect } from 'react-redux';
-import { createStation, getOrgList, adduserPage, setStation, deleteStation, getcreateStation, setLoadingVisible } from '../../actions/actionCreator';
+import { createStation, getOrgList, getDicParList, setStation, deleteStation, getcreateStation, setLoadingVisible } from '../../actions/actionCreator';
 import React, { Component } from 'react'
-import {Table, Input, Form, InputNumber, Cascader, Button, Row, Col, Spin} from 'antd'
+import {Table, Input, Form, Select, Cascader, Button, Row, Col, Spin} from 'antd'
 import './station.less';
 
+const Option = Select.Option;
 const styles = {
     conditionRow: {
         width: '80px',
@@ -43,13 +44,34 @@ class Station extends Component {
         super(pros);
 
         this.state = {department: ""};
+        let self = this;
         this.ListColums = [
             {
                 title: '职位名称',
                 dataIndex: 'stationname',
                 key: 'stationname',
                 width: '25%',
-                render: (text, record) => this.renderColumns(text, record, 'stationname'),},
+                render: (text, record) => this.renderColumns(text, record, 'stationname'),
+            },
+            {
+                title: '职位类型',
+                dataIndex: 'stationtype',
+                key: 'stationtype',
+                width: '25%',
+                render: (text, record) => {
+                    return (
+                        <div>
+                            <Select disabled={!record.editable} onChange={this.selectChange} placeholder="选择职位类型">
+                                {
+                                    self.props.stationTypeList.map(function(v, i) {
+                                        return <Option value={v.value} key={v.key}>v.value</Option>;
+                                    })
+                                }
+                            </Select>
+                        </div>
+                    );
+                }
+            },
             {
                 title: '操作',
                 dataIndex: 'operation',
@@ -82,6 +104,9 @@ class Station extends Component {
             onChange={value => this.handleChange(value, record.key, column)}
             />
         );
+    }
+
+    selectChange(v, k) {
     }
 
     handleChange(value, key, column) {
@@ -135,6 +160,7 @@ class Station extends Component {
     }
 
     componentWillMount() {
+        this.props.dispatch(getDicParList("POSITION_TYPE"));
         this.props.dispatch(setLoadingVisible(false));
     }
 
@@ -200,6 +226,7 @@ class Station extends Component {
 
 function tableMapStateToProps(state) {
     return {
+        stationTypeList: state.basicData.stationTypeList,
         showLoading: state.search.showLoading,
         stationList: state.search.stationList,
         setDepartmentOrgTree: state.basicData.searchOrgTree

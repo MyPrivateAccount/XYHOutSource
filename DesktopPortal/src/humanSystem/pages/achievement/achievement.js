@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { setLoadingVisible, adduserPage } from '../../actions/actionCreator';
+import { setLoadingVisible, adduserPage, deleteSalaryInfo } from '../../actions/actionCreator';
 import React, { Component } from 'react';
 import { Input, Spin, Checkbox, Button, notification } from 'antd';
 //import {getDicParList} from '../actions/actionCreator';
@@ -36,8 +36,8 @@ class MainIndex extends Component {
                 });
             }
         } else if (e.target.id === "delete") {
-            if (this.props.selBlacklist.length > 0) {
-                //this.props.dispatch(adduserPage({menuID: 'costcharge', disname: '删除黑名单', type:'item'}));//删除要个jb啊
+            if (this.props.selAchievementList.length > 0) {
+                this.props.dispatch(deleteSalaryInfo(this.props.selAchievementList[this.props.selAchievementList.length-1]));
             }
             else {
                 notification.error({
