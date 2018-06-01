@@ -20,7 +20,7 @@ namespace XYHHumanPlugin.Controllers
     [Route("api/humansalary")]
     public class SalaryController : Controller
     {
-        private readonly ILogger Logger = LoggerManager.GetLogger("XYHHumaninfo");
+        private readonly ILogger Logger = LoggerManager.GetLogger("XYHHumansalary");
         private readonly StationManager _stationManage;
         private readonly RestClient _restClient;
 
@@ -32,7 +32,7 @@ namespace XYHHumanPlugin.Controllers
 
         [HttpGet("stationlist/{department}")]
         [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
-        public async Task<ResponseMessage<List<PositionInfoResponse>>> GetStationList(UserInfo User, [FromRoute]string department)
+        public async Task<ResponseMessage<List<PositionInfoResponse>>> GetStationList(UserInfo User, [FromRoute]HumanSearchRequest searchinfo)
         {
             var Response = new ResponseMessage<List<PositionInfoResponse>>();
             if (string.IsNullOrEmpty(department))
@@ -43,7 +43,7 @@ namespace XYHHumanPlugin.Controllers
 
             try
             {
-                Response.Extension = await _stationManage.GetStationListByDepartment(department, HttpContext.RequestAborted);
+                Response.Extension = await _stationManage.SearchSalaryInfo(User, searchinfo, HttpContext.RequestAborted);
             }
             catch (Exception e)
             {
@@ -54,15 +54,15 @@ namespace XYHHumanPlugin.Controllers
             return Response;
         }
 
-        [HttpPost("setstation")]
+        [HttpPost("setsalary")]
         [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
-        public async Task<ResponseMessage> SetStationInfo(UserInfo User, [FromBody]PositionInfoRequest position)
+        public async Task<ResponseMessage> SetSalaryInfo(UserInfo User, [FromBody]PositionInfoRequest position)
         {
             var pagingResponse = new ResponseMessage();
             if (!ModelState.IsValid)
             {
                 pagingResponse.Code = ResponseCodeDefines.ModelStateInvalid;
-                Logger.Warn($"用户{User?.UserName ?? ""}({User?.Id ?? ""})查询人事条件(PostCustomerListSaleMan)模型验证失败：\r\n{pagingResponse.Message ?? ""}，\r\n请求参数为：\r\n" + (position != null ? JsonHelper.ToJson(position) : ""));
+                Logger.Warn($"用户{User?.UserName ?? ""}({User?.Id ?? ""})查询薪酬条件(PostCustomerListSaleMan)模型验证失败：\r\n{pagingResponse.Message ?? ""}，\r\n请求参数为：\r\n" + (position != null ? JsonHelper.ToJson(position) : ""));
                 return pagingResponse;
             }
 
@@ -75,21 +75,21 @@ namespace XYHHumanPlugin.Controllers
             {
                 pagingResponse.Code = ResponseCodeDefines.ServiceError;
                 pagingResponse.Message = "服务器错误:" + e.ToString();
-                Logger.Error($"用户{User?.UserName ?? ""}({User?.Id ?? ""})查询业务员条件(PostCustomerListSaleMan)请求失败：\r\n{pagingResponse.Message ?? ""}，\r\n请求参数为：\r\n" + (position != null ? JsonHelper.ToJson(position) : ""));
+                Logger.Error($"用户{User?.UserName ?? ""}({User?.Id ?? ""})查询薪酬条件(PostCustomerListSaleMan)请求失败：\r\n{pagingResponse.Message ?? ""}，\r\n请求参数为：\r\n" + (position != null ? JsonHelper.ToJson(position) : ""));
 
             }
             return pagingResponse;
         }
 
-        [HttpPost("deletestation")]
+        [HttpPost("deletesalary")]
         [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
-        public async Task<ResponseMessage> DeleteStationInfo(UserInfo User, [FromBody]PositionInfoRequest position)
+        public async Task<ResponseMessage> DeleteSalaryInfo(UserInfo User, [FromBody]PositionInfoRequest position)
         {
             var pagingResponse = new ResponseMessage();
             if (!ModelState.IsValid)
             {
                 pagingResponse.Code = ResponseCodeDefines.ModelStateInvalid;
-                Logger.Warn($"用户{User?.UserName ?? ""}({User?.Id ?? ""})查询人事条件(PostCustomerListSaleMan)模型验证失败：\r\n{pagingResponse.Message ?? ""}，\r\n请求参数为：\r\n" + (position != null ? JsonHelper.ToJson(position) : ""));
+                Logger.Warn($"用户{User?.UserName ?? ""}({User?.Id ?? ""})删除薪酬条件(PostCustomerListSaleMan)模型验证失败：\r\n{pagingResponse.Message ?? ""}，\r\n请求参数为：\r\n" + (position != null ? JsonHelper.ToJson(position) : ""));
                 return pagingResponse;
             }
 
@@ -102,7 +102,7 @@ namespace XYHHumanPlugin.Controllers
             {
                 pagingResponse.Code = ResponseCodeDefines.ServiceError;
                 pagingResponse.Message = "服务器错误:" + e.ToString();
-                Logger.Error($"用户{User?.UserName ?? ""}({User?.Id ?? ""})查询业务员条件(PostCustomerListSaleMan)请求失败：\r\n{pagingResponse.Message ?? ""}，\r\n请求参数为：\r\n" + (position != null ? JsonHelper.ToJson(position) : ""));
+                Logger.Error($"用户{User?.UserName ?? ""}({User?.Id ?? ""})删除薪酬条件(PostCustomerListSaleMan)请求失败：\r\n{pagingResponse.Message ?? ""}，\r\n请求参数为：\r\n" + (position != null ? JsonHelper.ToJson(position) : ""));
 
             }
             return pagingResponse;
