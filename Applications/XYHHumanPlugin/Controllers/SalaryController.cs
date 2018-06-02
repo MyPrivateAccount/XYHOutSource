@@ -12,6 +12,7 @@ using XYH.Core.Log;
 using XYHHumanPlugin.Dto.Request;
 using XYHHumanPlugin.Dto.Response;
 using XYHHumanPlugin.Managers;
+using SalaryInfoRequest = XYHHumanPlugin.Dto.Response.SalaryInfoResponse;
 
 namespace XYHHumanPlugin.Controllers
 {
@@ -30,33 +31,33 @@ namespace XYHHumanPlugin.Controllers
             _stationManage = sta;
         }
 
-        [HttpGet("stationlist/{department}")]
-        [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
-        public async Task<ResponseMessage<List<PositionInfoResponse>>> GetStationList(UserInfo User, [FromRoute]string department)
-        {
-            var Response = new ResponseMessage<List<PositionInfoResponse>>();
-            if (string.IsNullOrEmpty(department))
-            {
-                Response.Code = ResponseCodeDefines.ModelStateInvalid;
-                Response.Message = "请求参数不正确";
-            }
+        //[HttpGet("stationlist/{department}")]
+        //[TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
+        //public async Task<ResponseMessage<List<PositionInfoResponse>>> GetStationList(UserInfo User, [FromRoute]string department)
+        //{
+        //    var Response = new ResponseMessage<List<PositionInfoResponse>>();
+        //    if (string.IsNullOrEmpty(department))
+        //    {
+        //        Response.Code = ResponseCodeDefines.ModelStateInvalid;
+        //        Response.Message = "请求参数不正确";
+        //    }
 
-            try
-            {
-                Response.Extension = await _stationManage.GetStationListByDepartment(department, HttpContext.RequestAborted);
-            }
-            catch (Exception e)
-            {
-                Response.Code = ResponseCodeDefines.ServiceError;
-                Response.Message = "服务器错误：" + e.ToString();
-                Logger.Error("error");
-            }
-            return Response;
-        }
+        //    try
+        //    {
+        //        Response.Extension = await _stationManage.GetStationListByDepartment(department, HttpContext.RequestAborted);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        Response.Code = ResponseCodeDefines.ServiceError;
+        //        Response.Message = "服务器错误：" + e.ToString();
+        //        Logger.Error("error");
+        //    }
+        //    return Response;
+        //}
 
-        [HttpPost("setstation")]
+        [HttpPost("createsalary")]
         [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
-        public async Task<ResponseMessage> SetStationInfo(UserInfo User, [FromBody]PositionInfoRequest position)
+        public async Task<ResponseMessage> CreateSalaryInfo(UserInfo User, [FromBody]SalaryInfoRequest position)
         {
             var pagingResponse = new ResponseMessage();
             if (!ModelState.IsValid)
@@ -81,9 +82,9 @@ namespace XYHHumanPlugin.Controllers
             return pagingResponse;
         }
 
-        [HttpPost("deletestation")]
+        [HttpPost("deletesalary")]
         [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
-        public async Task<ResponseMessage> DeleteStationInfo(UserInfo User, [FromBody]PositionInfoRequest position)
+        public async Task<ResponseMessage> DeleteStationInfo(UserInfo User, [FromBody]SalaryInfoRequest position)
         {
             var pagingResponse = new ResponseMessage();
             if (!ModelState.IsValid)

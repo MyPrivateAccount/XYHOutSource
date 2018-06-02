@@ -110,6 +110,26 @@ namespace XYHHumanPlugin.Stores
             await Context.SaveChangesAsync(cancellationToken);
         }
 
+        public async Task SetSalaryAsync(SalaryInfo salaryinfo, CancellationToken cle = default(CancellationToken))
+        {
+            if (salaryinfo == null)
+            {
+                throw new ArgumentNullException(nameof(salaryinfo));
+            }
+
+            if (Context.PositionInfos.Any(x => x.ID == salaryinfo.ID))
+            {
+                Context.Attach(salaryinfo);
+                Context.Update(salaryinfo);
+            }
+            else
+            {
+                Context.Add(salaryinfo);
+            }
+
+            await Context.SaveChangesAsync(cle);
+        }
+
         public async Task CreateMonthSalaryAsync(SalaryFormInfo forminfo, CancellationToken cle = default(CancellationToken))
         {
             if (forminfo == null)
@@ -162,6 +182,17 @@ namespace XYHHumanPlugin.Stores
             
             await Context.SaveChangesAsync(cancellationToken);
            
+        }
+
+        public async Task DeleteSalaryAsync(SalaryInfo monthinfo, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (monthinfo == null)
+            {
+                throw new ArgumentNullException(nameof(monthinfo));
+            }
+            Context.Remove(monthinfo);
+
+            await Context.SaveChangesAsync(cancellationToken);
         }
 
         public async Task DeleteAsync(HumanInfo userinfo, string contractid, CancellationToken cancellationToken = default(CancellationToken))
