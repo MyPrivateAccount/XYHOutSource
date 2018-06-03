@@ -252,6 +252,29 @@ export function* deleteSalary(state) {
     }
 }
 
+export function* getHumanImage(state) {
+    let url = WebApiConfig.server.getHumanImage + '/' +state.payload;
+    let huResult = { isOk: false, msg: '获取图片失败！' };
+
+    try {
+        huResult = yield call(ApiClient.get, url);
+        if (huResult.data.code == 0) {
+            huResult.data.message = '获取图片成功';
+            let f = [{uid: -1, name: "", status: 'done', url: huResult.data.extension.original}];
+            yield put({ type: actionUtils.getActionType(actionTypes.UPDATE_HUMANIMAGE), payload: f});
+        }
+    } catch (e) {
+        huResult.data.message = "获取图片接口调用异常!";
+    }
+    
+    if (huResult.data.code !== 0) {
+        notification.error({
+            message: huResult.data.message,
+            duration: 3
+        });
+    }
+}
+
 export default function* watchDicAllAsync() {
     yield takeLatest(actionUtils.getActionType(actionTypes.POST_HUMANINFO), postHumanInfoAsync);
     yield takeLatest(actionUtils.getActionType(actionTypes.GET_HUMANINFONUMBER), getWorkNumber);
@@ -263,4 +286,5 @@ export default function* watchDicAllAsync() {
     yield takeLatest(actionUtils.getActionType(actionTypes.DELETE_STATION), deleteStation);
     yield takeLatest(actionUtils.getActionType(actionTypes.SET_SALARYINFO), setSalary);
     yield takeLatest(actionUtils.getActionType(actionTypes.DELETE_SALARYINFO), deleteSalary);
+    yield takeLatest(actionUtils.getActionType(actionTypes.GET_HUMANIMAGE), getHumanImage);
 }

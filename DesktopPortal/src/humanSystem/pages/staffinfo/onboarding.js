@@ -206,8 +206,13 @@ class OnBoarding extends Component {
 
     render() {
         let self = this;
-        const { previewVisible, previewImage, fileList } = this.state;
+        let fileList = this.state.fileList;
+        const { previewVisible, previewImage } = this.state;
         const { getFieldDecorator, getFieldsError, getFieldsValue, isFieldTouched } = this.props.form;
+
+        if (this.props.ismodify == 1) {
+            fileList = this.props.humanImage;
+        }
 
         const uploadButton = (this.props.ismodify == 1)?null:(
             <div>
@@ -390,6 +395,7 @@ function stafftableMapStateToProps(state) {
         stationList: state.search.stationList,
         selSalaryItem: state.basicData.selSalaryItem,
         selHumanList: state.basicData.selHumanList,
+        humanImage: state.basicData.humanImage,
     }
 }
 

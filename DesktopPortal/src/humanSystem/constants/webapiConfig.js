@@ -22,6 +22,7 @@ const WebApiConfig = {
         DeleteStation: basicDataBaseApiUrl + "humanstation/deletesalary",
         setSalary: basicDataBaseApiUrl + "humansalary/setsalary",
         deleteSalary: basicDataBaseApiUrl + "humansalary/deletestation",
+        getHumanImage: basicDataBaseApiUrl + "humanfile/getfileinfo",
     },
     search: {
         searchHumanList: basicDataBaseApiUrl + 'humaninfo/searchhumaninfo',

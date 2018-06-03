@@ -12,6 +12,7 @@ const initState = {
     showLoading: true,
     searchOrgTree: [],
     stationTypeList: [],
+    humanImage:[],
     navigator: [{id: 20, menuID: "menu_user_mgr", displayName: "员工信息管理", menuIcon: 'contacts'}],//导航记录
     monthresult: {extension: [{key: '1', last: 'tt', monthtime: 'test', operater: 'hhee'}], pageIndex: 0, pageSize: 10, totalCount: 1},
     monthlast: '2018.5',
@@ -220,6 +221,9 @@ reducerMap[actionTypes.UPDATE_SALARYITEM] = function(state, action) {
 
 reducerMap[actionTypes.SET_SELHUMANINFO] = function(state, action) {
     return Object.assign({}, state, {selHumanList: action.payload});
+}
+reducerMap[actionTypes.UPDATE_HUMANIMAGE] = function(state, action) {
+    return Object.assign({}, state, {humanImage: action.payload});
 }
 
 export default handleActions(reducerMap, initState);

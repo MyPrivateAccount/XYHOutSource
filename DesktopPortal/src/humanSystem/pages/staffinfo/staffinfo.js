@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { getDicParList, setHumanInfo, searchConditionType,setLoadingVisible, searchCondition,setbreadPageIndex, searchHumanType,searchAgeType,searchOrderType, adduserPage } from '../../actions/actionCreator';
+import { getDicParList, setHumanInfo, searchConditionType,setLoadingVisible, getHumanImage, setbreadPageIndex, searchHumanType,searchAgeType,searchOrderType, adduserPage } from '../../actions/actionCreator';
 import React, { Component } from 'react'
 import {Table, Layout, Input, Select, Icon, Button, Row, Col, Checkbox, Tag, Pagination, Spin} from 'antd'
 import '../search.less'
@@ -52,6 +52,7 @@ class Staffinfo extends Component {
     show = (e) => {
         //this.props.dispatch(adduserPage({menuID: 'chargedetailinfo', disname: '费用信息', type:'item', extra: e.id}));
         this.props.dispatch(setHumanInfo([e]));
+        this.props.dispatch(getHumanImage(e.id));
         this.props.dispatch(adduserPage({id: "4", menuID: "OnboardingShow", displayName: '详情', type: 'item'}));
     }
 
