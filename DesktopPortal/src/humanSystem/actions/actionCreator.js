@@ -44,6 +44,7 @@ export const getworkNumbar = createAction(actionTypes.GET_HUMANINFONUMBER);
 export const postHumanInfo = createAction(actionTypes.POST_HUMANINFO);
 
 export const getallOrgTree = createAction(actionTypes.DIC_GET_ORG_LIST);
+export const setHumanInfo = createAction(actionTypes.SET_SELHUMANINFO);
 
 //月结
 export const getAllMonthList = createAction(actionTypes.MONTH_GETALLMONTHLIST);

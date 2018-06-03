@@ -112,7 +112,7 @@ class Addreciept extends Component {
                 from: 'pc-upload',
                 WXPath: r.extension,
                 sourceId: id,
-                appId: 'contractManagement',
+                appId: 'ExpenseManagerIndex',
                 localUrl: file.url,
                 name: file.name
               }

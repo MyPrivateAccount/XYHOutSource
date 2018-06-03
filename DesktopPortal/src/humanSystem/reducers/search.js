@@ -120,7 +120,7 @@ reducerMap[actionTypes.SEARCH_ORDERTYPE] = function(state, action) {
 }
 
 reducerMap[actionTypes.UPDATE_ALLHUMANINFO] = function(state, action) {
-    return Object.assign({}, state,{searchResult: action.payload} );
+    return Object.assign({}, state,{searchResult: action.payload, showLoading: false} );
 }
 
 reducerMap[actionTypes.UPDATE_BLACKLST] = function(state, action) {

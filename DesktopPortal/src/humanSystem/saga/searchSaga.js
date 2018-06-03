@@ -55,8 +55,14 @@ export function* getSearchConditionAsync(state) {
              result.isOk = true;
              let lv = res.data.extension;
              let data = lv.map(function(v, k) {
-                 return {key: k, id: v.userID, username: v.name, idcard: v.idCard};
-             });
+                let sn = "";
+                 (v.sex==1)&&(sn = "男");
+                 (v.sex==2)&&(sn = "女");
+                 return {key: k, id: v.id, name: v.name,
+                    sex: v.sex, sexname:sn, idcard: v.idCard, position: v.position,
+                    entryTime: v.entryTime?v.entryTime.replace("T", " "):"", becomeTime: v.becomeTime?v.becomeTime.replace("T", " "):"", baseSalary: v.baseSalary,
+                    socialInsurance: v.IsSocialInsurance?"是":"否", contract: v.contract?"是":"否"};
+            });
              let re = {extension: data, 
                 pageIndex: res.data.pageIndex, 
                 pageSize: res.data.pageSize,
@@ -85,7 +91,13 @@ export function* getHumanListAsync(state) {
              result.isOk = true;
              let lv = res.data.extension;
              let data = lv.map(function(v, k) {
-                 return {key: k, id: v.userID, username: v.name, idcard: v.idCard};
+                 let sn = "";
+                 (v.sex==1)&&(sn = "男");
+                 (v.sex==2)&&(sn = "女");
+                 return {key: k, id: v.id, name: v.name,
+                    sex: v.sex, sexname:sn, idcard: v.idCard, position: v.position,
+                    entryTime: v.entryTime?v.entryTime.replace("T", " "):"", becomeTime: v.becomeTime?v.becomeTime.replace("T", " "):"", baseSalary: v.baseSalary,
+                    socialInsurance: v.IsSocialInsurance?"是":"否", contract: v.contract?"是":"否"};
              });
 
              yield put ({type: actionUtils.getActionType(actionTypes.UPDATE_ALLHUMANINFO), payload: data});

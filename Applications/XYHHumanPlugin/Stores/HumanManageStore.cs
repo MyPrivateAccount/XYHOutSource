@@ -54,6 +54,7 @@ namespace XYHHumanPlugin.Stores
             humaninfo.Modify = 1;
             humaninfo.RecentModify = modifyid;
             humaninfo.CreateTime = DateTime.Now;
+            humaninfo.StaffStatus = 0;//回调2
             Context.Add(humaninfo);
             Context.Add(modify);
 
@@ -278,6 +279,23 @@ namespace XYHHumanPlugin.Stores
             return query.Invoke(Context.HumanInfos.AsNoTracking()).SingleOrDefaultAsync(cancellationToken);
         }
 
+        public Task<TResult> GetFileAsync<TResult>(Func<IQueryable<FileInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (query == null)
+            {
+                throw new ArgumentNullException(nameof(query));
+            }
+            return query.Invoke(Context.FileInfos.AsNoTracking()).SingleOrDefaultAsync(cancellationToken);
+        }
+
+        public Task<TResult> GetScopeFileAsync<TResult>(Func<IQueryable<AnnexInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (query == null)
+            {
+                throw new ArgumentNullException(nameof(query));
+            }
+            return query.Invoke(Context.AnnexInfos.AsNoTracking()).SingleOrDefaultAsync(cancellationToken);
+        }
         public Task<TResult> GetSalaryAsync<TResult>(Func<IQueryable<SalaryInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (query == null)

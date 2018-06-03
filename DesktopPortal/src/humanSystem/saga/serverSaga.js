@@ -15,14 +15,14 @@ export function* postHumanInfoAsync(state) {
     let humanResult = { isOk: false, msg: '人事信息提交失败！' };
 
     try {
-        humanResult = yield call(ApiClient.post, urlhuman, state.payload.humaninfo, state.payload.fileinfo);
+        humanResult = yield call(ApiClient.post, urlhuman, state.payload);
 
         //弹消息，返回
         if (humanResult.data.code == 0) {
             humanResult.isOk = true;
             humanResult.message = '人事信息提交成功';
 
-            yield put({ type: actionUtils.getActionType(actionTypes.MINUS_USER_BREAD), payload: {} });
+            yield put({ type: actionUtils.getActionType(actionTypes.SET_USER_BREADITEMINDEX), payload: 0 });
         }
     } catch (e) {
         humanResult.msg = "部门用户获取接口调用异常!";

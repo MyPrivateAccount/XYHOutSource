@@ -12,7 +12,6 @@ using XYH.Core.Log;
 using XYHHumanPlugin.Dto.Request;
 using XYHHumanPlugin.Dto.Response;
 using XYHHumanPlugin.Stores;
-using HumanInfRequest = XYHHumanPlugin.Dto.Response.HumanInfoResponse;
 using XYHHumanPlugin.Managers;
 using System.Collections.Specialized;
 using XYHHumanPlugin.Dto.Common;
@@ -99,7 +98,7 @@ namespace XYHHumanPlugin.Controllers
 
         [HttpPost("addhuman")]
         [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
-        public async Task<ResponseMessage<List<HumanInfoResponse>>> AddHumanInfo(UserInfo User, [FromBody]HumanInfRequest condition, [FromBody]FileInfoRequest fileInfoRequests)
+        public async Task<ResponseMessage<List<HumanInfoResponse>>> AddHumanInfo(UserInfo User, [FromBody]HumanInfoRequest condition)
         {
             var Response = new ResponseMessage<List<HumanInfoResponse>>();
             try
@@ -107,9 +106,9 @@ namespace XYHHumanPlugin.Controllers
                 string modifyid = Guid.NewGuid().ToString();
 
                 GatewayInterface.Dto.ExamineSubmitRequest exarequest = new GatewayInterface.Dto.ExamineSubmitRequest();
-                exarequest.ContentId = condition.ID;
+                exarequest.ContentId = condition.humaninfo.ID;
                 exarequest.ContentType = "ContractCommit";
-                exarequest.ContentName = $"addhuman {condition.Name}";
+                exarequest.ContentName = $"addhuman {condition.humaninfo.Name}";
                 exarequest.SubmitDefineId = modifyid;
                 exarequest.Source = "";
                 exarequest.CallbackUrl = ApplicationContext.Current.UpdateExamineCallbackUrl;
@@ -133,20 +132,20 @@ namespace XYHHumanPlugin.Controllers
                     return Response;
                 }
 
-                if (fileInfoRequests != null)
+                if (condition.fileinfo != null)
                 {
                     NameValueCollection nameValueCollection = new NameValueCollection();
-                    var nwf = CreateNwf(User, "humaninfo", fileInfoRequests);
+                    var nwf = CreateNwf(User, "humaninfo", condition.fileinfo);
 
                     nameValueCollection.Add("appToken", "app:nwf");
                     Logger.Info("nwf协议");
                     string response2 = await _restClient.Post(ApplicationContext.Current.NWFUrl, nwf, "POST", nameValueCollection);
                     Logger.Info("返回：\r\n{0}", response2);
 
-                    await _humanManage.CreateFileScopeAsync(User.Id, fileInfoRequests, HttpContext.RequestAborted);
+                    await _humanManage.CreateFileScopeAsync(User.Id, condition.humaninfo.ID, condition.fileinfo, HttpContext.RequestAborted);
                 }
                 
-                await _humanManage.AddHuman(User, condition, modifyid, "TEST", HttpContext.RequestAborted);
+                await _humanManage.AddHuman(User, condition.humaninfo, modifyid, "TEST", HttpContext.RequestAborted);
                 Response.Message = $"addhumaninfo sucess";
             }
             catch (Exception e)

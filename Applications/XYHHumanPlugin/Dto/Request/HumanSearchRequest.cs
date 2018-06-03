@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using XYHHumanPlugin.Dto.Response;
 
 namespace XYHHumanPlugin.Dto.Request
 {
@@ -29,5 +30,11 @@ namespace XYHHumanPlugin.Dto.Request
         public int OrderRule { get; set; }
         public int pageIndex { get; set; }
         public int pageSize { get; set; }
+    }
+
+    public class HumanInfoRequest
+    {
+        public HumanInfoResponse humaninfo { get; set; }
+        public FileInfoRequest fileinfo { get; set; }
     }
 }

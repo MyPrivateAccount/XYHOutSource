@@ -21,6 +21,8 @@ namespace XYHHumanPlugin.Models
         [MaxLength(127)]
         public string Position { get; set; }
         [MaxLength(127)]
+        public string DepartmentId { get; set; }
+        [MaxLength(127)]
         public string CreateUser { get; set; }
         public int? Modify { get; set; }
         [MaxLength(127)]

@@ -1,10 +1,10 @@
 import { connect } from 'react-redux';
-import { getDicParList, expandSearchbox, searchConditionType, searchCondition,setbreadPageIndex, searchHumanType,searchAgeType,searchOrderType, adduserPage } from '../../actions/actionCreator';
+import { getDicParList, setHumanInfo, searchConditionType,setLoadingVisible, searchCondition,setbreadPageIndex, searchHumanType,searchAgeType,searchOrderType, adduserPage } from '../../actions/actionCreator';
 import React, { Component } from 'react'
 import {Table, Layout, Input, Select, Icon, Button, Row, Col, Checkbox, Tag, Pagination, Spin} from 'antd'
 import '../search.less'
 import SearchCondition from '../../constants/searchCondition'
-import { SearchHumanTypes, ListColums, AgeRanges} from '../../constants/tools'
+import { SearchHumanTypes, AgeRanges} from '../../constants/tools'
 
 const { Header, Sider, Content } = Layout;
 const CheckboxGroup = Checkbox.Group;
@@ -24,17 +24,36 @@ const styles = {
     }
 }
 
-const rowSelection = {
-    onChange: (selectedRowKeys, selectedRows) => {
-      console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-    },
-    getCheckboxProps: record => ({
-      disabled: record.name === 'Disabled User', // Column configuration not to be checked
-      name: record.name,
-    }),
-};
-
 class Staffinfo extends Component {
+
+    constructor(pro) {
+        super(pro);
+        this.ListColums = [
+            { title: 'ID', dataIndex: 'id', key: 'id' },
+            { title: '用户名', dataIndex: 'name', key: 'name' },
+            { title: '性别', dataIndex: 'sexname', key: 'sexname' },
+            { title: '身份证号', dataIndex: 'idcard', key: 'idcard' },
+            { title: '职位', dataIndex: 'position', key: 'position' },
+            { title: '入职时间', dataIndex: 'entryTime', key: 'entryTime' },
+            { title: '转正时间', dataIndex: 'becomeTime', key: 'becomeTime' },
+            { title: '基本薪水', dataIndex: 'baseSalary', key: 'baseSalary' },
+            { title: '是否参加社保', dataIndex: 'socialInsurance', key: 'socialInsurance' },
+            { title: '是否签订合同', dataIndex: 'contract', key: 'contract' },
+            {title: "操作", dataIndex: "operation", key: "operation",
+            render: (text, record) => {
+                return (
+                    <span> <a onClick={() => this.show(record)}>显示详细</a> </span>
+                );
+              }
+            },
+        ]
+    }
+
+    show = (e) => {
+        //this.props.dispatch(adduserPage({menuID: 'chargedetailinfo', disname: '费用信息', type:'item', extra: e.id}));
+        this.props.dispatch(setHumanInfo([e]));
+        this.props.dispatch(adduserPage({id: "4", menuID: "OnboardingShow", displayName: '详情', type: 'item'}));
+    }
 
     handleKeyChangeWord = (e) => {
         this.props.searchInfo.keyWord = e.target.value;
@@ -45,6 +64,7 @@ class Staffinfo extends Component {
     }
 
     componentWillMount() {
+        this.props.dispatch(setLoadingVisible(true));
         this.props.dispatch(searchConditionType(SearchCondition.topteninfo));
         
     }
@@ -96,14 +116,25 @@ class Staffinfo extends Component {
     }
 
     handleChangeSalary = () => {
-        this.props.dispatch(adduserPage({id: "1", menuID: "changestation", displayName: '异动调薪', type: 'item'}));
+        this.props.dispatch(adduserPage({id: "2", menuID: "changestation", displayName: '异动调薪', type: 'item'}));
     }
 
     handleLeft = () => {
-        this.props.dispatch(adduserPage({id: "1", menuID: "leftstation", displayName: '离职', type: 'item'}));
+        this.props.dispatch(adduserPage({id: "3", menuID: "leftstation", displayName: '离职', type: 'item'}));
     }
 
     render() {
+        let self = this;
+        const rowSelection = {
+            onChange: (selectedRowKeys, selectedRows) => {
+              self.props.dispatch(setHumanInfo(selectedRows));
+            },
+            getCheckboxProps: record => ({
+              disabled: record.name === 'Disabled User',
+              name: record.name,
+            }),
+        };
+
         const searchInfo = this.props.searchInfo || {};
         const showLoading = searchInfo.showLoading;
         const humanList = this.props.searchInfo.searchResult.extension;
@@ -186,7 +217,7 @@ class Staffinfo extends Component {
                                                     &nbsp;
                                             </Header>
                                             <Content>
-                                                <Table rowSelection={rowSelection} rowKey={record => record.key} pagination={this.props.searchInfo.searchResult} columns={ListColums} dataSource={this.props.searchInfo.searchResult.extension} onChange={this.handleTableChange} />
+                                                <Table rowSelection={rowSelection} rowKey={record => record.key} pagination={this.props.searchInfo.searchResult} columns={this.ListColums} dataSource={this.props.searchInfo.searchResult.extension} onChange={this.handleTableChange} />
                                             </Content>
                                         </Layout>
                                     </Col>

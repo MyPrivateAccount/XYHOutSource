@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using XYHHumanPlugin.Models;
 using XYHHumanPlugin.Dto.Response;
+using XYHHumanPlugin.Dto.Request;
 
 namespace XYHHumanPlugin
 {
@@ -28,6 +29,12 @@ namespace XYHHumanPlugin
 
             CreateMap<SalaryInfo, SalaryInfoResponse>();
             CreateMap<SalaryInfoResponse, SalaryInfo>();
+
+            CreateMap<FileInfoRequest, AnnexInfo>();
+            CreateMap<AnnexInfo, FileInfoRequest>();
+
+            CreateMap<FileInfoCallbackRequest, FileInfo>();
+            CreateMap<FileInfo, FileInfoCallbackRequest>();
         }
     }
 }

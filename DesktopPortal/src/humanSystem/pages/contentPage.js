@@ -106,7 +106,10 @@ function ContentPage(props) {
         return <LoadableSetPage />;
     }
     else if (curMenuID === "Onboarding") {
-        return <LoadableOnboardPage />;
+        return <LoadableOnboardPage ismodify="0" />;
+    }
+    else if (curMenuID === "OnboardingShow") {
+        return <LoadableOnboardPage ismodify="1" />;
     }
     else if (curMenuID === "BecomeStaff") {
         return <LoadableBecomeStaffdPage />;

@@ -41,7 +41,7 @@ namespace XYHHumanPlugin.Managers
             await _Store.CreateAsync(_mapper.Map<SimpleUser>(info), _mapper.Map<HumanInfo>(req), modify, checktion, cancellationToken);
         }
 
-        public virtual async Task CreateFileScopeAsync(string userId, FileInfoRequest fileInfoRequest, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual async Task CreateFileScopeAsync(string userId,  string humanid, FileInfoRequest fileInfoRequest, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (fileInfoRequest == null)
             {
@@ -51,7 +51,7 @@ namespace XYHHumanPlugin.Managers
             var contractfile = _mapper.Map<AnnexInfo>(fileInfoRequest);
             if (string.IsNullOrEmpty(contractfile.ID))
             {
-                contractfile.ID = Guid.NewGuid().ToString();
+                contractfile.ID = humanid;
             }
 
             contractfile.CreateUser = userId;
@@ -60,6 +60,42 @@ namespace XYHHumanPlugin.Managers
             await _Store.CreateAsync(contractfile, cancellationToken);
         }
 
+        public virtual async Task<FileItemResponse> GetFilelistAsync(string humanid, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var f = await _Store.GetScopeFileAsync(a => a.Where(b => b.ID == humanid));
+            var fileinfo = await _Store.GetFileAsync(a => a.Where(b => b.FileGuid == f.FileGuid));
+            return ConvertToFileItem(f.FileGuid, new List<FileInfo> { fileinfo});
+        }
+        private FileItemResponse ConvertToFileItem(string fileGuid, List<FileInfo> fl)
+        {
+            FileItemResponse fi = new FileItemResponse();
+            fi.FileGuid = fileGuid;
+            fi.Group = fl.FirstOrDefault()?.Group;
+            fi.Icon = fl.FirstOrDefault(x => x.Type == "ICON")?.Uri;
+            fi.Original = fl.FirstOrDefault(x => x.Type == "ORIGINAL")?.Uri;
+            fi.Medium = fl.FirstOrDefault(x => x.Type == "MEDIUM")?.Uri;
+            fi.Small = fl.FirstOrDefault(x => x.Type == "SMALL")?.Uri;
+
+            string fr = ApplicationCore.ApplicationContext.Current.FileServerRoot;
+            fr = (fr ?? "").TrimEnd('/');
+            if (!String.IsNullOrEmpty(fi.Icon))
+            {
+                fi.Icon = fr + "/" + fi.Icon.TrimStart('/');
+            }
+            if (!String.IsNullOrEmpty(fi.Original))
+            {
+                fi.Original = fr + "/" + fi.Original.TrimStart('/');
+            }
+            if (!String.IsNullOrEmpty(fi.Medium))
+            {
+                fi.Medium = fr + "/" + fi.Medium.TrimStart('/');
+            }
+            if (!String.IsNullOrEmpty(fi.Small))
+            {
+                fi.Small = fr + "/" + fi.Small.TrimStart('/');
+            }
+            return fi;
+        }
         public virtual async Task CreateFilelistAsync(string userid, List<FileInfoCallbackRequest> fileInfoCallbackRequestList, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (fileInfoCallbackRequestList == null)

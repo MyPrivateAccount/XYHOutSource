@@ -11,6 +11,7 @@ CREATE TABLE `XYH_HU_HUMANMANAGE` (
   `IDCard` varchar(127) NOT NULL DEFAULT '',/*身份证号*/
   `Age` int(11) NOT NULL DEFAULT 0,
   `Sex` int(11) NOT NULL DEFAULT 0,
+  `DepartmentId` varchar(127) DEFAULT '',/*部门*/
   `Position` varchar(127) DEFAULT '',/*职位--外链*/
   `CreateUser` varchar(127) DEFAULT '',/*创建人*/
   `Modify` int(11) DEFAULT '0',/*修改个数*/

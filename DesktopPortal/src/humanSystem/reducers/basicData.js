@@ -8,6 +8,7 @@ const initState = {
     selAchievementList: [],
     selBlacklist: [],//选中的黑名单列表
     selSalaryItem: {},
+    selHumanList: [],
     showLoading: true,
     searchOrgTree: [],
     stationTypeList: [],
@@ -215,6 +216,10 @@ reducerMap[actionTypes.UPDATE_SALARYINFO] = function(state, action) {
 
 reducerMap[actionTypes.UPDATE_SALARYITEM] = function(state, action) {
     return Object.assign({}, state, {selSalaryItem: action.payload});
+}
+
+reducerMap[actionTypes.SET_SELHUMANINFO] = function(state, action) {
+    return Object.assign({}, state, {selHumanList: action.payload});
 }
 
 export default handleActions(reducerMap, initState);
