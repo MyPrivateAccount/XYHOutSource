@@ -1,6 +1,6 @@
 //数据接口地址配置
 
-import { BaseApiUrl, basicDataBaseApiUrl } from '../../constants/baseConfig';
+import { BaseApiUrl, basicDataBaseApiUrl,UploadUrl } from '../../constants/baseConfig';
 
 
 const WebApiConfig = {
@@ -52,8 +52,19 @@ const WebApiConfig = {
         yzGet:basicDataBaseApiUrl+'yj/reportyz/',
         khGet:basicDataBaseApiUrl+'yj/reportkh/',
         ghGet:basicDataBaseApiUrl+'yj/reportgh/',
-        fpGet:basicDataBaseApiUrl+'yj/reportyjfp/'
-    }
+        fpGet:basicDataBaseApiUrl+'yj/reportyjfp/',
+        myrpGet:basicDataBaseApiUrl+'yj/report/myreport',
+        searchRp:basicDataBaseApiUrl+'yj/report/search'
+    },
+    fina:{
+        searchPPFt:basicDataBaseApiUrl+'yj/ppft/search'
+    },
+    attach: {
+        uploadUrl: `${UploadUrl}/file/upload/`
+    },
+    server: {
+        uploadImg: basicDataBaseApiUrl + "yj/commissionfiles/",
+    },
 
 }
 

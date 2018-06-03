@@ -10,7 +10,7 @@ import Avatar from './rpdetails/tradeUpload'
 const TabPane = Tabs.TabPane;
 class DRpDlg extends Component {
     state = {
-        vs:true
+        vs:false
     }
     handleOk = (e) => {
         this.setState({vs:false})
