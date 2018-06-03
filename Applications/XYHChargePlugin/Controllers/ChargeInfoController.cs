@@ -211,7 +211,7 @@ namespace XYHChargePlugin.Controllers
 
         [HttpPost("setrecieptinfo")]
         [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
-        public async Task<ResponseMessage<List<ChargeInfoResponse>>> PostRecieptInfo(UserInfo User, [FromBody]List<ReceiptInfoResponse> reciept)
+        public async Task<ResponseMessage<List<ChargeInfoResponse>>> PostRecieptInfo(UserInfo User, [FromBody]List<ReceiptInfoRequest> reciept)
         {
             var pagingResponse = new ChargeSearchResponse<ChargeInfoResponse>();
             if (!ModelState.IsValid)

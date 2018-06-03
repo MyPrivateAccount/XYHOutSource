@@ -74,6 +74,9 @@ namespace XYHHumanPlugin.Models
         [MaxLength(127)]
         public string PositionName { get; set; }
         [MaxLength(127)]
+        public string PositionType { get; set; }
+        
+        [MaxLength(255)]
         public string ParentID { get; set; }
     }
 
@@ -87,7 +90,7 @@ namespace XYHHumanPlugin.Models
         [MaxLength(127)]
         public string Position { get; set; }
         [MaxLength(127)]
-        public string PositionID { get; set; }
+        public string PositionName { get; set; }
         public int? BaseSalary { get; set; }
         public int? Subsidy { get; set; }
         public int? ClothesBack { get; set; }

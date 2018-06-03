@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { setLoadingVisible, adduserPage, getDepartment } from '../../actions/actionCreator';
+import { setLoadingVisible, adduserPage, getDepartment, getDicInfo } from '../../actions/actionCreator';
 import React, { Component } from 'react';
 import { Input, Spin, Checkbox, Button, notification } from 'antd';
 //import {getDicParList} from '../actions/actionCreator';
@@ -21,6 +21,7 @@ class MainIndex extends Component {
     }
 
     componentWillMount() {
+        this.props.dispatch(getDicInfo(["CHARGE_COST_TYPE"]));
         this.props.dispatch(getDepartment("PublicRoleOper"));
     }
 

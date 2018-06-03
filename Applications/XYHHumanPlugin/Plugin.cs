@@ -44,6 +44,8 @@ namespace XYHHumanPlugin
             context.Services.AddScoped<IHumanManageStore, HumanManageStore>();
             context.Services.AddScoped<HumanManager>();
             context.Services.AddScoped<MonthManager>();
+            context.Services.AddScoped<StationManager>();
+            context.Services.AddScoped<SalaryManager>();
 
             return base.Init(context);
         }

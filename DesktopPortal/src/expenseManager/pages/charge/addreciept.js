@@ -21,6 +21,7 @@ class Addreciept extends Component {
     }
     
     componentWillMount() {
+        
         this.props.dispatch(getRecieptByID(this.props.chargeList[0].id));//获取信息
     }
 
@@ -36,18 +37,18 @@ class Addreciept extends Component {
         let chargeid = this.props.chargeList[0].id;
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                let receiptinfos = [];
+                let receiptinfos = this.props.recieptInfoList.slice();
                 for (const ite in values) {
                     let ary = ite.split("_");
                     if (ary.length > 1) {
                         if (ary[1] === "reciepcomment") {
                             receiptinfos[+ary[0]] = Object.assign({}, receiptinfos[+ary[0]], {"comments": values[ite]});
                         } else if (ary[1] === "reciepmoney") {
-                            receiptinfos[+ary[0]] = Object.assign({}, receiptinfos[+ary[0]], {"receiptmoney": values[ite]});
+                            receiptinfos[+ary[0]] = Object.assign({}, receiptinfos[+ary[0]], {"receiptMoney": values[ite]});
                         } else if (ary[1] === "reciepnumber") {
-                            receiptinfos[+ary[0]] = Object.assign({}, receiptinfos[+ary[0]], {"reciepnumber": values[ite]});
+                            receiptinfos[+ary[0]] = Object.assign({}, receiptinfos[+ary[0]], {"reciepNumber": values[ite]});
                             receiptinfos[+ary[0]] = Object.assign({},
-                                receiptinfos[+ary[0]], {"id": self.props.recieptInfoList[+ary[0]].receiptID});
+                                receiptinfos[+ary[0]], {"id": self.props.recieptInfoList[+ary[0]].id});
                             receiptinfos[+ary[0]] = Object.assign({},
                                 receiptinfos[+ary[0]], {"chargeid": chargeid});
                         } else if (ary[1] === "recieptype") {
@@ -199,14 +200,14 @@ class Addreciept extends Component {
                                             reules: [{
                                                 required:true, message: 'please entry Age',
                                             }]
-                                            , initialValue: rv.type
+                                            , initialValue: rv.type+""
                                         })(
                                             <Select disabled={!rv.isadd} placeholder="选择费用类型">
                                                 {
                                                     (self.props.chargeCostTypeList && self.props.chargeCostTypeList.length > 0) ?
                                                         self.props.chargeCostTypeList.map(
                                                             function (params) {
-                                                                return <Option key={params.value} value={params.value+""}>{params.key}</Option>;
+                                                                return <Option key={+params.value} value={params.value+""}>{params.key}</Option>;
                                                             }
                                                         ):null
                                                 }

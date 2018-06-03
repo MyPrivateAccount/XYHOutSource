@@ -33,6 +33,8 @@ namespace XYHChargePlugin
             CreateMap<FileInfoCallbackRequest, FileInfo>();
             CreateMap<FileInfo, FileInfoCallbackRequest>();
 
+            CreateMap<ReceiptInfoRequest, ReceiptInfo>();
+            CreateMap<ReceiptInfo, ReceiptInfoRequest>();
             //CreateMap<MonthInfo, MonthInfoResponse>();
             //CreateMap<MonthInfoResponse, MonthInfo>();
 

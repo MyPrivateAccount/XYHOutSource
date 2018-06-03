@@ -19,7 +19,7 @@
   "ClientSecret": "123456",
   "NWFUrl": "http://120.77.152.254:7100/api/task/nwf",
   "MessageServerUrl": "http://120.77.152.254:9000",
-  "FileServerRoot": "http://120.77.152.254:5100/image",
+  "FileServerRoot": "https://testfile.xinyaohangdc.com/image/",
   "ExamineUrl": "http://120.77.152.254:7000/api/examines/submit",
   "NWFExamineCallbackUrl": "http://120.77.152.254:7100/examine/callback/ExamineCallback",
   "BuildingExamineCallbackUrl": "http://120.77.152.254:7000/api/buildings/audit/examinecallback",

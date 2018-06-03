@@ -1,9 +1,10 @@
 import { connect } from 'react-redux';
-import { createStation, getOrgList, adduserPage } from '../../actions/actionCreator';
+import { createStation, getOrgList, getDicParList, setStation, deleteStation, getcreateStation, setLoadingVisible } from '../../actions/actionCreator';
 import React, { Component } from 'react'
-import {Table, Input, Form, InputNumber, Cascader, Button, Row, Col, Spin} from 'antd'
+import {Table, Input, Form, Select, Cascader, Button, Row, Col, Spin} from 'antd'
 import './station.less';
 
+const Option = Select.Option;
 const styles = {
     conditionRow: {
         width: '80px',
@@ -42,13 +43,35 @@ class Station extends Component {
     constructor(pros) {
         super(pros);
 
+        this.state = {department: ""};
+        let self = this;
         this.ListColums = [
             {
                 title: '职位名称',
                 dataIndex: 'stationname',
                 key: 'stationname',
                 width: '25%',
-                render: (text, record) => this.renderColumns(text, record, 'stationname'),},
+                render: (text, record) => this.renderColumns(text, record, 'stationname'),
+            },
+            {
+                title: '职位类型',
+                dataIndex: 'positionType',
+                key: 'positionType',
+                width: '25%',
+                render: (text, record) => {
+                    return (
+                        <div>
+                            <Select value={text} disabled={!record.editable} style={{width: '50%'}} onChange={(v) =>this.selectChange(record.key, v)} placeholder="选择职位类型">
+                                {
+                                    self.props.stationTypeList.map(function(v, i) {
+                                        return <Option value={v.value} key={v.key}>{v.key}</Option>;
+                                    })
+                                }
+                            </Select>
+                        </div>
+                    );
+                }
+            },
             {
                 title: '操作',
                 dataIndex: 'operation',
@@ -62,7 +85,7 @@ class Station extends Component {
                           <a onClick={() => this.save(record.key)}>保存</a>
                           <a onClick={()=>this.cancel(record.key)}>取消</a>
                         </span>
-                        : <span> <a onClick={() => this.edit(record.key)}>编辑</a> <a onClick={() => this.delete(record.key)}>删除</a> </span>
+                        : <span> <a onClick={() => this.edit(record.key)}>编辑</a> <a onClick={() => this.delete(record.key, record.stationname)}>删除</a> </span>
                     }
                   </div>
                 );
@@ -83,6 +106,14 @@ class Station extends Component {
         );
     }
 
+    selectChange(key, v) {
+        const newData = [...this.props.stationList];
+        const target = newData.filter(item => key === item.key)[0];
+        if (target) {
+            target.positionType = v;
+        }
+    }
+
     handleChange(value, key, column) {
         const newData = [...this.props.stationList];
         const target = newData.filter(item => key === item.key)[0];
@@ -101,9 +132,10 @@ class Station extends Component {
         }
     }
 
-    delete(key) {
+    delete(key, name) {
         this.props.stationList.splice(this.props.stationList.findIndex(item => key === item.key), 1);
         this.forceUpdate();
+        this.props.dispatch(deleteStation({positionName: name, parentID:this.state.department}));
     }
 
     save(key) {
@@ -113,6 +145,7 @@ class Station extends Component {
             delete target.editable;
             this.forceUpdate();
             this.cacheData = newData.map(item => ({ ...item }));
+            this.props.dispatch(setStation({id:target.id,positionName: target.stationname, positionType: target.positionType, parentID:this.state.department}));
         }
     }
 
@@ -120,6 +153,11 @@ class Station extends Component {
         const newData = [...this.props.stationList];
         const target = newData.filter(item => key === item.key)[0];
         if (target) {
+            if (target.isnew) {
+                this.props.stationList.splice(this.props.stationList.findIndex(item => key === item.key), 1);
+                this.forceUpdate();
+                return;
+            }
             Object.assign(target, this.cacheData.filter(item => key === item.key)[0]);
             delete target.editable;
             this.forceUpdate();
@@ -127,7 +165,8 @@ class Station extends Component {
     }
 
     componentWillMount() {
-        
+        this.props.dispatch(getDicParList(["POSITION_TYPE"]));
+        this.props.dispatch(setLoadingVisible(false));
     }
 
     hasErrors(fieldsError) {
@@ -143,13 +182,26 @@ class Station extends Component {
         });
     }
 
+    handleDepartmentChange = (e) => {
+        if (!e) {
+            this.props.dispatch(setLoadingVisible(true));
+            this.props.dispatch(getcreateStation(this.state.department));
+        }
+    }
+
     handleChooseDepartmentChange = (e) => {
-        this.state.department = e;
+        this.state.department = e[e.length-1];
+        
     }
 
     handleSearchBoxToggle1 = (e) => {
         //暂时写个测试
-        this.props.stationList.push({key: this.props.stationList.length+10+'', stationname: "stationname6"});
+        let nkey = 1;
+        if (this.props.stationList.length > 0) {
+            nkey = +this.props.stationList[this.props.stationList.length-1].key+2;
+        }
+        
+        this.props.stationList.push({key: nkey+'', stationname: "test", positionType:"", editable: true, isnew: true});
         this.forceUpdate();
         //this.props.dispatch(adduserPage({id: 11, menuID: 'menu_blackaddnew', disname: '新建黑名单', type:'item'}));
     }
@@ -160,7 +212,7 @@ class Station extends Component {
                 <Row className='searchBox'>
                     <Col span={12}>
                         <label style={styles.conditionRow}>选择分公司 ：</label>
-                        <Cascader options={this.props.setDepartmentOrgTree}  onChange={this.handleChooseDepartmentChange } changeOnSelect  placeholder="归属部门"/>
+                        <Cascader options={this.props.setDepartmentOrgTree} onChange={this.handleChooseDepartmentChange} onPopupVisibleChange={this.handleDepartmentChange} changeOnSelect placeholder="归属部门"/>
                     </Col>
                 </Row>
                 <Row className="btnBlock">
@@ -168,8 +220,10 @@ class Station extends Component {
                         <Button className="searchButton" type="primary" onClick={this.handleSearchBoxToggle1}>新建</Button>
                     </Col>
                 </Row>
-                <Table rowSelection={rowSelection} rowKey={record => record.key} dataSource={this.props.stationList} columns={this.ListColums} onChange={this.handleTableChange} bordered />
-                {/* dataSource={} */}
+                <Spin spinning={this.props.showLoading} delay={200} tip="查询中...">
+                    <Table rowSelection={rowSelection} rowKey={record => record.key} dataSource={this.props.stationList} columns={this.ListColums} onChange={this.handleTableChange} bordered />
+                    {/* dataSource={} */}
+                </Spin>
             </div>
         );
     }
@@ -177,6 +231,8 @@ class Station extends Component {
 
 function tableMapStateToProps(state) {
     return {
+        stationTypeList: state.basicData.stationTypeList,
+        showLoading: state.search.showLoading,
         stationList: state.search.stationList,
         setDepartmentOrgTree: state.basicData.searchOrgTree
     }

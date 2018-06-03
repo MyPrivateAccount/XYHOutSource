@@ -4,10 +4,11 @@ using System.Text;
 
 namespace XYHHumanPlugin.Dto.Response
 {
-    class PositionInfoResponse
+    public class PositionInfoResponse
     {
         public string ID { get; set; }
         public string PositionName { get; set; }
+        public string PositionType { get; set; }
         public string ParentID { get; set; }
     }
 }

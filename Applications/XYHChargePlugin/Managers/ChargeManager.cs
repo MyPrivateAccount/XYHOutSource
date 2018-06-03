@@ -101,11 +101,11 @@ namespace XYHChargePlugin.Managers
                     var scope = await _Store.GetScopeInfo(a => a.Where(b => b.ReceiptID == item.ID));
                     foreach (var itm in scope)
                     {
-                        var file = await _Store.GetFileInfo(a => a.Where(b => b.FileGuid == itm.FileGuid));
+                        var file = await _Store.GetFileInfo(a => a.Where(b => b.FileGuid == itm.FileGuid && b.Type == "ORIGINAL"));
                         if (file != null)
                         {
                             if (item.FileList == null) {item.FileList = new List<SimpleList>();}
-                            item.FileList.Add(new SimpleList { uid = item.FileList.Count, name="", status="done", url=file.Uri});
+                            item.FileList.Add(new SimpleList { uid = item.FileList.Count, name="", status="done", url=ConvertToSimpleFile(file.Uri)});
                         }
                         
                     }
@@ -126,10 +126,63 @@ namespace XYHChargePlugin.Managers
                 foreach (var item in info.CostInfos)
                 {
                     item.ReceiptList = _mapper.Map<List<ReceiptInfoResponse>>(await _Store.GetRecieptListAsync(a => a.Where(b => b.CostID == item.ID)));
+                    foreach (var it in item.ReceiptList)
+                    {
+                        var scope = await _Store.GetScopeInfo(a => a.Where(b => b.ReceiptID == it.ID));
+                        foreach (var itm in scope)
+                        {
+                            var file = await _Store.GetFileInfo(a => a.Where(b => b.FileGuid == itm.FileGuid && b.Type == "ORIGINAL"));
+                            if (file != null)
+                            {
+                                if (it.FileList == null) { it.FileList = new List<SimpleList>(); }
+                                it.FileList.Add(new SimpleList { uid = it.FileList.Count, name = "", status = "done", url = ConvertToSimpleFile(file.Uri) });
+                            }
+
+                        }
+                    }
                 }
             }
 
             return info;
+        }
+
+        private string ConvertToSimpleFile(string file)
+        {
+            string fr = ApplicationCore.ApplicationContext.Current.FileServerRoot;
+            fr = (fr ?? "").TrimEnd('/');
+            var tf = fr + "/" + file.TrimStart('/');
+            return tf;
+        }
+
+        private FileItemResponse ConvertToFileItem(string fileGuid, List<FileInfo> fl)
+        {
+            FileItemResponse fi = new FileItemResponse();
+            fi.FileGuid = fileGuid;
+            fi.Group = fl.FirstOrDefault()?.Group;
+            fi.Icon = fl.FirstOrDefault(x => x.Type == "ICON")?.Uri;
+            fi.Original = fl.FirstOrDefault(x => x.Type == "ORIGINAL")?.Uri;
+            fi.Medium = fl.FirstOrDefault(x => x.Type == "MEDIUM")?.Uri;
+            fi.Small = fl.FirstOrDefault(x => x.Type == "SMALL")?.Uri;
+
+            string fr = ApplicationCore.ApplicationContext.Current.FileServerRoot;
+            fr = (fr ?? "").TrimEnd('/');
+            if (!String.IsNullOrEmpty(fi.Icon))
+            {
+                fi.Icon = fr + "/" + fi.Icon.TrimStart('/');
+            }
+            if (!String.IsNullOrEmpty(fi.Original))
+            {
+                fi.Original = fr + "/" + fi.Original.TrimStart('/');
+            }
+            if (!String.IsNullOrEmpty(fi.Medium))
+            {
+                fi.Medium = fr + "/" + fi.Medium.TrimStart('/');
+            }
+            if (!String.IsNullOrEmpty(fi.Small))
+            {
+                fi.Small = fr + "/" + fi.Small.TrimStart('/');
+            }
+            return fi;
         }
 
         public virtual async Task UpdateChargePostTime(string chargeid, string department, CancellationToken cancellationToken = default(CancellationToken))
@@ -137,8 +190,19 @@ namespace XYHChargePlugin.Managers
             await _Store.UpdatePostTime(chargeid, department, cancellationToken);
         }
 
-        public virtual async Task UpdateRecieptList(List<ReceiptInfoResponse> lstreciept, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual async Task UpdateRecieptList(List<ReceiptInfoRequest> lstreciept, CancellationToken cancellationToken = default(CancellationToken))
         {
+            foreach (var item in lstreciept)//给发票找个cost这样才能指定
+            {
+                if (string.IsNullOrEmpty(item.CostID))
+                {
+                    var tf = await _Store.GetCostListAsync(a => a.Where(b => b.ChargeID == item.ChargeID && b.Type == item.Type), cancellationToken);
+                    if (tf != null && tf.Count >0)
+                    {
+                        item.CostID = tf[0].ID;
+                    }
+                }
+            }
             await _Store.UpdateRecieptList(_mapper.Map<List<ReceiptInfo>>(lstreciept), cancellationToken);
         }
 
@@ -173,15 +237,18 @@ namespace XYHChargePlugin.Managers
             var Response = new ChargeSearchResponse<ChargeInfoResponse>();
 
             var sql = @"SELECT a.* from XYH_CH_CHARGEMANAGE as a where";
-            if (condition?.CheckStatu > 0 )
-            {
-                sql = @"SELECT a.* from XYH_CH_CHARGEMANAGE as a LEFT JOIN XYH_CH_MODIFY as b ON a.`CurrentModify`=b.`ID` where";
-            }
+            
             string connectstr = " ";
 
             if (Isself)//只能检索自己的费用
             {
                 sql = @"SELECT a.* from XYH_CH_CHARGEMANAGE as a where a.`CreateUser`='"+user.Id+"'";
+
+                if (condition?.CheckStatu > 0)
+                {
+                    sql = @"SELECT a.* from XYH_CH_CHARGEMANAGE as a LEFT JOIN XYH_CH_MODIFY as b ON a.`CurrentModify`=b.`ID` where a.`CreateUser`='"+user.Id+ "'";
+                }
+
                 connectstr = " and ";
 
                 if (!string.IsNullOrEmpty(condition?.KeyWord))
@@ -198,6 +265,12 @@ namespace XYHChargePlugin.Managers
             else
             {
                 sql = @"SELECT a.* from XYH_CH_CHARGEMANAGE as a where a.`ID`!=''";
+
+                if (condition?.CheckStatu > 0)
+                {
+                    sql = @"SELECT a.* from XYH_CH_CHARGEMANAGE as a LEFT JOIN XYH_CH_MODIFY as b ON a.`CurrentModify`=b.`ID` where a.`ID`!=''";
+                }
+
                 connectstr = " and ";
             }
 
@@ -234,25 +307,19 @@ namespace XYHChargePlugin.Managers
             if (condition?.CheckStatu > 0)
             {
                 string head = "(", tail = ")";
-                if ((condition?.CheckStatu & 0x01) > 0)//1 2 4 8 未提交 审核中 通过 驳回
+                if (condition?.CheckStatu == 1)//1 2 4 8 未提交 审核中 通过 驳回
                 {
-                    sql += connectstr + head + @"b.`ExamineStatus`=0";
+                    sql += connectstr + head + @"b.`ExamineStatus`=0 or b.`ExamineStatus`=1";
                     connectstr = " or ";
                     head = "";
                 }
-                if ((condition?.CheckStatu & 0x02) > 0)
-                {
-                    sql += connectstr + head + @"b.`ExamineStatus`=1";
-                    connectstr = " or ";
-                    head = "";
-                }
-                if ((condition?.CheckStatu & 0x04) > 0)
+                if (condition?.CheckStatu == 2)
                 {
                     sql += connectstr + head + @"b.`ExamineStatus`=8";
                     connectstr = " or ";
                     head = "";
                 }
-                if ((condition?.CheckStatu & 0x08) > 0)
+                if (condition?.CheckStatu == 3)
                 {
                     sql += connectstr + head + @"b.`ExamineStatus`=16";
                     connectstr = " or ";

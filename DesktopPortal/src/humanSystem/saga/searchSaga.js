@@ -164,10 +164,69 @@ export function* getBlackListAsync(state) {
     }
 }
 
+export function* getSalaryListAsync(state) {
+    let result = {isOk: false, extension: {}, msg: '获取薪酬列表失败！'};
+    let url = WebApiConfig.search.getSalaryList;
+
+    try {
+        let res = yield call(ApiClient.post, url, state.payload);
+        if (res.data.code == 0) {
+            result.isOk = true;
+
+            let lv = res.data.extension;
+            let data = lv.extension.map(function(v, k) {
+                return {key: k, id: v.id, organize: v.organize, position:v.position,
+                     positionName: v.positionName, baseSalary: v.baseSalary,
+                     subsidy: v.subsidy, clothesBack: v.clothesBack, administrativeBack: v.administrativeBack,
+                     portBack: v.portBack};
+            });
+            let re = {extension: data, 
+               pageIndex: lv.pageIndex, 
+               pageSize: lv.pageSize,
+               totalCount: lv.totalCount};
+
+            yield put ({type: actionUtils.getActionType(actionTypes.UPDATE_SALARYINFO), payload: re});
+        }
+    } catch (e) {
+        result.msg = '检索关键字接口调用异常';
+    }
+
+    if (!result.isOk) {
+        notification.error({
+            description: result.msg,
+            duration: 3
+        });
+    }
+}
+
+export function* getSalaryItemAsync(state) {
+    let result = {isOk: false, extension: {}, msg: '获取单一薪酬失败！'};
+    let url = WebApiConfig.search.getSalaryItem+'/'+state.payload;
+
+    try {
+        let res = yield call(ApiClient.get, url);
+        if (res.data.code == 0) {
+            result.isOk = true;
+            yield put ({type: actionUtils.getActionType(actionTypes.UPDATE_SALARYITEM), payload: res.data.extension});
+        }
+    } catch (e) {
+        result.msg = '获取单一薪酬异常';
+    }
+
+    if (!result.isOk) {
+        notification.error({
+            description: result.msg,
+            duration: 3
+        });
+    }
+}
+
 export default function* watchAllSearchAsync() {
     yield takeLatest(actionUtils.getActionType(actionTypes.SEARCH_CUSTOMER), getCustomerListAsync);
     yield takeLatest(actionUtils.getActionType(actionTypes.SEARCH_CONDITION), getSearchConditionAsync);
     yield takeLatest(actionUtils.getActionType(actionTypes.GET_ALLHUMANINFO), getHumanListAsync);
     yield takeLatest(actionUtils.getActionType(actionTypes.MONTH_GETALLMONTHLIST), getMonthListAsync);
     yield takeLatest(actionUtils.getActionType(actionTypes.GET_BLACKLST), getBlackListAsync);
+    yield takeLatest(actionUtils.getActionType(actionTypes.GET_SALARYLIST), getSalaryListAsync);
+    yield takeLatest(actionUtils.getActionType(actionTypes.GET_SALARYITEM), getSalaryItemAsync);
 }

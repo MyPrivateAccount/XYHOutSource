@@ -1,11 +1,11 @@
 import {connect} from 'react-redux';
-import {setLoadingVisible, selBlackList} from '../../actions/actionCreator';
+import {setLoadingVisible, setSelSalaryList, getSalaryList} from '../../actions/actionCreator';
 import React, {Component} from 'react';
 import {Button, Row, Col, Table} from 'antd';
 
 const columns = [
-    {title: '组织(分公司)',dataIndex: 'org',key: 'org',},
-    {title: '职位',dataIndex: 'station',key: 'station'},
+    {title: '组织(分公司)',dataIndex: 'organize',key: 'organize',},
+    {title: '职位',dataIndex: 'positionName',key: 'positionName'},
     {title: '基本工资',dataIndex: 'baseSalary',key: 'baseSalary'},
     {title: '岗位补贴',dataIndex: 'subsidy',key: 'subsidy'},
     {title: '工装扣款',dataIndex: 'clothesBack',key: 'clothesBack'},
@@ -27,7 +27,7 @@ const rowSelection = {
 class SearchResult extends Component {
 
     componentWillMount() {
-        
+        //this.props.dispatch(getSalaryList());
     }
 
     componentWillUnmount() {
@@ -42,7 +42,7 @@ class SearchResult extends Component {
         let self = this;
         const rowSelection = {
             onChange: (selectedRowKeys, selectedRows) => {
-                self.props.dispatch(selBlackList(selectedRows));
+                self.props.dispatch(setSelSalaryList(selectedRows));
             }
         };
         
@@ -51,11 +51,11 @@ class SearchResult extends Component {
                 {<p style={{marginBottom: '10px'}}>目前已为你筛选出<b>{this.props.searchInfoResult.achievementList.extension.length}</b>条职位薪酬信息</p>}
                 <div id="searchResult">
                     <Table id= {"table"} rowKey={record => record.key} 
-                    columns={columns} 
-                    pagination={this.props.searchInfoResult} 
-                    onChange={this.handleChangePage} 
-                    dataSource={this.props.searchInfoResult.achievementList.extension} bordered size="middle" 
-                    rowSelection={rowSelection} />
+                           columns={columns} 
+                           pagination={this.props.searchInfoResult} 
+                           onChange={this.handleChangePage} 
+                           dataSource={this.props.searchInfoResult.achievementList.extension} bordered size="middle" 
+                           rowSelection={rowSelection} />
                 </div>
             </div>
         )

@@ -88,12 +88,20 @@ class SearchCondition extends Component {
                     <div style={{display: expandSearchCondition ? "block" : "none"}}>   
                         <Row className="normalInfo">
                             <Col span={4}>
+                                <label>不限：</label>
+                                    <Checkbox checked={this.props.searchInfo.checkStatu === 0?true:false} id={0} onChange={this.handleCheckStatus}></Checkbox>
+                            </Col>
+                            <Col span={4}>
                                 <label>未审核：</label>
                                     <Checkbox checked={this.props.searchInfo.checkStatu === 1?true:false} id={1} onChange={this.handleCheckStatus}></Checkbox>
                             </Col>
                             <Col span={4}>
                                 <label>已审核：</label>
                                     <Checkbox checked={this.props.searchInfo.checkStatu === 2?true:false} id={2} onChange={this.handleCheckStatus}></Checkbox>
+                            </Col>
+                            <Col span={4}>
+                                <label>驳回：</label>
+                                    <Checkbox checked={this.props.searchInfo.checkStatu === 3?true:false} id={3} onChange={this.handleCheckStatus}></Checkbox>
                             </Col>
                         </Row>
                         <Row className="normalInfo">

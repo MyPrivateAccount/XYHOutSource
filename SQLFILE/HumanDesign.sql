@@ -123,7 +123,7 @@ CREATE TABLE `XYH_HU_SALARY` (
   `ID` varchar(127) NOT NULL DEFAULT '',
   `Organize` varchar(127) NOT NULL DEFAULT '',/*组织(分公司)*/
   `Position` varchar(127) NOT NULL DEFAULT '',/*职位名*/
-  `PositionID` varchar(127) NOT NULL DEFAULT '',/*职位id*/
+  `PositionName` varchar(127) DEFAULT '',/*职位*/
   `BaseSalary` int(11) DEFAULT 0,/*基本工资*/
   `Subsidy`int(11) DEFAULT 0,/*岗位补贴*/
   `ClothesBack` int(11) DEFAULT 0,/*工装扣款*/

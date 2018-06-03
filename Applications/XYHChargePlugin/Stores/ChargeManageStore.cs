@@ -229,6 +229,15 @@ namespace XYHHumanPlugin.Stores
             return query.Invoke(Context.FileInfos.AsNoTracking()).SingleOrDefaultAsync(cancellationToken);
         }
 
+        public Task<TResult> GetCostAsync<TResult>(Func<IQueryable<CostInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (query == null)
+            {
+                throw new ArgumentNullException(nameof(query));
+            }
+            return query.Invoke(Context.CostInfos.AsNoTracking()).SingleOrDefaultAsync(cancellationToken);
+        }
+
         public Task<TResult> GetLimitAsync<TResult>(Func<IQueryable<LimitInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (query == null)
