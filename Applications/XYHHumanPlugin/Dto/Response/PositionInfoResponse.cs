@@ -8,6 +8,7 @@ namespace XYHHumanPlugin.Dto.Response
     {
         public string ID { get; set; }
         public string PositionName { get; set; }
+        public string PositionType { get; set; }
         public string ParentID { get; set; }
     }
 }

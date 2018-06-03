@@ -1,13 +1,16 @@
 import {handleActions} from 'redux-actions';
 import * as actionTypes from '../constants/actionType';
 import appAction from '../../utils/appUtils';
+import { stat } from 'fs';
 
 const initState = {
     selAttendanceList: [],
     selAchievementList: [],
     selBlacklist: [],//选中的黑名单列表
+    selSalaryItem: {},
     showLoading: true,
     searchOrgTree: [],
+    stationTypeList: [],
     navigator: [{id: 20, menuID: "menu_user_mgr", displayName: "员工信息管理", menuIcon: 'contacts'}],//导航记录
     monthresult: {extension: [{key: '1', last: 'tt', monthtime: 'test', operater: 'hhee'}], pageIndex: 0, pageSize: 10, totalCount: 1},
     monthlast: '2018.5',
@@ -15,68 +18,16 @@ const initState = {
 let reducerMap = {};
 //字典数据
 reducerMap[actionTypes.DIC_GET_PARLIST_COMPLETE] = function (state, action) {
-    let saleStatus = [...state.saleStatus], saleModel = [...state.saleModel], shopsTypes = [...state.shopsTypes], tradePlannings = [...state.tradePlannings];
-    let customerSource = [...state.customerSource], businessTypes = [...state.businessTypes], customerLevels = [...state.customerLevels];
-    let requirementLevels = [...state.requirementLevels], requirementType = [...state.requirementType];
-    let invalidResions = [...state.invalidResions], followUpTypes = [...state.followUpTypes], rateProgress = [...state.rateProgress];
+    let stationTypeList = [...state.stationTypeList];
+
     action.payload.map((group) => {
-        if (group.groupId === "CUSTOMER_SOURCE") {
+        if(group.groupId === "POSITION_TYPE") {
             group.dictionaryDefines = group.dictionaryDefines.sort((aItem, bItem) => aItem.order - bItem.order);
-            customerSource = group.dictionaryDefines;
-        }
-        else if (group.groupId === "BUSINESS_TYPE") {
-            group.dictionaryDefines = group.dictionaryDefines.sort((aItem, bItem) => aItem.order - bItem.order);
-            businessTypes = group.dictionaryDefines;
-        }
-        else if (group.groupId === "PROJECT_SALE_STATUS") {
-            group.dictionaryDefines = group.dictionaryDefines.sort((aItem, bItem) => aItem.order - bItem.order);
-            saleStatus = group.dictionaryDefines;
-        }
-        else if (group.groupId === "SALE_MODE") {
-            group.dictionaryDefines = group.dictionaryDefines.sort((aItem, bItem) => aItem.order - bItem.order);
-            saleModel = group.dictionaryDefines;
-        }
-        else if (group.groupId === "SHOP_CATEGORY") {
-            group.dictionaryDefines = group.dictionaryDefines.sort((aItem, bItem) => aItem.order - bItem.order);
-            shopsTypes = group.dictionaryDefines;
-        }
-        else if (group.groupId === "TRADE_MIXPLANNING") {
-            group.dictionaryDefines = group.dictionaryDefines.sort((aItem, bItem) => aItem.order - bItem.order);
-            tradePlannings = group.dictionaryDefines;
-        }
-        else if (group.groupId === "CUSTOMER_LEVEL") {
-            group.dictionaryDefines = group.dictionaryDefines.sort((aItem, bItem) => aItem.order - bItem.order);
-            customerLevels = group.dictionaryDefines;
-        }
-        else if (group.groupId === "REQUIREMENT_LEVEL") {
-            group.dictionaryDefines = group.dictionaryDefines.sort((aItem, bItem) => aItem.order - bItem.order);
-            requirementLevels = group.dictionaryDefines;
-        }
-        else if (group.groupId === "INVALID_REASON") {
-            group.dictionaryDefines = group.dictionaryDefines.sort((aItem, bItem) => aItem.order - bItem.order);
-            invalidResions = group.dictionaryDefines;
-        }
-        else if (group.groupId === "FOLLOWUP_TYPE") {
-            group.dictionaryDefines = group.dictionaryDefines.sort((aItem, bItem) => aItem.order - bItem.order);
-            followUpTypes = group.dictionaryDefines;
-        }
-        else if (group.groupId === "RATE_PROGRESS") {
-            group.dictionaryDefines = group.dictionaryDefines.sort((aItem, bItem) => aItem.order - bItem.order);
-            rateProgress = group.dictionaryDefines;
-        }
-        else if (group.groupId === "REQUIREMENT_TYPE") {
-            group.dictionaryDefines = group.dictionaryDefines.sort((aItem, bItem) => aItem.order - bItem.order);
-            requirementType = group.dictionaryDefines;
+            stationTypeList = group.dictionaryDefines;
         }
     });
     return Object.assign({}, state, {
-        customerSource: customerSource,
-        businessTypes: businessTypes,
-        customerLevels: customerLevels,
-        requirementLevels: requirementLevels,
-        invalidResions: invalidResions,
-        followUpTypes: followUpTypes, rateProgress: rateProgress, requirementType: requirementType,
-        saleStatus: saleStatus, saleModel: saleModel, shopsTypes: shopsTypes, tradePlannings: tradePlannings
+        stationTypeList: stationTypeList,
     });
 }
 //区域数据
@@ -213,6 +164,10 @@ reducerMap[actionTypes.CLOSE_USER_BREAD] = function(state, action) {
     return Object.assign({}, state, {navigator: []});
 }
 
+reducerMap[actionTypes.MINUS_USER_BREAD] = function(state, action) {
+    return Object.assign({}, state, {navigator: state.navigator.splice(state.navigator.length-1, 1)});
+}
+
 reducerMap[actionTypes.SET_USER_BREADITEMINDEX] = function(state, action) {
     return Object.assign({}, state, {navigator: state.navigator.slice(0, action.payload+1)});
 }
@@ -244,6 +199,22 @@ reducerMap[actionTypes.CHANGE_LOADING] = function(state, action) {
 
 reducerMap[actionTypes.SEL_BLACKLIST] = function(state, action) {
     return Object.assign({}, state, {selBlacklist: action.payload});
+}
+
+reducerMap[actionTypes.SET_SELSALARYLIST] = function(state, action) {
+    return Object.assign({}, state, {selAchievementList: action.payload});
+}
+
+reducerMap[actionTypes.UPDATE_STATIONTYPELIST] = function(state, action) {
+    return Object.assign({}, state, {stationTypeList: action.payload});
+}
+
+reducerMap[actionTypes.UPDATE_SALARYINFO] = function(state, action) {
+    return Object.assign({}, state, { showLoading: false} );
+}
+
+reducerMap[actionTypes.UPDATE_SALARYITEM] = function(state, action) {
+    return Object.assign({}, state, {selSalaryItem: action.payload});
 }
 
 export default handleActions(reducerMap, initState);

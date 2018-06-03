@@ -22,7 +22,7 @@ export function* postHumanInfoAsync(state) {
             humanResult.isOk = true;
             humanResult.message = '人事信息提交成功';
 
-            yield put({ type: actionUtils.getActionType(actionTypes.CLOSE_USER_BREAD), payload: {} });
+            yield put({ type: actionUtils.getActionType(actionTypes.MINUS_USER_BREAD), payload: {} });
         }
     } catch (e) {
         humanResult.msg = "部门用户获取接口调用异常!";
@@ -155,6 +155,12 @@ export function* setStation(state) {
         huResult = yield call(ApiClient.post, url, state.payload);
         if (huResult.data.code == 0) {
             huResult.data.message = '设置职位成功';
+            notification.success({
+                message: huResult.data.message,
+                duration: 3
+            });
+            yield put({ type: actionUtils.getActionType(actionTypes.MINUS_USER_BREAD), payload: {} });
+            return;
             //yield put({ type: actionUtils.getActionType(actionTypes.UPDATE_STATIONLIST), payload: huResult.data.extension});
         }
     } catch (e) {
@@ -191,6 +197,61 @@ export function* deleteStation(state) {
     }
 }
 
+export function* setSalary(state) {
+    let url = WebApiConfig.server.setSalary;
+    let huResult = { isOk: false, msg: '设置薪酬失败！' };
+
+    try {
+        huResult = yield call(ApiClient.post, url, state.payload);
+        if (huResult.data.code == 0) {
+            huResult.data.message = '设置薪酬成功';
+
+            yield put({ type: actionUtils.getActionType(actionTypes.MINUS_USER_BREAD), payload: {} });
+            notification.success({
+                message: "设置成功",
+                duration: 3
+            });
+            return;
+        }
+    } catch (e) {
+        huResult.data.message = "设置薪酬接口调用异常!";
+    }
+    
+    if (huResult.data.code !== 0) {
+        notification.error({
+            message: huResult.data.message,
+            duration: 3
+        });
+    }
+}
+
+export function* deleteSalary(state) {
+    let url = WebApiConfig.server.deleteSalary;
+    let huResult = { isOk: false, msg: '删除薪酬失败！' };
+
+    try {
+        huResult = yield call(ApiClient.post, url, state.payload);
+        if (huResult.data.code == 0) {
+            huResult.data.message = '删除薪酬成功';
+
+            notification.success({
+                message: "删除成功",
+                duration: 3
+            });
+            return;
+        }
+    } catch (e) {
+        huResult.data.message = "删除薪酬接口调用异常!";
+    }
+    
+    if (huResult.data.code !== 0) {
+        notification.error({
+            message: huResult.data.message,
+            duration: 3
+        });
+    }
+}
+
 export default function* watchDicAllAsync() {
     yield takeLatest(actionUtils.getActionType(actionTypes.POST_HUMANINFO), postHumanInfoAsync);
     yield takeLatest(actionUtils.getActionType(actionTypes.GET_HUMANINFONUMBER), getWorkNumber);
@@ -200,4 +261,6 @@ export default function* watchDicAllAsync() {
     yield takeLatest(actionUtils.getActionType(actionTypes.GET_CRATESTATION), getcreateStation);
     yield takeLatest(actionUtils.getActionType(actionTypes.SET_STATION), setStation);
     yield takeLatest(actionUtils.getActionType(actionTypes.DELETE_STATION), deleteStation);
+    yield takeLatest(actionUtils.getActionType(actionTypes.SET_SALARYINFO), setSalary);
+    yield takeLatest(actionUtils.getActionType(actionTypes.DELETE_SALARYINFO), deleteSalary);
 }

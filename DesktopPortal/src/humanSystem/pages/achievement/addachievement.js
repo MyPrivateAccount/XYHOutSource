@@ -1,7 +1,8 @@
 import { connect } from 'react-redux';
-import { getDicParList, postBlackLst } from '../../actions/actionCreator';
+import { getDicParList, postBlackLst, setSalaryInfo, getcreateStation} from '../../actions/actionCreator';
 import React, { Component } from 'react'
-import {Table, Input, Select, Form, Button, Row, Col, Checkbox, Pagination, Spin, Cascader, InputNumber } from 'antd'
+import {Table, Input, Select, Form, Button, Row, Col, Checkbox, Cascader, InputNumber } from 'antd'
+import { NewGuid } from '../../../utils/appUtils';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -15,13 +16,18 @@ const formItemLayout1 = {
 class Achievement extends Component {
 
     componentWillMount() {
+        this.state = {
+            id: NewGuid(),
+            department: ""
+        };
     }
 
     componentDidMount() {
         let len = this.props.selAchievementList.length;
         if (this.props.ismodify == 1) {//修改界面
-            this.props.form.setFieldsValue({org: this.props.selAchievementList[len-1].org});
-            this.props.form.setFieldsValue({station: this.props.selAchievementList[len-1].station});
+            this.state.id = this.props.selAchievementList[len-1].id;
+            this.props.form.setFieldsValue({organize: this.props.selAchievementList[len-1].organize});
+            this.props.form.setFieldsValue({position: this.props.selAchievementList[len-1].position});
             this.props.form.setFieldsValue({baseSalary: this.props.selAchievementList[len-1].baseSalary});
             this.props.form.setFieldsValue({subsidy: this.props.selAchievementList[len-1].subsidy});
             this.props.form.setFieldsValue({clothesBack: this.props.selAchievementList[len-1].clothesBack});
@@ -36,16 +42,35 @@ class Achievement extends Component {
 
     handleSubmit = (e) => {
         e.preventDefault();
+        let self = this;
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                //this.props.dispatch(postBlackLst(values));
-                this.props.selAchievementList[len-1].id;
+                values.id = self.state.id;
+                if (values.organize instanceof Array) {
+                    values.organize = values.organize[values.organize.length-1];
+                }
+                
+                let vf = self.props.stationList[self.props.stationList.findIndex(function(v, i) {
+                    return v.id == values.position;
+                })];
+                values.positionName = vf.stationname;
+                
+                self.props.dispatch(setSalaryInfo(values));
+                this.props.form.resetFields();
+
             }
         });
     }
 
+    handleDepartmentChange = (e) => {
+        if (!e) {
+            this.props.dispatch(getcreateStation(this.state.department));
+        }
+    }
+
     handleChooseDepartmentChange = (e) => {
-        this.state.department = e;
+        this.state.department = e[e.length-1];
+        
     }
 
     render() {
@@ -62,21 +87,21 @@ class Achievement extends Component {
                                 required:true, message: 'please entry',
                             }]
                         })(
-                            <Cascader options={this.props.setContractOrgTree}  onChange={this.handleChooseDepartmentChange } changeOnSelect  placeholder="归属部门"/>
+                            <Cascader disabled={this.props.ismodify == 1} options={this.props.setContractOrgTree} onChange={this.handleChooseDepartmentChange} onPopupVisibleChange={this.handleDepartmentChange} changeOnSelect  placeholder="归属部门"/>
                         )}
                     </FormItem>
                     <FormItem {...formItemLayout1} label="选择职位">
-                        {getFieldDecorator('positionID', {
+                        {getFieldDecorator('position', {
                             reules: [{
                                 required:true, message: 'please entry',
                             }]
                         })(
-                            <Select placeholder="选择职位">
+                            <Select disabled={this.props.ismodify == 1} placeholder="选择职位">
                                 {
-                                    (self.props.chargeCostTypeList && self.props.chargeCostTypeList.length > 0) ?
-                                        self.props.chargeCostTypeList.map(
+                                    (self.props.stationList && self.props.stationList.length > 0) ?
+                                        self.props.stationList.map(
                                             function (params) {
-                                                return <Option key={params.value} value={params.value+""}>{params.key}</Option>;
+                                                return <Option key={params.key} value={params.id}>{params.stationname}</Option>;
                                             }
                                         ):null
                                 }
@@ -140,7 +165,8 @@ class Achievement extends Component {
 function tableMapStateToProps(state) {
     return {
         selAchievementList: state.basicData.selAchievementList,
-        setContractOrgTree: state.basicData.searchOrgTree
+        setContractOrgTree: state.basicData.searchOrgTree,
+        stationList: state.search.stationList,
     }
 }
 

@@ -128,7 +128,7 @@ namespace XYHChargePlugin.Managers
                     item.ReceiptList = _mapper.Map<List<ReceiptInfoResponse>>(await _Store.GetRecieptListAsync(a => a.Where(b => b.CostID == item.ID)));
                     foreach (var it in item.ReceiptList)
                     {
-                        var scope = await _Store.GetScopeInfo(a => a.Where(b => b.ReceiptID == item.ID));
+                        var scope = await _Store.GetScopeInfo(a => a.Where(b => b.ReceiptID == it.ID));
                         foreach (var itm in scope)
                         {
                             var file = await _Store.GetFileInfo(a => a.Where(b => b.FileGuid == itm.FileGuid && b.Type == "ORIGINAL"));
@@ -150,7 +150,8 @@ namespace XYHChargePlugin.Managers
         {
             string fr = ApplicationCore.ApplicationContext.Current.FileServerRoot;
             fr = (fr ?? "").TrimEnd('/');
-            retun fr + "/" + file.TrimStart('/');
+            var tf = fr + "/" + file.TrimStart('/');
+            return tf;
         }
 
         private FileItemResponse ConvertToFileItem(string fileGuid, List<FileInfo> fl)

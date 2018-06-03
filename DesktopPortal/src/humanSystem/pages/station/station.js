@@ -1,9 +1,10 @@
 import { connect } from 'react-redux';
-import { createStation, getOrgList, adduserPage, setStation, deleteStation, getcreateStation, setLoadingVisible } from '../../actions/actionCreator';
+import { createStation, getOrgList, getDicParList, setStation, deleteStation, getcreateStation, setLoadingVisible } from '../../actions/actionCreator';
 import React, { Component } from 'react'
-import {Table, Input, Form, InputNumber, Cascader, Button, Row, Col, Spin} from 'antd'
+import {Table, Input, Form, Select, Cascader, Button, Row, Col, Spin} from 'antd'
 import './station.less';
 
+const Option = Select.Option;
 const styles = {
     conditionRow: {
         width: '80px',
@@ -43,13 +44,34 @@ class Station extends Component {
         super(pros);
 
         this.state = {department: ""};
+        let self = this;
         this.ListColums = [
             {
                 title: '职位名称',
                 dataIndex: 'stationname',
                 key: 'stationname',
                 width: '25%',
-                render: (text, record) => this.renderColumns(text, record, 'stationname'),},
+                render: (text, record) => this.renderColumns(text, record, 'stationname'),
+            },
+            {
+                title: '职位类型',
+                dataIndex: 'positionType',
+                key: 'positionType',
+                width: '25%',
+                render: (text, record) => {
+                    return (
+                        <div>
+                            <Select value={text} disabled={!record.editable} style={{width: '50%'}} onChange={(v) =>this.selectChange(record.key, v)} placeholder="选择职位类型">
+                                {
+                                    self.props.stationTypeList.map(function(v, i) {
+                                        return <Option value={v.value} key={v.key}>{v.key}</Option>;
+                                    })
+                                }
+                            </Select>
+                        </div>
+                    );
+                }
+            },
             {
                 title: '操作',
                 dataIndex: 'operation',
@@ -84,6 +106,14 @@ class Station extends Component {
         );
     }
 
+    selectChange(key, v) {
+        const newData = [...this.props.stationList];
+        const target = newData.filter(item => key === item.key)[0];
+        if (target) {
+            target.positionType = v;
+        }
+    }
+
     handleChange(value, key, column) {
         const newData = [...this.props.stationList];
         const target = newData.filter(item => key === item.key)[0];
@@ -115,7 +145,7 @@ class Station extends Component {
             delete target.editable;
             this.forceUpdate();
             this.cacheData = newData.map(item => ({ ...item }));
-            this.props.dispatch(setStation({positionName: target.stationname, parentID:this.state.department}));
+            this.props.dispatch(setStation({id:target.id,positionName: target.stationname, positionType: target.positionType, parentID:this.state.department}));
         }
     }
 
@@ -135,6 +165,7 @@ class Station extends Component {
     }
 
     componentWillMount() {
+        this.props.dispatch(getDicParList(["POSITION_TYPE"]));
         this.props.dispatch(setLoadingVisible(false));
     }
 
@@ -170,7 +201,7 @@ class Station extends Component {
             nkey = +this.props.stationList[this.props.stationList.length-1].key+2;
         }
         
-        this.props.stationList.push({key: nkey+'', stationname: "test", editable: true, isnew: true});
+        this.props.stationList.push({key: nkey+'', stationname: "test", positionType:"", editable: true, isnew: true});
         this.forceUpdate();
         //this.props.dispatch(adduserPage({id: 11, menuID: 'menu_blackaddnew', disname: '新建黑名单', type:'item'}));
     }
@@ -200,6 +231,7 @@ class Station extends Component {
 
 function tableMapStateToProps(state) {
     return {
+        stationTypeList: state.basicData.stationTypeList,
         showLoading: state.search.showLoading,
         stationList: state.search.stationList,
         setDepartmentOrgTree: state.basicData.searchOrgTree

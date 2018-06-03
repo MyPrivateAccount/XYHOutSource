@@ -278,6 +278,15 @@ namespace XYHHumanPlugin.Stores
             return query.Invoke(Context.HumanInfos.AsNoTracking()).SingleOrDefaultAsync(cancellationToken);
         }
 
+        public Task<TResult> GetSalaryAsync<TResult>(Func<IQueryable<SalaryInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (query == null)
+            {
+                throw new ArgumentNullException(nameof(query));
+            }
+            return query.Invoke(Context.SalaryInfos.AsNoTracking()).SingleOrDefaultAsync(cancellationToken);
+        }
+
         public Task<List<TResult>> GetStationListAsync<TResult>(Func<IQueryable<PositionInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (query == null)

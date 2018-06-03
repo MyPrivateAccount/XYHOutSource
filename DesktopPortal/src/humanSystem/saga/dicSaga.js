@@ -15,11 +15,9 @@ export function* getParListAsync(state) {
     let url = WebApiConfig.dic.ParList;
     try {
         let res = yield call(ApiClient.post, url, state.payload)
-        // console.log(res, '获取参数列表');
         getApiResult(res, result);
         if (result.isOk) {
             yield put({ type: actionUtils.getActionType(actionTypes.DIC_GET_PARLIST_COMPLETE), payload: result.extension });
-            // yield put({ type: actionUtils.getActionType(actionTypes.SET_SEARCH_LOADING), payload: false });
         }
     } catch (e) {
         result.msg = "系统字典参数接口调用异常！";
@@ -120,11 +118,35 @@ export function* getWorkNumber(state) {
     }
 }
 
+export function* getStationTypeList(state) {
+    let url = WebApiConfig.server.GetWorkNumber;
+    let huResult = { isOk: false, msg: '获取工号失败！' };
+    try {
+        huResult = yield call(ApiClient.get, url);
+        //弹消息，返回
+        if (huResult.data.code == 0) {
+            huResult.message = '人事信息提交成功';
+
+            yield put({ type: actionUtils.getActionType(actionTypes.SET_HUMANINFONUMBER), payload: {worknumber:huResult.data.extension} });
+        }
+    } catch (e) {
+        huResult.msg = "部门用户获取接口调用异常!";
+    }
+    
+    if (!huResult.isOk) {
+        notification.error({
+            message: huResult.msg,
+            duration: 3
+        });
+    }
+}
+
 export default function* watchDicAllAsync() {
     yield takeLatest(actionUtils.getActionType(actionTypes.DIC_GET_PARLIST), getParListAsync);
     yield takeLatest(actionUtils.getActionType(actionTypes.DIC_GET_ORG_LIST), getAllOrgsAsync);
     yield takeLatest(actionUtils.getActionType(actionTypes.DIC_GET_ORG_DETAIL), getUserOrgAsync);
     yield takeLatest(actionUtils.getActionType(actionTypes.GET_ORG_USERLIST), getOrgUserListAsync);
     yield takeLatest(actionUtils.getActionType(actionTypes.GET_HUMANINFONUMBER), getWorkNumber);
+    yield takeLatest(actionUtils.getActionType(actionTypes.GET_STATIONTYPELIST), getStationTypeList);
 }
 

@@ -22,7 +22,7 @@ namespace XYHHumanPlugin.Controllers
     [Route("api/humanstation")]
     public class StationController : Controller
     {
-        private readonly ILogger Logger = LoggerManager.GetLogger("XYHHumaninfo");
+        private readonly ILogger Logger = LoggerManager.GetLogger("XYHHumanstation");
         private readonly StationManager _stationManage;
         private readonly RestClient _restClient;
 

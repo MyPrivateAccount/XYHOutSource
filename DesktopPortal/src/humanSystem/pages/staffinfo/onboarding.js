@@ -6,7 +6,7 @@ import reducers from '../../reducers';
 import moment from 'moment';
 import WebApiConfig from '../../constants/webapiConfig';
 import './staff.less';
-import { getworkNumbar, postHumanInfo, getallOrgTree} from '../../actions/actionCreator';
+import { getworkNumbar, postHumanInfo, getallOrgTree, getcreateStation, getSalaryItem} from '../../actions/actionCreator';
 import { NewGuid } from '../../../utils/appUtils';
 import ApiClient from '../../../utils/apiClient';
 
@@ -26,6 +26,7 @@ const formItemLayout1 = {
 class OnBoarding extends Component {
 
     state = {
+        department: "",
         loading: false,
         fileList: [],
         previewVisible: false,
@@ -168,18 +169,22 @@ class OnBoarding extends Component {
         this.props.form.resetFields();
     }
 
-    handleChooseDepartmentChange =  (v, selectedOptions) => {
-        let organizateID = (v ||v != []) ? v[v.length -1].toString() : 0;
-        let departmentFullId = v? v.join('*'): '';
+    handleDepartmentChange = (e) => {
+        if (!e) {
+            this.props.dispatch(getcreateStation(this.state.department));
+        }
+    }
 
-        let text = selectedOptions.map(item => {
-            return item.label
-        })
-     
-        this.setState({departMentFullName: text.join('-'), organizateID: organizateID, departmentFullId:departmentFullId})
+    handleChooseDepartmentChange = (e) => {
+        this.state.department = e[e.length-1];
+    }
+
+    handleSelectChange = (e) => {
+        this.props.dispatch(getSalaryItem(e));
     }
 
     render() {
+        let self = this;
         const { previewVisible, previewImage, fileList } = this.state;
         const { getFieldDecorator, getFieldsError, getFieldsValue, isFieldTouched } = this.props.form;
 
@@ -290,7 +295,7 @@ class OnBoarding extends Component {
                                     message: 'please entry Orgdepartment',
                                 }]
                             })(
-                                <Cascader style={{ width: '70%' }} options={this.props.setDepartmentOrgTree}  onChange={this.handleChooseDepartmentChange } changeOnSelect  placeholder="归属部门"/>
+                                <Cascader style={{ width: '70%' }} options={this.props.setDepartmentOrgTree} onChange={this.handleChooseDepartmentChange} onPopupVisibleChange={this.handleDepartmentChange} changeOnSelect  placeholder="归属部门"/>
                             )}
                 </FormItem>
                 <FormItem {...formItemLayout} label="职位">
@@ -300,33 +305,50 @@ class OnBoarding extends Component {
                                     message: 'please entry Position',
                                 }]
                             })(
-                                <TreeSelect style={{ width: '70%' }} allowClear showSearch
-                                        dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-                                        treeData={this.props.positionTree} />
+                                <Select style={{ width: '70%' }} onChange={this.handleSelectChange} placeholder="选择职位">
+                                    {
+                                        (self.props.stationList && self.props.stationList.length > 0) ?
+                                            self.props.stationList.map(
+                                                function (params) {
+                                                    return <Option key={params.key} value={params.id}>{params.stationname}</Option>;
+                                                }
+                                            ):null
+                                    }
+                                </Select>
                             )}
                 </FormItem>
                 <FormItem {...formItemLayout1} label="基本工资">
-                    {getFieldDecorator('basicsalary')(
+                    {getFieldDecorator('baseSalary', {
+                        initialValue: self.props.selSalaryItem? self.props.selSalaryItem.baseSalary:null
+                    })(
                                     <InputNumber style={{ width: '70%' }} />
                                 )}
                 </FormItem>
                 <FormItem {...formItemLayout1} label="岗位补贴">
-                    {getFieldDecorator('subsidy')(
+                    {getFieldDecorator('subsidy', {
+                        initialValue: self.props.selSalaryItem? self.props.selSalaryItem.subsidy:null
+                    })(
                                         <InputNumber style={{ width: '70%' }} />
                                     )}
                 </FormItem>
                 <FormItem {...formItemLayout1} label="工装扣款">
-                    {getFieldDecorator('clothesback')(
+                    {getFieldDecorator('clothesBack', {
+                        initialValue: self.props.selSalaryItem? self.props.selSalaryItem.clothesBack:null
+                    })(
                                     <InputNumber style={{width: '70%'}} />
                                 )}
                 </FormItem>
                 <FormItem {...formItemLayout1} label="行政扣款">
-                    {getFieldDecorator('administrativeback')(
+                    {getFieldDecorator('administrativeBack', {
+                        initialValue: self.props.selSalaryItem? self.props.selSalaryItem.administrativeBack:null
+                    })(
                                     <InputNumber style={{width: '70%'}} />
                                 )}
                 </FormItem>
                 <FormItem {...formItemLayout1} label="端口扣款">
-                    {getFieldDecorator('portback')(
+                    {getFieldDecorator('portBack', {
+                        initialValue: self.props.selSalaryItem? self.props.selSalaryItem.portBack:null
+                    })(
                                     <InputNumber style={{width: '70%'}} />
                                 )}
                 </FormItem>
@@ -343,7 +365,9 @@ class OnBoarding extends Component {
 
 function stafftableMapStateToProps(state) {
     return {
-        setDepartmentOrgTree: state.basicData.searchOrgTree
+        setDepartmentOrgTree: state.basicData.searchOrgTree,
+        stationList: state.search.stationList,
+        selSalaryItem: state.basicData.selSalaryItem,
     }
 }
 

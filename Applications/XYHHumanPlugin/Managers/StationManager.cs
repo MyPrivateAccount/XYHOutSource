@@ -27,7 +27,8 @@ namespace XYHHumanPlugin.Managers
 
         public virtual async Task<List<PositionInfoResponse>> GetStationListByDepartment(string departmentid, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return _mapper.Map<List<PositionInfoResponse>>(await _Store.GetStationListAsync(a => a.Where(b => b.ParentID == departmentid)));
+            var tf = await _Store.GetStationListAsync(a => a.Where(b => b.ParentID == departmentid));
+            return _mapper.Map<List<PositionInfoResponse>>(tf);
         }
 
         public virtual async Task SetStation(PositionInfoRequest departmentid, CancellationToken cancellationToken = default(CancellationToken))
@@ -52,6 +53,8 @@ namespace XYHHumanPlugin.Managers
             }
             await _Store.DeleteStationAsync(_mapper.Map<PositionInfo>(departement), cancellationToken);
         }
+
+        
     }
     
 }

@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { setLoadingVisible, adduserPage } from '../../actions/actionCreator';
+import { setLoadingVisible, adduserPage, deleteSalaryInfo, getSalaryList, getcreateStation } from '../../actions/actionCreator';
 import React, { Component } from 'react';
 import { Input, Spin, Checkbox, Button, notification } from 'antd';
 //import {getDicParList} from '../actions/actionCreator';
@@ -19,15 +19,18 @@ class MainIndex extends Component {
     }
 
     componentWillMount() {
-        this.props.dispatch(setLoadingVisible(false));//测试
+        //this.props.dispatch(getSalaryList(this.props.selAchievementList));
+        //this.props.dispatch(setLoadingVisible(false));//测试
     }
 
     handleClickFucButton = (e) => {
         if (e.target.id === "addnew") {
             this.props.dispatch(adduserPage({id: 11, menuID: 'menu_achievementnew', displayName: '新建薪酬', type:'item'}));
         } else if (e.target.id === "modify") {
-            if (this.props.selAchievementList.length > 0)
+            if (this.props.selAchievementList.length > 0) {
+                this.props.dispatch(getcreateStation(this.props.selAchievementList[this.props.selAchievementList.length-1].organize));
                 this.props.dispatch(adduserPage({id: 12, menuID: 'menu_achievementmodify', displayName: '修改薪酬', type:'item'}));
+            }
             else {
                 notification.error({
                     message: '未选择指定职位薪酬',
@@ -36,8 +39,8 @@ class MainIndex extends Component {
                 });
             }
         } else if (e.target.id === "delete") {
-            if (this.props.selBlacklist.length > 0) {
-                //this.props.dispatch(adduserPage({menuID: 'costcharge', disname: '删除黑名单', type:'item'}));//删除要个jb啊
+            if (this.props.selAchievementList.length > 0) {
+                this.props.dispatch(deleteSalaryInfo(this.props.selAchievementList[this.props.selAchievementList.length-1]));
             }
             else {
                 notification.error({
@@ -87,7 +90,7 @@ class MainIndex extends Component {
 
 function mapStateToProps(state) {
     return {
-        selAchievementList: state.search.selAchievementList,
+        selAchievementList: state.basicData.selAchievementList,
         showLoading: state.basicData.showLoading,
     }
 }

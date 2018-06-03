@@ -19,7 +19,9 @@ const WebApiConfig = {
         CreateMonth: basicDataBaseApiUrl + "month/createmonth",
         SetBlacklst: basicDataBaseApiUrl + "humaninfo/setblack",
         SetStation: basicDataBaseApiUrl + "humanstation/setstation",
-        DeleteStation: basicDataBaseApiUrl + "humanstation/deletestation",
+        DeleteStation: basicDataBaseApiUrl + "humanstation/deletesalary",
+        setSalary: basicDataBaseApiUrl + "humansalary/setsalary",
+        deleteSalary: basicDataBaseApiUrl + "humansalary/deletestation",
     },
     search: {
         searchHumanList: basicDataBaseApiUrl + 'humaninfo/searchhumaninfo',
@@ -30,6 +32,8 @@ const WebApiConfig = {
         getAllMonthList: basicDataBaseApiUrl + 'month/monthlist',
         getBlackList: basicDataBaseApiUrl + 'humaninfo/getblacklist',
         getStationList: basicDataBaseApiUrl + 'humanstation/stationlist',
+        getSalaryList: basicDataBaseApiUrl + 'humansalary/salarylist',
+        getSalaryItem: basicDataBaseApiUrl + 'humansalary/salaryitem',
     },
     attach: {
         uploadUrl: `${UploadUrl}/file/upload/`,

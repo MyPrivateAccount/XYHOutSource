@@ -9,7 +9,7 @@ namespace XYHHumanPlugin.Dto.Response
         public string ID { get; set; }
         public string Organize { get; set; }
         public string Position { get; set; }
-        public string PositionID { get; set; }
+        public string PositionName { get; set; }
         public int? BaseSalary { get; set; }
         public int? Subsidy { get; set; }
         public int? ClothesBack { get; set; }
