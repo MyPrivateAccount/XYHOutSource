@@ -9,6 +9,7 @@ import scaleReducer from './scale'
 import acmReducer from './acm'
 import basicDataReducer from './basicData';
 import rpReducerMap from './dealRp/rp'
+import finaReducerMap from './fina/fina'
 export default combineReducers({
     router: routerReducer,
     oidc: oidcReducer,
@@ -18,5 +19,6 @@ export default combineReducers({
     scale: scaleReducer,
     acm:acmReducer,
     base:basicDataReducer,
-    rp:rpReducerMap
+    rp:rpReducerMap,
+    fina:finaReducerMap
 });

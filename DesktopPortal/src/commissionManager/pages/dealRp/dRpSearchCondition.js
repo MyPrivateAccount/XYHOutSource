@@ -25,7 +25,8 @@ class DRpSearchCondition extends Component {
         this.props.handleSearch(this.props.searchCondition)
     }
     handleReset = (e) => {
-
+        this.props.searchCondition.examineStartTime = '';
+        this.props.searchCondition.cjbh='';
     }
 
     handleSearchBoxToggle = (e) => {//筛选条件展开、收缩
@@ -134,7 +135,7 @@ class DRpSearchCondition extends Component {
                     <Row className="normalInfo">
                         <Col span={12}>
                             <label><span style={{ marginRight: '10px' }}>审批通过日期：</span>
-                                <DatePicker disabledDate={this.disabledDate} onChange={(e, dateString) => this.handleCreateTime(dateString, 'createDateStart')} />- <DatePicker disabledDate={this.disabledDate} onChange={(e, dateString) => this.handleCreateTime(dateString, 'createDateEnd')} />
+                                <DatePicker  disabledDate={this.disabledDate} onChange={(e, dateString) => this.handleCreateTime(dateString, 'createDateStart')} />- <DatePicker disabledDate={this.disabledDate} onChange={(e, dateString) => this.handleCreateTime(dateString, 'createDateEnd')} />
                             </label>
                         </Col>
                         <Col span={4}>

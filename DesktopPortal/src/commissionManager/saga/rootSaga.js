@@ -5,6 +5,7 @@ import watchAllScaleAsync from './scaleSaga'
 import watchAllAcmentAsync from './acmSaga'
 import watchDicAllAsync from './dicSaga'
 import watchAllRpAsync  from './dealRp/rpSaga'
+import watchAllFinaAsync from './fina/finaSaga'
 //所有的中间件监听
 export default function* rootSaga() {
     yield [
@@ -14,6 +15,7 @@ export default function* rootSaga() {
         watchAllScaleAsync(),
         watchAllAcmentAsync(),
         watchDicAllAsync(),
-        watchAllRpAsync()
+        watchAllRpAsync(),
+        watchAllFinaAsync()
     ]
 }

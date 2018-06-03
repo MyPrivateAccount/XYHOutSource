@@ -56,6 +56,9 @@ const WebApiConfig = {
         myrpGet:basicDataBaseApiUrl+'yj/report/myreport',
         searchRp:basicDataBaseApiUrl+'yj/report/search'
     },
+    fina:{
+        searchPPFt:basicDataBaseApiUrl+'yj/ppft/search'
+    },
     attach: {
         uploadUrl: `${UploadUrl}/file/upload/`
     },

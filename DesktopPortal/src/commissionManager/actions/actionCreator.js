@@ -64,3 +64,5 @@ export const uploadFile = createAction(actionTypes.DEALRP_ATTACT_UPLOADFILE);
 //
 export const myReportGet = createAction(actionTypes.DEALRP_MYREPORT_GET);
 export const searchReport = createAction(actionTypes.DEALRP_REPORT_SEARCH)
+//查询人员分摊表
+export const searchPPFt = createAction(actionTypes.FINA_QUERYPPFT);
