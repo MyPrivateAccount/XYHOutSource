@@ -127,6 +127,11 @@ reducerMap[actionTypes.UPDATE_BLACKLST] = function(state, action) {
     return Object.assign({}, state, {blackList: action.payload} );
 }
 
+reducerMap[actionTypes.DELETE_UPDATEBLACKINFO] = function(state, action) {
+    state.blackList.extension.splice(state.blackList.extension.findIndex(item => action.payload.idCard === item.idCard), 1);
+    return Object.assign({}, state, {blackList: state.blackList});
+}
+
 reducerMap[actionTypes.UPDATE_SALARYINFO] = function(state, action) {
     return Object.assign({}, state, {achievementList: action.payload} );
 }

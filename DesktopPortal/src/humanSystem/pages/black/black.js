@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { setLoadingVisible, adduserPage, deleteBlackInfo } from '../../actions/actionCreator';
+import { setLoadingVisible, adduserPage, deleteBlackInfo, getBlackList } from '../../actions/actionCreator';
 import React, { Component } from 'react';
 import { Input, Spin, Checkbox, Button, notification } from 'antd';
 //import {getDicParList} from '../actions/actionCreator';
@@ -19,7 +19,7 @@ class MainIndex extends Component {
     }
 
     componentWillMount() {
-        this.props.dispatch(setLoadingVisible(false));//测试
+        
     }
 
     handleClickFucButton = (e) => {

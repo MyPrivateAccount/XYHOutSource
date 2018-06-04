@@ -55,6 +55,7 @@ export const createMonth = createAction(actionTypes.MONTH_CREATE);
 export const monthLast = createAction(actionTypes.MONTH_LAST);
 
 //黑名单
+export const getBlackList = createAction(actionTypes.GET_BLACKLST);
 export const postBlackLst = createAction(actionTypes.POST_ADDBLACKLST);
 export const selBlackList = createAction(actionTypes.SEL_BLACKLIST);
 export const deleteBlackInfo = createAction(actionTypes.DELETE_BLACKINFO);

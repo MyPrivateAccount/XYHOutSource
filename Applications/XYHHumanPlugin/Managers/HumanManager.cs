@@ -64,7 +64,7 @@ namespace XYHHumanPlugin.Managers
         {
             var f = await _Store.GetScopeFileListAsync(a => a.Where(b => b.ID == humanid));
             var fileinfo = await _Store.GetFileListAsync(a => a.Where(b => b.FileGuid == f[0].FileGuid));
-            return ConvertToFileItem(f.FileGuid, fileinfo);
+            return ConvertToFileItem(f[0].FileGuid, fileinfo);
         }
         
         private FileItemResponse ConvertToFileItem(string fileGuid, List<FileInfo> fl)

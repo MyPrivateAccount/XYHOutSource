@@ -25,6 +25,7 @@ namespace XYHHumanPlugin.Models
         public DbSet<ModifyInfo> ModifyInfos { get; set; }
         public DbSet<AnnexInfo> AnnexInfos { get; set; }
         public DbSet<FileInfo> FileInfos { get; set; }
+        public DbSet<SocialInsurance> SocialInsurances { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -81,6 +82,11 @@ namespace XYHHumanPlugin.Models
             modelBuilder.Entity<AnnexInfo>(b => {
                 b.HasKey(k => new { k.ID });
                 b.ToTable("XYH_HU_ANNEX");
+            });
+
+            modelBuilder.Entity<SocialInsurance>(b => {
+                b.HasKey(k => new { k.IDCard });
+                b.ToTable("XYH_HU_SOCIALINSURANCE");
             });
         }
 

@@ -61,23 +61,23 @@ namespace XYHHumanPlugin.Managers
             string connectstr = " ";
             if (!string.IsNullOrEmpty(condition?.KeyWord))
             {
-                sql += connectstr + @"LOCATE('" + condition.KeyWord + "', a.`Position`)>0";
+                sql += connectstr + @"LOCATE('" + condition.KeyWord + "', a.`Name`)>0";
                 connectstr = " and ";
             }
             else if (condition?.KeyWord != null)
             {
-                sql += connectstr + @"a.`ID`!=''";
+                sql += connectstr + @"a.`IDCard`!=''";
                 connectstr = " and ";
             }
             else if (condition?.KeyWord == null)
             {
-                sql += connectstr + @"a.`ID`!=''";
+                sql += connectstr + @"a.`IDCard`!=''";
                 connectstr = " and ";
             }
 
             if (condition?.OrderRule == 0 || condition?.OrderRule == null)
             {
-                sql += @" ORDER BY a.`Position`";
+                sql += @" ORDER BY a.`Name`";
             }
 
             try

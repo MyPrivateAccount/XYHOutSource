@@ -1,10 +1,10 @@
 import {connect} from 'react-redux';
-import {setLoadingVisible, selBlackList} from '../../actions/actionCreator';
+import {setLoadingVisible, selBlackList, getBlackList} from '../../actions/actionCreator';
 import React, {Component} from 'react';
 import {Button, Row, Col, Table} from 'antd';
 
 const columns = [
-    {title: '身份证',dataIndex: 'idcard',key: 'idcard',},
+    {title: '身份证',dataIndex: 'idCard',key: 'idCard',},
     {title: '姓名',dataIndex: 'name',key: 'name'},];
 
 
@@ -21,7 +21,8 @@ const rowSelection = {
 class SearchResult extends Component {
 
     componentWillMount() {
-        
+        this.props.dispatch(setLoadingVisible(true));
+        this.props.dispatch(getBlackList(this.props.searchInfoResult));
     }
 
     componentWillUnmount() {
@@ -44,7 +45,7 @@ class SearchResult extends Component {
             <div>
                 {<p style={{marginBottom: '10px'}}>目前已为你筛选出<b>{this.props.searchInfoResult.blackList.extension.length}</b>条费用信息</p>}
                 <div id="searchResult">
-                    <Table id= {"table"} rowKey={record => record.idcard} 
+                    <Table id= {"table"} rowKey={record => record.key} 
                     columns={columns} 
                     pagination={this.props.searchInfoResult} 
                     onChange={this.handleChangePage} 

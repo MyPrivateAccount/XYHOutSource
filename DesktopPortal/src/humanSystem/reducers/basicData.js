@@ -226,4 +226,8 @@ reducerMap[actionTypes.UPDATE_HUMANIMAGE] = function(state, action) {
     return Object.assign({}, state, {humanImage: action.payload});
 }
 
+reducerMap[actionTypes.UPDATE_BLACKLST] = function(state, action) {
+    return Object.assign({}, state, {showLoading: false} );
+}
+
 export default handleActions(reducerMap, initState);

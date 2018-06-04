@@ -31,7 +31,7 @@ namespace XYHHumanPlugin.Controllers
             _blackManage = sta;
         }
 
-        [HttpGet("blacklist")]
+        [HttpPost("blacklist")]
         [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
         public async Task<ResponseMessage<HumanSearchResponse<BlackInfoResponse>>> GetBlackList(UserInfo User, [FromBody]HumanSearchRequest searchinfo)
         {
@@ -45,7 +45,7 @@ namespace XYHHumanPlugin.Controllers
 
             try
             {
-                Response.Extension = await _stationManage.SearchBlackInfo(User, searchinfo, HttpContext.RequestAborted);
+                Response.Extension = await _blackManage.SearchBlackInfo(User, searchinfo, HttpContext.RequestAborted);
             }
             catch (Exception e)
             {
@@ -70,7 +70,7 @@ namespace XYHHumanPlugin.Controllers
 
             try
             {
-                await _stationManage.SetBlack(black, HttpContext.RequestAborted);
+                await _blackManage.SetBlack(black, HttpContext.RequestAborted);
                 pagingResponse.Message = "setblack ok";
             }
             catch (Exception e)
@@ -97,14 +97,14 @@ namespace XYHHumanPlugin.Controllers
 
             try
             {
-                await _stationManage.DeleteBlack(black, HttpContext.RequestAborted);
+                await _blackManage.DeleteBlack(black, HttpContext.RequestAborted);
                 pagingResponse.Message = "deleteblack ok";
             }
             catch (Exception e)
             {
                 pagingResponse.Code = ResponseCodeDefines.ServiceError;
                 pagingResponse.Message = "服务器错误:" + e.ToString();
-                Logger.Error($"用户{User?.UserName ?? ""}({User?.Id ?? ""})查询黑名单(PostCustomerListSaleMan)请求失败：\r\n{pagingResponse.Message ?? ""}，\r\n请求参数为：\r\n" + (position != null ? JsonHelper.ToJson(position) : ""));
+                Logger.Error($"用户{User?.UserName ?? ""}({User?.Id ?? ""})查询黑名单(PostCustomerListSaleMan)请求失败：\r\n{pagingResponse.Message ?? ""}，\r\n请求参数为：\r\n" + (black != null ? JsonHelper.ToJson(black) : ""));
 
             }
             return pagingResponse;

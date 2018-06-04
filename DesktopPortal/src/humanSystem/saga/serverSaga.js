@@ -283,6 +283,8 @@ export function* deleteBlackInfo(state) {
         huResult = yield call(ApiClient.post, url, state.payload);
         if (huResult.data.code == 0) {
             huResult.data.message = '删除黑名单成功';
+
+            yield put({ type: actionUtils.getActionType(actionTypes.DELETE_UPDATEBLACKINFO), payload: state.payload});
             notification.success({
                 message: huResult.data.message,
                 duration: 3

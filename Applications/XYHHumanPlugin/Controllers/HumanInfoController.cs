@@ -17,6 +17,7 @@ using System.Collections.Specialized;
 using XYHHumanPlugin.Dto.Common;
 using GatewayInterface;
 using Microsoft.Extensions.DependencyInjection;
+using SocialInsuranceRequest = XYHHumanPlugin.Dto.Response.SocialInsuranceResponse;
 
 namespace XYHHumanPlugin.Controllers
 {
