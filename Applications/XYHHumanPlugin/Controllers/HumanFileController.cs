@@ -61,7 +61,7 @@ namespace XYHHumanPlugin.Controllers
             return response;
         }
 
-        [HttpGet("getfileinfo")]
+        [HttpGet("getfileinfo/{humanid}")]
         [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
         public async Task<ResponseMessage<FileItemResponse>> GetFileInfo([FromRoute]string humanid)
         {
