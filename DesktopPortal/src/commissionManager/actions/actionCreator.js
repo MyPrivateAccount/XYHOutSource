@@ -66,3 +66,15 @@ export const myReportGet = createAction(actionTypes.DEALRP_MYREPORT_GET);
 export const searchReport = createAction(actionTypes.DEALRP_REPORT_SEARCH)
 //查询人员分摊表
 export const searchPPFt = createAction(actionTypes.FINA_QUERYPPFT);
+//查询应发提成表
+export const searchYftcb = createAction(actionTypes.FINA_QUERY_YFTCB);
+//查询实发提成表
+export const searchSftcb = createAction(actionTypes.FINA_QUERY_SFTCB);
+//查询提成成本表
+export const searchTccbb = createAction(actionTypes.FINA_QUERY_TCCBB);
+//查询应发提成冲减表
+export const searchYftccjb = createAction(actionTypes.FINA_QUERY_YFTCCJB);
+//查询离职人员业绩确认表
+export const searchLzryyjqrb = createAction(actionTypes.FINA_QUERY_LZRYYJQRB);
+//查询实发扣减确认表
+export const searchSfkjqrb = createAction(actionTypes.FINA_QUERY_SFKJQRB);
