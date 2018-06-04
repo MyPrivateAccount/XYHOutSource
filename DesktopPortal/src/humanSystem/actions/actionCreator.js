@@ -57,6 +57,7 @@ export const monthLast = createAction(actionTypes.MONTH_LAST);
 //黑名单
 export const postBlackLst = createAction(actionTypes.POST_ADDBLACKLST);
 export const selBlackList = createAction(actionTypes.SEL_BLACKLIST);
+export const deleteBlackInfo = createAction(actionTypes.DELETE_BLACKINFO);
 
 //职位新建
 export const getcreateStation = createAction(actionTypes.GET_CRATESTATION);

@@ -78,6 +78,8 @@ export const UPDATE_BLACKLST = "UPDATE_BLACKLST";
 
 export const SEL_BLACKLIST = "SEL_BLACKLIST";
 
+export const DELETE_BLACKINFO = "DELETE_BLACKINFO";
+
 //职位新建
 export const GET_CRATESTATION = "GET_CRATESTATION";
 export const SET_STATION = "SET_STATION";
