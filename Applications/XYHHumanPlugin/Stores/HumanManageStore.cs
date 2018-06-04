@@ -279,23 +279,24 @@ namespace XYHHumanPlugin.Stores
             return query.Invoke(Context.HumanInfos.AsNoTracking()).SingleOrDefaultAsync(cancellationToken);
         }
 
-        public Task<TResult> GetFileAsync<TResult>(Func<IQueryable<FileInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<List<TResult>> GetFileListAsync<TResult>(Func<IQueryable<FileInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (query == null)
             {
                 throw new ArgumentNullException(nameof(query));
             }
-            return query.Invoke(Context.FileInfos.AsNoTracking()).SingleOrDefaultAsync(cancellationToken);
+            return query.Invoke(Context.FileInfos.AsNoTracking()).ToListAsync(cancellationToken);
         }
 
-        public Task<TResult> GetScopeFileAsync<TResult>(Func<IQueryable<AnnexInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<List<TResult>> GetScopeFileListAsync<TResult>(Func<IQueryable<AnnexInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (query == null)
             {
                 throw new ArgumentNullException(nameof(query));
             }
-            return query.Invoke(Context.AnnexInfos.AsNoTracking()).SingleOrDefaultAsync(cancellationToken);
+            return query.Invoke(Context.AnnexInfos.AsNoTracking()).ToListAsync(cancellationToken);
         }
+
         public Task<TResult> GetSalaryAsync<TResult>(Func<IQueryable<SalaryInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (query == null)

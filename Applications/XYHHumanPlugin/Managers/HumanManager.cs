@@ -62,10 +62,11 @@ namespace XYHHumanPlugin.Managers
 
         public virtual async Task<FileItemResponse> GetFilelistAsync(string humanid, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var f = await _Store.GetScopeFileAsync(a => a.Where(b => b.ID == humanid));
-            var fileinfo = await _Store.GetFileAsync(a => a.Where(b => b.FileGuid == f.FileGuid));
-            return ConvertToFileItem(f.FileGuid, new List<FileInfo> { fileinfo});
+            var f = await _Store.GetScopeFileListAsync(a => a.Where(b => b.ID == humanid));
+            var fileinfo = await _Store.GetFileListAsync(a => a.Where(b => b.FileGuid == f[0].FileGuid));
+            return ConvertToFileItem(f.FileGuid, fileinfo);
         }
+        
         private FileItemResponse ConvertToFileItem(string fileGuid, List<FileInfo> fl)
         {
             FileItemResponse fi = new FileItemResponse();
