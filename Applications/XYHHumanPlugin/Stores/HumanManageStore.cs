@@ -193,6 +193,11 @@ namespace XYHHumanPlugin.Stores
             await Context.SaveChangesAsync(cancellationToken);
         }
 
+        public async Task BecomeHuman(SocialInsurance info, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var ff = await GetAsync(a => a.Where(b => b.IDCard == info.IDCard));
+        }
+
         public async Task DeleteStationAsync(PositionInfo positioninfo, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (positioninfo == null)

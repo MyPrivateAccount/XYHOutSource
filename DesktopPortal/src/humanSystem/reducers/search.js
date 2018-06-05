@@ -20,6 +20,8 @@ const initState = {
     expandSearchBox: true,
     pageIndex: 0,
     pageSize: 10,
+    lstChildren: [],
+    organizate: "",
     searchResult: {extension: [{key: '1', id: 'tt', username: 'test', idcard: 'hhee'}], pageIndex: 0, pageSize: 10, totalCount: 1},//搜索结果
 };
 let reducerMap = {};
@@ -135,5 +137,10 @@ reducerMap[actionTypes.DELETE_UPDATEBLACKINFO] = function(state, action) {
 reducerMap[actionTypes.UPDATE_SALARYINFO] = function(state, action) {
     return Object.assign({}, state, {achievementList: action.payload} );
 }
+reducerMap[actionTypes.SET_SEARCH_LOADING] = function(state, action) {
+    return Object.assign({}, state, {showLoading: action.payload} );
+}
+
+
 
 export default handleActions(reducerMap, initState);

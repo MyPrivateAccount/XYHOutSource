@@ -12,6 +12,9 @@ using System.Threading;
 using XYHHumanPlugin.Dto.Request;
 using XYHHumanPlugin.Dto.Response;
 using System.Linq;
+using ApplicationCore.Managers;
+
+using SocialInsuranceRequest = XYHHumanPlugin.Dto.Response.SocialInsuranceResponse;
 
 namespace XYHHumanPlugin.Managers
 {
@@ -21,16 +24,21 @@ namespace XYHHumanPlugin.Managers
         public static int OnBoardinged = 2;//已入职
 
 
-        public HumanManager(IHumanManageStore stor, IMapper mapper)
+        public HumanManager(IHumanManageStore stor, IMapper mapper,
+            IOrganizationExpansionStore organizationExpansionStore,
+            PermissionExpansionManager permissionExpansionManager)
         {
             _Store = stor;
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            _iorganizationExpansionStore = organizationExpansionStore ?? throw new ArgumentNullException(nameof(organizationExpansionStore));
+            _permissionExpansionManager = permissionExpansionManager ?? throw new ArgumentNullException(nameof(permissionExpansionManager));
         }
 
         protected IHumanManageStore _Store { get; }
         protected IMapper _mapper { get; }
+        protected IOrganizationExpansionStore _iorganizationExpansionStore { get; }
+        protected PermissionExpansionManager _permissionExpansionManager { get; }
 
-        
         public virtual async Task AddHuman(UserInfo info, HumanInfRequest req, string modify, string checktion, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (req.ID == null)
@@ -133,6 +141,10 @@ namespace XYHHumanPlugin.Managers
 
         }
 
+        public virtual async Task BecomeHuman(SocialInsuranceRequest hr, CancellationToken cancellationToken = default(CancellationToken))
+        {
+        }
+
         #region 检索
         public virtual async Task<HumanSearchResponse<HumanInfoResponse>> SearchHumanInfo(UserInfo user, HumanSearchRequest condition, CancellationToken cancellationToken = default(CancellationToken))
         {
@@ -229,13 +241,7 @@ namespace XYHHumanPlugin.Managers
                 sql += tail;
                 connectstr = " and ";
             }
-
-            if (!string.IsNullOrEmpty(condition?.Organizate))
-            {
-                sql += connectstr + @"a.`OrganizateID`='" + condition.Organizate + "'";
-                connectstr = " and ";
-            }
-
+            
             if (condition?.AgeCondition > 0)
             {
                 if (condition?.AgeCondition == 1)
@@ -266,7 +272,20 @@ namespace XYHHumanPlugin.Managers
 
             try
             {
-                var query = _Store.DapperSelect<HumanInfo>(sql).ToList();
+                List<HumanInfo> query = new List<HumanInfo>();
+                var sqlinfo = _Store.DapperSelect<HumanInfo>(sql).ToList();
+
+                if (!string.IsNullOrEmpty(condition?.Organizate) && condition.LstChildren.Count > 0)
+                {
+                    foreach (var item in sqlinfo)
+                    {
+                        if (condition.LstChildren.Contains(item.DepartmentId))
+                        {
+                            query.Add(item);
+                        }
+                    }
+                }
+
                 Response.ValidityContractCount = query.Count;
                 Response.TotalCount = query.Count;
 

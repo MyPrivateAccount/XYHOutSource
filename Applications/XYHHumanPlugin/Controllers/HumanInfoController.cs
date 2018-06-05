@@ -97,6 +97,33 @@ namespace XYHHumanPlugin.Controllers
             return pagingResponse;
         }
 
+
+        [HttpPost("becomehuman")]
+        [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
+        public async Task<ResponseMessage> BecomeHumanInfo(UserInfo User, [FromBody]SocialInsuranceRequest condition)
+        {
+            var pagingResponse = new ResponseMessage();
+            if (!ModelState.IsValid)
+            {
+                pagingResponse.Code = ResponseCodeDefines.ModelStateInvalid;
+                Logger.Warn($"用户{User?.UserName ?? ""}({User?.Id ?? ""})查询人事条件(PostCustomerListSaleMan)模型验证失败：\r\n{pagingResponse.Message ?? ""}，\r\n请求参数为：\r\n" + (condition != null ? JsonHelper.ToJson(condition) : ""));
+                return pagingResponse;
+            }
+
+            try
+            {
+                
+            }
+            catch (Exception e)
+            {
+                pagingResponse.Code = ResponseCodeDefines.ServiceError;
+                pagingResponse.Message = "服务器错误:" + e.ToString();
+                Logger.Error($"用户{User?.UserName ?? ""}({User?.Id ?? ""})查询业务员条件(PostCustomerListSaleMan)请求失败：\r\n{pagingResponse.Message ?? ""}，\r\n请求参数为：\r\n" + (condition != null ? JsonHelper.ToJson(condition) : ""));
+
+            }
+            return pagingResponse;
+        }
+
         [HttpPost("addhuman")]
         [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
         public async Task<ResponseMessage<List<HumanInfoResponse>>> AddHumanInfo(UserInfo User, [FromBody]HumanInfoRequest condition)

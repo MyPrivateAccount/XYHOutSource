@@ -1,5 +1,5 @@
 import {connect} from 'react-redux';
-import {setLoadingVisible, selBlackList, getBlackList} from '../../actions/actionCreator';
+import {setSearchLoadingVisible, selBlackList, getBlackList} from '../../actions/actionCreator';
 import React, {Component} from 'react';
 import {Button, Row, Col, Table} from 'antd';
 
@@ -21,7 +21,7 @@ const rowSelection = {
 class SearchResult extends Component {
 
     componentWillMount() {
-        this.props.dispatch(setLoadingVisible(true));
+        this.props.dispatch(setSearchLoadingVisible(true));
         this.props.dispatch(getBlackList(this.props.searchInfoResult));
     }
 
@@ -60,7 +60,6 @@ class SearchResult extends Component {
 function mapStateToProps(state) {
     return {
         searchInfoResult: state.search,
-        showLoading: state.basicData.showLoading
     }
 }
 
