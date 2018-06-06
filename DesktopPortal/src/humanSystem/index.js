@@ -186,10 +186,10 @@ const homeStyle = {
         if (orgInfo) {
             if (!orgInfo.children||orgInfo.children.length === 0) {
                 return (<Menu.Item key={orgInfo.id} >
-                    <Checkbox checked={false} onChange={(e) => this.handleOrgChecked(orgInfo, e)} >{orgInfo.organizationName}</Checkbox>
+                    <Checkbox onChange={(e) => this.handleOrgChecked(orgInfo, e)} >{orgInfo.organizationName}</Checkbox>
                 </Menu.Item>)
             } else {
-                return (<SubMenu key={orgInfo.id} title={<span><Checkbox checked={false} onChange={(e) => this.handleOrgChecked(orgInfo, e)}></Checkbox>&nbsp;&nbsp;{"  "+orgInfo.organizationName}</span>}>
+                return (<SubMenu key={orgInfo.id} title={<span><Checkbox onChange={(e) => this.handleOrgChecked(orgInfo, e)}></Checkbox>&nbsp;&nbsp;{"  "+orgInfo.organizationName}</span>}>
                     {
                         orgInfo.children.map(org => this.getChildOrg(org))
                     }

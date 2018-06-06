@@ -39,8 +39,8 @@ class Left extends Component {
                 <Form onSubmit={this.handleSubmit}>
                     <FormItem {...formItemLayout1}/>
                     <FormItem {...formItemLayout1}/>
-                    <FormItem {...formItemLayout1} label="起止时间">
-                        {getFieldDecorator('station', {
+                    <FormItem {...formItemLayout1} label="离职办理时间">
+                        {getFieldDecorator('leaveTime', {
                             reules: [{
                                 required:true, message: 'please entry',
                             }]
@@ -49,7 +49,7 @@ class Left extends Component {
                         )}
                     </FormItem>
                     <FormItem {...formItemLayout1} colon={false} label=" ">
-                        {getFieldDecorator('org', {
+                        {getFieldDecorator('isFormalities', {
                             reules: [{
                                 required:true, message: 'please entry',
                             }]
@@ -57,17 +57,8 @@ class Left extends Component {
                             <Checkbox >是否办理手续</Checkbox>
                         )}
                     </FormItem>
-                    <FormItem {...formItemLayout1} label="离职办理时间">
-                        {getFieldDecorator('station', {
-                            reules: [{
-                                required:true, message: 'please entry',
-                            }]
-                        })(
-                            <DatePicker format='YYYY-MM-DD' style={{width: '100%'}} />
-                        )}
-                    </FormItem>
                     <FormItem {...formItemLayout1} colon={false} label=" ">
-                        {getFieldDecorator('station', {
+                        {getFieldDecorator('isReduceSocialEnsure', {
                             reules: [{
                                 required:true, message: 'please entry',
                             }]

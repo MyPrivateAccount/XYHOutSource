@@ -98,7 +98,6 @@ CREATE TABLE `XYH_HU_BLACKLIST` (
   PRIMARY KEY (`IDCard`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
 DROP TABLE IF EXISTS `XYH_HU_SOCIALINSURANCE`;/*社保*/
 CREATE TABLE `XYH_HU_SOCIALINSURANCE` (
   `IDCard` varchar(127) NOT NULL DEFAULT '',/*身份证号*/
@@ -114,6 +113,16 @@ CREATE TABLE `XYH_HU_SOCIALINSURANCE` (
   `Fertility` int(11) DEFAULT 0,/*生育*/
   PRIMARY KEY (`IDCard`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `XYH_HU_LEAVEINFO`;/*离职信息*/
+CREATE TABLE `XYH_HU_LEAVEINFO` (
+  `IDCard` varchar(127) NOT NULL DEFAULT '',/*身份证号*/
+  `LeaveTime` datetime(6) DEFAULT NULL,/*离职时间*/
+  `IsFormalities` tinyint DEFAULT 0,
+  `IsReduceSocialEnsure` tinyint DEFAULT 0,
+  PRIMARY KEY (`IDCard`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 -- ----------------------------
 -- Table structure for XYH_HU_ATTENDANCE
 -- ----------------------------

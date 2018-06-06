@@ -6,6 +6,7 @@ namespace XYHHumanPlugin.Dto.Response
 {
     public class SocialInsuranceResponse
     {
+        public string ID {get;set;}//这个不是数据库的，专门用来放human表的id
         public string IDCard { get; set; }
         public bool IsSocial { get; set; }
         public bool Giveup { get; set; }

@@ -76,6 +76,7 @@ namespace XYHContractPlugin
                 .ForMember(d => d.Num, m => m.MapFrom(src => src.BaseInfo.Num))
                 .ForMember(d => d.IsFollow, m => m.MapFrom(src => src.BaseInfo.IsFollow))
                 .ForMember(d => d.ExamineStatus,m =>m.MapFrom(src => src.BaseInfo.ExamineStatus))
+                .ForMember(d => d.IsDelete, m => m.MapFrom(src => src.BaseInfo.IsInvalid))
                 ;
                
             CreateMap<ContractInfo, ContractContentResponse>()
@@ -116,7 +117,8 @@ namespace XYHContractPlugin
                     ProjectAddress = src.ProjectAddress,
                     CompanyAId = src.CompanyAId,
                     OrganizateFullId = src.OrganizateFullId,
-                    ExamineStatus = src.ExamineStatus.Value
+                    ExamineStatus = src.ExamineStatus.Value,
+                    IsInvalid = src.IsDelete,
                 }));
         }
     }

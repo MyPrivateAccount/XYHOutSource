@@ -57,14 +57,16 @@ class AttachInfo extends Component {
                     uid: v.fileGuid,
                     name: v.name || '',
                     status: 'done',
-                    url: v.icon || v.localUrl
+                    url: v.icon || v.localUrl,
+                    ext1: v.ext1,
                   }]
               } else {
                   list[v.group].push({
                     uid: v.fileGuid,
                     name: v.name || '',
                     status: 'done',
-                    url: v.icon || v.localUrl
+                    url: v.icon || v.localUrl,
+                    ext1: v.ext1,
                   })
               }
           })
@@ -140,16 +142,25 @@ class AttachInfo extends Component {
                                                                 <div className='picBox'>
                                                                 {
                                                                 this.state.imgFiles[item.value] ? 
-                                                                <div className="clearfix">
-                                                                    <Upload  multiple= {true}
-                                                                            listType="picture-card"
-                                                                            fileList= {this.state.imgFiles[item.value]}
-                                                                            onPreview={this.handlePreview}>
-                                                                    </Upload>
-                                                                    <Modal visible={previewVisible} footer={null} onCancel={this.handleCancel}>
-                                                                        <img alt="example" style={{ width: '100%' }} src={previewImage} />
-                                                                    </Modal>
-                                                                </div> :
+                                                                (this.state.imgFiles[item.value] || []).map((fileItem, index) =>{
+                                                                    let arr = [];
+                                                                    arr.push(fileItem);
+                                                                    console.log('fileItem:', fileItem);
+                                                                    return(            
+                                                                      <Row type='flex' align="middle" key={fileItem.uid}>        
+                                                                        <Col span={4}>
+                                                                          <Upload  listType="picture-card"
+                                                                            fileList= {arr}
+                                                                            onPreview={this.handlePreview} 
+                                                                            beforeUpload={this.handleBeforeUpload} 
+                                                                            onRemove={this.hanldeRemove} >
+                                                                          
+                                                                          </Upload>
+                                                                        </Col>
+                                                                        <Col span={12} style={{marginBottom: '10px'}}>附件备注:{fileItem.ext1 || "无" }</Col>
+                                                                      </Row>        
+                                                                      )
+                                                                  })  :
                                                                 <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>暂无数据</div>
                                                             }
                                                             </div> 

@@ -79,7 +79,7 @@ export const getContractDetail = createAction(actionTypes.GET_CONTRACT_DETAIL);
 export const openContractChoose = createAction(actionTypes.OPEN_CONTRACT_CHOOSE);
 export const closeContractChoose = createAction(actionTypes.CLOSE_CONTRACT_CHOOSE);
 
-
+export const invalidateContract = createAction(actionTypes.INVALIDATE_CONTRACT);
 //
 export const openModifyHistory = createAction(actionTypes.OPEN_MODIFY_HISTORY);
 export const closeModifyHistory = createAction(actionTypes.CLOSE_MODIFY_HISTORY);

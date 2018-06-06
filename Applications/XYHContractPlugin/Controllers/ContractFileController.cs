@@ -89,11 +89,15 @@ namespace XYHContractPlugin.Controllers
             {
                 
             }
-            
+   
             string strModifyGuid = Guid.NewGuid().ToString();
 
             try
             {
+                if (fileInfoRequests.ModifyFileList != null && fileInfoRequests.ModifyFileList.Count > 0)
+                {
+                    await _fileScopeManager.UpdateFileExtInfo(fileInfoRequests.ModifyFileList, HttpContext.RequestAborted);
+                }
                 GatewayInterface.Dto.ExamineSubmitRequest exarequest = new GatewayInterface.Dto.ExamineSubmitRequest();
                 exarequest.ContentId = contractId;
                 exarequest.ContentType = "ContractCommit";
@@ -258,7 +262,8 @@ namespace XYHContractPlugin.Controllers
             fi.Original = fl.FirstOrDefault(x => x.Type == "ORIGINAL")?.Uri;
             fi.Medium = fl.FirstOrDefault(x => x.Type == "MEDIUM")?.Uri;
             fi.Small = fl.FirstOrDefault(x => x.Type == "SMALL")?.Uri;
-
+            fi.Ext1 = fl.FirstOrDefault()?.Ext1;
+            fi.Ext2 = fl.FirstOrDefault()?.Ext2;
             string fr = ApplicationCore.ApplicationContext.Current.FileServerRoot;
             fr = (fr ?? "").TrimEnd('/');
             if (!String.IsNullOrEmpty(fi.Icon))

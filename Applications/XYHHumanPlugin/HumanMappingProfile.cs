@@ -35,6 +35,12 @@ namespace XYHHumanPlugin
 
             CreateMap<FileInfoCallbackRequest, FileInfo>();
             CreateMap<FileInfo, FileInfoCallbackRequest>();
+
+            CreateMap<SocialInsurance, SocialInsuranceResponse>();
+            CreateMap<SocialInsuranceResponse, SocialInsurance>();
+
+            CreateMap<LeaveInfo, LeaveInfoResponse>();
+            CreateMap<LeaveInfoResponse, LeaveInfo>();
         }
     }
 }

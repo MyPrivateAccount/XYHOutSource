@@ -20,5 +20,8 @@ namespace XYHContractPlugin.Dto.Request
         public string Type { get; set; }
         [StringLength(255)]
         public string FileExt { get; set; }
+
+        public string Ext1 { get; set; }
+        public string Ext2 { get; set; }
     }
 }
