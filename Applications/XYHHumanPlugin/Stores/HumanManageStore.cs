@@ -193,9 +193,54 @@ namespace XYHHumanPlugin.Stores
             await Context.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task BecomeHuman(SocialInsurance info, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task BecomeHuman(SocialInsurance info, string huid, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var ff = await GetAsync(a => a.Where(b => b.IDCard == info.IDCard));
+            if (!string.IsNullOrEmpty(info.IDCard))
+            {
+                HumanInfo buildings = new HumanInfo()
+                {
+                    ID = huid,
+                    IsSocialInsurance = info.IsSocial,
+                    SocialInsuranceInfo = info.IDCard,
+                    BecomeTime = DateTime.Now,
+                    StaffStatus = 3
+                };
+
+                Context.Attach(buildings);
+                var entry = Context.Entry(buildings);
+                entry.Property(x => x.IsSocialInsurance).IsModified = true;
+                entry.Property(x => x.SocialInsuranceInfo).IsModified = true;
+                entry.Property(x => x.BecomeTime).IsModified = true;
+                entry.Property(x => x.StaffStatus).IsModified = true;
+
+                Context.Add(info);
+                await Context.SaveChangesAsync(cancellationToken);
+            }
+            else {
+                throw new ArgumentNullException("have no IDCard");
+            }
+            
+        }
+
+        public async Task LeaveHuman(string idcard, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (idcard == null)
+            {
+                throw new ArgumentNullException(nameof(idcard));
+            }
+            HumanInfo buildings = new HumanInfo()
+            {
+                ID = idcard,
+                LeaveTime = DateTime.Now,
+                StaffStatus = 1
+            };
+
+            Context.Attach(buildings);
+            var entry = Context.Entry(buildings);
+            entry.Property(x => x.LeaveTime).IsModified = true;
+            entry.Property(x => x.StaffStatus).IsModified = true;
+            
+            await Context.SaveChangesAsync(cancellationToken);
         }
 
         public async Task DeleteStationAsync(PositionInfo positioninfo, CancellationToken cancellationToken = default(CancellationToken))

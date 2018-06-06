@@ -13,8 +13,8 @@ using XYHHumanPlugin.Dto.Request;
 using XYHHumanPlugin.Dto.Response;
 using System.Linq;
 using ApplicationCore.Managers;
-
 using SocialInsuranceRequest = XYHHumanPlugin.Dto.Response.SocialInsuranceResponse;
+using LeaveInfoRequest = XYHHumanPlugin.Dto.Response.LeaveInfoResponse;
 
 namespace XYHHumanPlugin.Managers
 {
@@ -143,6 +143,21 @@ namespace XYHHumanPlugin.Managers
 
         public virtual async Task BecomeHuman(SocialInsuranceRequest hr, CancellationToken cancellationToken = default(CancellationToken))
         {
+            if (hr == null)
+            {
+                throw new ArgumentNullException(nameof(hr));
+            }
+
+            await _Store.BecomeHuman(_mapper.Map<SocialInsurance>(hr), hr.ID, cancellationToken);
+        }
+
+        public virtual async Task LeaveHuman(LeaveInfoRequest info, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (info == null)
+            {
+                throw new ArgumentNullException(nameof(info));
+            }
+            await _Store.LeaveHuman(_mapper.Map<LeaveInfo>(info), cancellationToken);
         }
 
         #region 检索

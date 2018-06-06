@@ -49,6 +49,9 @@ export const setHumanInfo = createAction(actionTypes.SET_SELHUMANINFO);
 
 export const getHumanImage = createAction(actionTypes.GET_HUMANIMAGE);
 
+//转正
+export const setSocialEN = createAction(actionTypes.POST_SOCIALINSURANCE);
+
 //月结
 export const getAllMonthList = createAction(actionTypes.MONTH_GETALLMONTHLIST);
 export const recoverMonth = createAction(actionTypes.MONTH_RECOVER);

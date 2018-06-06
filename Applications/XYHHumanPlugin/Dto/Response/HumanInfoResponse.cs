@@ -22,6 +22,7 @@ namespace XYHHumanPlugin.Dto.Response
         public string Contract { get; set; }
         public DateTime? EntryTime { get; set; }
         public DateTime? BecomeTime { get; set; }
+        public DateTime? LeaveTime { get; set; }
         public bool? IsSocialInsurance { get; set; }
         public string SocialInsuranceInfo { get; set; }
         public int? BaseSalary { get; set; }

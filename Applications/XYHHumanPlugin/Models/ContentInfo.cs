@@ -187,4 +187,14 @@ namespace XYHHumanPlugin.Models
         public int? Unemployment { get; set; }
         public int? Fertility { get; set; }
     }
+
+    public class LeaveInfo
+    {
+        [Key]
+        [MaxLength(127)]
+        public string IDCard { get; set; }
+        public DateTime? LeaveTime { get; set; }
+        public bool IsFormalities { get; set; }
+        public bool IsReduceSocialEnsure { get; set; }
+    }
 }

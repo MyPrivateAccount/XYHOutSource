@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import { getDicParList, setHumanInfo, searchConditionType,setSearchLoadingVisible, getHumanImage, setbreadPageIndex, searchHumanType,searchAgeType,searchOrderType, adduserPage } from '../../actions/actionCreator';
 import React, { Component } from 'react'
-import {Table, Layout, Input, Select, Icon, Button, Row, Col, Checkbox, Tag, Pagination, Spin} from 'antd'
+import {Table, Layout, Input, Select, Icon, Button, Row, Col, Checkbox, Tag, Pagination, Spin, notification} from 'antd'
 import '../search.less'
 import SearchCondition from '../../constants/searchCondition'
 import { SearchHumanTypes, AgeRanges} from '../../constants/tools'
@@ -87,13 +87,12 @@ class Staffinfo extends Component {
     };
 
     handleTagClose = (tag, i) => {//过滤标签删除
-        console.log("移除的tag：", tag, this.state.checkedTag);
+        
         let tagArray = this.state.filterTags;
         let condition = this.state.condition;
         let checkedTag = this.state.checkedTag;
         let removeTag = tagArray.splice(i, 1)[0];
         if (removeTag.type === "tag") {
-            //delete checkedTag[removeTag.value];
             for (let i = checkedTag.length - 1; i > -1; i--) {
                 if (checkedTag[i] === removeTag.value) {
                     checkedTag.splice(i, 1);
@@ -103,7 +102,7 @@ class Staffinfo extends Component {
         } else {
             condition[removeTag.type] = '0';
         }
-        console.log("tagArray", tagArray, checkedTag);
+        
         this.setState({condition: condition, filterTags: tagArray, checkedTag: checkedTag, pageIndex: 0});
         this.handleSearch(condition);
     }
@@ -113,15 +112,37 @@ class Staffinfo extends Component {
     }
 
     handleBecome = ()=> {
-        this.props.dispatch(adduserPage({id: "1", menuID: "BecomeStaff", displayName: '转正', type: 'item'}));
+        if (this.props.selHumanList.length > 0) {
+            this.props.dispatch(adduserPage({id: "1", menuID: "BecomeStaff", displayName: '转正', type: 'item'}));
+        } else {
+            notification.error({
+                message: "请选择员工",
+                duration: 3
+            });
+        }
     }
 
     handleChangeSalary = () => {
-        this.props.dispatch(adduserPage({id: "2", menuID: "changestation", displayName: '异动调薪', type: 'item'}));
+        if (this.props.selHumanList.length > 0) {
+            this.props.dispatch(adduserPage({id: "2", menuID: "changestation", displayName: '异动调薪', type: 'item'}));
+        } else {
+            notification.error({
+                message: "请选择员工",
+                duration: 3
+            });
+        }
     }
 
     handleLeft = () => {
-        this.props.dispatch(adduserPage({id: "3", menuID: "leftstation", displayName: '离职', type: 'item'}));
+        if (this.props.selHumanList.length > 0) {
+            this.props.dispatch(adduserPage({id: "3", menuID: "leftstation", displayName: '离职', type: 'item'}));
+        } else {
+            notification.error({
+                message: "请选择员工",
+                duration: 3
+            });
+        }
+        
     }
 
     render() {
@@ -239,6 +260,7 @@ class Staffinfo extends Component {
 function stafftableMapStateToProps(state) {
     return {
         searchInfo: state.search,
+        selHumanList: state.basicData.selHumanList,
     }
 }
 

@@ -24,6 +24,7 @@ const WebApiConfig = {
         setSalary: basicDataBaseApiUrl + "humansalary/setsalary",
         deleteSalary: basicDataBaseApiUrl + "humansalary/deletestation",
         getHumanImage: basicDataBaseApiUrl + "humanfile/getfileinfo",
+        setSocialInsure: basicDataBaseApiUrl + "humaninfo/becomehuman",
 
     },
     search: {

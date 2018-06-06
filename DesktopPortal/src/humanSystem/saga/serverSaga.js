@@ -303,6 +303,34 @@ export function* deleteBlackInfo(state) {
     }
 }
 
+export function* setSocialInsure(state) {
+    let url = WebApiConfig.server.setSocialInsure;
+    let huResult = { isOk: false, msg: '转正失败！' };
+
+    try {
+        huResult = yield call(ApiClient.post, url, state.payload);
+        if (huResult.data.code == 0) {
+            huResult.data.message = '转正成功';
+
+            yield put({ type: actionUtils.getActionType(actionTypes.SET_USER_BREADITEMINDEX), payload: 0 });
+            notification.success({
+                message: huResult.data.message,
+                duration: 3
+            });
+            return;
+        }
+    } catch (e) {
+        huResult.data.message = "转正接口调用异常!";
+    }
+    
+    if (huResult.data.code != 0) {
+        notification.error({
+            message: huResult.data.message,
+            duration: 3
+        });
+    }
+}
+
 export default function* watchDicAllAsync() {
     yield takeLatest(actionUtils.getActionType(actionTypes.POST_HUMANINFO), postHumanInfoAsync);
     yield takeLatest(actionUtils.getActionType(actionTypes.GET_HUMANINFONUMBER), getWorkNumber);
@@ -316,4 +344,5 @@ export default function* watchDicAllAsync() {
     yield takeLatest(actionUtils.getActionType(actionTypes.DELETE_SALARYINFO), deleteSalary);
     yield takeLatest(actionUtils.getActionType(actionTypes.GET_HUMANIMAGE), getHumanImage);
     yield takeLatest(actionUtils.getActionType(actionTypes.DELETE_BLACKINFO), deleteBlackInfo);
+    yield takeLatest(actionUtils.getActionType(actionTypes.POST_SOCIALINSURANCE), setSocialInsure);
 }

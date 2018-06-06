@@ -35,6 +35,7 @@ namespace XYHHumanPlugin.Models
         public DateTime? EntryTime { get; set; }
         public DateTime? BecomeTime { get; set; }
         public DateTime? CreateTime { get; set; }
+        public DateTime? LeaveTime { get; set; }
         public bool? IsSocialInsurance { get; set; }
         [MaxLength(127)]
         public string SocialInsuranceInfo { get; set; }
