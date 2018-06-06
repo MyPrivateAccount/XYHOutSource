@@ -59,6 +59,10 @@ const LoadableSFKJQRJPage = Loadable({//实发扣减确认
     loader:()=>import('./fina/sfkjQrTable'),
     loading:()=><LoadableLoading/>
 });
+const LoadableFYXQBPage = Loadable({//分佣详情表
+    loader:()=>import('./fullRp/fyxqQuery'),
+    loading:()=><LoadableLoading/>
+});
 
 function ContentPage(props) {
     const { curMenuID } = props;
@@ -117,6 +121,9 @@ function ContentPage(props) {
     else if(curMenuID === 'menu_sfkjqrb'){
         console.log("menu_sfkjqrb");
         return <LoadableSFKJQRJPage/>;
+    }
+    else if(curMenuID === 'menu_fyxcb'){
+        return <LoadableFYXQBPage/>;
     }
     return null;
 }

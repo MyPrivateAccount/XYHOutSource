@@ -78,3 +78,5 @@ export const searchYftccjb = createAction(actionTypes.FINA_QUERY_YFTCCJB);
 export const searchLzryyjqrb = createAction(actionTypes.FINA_QUERY_LZRYYJQRB);
 //查询实发扣减确认表
 export const searchSfkjqrb = createAction(actionTypes.FINA_QUERY_SFKJQRB);
+//查询分佣详情表
+export const searchfyxqReport= createAction(actionTypes.FINA_QUERY_FYXQB);
