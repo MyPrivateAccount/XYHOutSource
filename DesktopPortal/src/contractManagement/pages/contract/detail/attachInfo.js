@@ -57,14 +57,16 @@ class AttachInfo extends Component {
                     uid: v.fileGuid,
                     name: v.name || '',
                     status: 'done',
-                    url: v.icon || v.localUrl
+                    url: v.icon || v.localUrl,
+                    ext1: v.ext1,
                   }]
               } else {
                   list[v.group].push({
                     uid: v.fileGuid,
                     name: v.name || '',
                     status: 'done',
-                    url: v.icon || v.localUrl
+                    url: v.icon || v.localUrl,
+                    ext1: v.ext1,
                   })
               }
           })
@@ -143,6 +145,7 @@ class AttachInfo extends Component {
                                                                 (this.state.imgFiles[item.value] || []).map((fileItem, index) =>{
                                                                     let arr = [];
                                                                     arr.push(fileItem);
+                                                                    console.log('fileItem:', fileItem);
                                                                     return(            
                                                                       <Row type='flex' align="middle" key={fileItem.uid}>        
                                                                         <Col span={4}>

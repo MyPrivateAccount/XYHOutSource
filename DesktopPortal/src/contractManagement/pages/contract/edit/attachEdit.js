@@ -96,14 +96,16 @@ class AttachEdit extends Component {
                 uid: v.fileGuid,
                 name: v.name || '',
                 status: 'done',
-                url: v.icon || v.localUrl
+                url: v.icon || v.localUrl,
+                ext1: v.ext1,
               }]
           } else {
               list[v.group].push({
                 uid: v.fileGuid,
                 name: v.name || '',
                 status: 'done',
-                url: v.icon || v.localUrl
+                url: v.icon || v.localUrl,
+                ext1: v.ext1,
               })
           }
       })
@@ -258,14 +260,14 @@ class AttachEdit extends Component {
     
     console.log(completeFileList, deletePicList,newModifyArr, '???s提交图片？？？？？？？？')
     let id = this.props.basicInfo.id;
-    // if(completeFileList.length !== 0 || deletePicList.length !== 0){
-    //   this.props.save({
-    //    fileInfo: {addFileList:completeFileList || [], deleteFileList:deletePicList || [], modifyFileList: newModifyArr || []},
-    //    completeFileList: completeFileList,
-    //    id: id,
+     if(completeFileList.length !== 0 || deletePicList.length !== 0 || newModifyArr.length !== 0){
+       this.props.save({
+        fileInfo: {addFileList:completeFileList || [], deleteFileList:deletePicList || [], modifyFileList: newModifyArr || []},
+        completeFileList: completeFileList,
+        id: id,
     //     //type: this.props.type, // shops  building  updataRecord
-    //   });
-    // }
+       });
+     }
 
   }
 

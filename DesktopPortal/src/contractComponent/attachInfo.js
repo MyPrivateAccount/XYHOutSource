@@ -51,14 +51,16 @@ class AttachInfo extends Component {
                     uid: v.fileGuid,
                     name: v.name || '',
                     status: 'done',
-                    url: v.icon || v.localUrl
+                    url: v.icon || v.localUrl,
+                    ext1: v.ext1,
                   }]
               } else {
                   list[v.group].push({
                     uid: v.fileGuid,
                     name: v.name || '',
                     status: 'done',
-                    url: v.icon || v.localUrl
+                    url: v.icon || v.localUrl,
+                    ext1: v.ext1,
                   })
               }
           })

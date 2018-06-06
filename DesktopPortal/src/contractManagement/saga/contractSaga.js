@@ -127,6 +127,7 @@ export function* openAttachUpload(action){
     try {
        
         res = yield call(ApiClient.get, url);
+        console.log('获取合同详情结果:', res);
         let fileList = [];
         if (res.data.code === '0') {
             // yield put({ type: actionUtils.getActionType(actionTypes.GET_ADD_BUILDING) });
@@ -200,7 +201,7 @@ export function* savePictureAsync(action) {
     let id = action.payload.id;
     
     let url = WebApiConfig.attach.savePicUrl+ id;
-   
+   console.log('begin to uploadfile!')
     try {
         let body = action.payload.fileInfo;
         //console.log(`上传图片url:${url},body:${JSON.stringify(body)}`);
