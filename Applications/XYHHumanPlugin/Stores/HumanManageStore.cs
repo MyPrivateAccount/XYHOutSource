@@ -202,7 +202,7 @@ namespace XYHHumanPlugin.Stores
                     ID = huid,
                     IsSocialInsurance = info.IsSocial,
                     SocialInsuranceInfo = info.IDCard,
-                    BecomeTime = DateTime.Now,
+                    BecomeTime = info.EnTime,
                     StaffStatus = 3
                 };
 
@@ -222,19 +222,20 @@ namespace XYHHumanPlugin.Stores
             
         }
 
-        public async Task LeaveHuman(string idcard, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task LeaveHuman(LeaveInfo info, string huid, CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (idcard == null)
+            if (info == null)
             {
-                throw new ArgumentNullException(nameof(idcard));
+                throw new ArgumentNullException(nameof(info));
             }
             HumanInfo buildings = new HumanInfo()
             {
-                ID = idcard,
+                ID = huid,
                 LeaveTime = DateTime.Now,
                 StaffStatus = 1
             };
 
+            Context.Add(info);
             Context.Attach(buildings);
             var entry = Context.Entry(buildings);
             entry.Property(x => x.LeaveTime).IsModified = true;

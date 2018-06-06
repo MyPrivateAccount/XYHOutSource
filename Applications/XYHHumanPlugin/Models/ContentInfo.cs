@@ -179,6 +179,7 @@ namespace XYHHumanPlugin.Models
         public bool Giveup { get; set; }
         public bool GiveupSign { get; set; }
         public DateTime? EnTime { get; set; }
+        public DateTime? SureTime { get; set; }
         [MaxLength(255)]
         public string EnPlace { get; set; }
         public int? Pension { get; set; }

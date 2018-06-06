@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { createStation, getOrgList } from '../../actions/actionCreator';
+import { createStation, getOrgList, leavePosition } from '../../actions/actionCreator';
 import React, { Component } from 'react'
 import {Table, Input, Form, Cascader, Button, Row, Col, Checkbox, DatePicker, Spin} from 'antd'
 
@@ -27,7 +27,9 @@ class Left extends Component {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                //this.props.dispatch(postBlackLst(values));
+                values.id = this.props.selHumanList[this.props.selHumanList.length-1].id;
+                values.idCard = this.props.selHumanList[this.props.selHumanList.length-1].idcard;
+                this.props.dispatch(leavePosition(values));
             }
         });
     }
@@ -78,6 +80,7 @@ class Left extends Component {
 
 function tableMapStateToProps(state) {
     return {
+        selHumanList: state.basicData.selHumanList,
     }
 }
 

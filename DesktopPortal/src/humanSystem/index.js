@@ -6,7 +6,7 @@ import reducers from './reducers';
 import ContentPage from './pages/contentPage';
 import {sagaMiddleware} from '../';
 import rootSaga from './saga/rootSaga';
-import {getOrgList, setSearchLoadingVisible, searchConditionType, setbreadPageItem,closebreadPage, setbreadPageItemIndex} from './actions/actionCreator';
+import {getOrgList, setSearchLoadingVisible, searchConditionType, setbreadPageItem, setVisibleHead, setbreadPageItemIndex} from './actions/actionCreator';
 //import OrgSelect from './orgSelect';
 sagaMiddleware.run(rootSaga);
 
@@ -46,6 +46,7 @@ const homeStyle = {
  class HumanIndex extends Component {
     
     state = {
+        activeOrg: {},
         collapsed: false,
         activeMenu: menuDefine[0],
     }
@@ -117,7 +118,7 @@ const homeStyle = {
         let org = null;
         if (orgList && orgList.length > 0) {
             for (let i = 0; i < orgList.length; i++) {
-                if (orgList[i].id === orgId) {
+                if (orgList[i].id === orgId ) {
                     org = orgList[i];
                     break;
                 } else {
@@ -136,9 +137,9 @@ const homeStyle = {
 
     //获取当前选中部门的完整层级路径
     getActiveOrgFullPath(orgtree) {
-        let activeOrg = this.props.basicData.activeOrg || {};
+        let activeOrg = this.state.activeOrg || {};
         let orgList = orgtree;
-        let fullPath = orgtree[0].organizationName;
+        let fullPath = activeOrg.organizationName || "";
 
         if (activeOrg.id !== '0' && activeOrg.parentId) {
             let parentOrg = this.getParentOrg(orgList, activeOrg.parentId);
@@ -161,25 +162,27 @@ const homeStyle = {
     getChildrenID(orgInfo) {
         if (orgInfo) {
             if (!orgInfo.children||orgInfo.children.length === 0) {
-                return orgInfo.id;
+                this.props.search.lstChildren.push(orgInfo.id);
             } else {
-                return orgInfo.children.map(org => this.getChildOrg(org));
+                this.props.search.lstChildren.push(orgInfo.id);
+                orgInfo.children.forEach(org => this.getChildrenID(org));
             }
         }
     }
 
     handleOrgChecked = (f, e) => {
-        this.props.dispatch(setSearchLoadingVisible(true));
-
-        this.props.basicData.headVisible = false;
-        this.forceUpdate();
-        this.props.search.organizate = f.id;
-        if (f.children instanceof Array) {
-            this.props.search.lstChildren = f.children.map(org => this.getChildrenID(org));
-        }
-        this.props.search.lstChildren = [];
+        if (e.target.checked) {
+            this.state.activeOrg = {id:f.id, parentId:f.parentId, organizationName: f.organizationName};
+            //this.props.dispatch(setVisibleHead({headVisible: false, activeOrg: {id:f.id, parentId:f.parentId}}));
+            this.props.dispatch(setSearchLoadingVisible(true));
         
-        this.props.dispatch(searchConditionType(this.props.search));
+            this.props.search.organizate = f.id;
+            this.props.search.lstChildren = [f.id];
+            if (f.children instanceof Array) {
+                f.children.forEach(org => this.getChildrenID(org));
+            }
+            this.props.dispatch(searchConditionType(this.props.search));
+        }
     }
 
     getChildOrg(orgInfo) {
@@ -202,7 +205,7 @@ const homeStyle = {
         let navigator = this.props.basicData.navigator;
 
         let orgTree = this.props.basicData.searchOrgTree.slice();
-        orgTree.unshift({id: "0", key: "0", label: "不限", name: "不限", organizationName:"不限", parentId: "0", value: "0"});
+        orgTree.unshift({id: "ff", key: "ff", label: "不限", name: "不限", organizationName:"不限", parentId: "ff", value: "ff"});
         let fullPath = this.getActiveOrgFullPath(orgTree);
         return(
             <Layout className = "page">
@@ -211,10 +214,10 @@ const homeStyle = {
                     collapsed={this.state.collapsed}
                     onCollapse={this.toggle}>
                     <div className="logo" />
-                    <Menu 
+                    <Menu
                          theme="dark" key='menu_org_select' mode="vertical" style={{borderBottom: '1px solid #fff'}}>
-                        <SubMenu  key="menu_org_select_sub" title={"当前部门："+fullPath}>
-                            {this.props.basicData.headVisible?orgTree.map(org =>this.getChildOrg(org)):null}
+                        <SubMenu title={"当前部门："+fullPath}>
+                            {orgTree.map(org =>this.getChildOrg(org))}
                         </SubMenu>
                     </Menu>
                     <Menu mode="inline"

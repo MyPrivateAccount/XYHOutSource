@@ -157,7 +157,7 @@ namespace XYHHumanPlugin.Managers
             {
                 throw new ArgumentNullException(nameof(info));
             }
-            await _Store.LeaveHuman(_mapper.Map<LeaveInfo>(info), cancellationToken);
+            await _Store.LeaveHuman(_mapper.Map<LeaveInfo>(info), info.ID, cancellationToken);
         }
 
         #region 检索
@@ -299,6 +299,10 @@ namespace XYHHumanPlugin.Managers
                             query.Add(item);
                         }
                     }
+                }
+                else
+                {
+                    query = sqlinfo;
                 }
 
                 Response.ValidityContractCount = query.Count;

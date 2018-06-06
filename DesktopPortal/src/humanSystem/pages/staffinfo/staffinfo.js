@@ -34,6 +34,7 @@ class Staffinfo extends Component {
             { title: '性别', dataIndex: 'sexname', key: 'sexname' },
             { title: '身份证号', dataIndex: 'idcard', key: 'idcard' },
             { title: '职位', dataIndex: 'position', key: 'position' },
+            { title: '状态', dataIndex: 'staffStatus', key: 'staffStatus' },
             { title: '入职时间', dataIndex: 'entryTime', key: 'entryTime' },
             { title: '转正时间', dataIndex: 'becomeTime', key: 'becomeTime' },
             { title: '基本薪水', dataIndex: 'baseSalary', key: 'baseSalary' },

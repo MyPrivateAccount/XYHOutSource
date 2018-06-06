@@ -104,7 +104,8 @@ CREATE TABLE `XYH_HU_SOCIALINSURANCE` (
   `IsSocial` tinyint DEFAULT 0,/*是否社保*/
   `Giveup` tinyint DEFAULT 0,/*放弃社保*/
   `GiveupSign` tinyint DEFAULT 0,/*放弃陈诺书*/
-  `EnTime` datetime(6) DEFAULT NULL,/*参保时间*/
+  `EnTime` datetime(6) DEFAULT NULL,/*转正时间*/
+  `SureTime` datetime(6) DEFAULT NULL,/*参保时间*/
   `EnPlace` varchar(255) DEFAULT NULL,
   `Pension` int(11) DEFAULT 0,/*养老*/
   `Medical` int(11) DEFAULT 0,/*医疗*/

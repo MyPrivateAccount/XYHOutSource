@@ -113,7 +113,7 @@ namespace XYHHumanPlugin.Controllers
 
             try
             {
-                _humanManage.BecomeHuman(condition, HttpContext.RequestAborted);
+               await _humanManage.BecomeHuman(condition, HttpContext.RequestAborted);
             }
             catch (Exception e)
             {
@@ -138,7 +138,7 @@ namespace XYHHumanPlugin.Controllers
 
             try
             {
-                _humanManage.LeaveHuman();
+                await _humanManage.LeaveHuman(condition, HttpContext.RequestAborted);
                 //_humanManage.BecomeHuman(condition, HttpContext.RequestAborted);
             }
             catch (Exception e)
