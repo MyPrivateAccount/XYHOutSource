@@ -11,7 +11,8 @@ export const getOrgList = createAction(actionTypes.DIC_GET_ORG_LIST);
 export const getOrgDetail = createAction(actionTypes.DIC_GET_ORG_DETAIL);
 export const getUserByOrg = createAction(actionTypes.GET_ORG_USERLIST);
 //设置遮罩层
-export const setLoadingVisible = createAction(actionTypes.SET_SEARCH_LOADING);
+//export const setLoadingVisible = createAction(actionTypes.SET_BASE_LOADING);
+export const setSearchLoadingVisible = createAction(actionTypes.SET_SEARCH_LOADING);
 
 //单位选择处理
 export const openOrgSelect = createAction(actionTypes.OPEN_ORG_SELECT);
@@ -55,8 +56,10 @@ export const createMonth = createAction(actionTypes.MONTH_CREATE);
 export const monthLast = createAction(actionTypes.MONTH_LAST);
 
 //黑名单
+export const getBlackList = createAction(actionTypes.GET_BLACKLST);
 export const postBlackLst = createAction(actionTypes.POST_ADDBLACKLST);
 export const selBlackList = createAction(actionTypes.SEL_BLACKLIST);
+export const deleteBlackInfo = createAction(actionTypes.DELETE_BLACKINFO);
 
 //职位新建
 export const getcreateStation = createAction(actionTypes.GET_CRATESTATION);

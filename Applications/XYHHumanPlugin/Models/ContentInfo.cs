@@ -169,4 +169,22 @@ namespace XYHHumanPlugin.Models
         [MaxLength(100)]
         public string Ext4 { get; set; }
     }
+
+    public class SocialInsurance
+    {
+        [Key]
+        [MaxLength(127)]
+        public string IDCard { get; set; }
+        public bool IsSocial { get; set; }
+        public bool Giveup { get; set; }
+        public bool GiveupSign { get; set; }
+        public DateTime? EnTime { get; set; }
+        [MaxLength(255)]
+        public string EnPlace { get; set; }
+        public int? Pension { get; set; }
+        public int? Medical { get; set; }
+        public int? WorkInjury { get; set; }
+        public int? Unemployment { get; set; }
+        public int? Fertility { get; set; }
+    }
 }

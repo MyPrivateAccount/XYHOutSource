@@ -26,6 +26,7 @@ namespace XYHHumanPlugin.Dto.Request
         public int SearchTimeType { get; set; }
         public DateTime? CreateDateStart { get; set; }
         public DateTime? CreateDateEnd { get; set; }
+        public List<string> LstChildren { get; set; }
 
         public int OrderRule { get; set; }
         public int pageIndex { get; set; }

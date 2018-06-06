@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { setLoadingVisible, adduserPage } from '../../actions/actionCreator';
+import { setSearchLoadingVisible, adduserPage } from '../../actions/actionCreator';
 import React, { Component } from 'react';
 import { Input, Spin, Checkbox, Button, notification } from 'antd';
 //import {getDicParList} from '../actions/actionCreator';
@@ -20,7 +20,7 @@ class MainIndex extends Component {
     }
 
     componentWillMount() {
-        this.props.dispatch(setLoadingVisible(false));//测试
+        this.props.dispatch(setSearchLoadingVisible(false));//测试
     }
 
     handleClickFucButton = (e) => {
@@ -89,7 +89,7 @@ class MainIndex extends Component {
 
 function mapStateToProps(state) {
     return {
-        showLoading: state.basicData.showLoading,
+        showLoading: state.search.showLoading,
     }
 }
 

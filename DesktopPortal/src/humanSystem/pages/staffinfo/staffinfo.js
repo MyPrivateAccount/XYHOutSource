@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { getDicParList, setHumanInfo, searchConditionType,setLoadingVisible, getHumanImage, setbreadPageIndex, searchHumanType,searchAgeType,searchOrderType, adduserPage } from '../../actions/actionCreator';
+import { getDicParList, setHumanInfo, searchConditionType,setSearchLoadingVisible, getHumanImage, setbreadPageIndex, searchHumanType,searchAgeType,searchOrderType, adduserPage } from '../../actions/actionCreator';
 import React, { Component } from 'react'
 import {Table, Layout, Input, Select, Icon, Button, Row, Col, Checkbox, Tag, Pagination, Spin} from 'antd'
 import '../search.less'
@@ -65,7 +65,7 @@ class Staffinfo extends Component {
     }
 
     componentWillMount() {
-        this.props.dispatch(setLoadingVisible(true));
+        this.props.dispatch(setSearchLoadingVisible(true));
         this.props.dispatch(searchConditionType(SearchCondition.topteninfo));
         
     }
@@ -239,7 +239,6 @@ class Staffinfo extends Component {
 function stafftableMapStateToProps(state) {
     return {
         searchInfo: state.search,
-        showLoading: state.basicData.showLoading
     }
 }
 

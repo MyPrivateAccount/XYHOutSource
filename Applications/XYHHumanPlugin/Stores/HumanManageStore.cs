@@ -131,6 +131,26 @@ namespace XYHHumanPlugin.Stores
             await Context.SaveChangesAsync(cle);
         }
 
+        public async Task SetBlackAsync(BlackInfo salaryinfo, CancellationToken cle = default(CancellationToken))
+        {
+            if (salaryinfo == null)
+            {
+                throw new ArgumentNullException(nameof(salaryinfo));
+            }
+
+            if (Context.BlackInfos.Any(x => x.IDCard == salaryinfo.IDCard))
+            {
+                Context.Attach(salaryinfo);
+                Context.Update(salaryinfo);
+            }
+            else
+            {
+                Context.Add(salaryinfo);
+            }
+
+            await Context.SaveChangesAsync(cle);
+        }
+
         public async Task CreateMonthSalaryAsync(SalaryFormInfo forminfo, CancellationToken cle = default(CancellationToken))
         {
             if (forminfo == null)
@@ -173,6 +193,11 @@ namespace XYHHumanPlugin.Stores
             await Context.SaveChangesAsync(cancellationToken);
         }
 
+        public async Task BecomeHuman(SocialInsurance info, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var ff = await GetAsync(a => a.Where(b => b.IDCard == info.IDCard));
+        }
+
         public async Task DeleteStationAsync(PositionInfo positioninfo, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (positioninfo == null)
@@ -186,6 +211,17 @@ namespace XYHHumanPlugin.Stores
         }
 
         public async Task DeleteSalaryAsync(SalaryInfo monthinfo, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (monthinfo == null)
+            {
+                throw new ArgumentNullException(nameof(monthinfo));
+            }
+            Context.Remove(monthinfo);
+
+            await Context.SaveChangesAsync(cancellationToken);
+        }
+
+        public async Task DeleteBlackAsync(BlackInfo monthinfo, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (monthinfo == null)
             {

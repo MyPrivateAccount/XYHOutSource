@@ -18,6 +18,7 @@ namespace XYHHumanPlugin.Stores
         Task CreateAsync(FileInfo fileinfo, CancellationToken cancellationToken = default(CancellationToken));
         Task SetStationAsync(PositionInfo fileinfo, CancellationToken cancellationToken = default(CancellationToken));
         Task SetSalaryAsync(SalaryInfo salaryinfo, CancellationToken cle = default(CancellationToken));
+        Task SetBlackAsync(BlackInfo salaryinfo, CancellationToken cle = default(CancellationToken));
 
 
         Task CreateMonthAsync(SimpleUser userinfo, MonthInfo monthinf, CancellationToken cancellationToken = default(CancellationToken));
@@ -30,11 +31,14 @@ namespace XYHHumanPlugin.Stores
         Task DeleteAsync(MonthInfo monthinfo, CancellationToken cancellationToken = default(CancellationToken));
         Task DeleteStationAsync(PositionInfo monthinfo, CancellationToken cancellationToken = default(CancellationToken));
         Task DeleteSalaryAsync(SalaryInfo monthinfo, CancellationToken cancellationToken = default(CancellationToken));
+        Task DeleteBlackAsync(BlackInfo monthinfo, CancellationToken cancellationToken = default(CancellationToken));
 
         Task DeleteListAsync(List<HumanInfo> buildingBaseList, CancellationToken cancellationToken = default(CancellationToken));
         Task DeleteListAsync(List<MonthInfo> monthList, CancellationToken cancellationToken = default(CancellationToken));
         Task DeleteListAsync(List<SalaryFormInfo> monthList, CancellationToken cancellationToken = default(CancellationToken));
         Task DeleteListAsync(List<AttendanceFormInfo> monthList, CancellationToken cancellationToken = default(CancellationToken));
+
+        Task BecomeHuman(SocialInsurance info , CancellationToken cancellationToken = default(CancellationToken));
 
         Task<TResult> GetAsync<TResult>(Func<IQueryable<HumanInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken));
         Task<TResult> GetMonthAsync<TResult>(Func<IQueryable<MonthInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken));

@@ -157,12 +157,12 @@ export function* getBlackListAsync(state) {
         if (res.data.code == 0) {
             result.isOk = true;
             let lv = res.data.extension;
-            lv = lv.extension.map(function(v, k) {
-                return {};
-            });
-
-            // yield put ({type: actionUtils.getActionType(actionTypes.MONTH_UPDATEMONTHLIST),
-            //      payload: {extension: lv, pageIndex: lv.pageIndex, pageSize: lv.pageSize, totalCount: lv.totalCount, lastTime: lv.lastTime}});
+           
+            yield put ({type: actionUtils.getActionType(actionTypes.UPDATE_BLACKLST),
+                payload: {extension:lv.extension.map(function(v, i) {
+                    return Object.assign({key: i}, v);
+                }), pageIndex: lv.pageIndex, pageSize: lv.pageSize, totalCount: lv.totalCount, lastTime: lv.lastTime}});
+                // payload: res.data.extension});
         }
     } catch (e) {
         result.msg = '检索关键字接口调用异常';
@@ -232,6 +232,7 @@ export function* getSalaryItemAsync(state) {
         });
     }
 }
+
 
 export default function* watchAllSearchAsync() {
     yield takeLatest(actionUtils.getActionType(actionTypes.SEARCH_CUSTOMER), getCustomerListAsync);

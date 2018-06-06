@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using ApplicationCore.Models;
 using Microsoft.EntityFrameworkCore;
 using XYHHumanPlugin.Models;
 
@@ -25,6 +26,11 @@ namespace XYHHumanPlugin.Models
         public DbSet<ModifyInfo> ModifyInfos { get; set; }
         public DbSet<AnnexInfo> AnnexInfos { get; set; }
         public DbSet<FileInfo> FileInfos { get; set; }
+        public DbSet<Users> Users { get; set; }
+
+        public DbSet<SocialInsurance> SocialInsurances { get; set; }
+        public DbSet<Organizations> Organizations { get; set; }
+        public DbSet<OrganizationExpansion> OrganizationExpansions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -81,6 +87,25 @@ namespace XYHHumanPlugin.Models
             modelBuilder.Entity<AnnexInfo>(b => {
                 b.HasKey(k => new { k.ID });
                 b.ToTable("XYH_HU_ANNEX");
+            });
+
+            modelBuilder.Entity<SocialInsurance>(b => {
+                b.HasKey(k => new { k.IDCard });
+                b.ToTable("XYH_HU_SOCIALINSURANCE");
+            });
+            modelBuilder.Entity<Users>(b =>
+            {
+                b.HasKey(k => new { k.Id, k.IsDeleted });
+                b.ToTable("identityuser");
+            });
+            modelBuilder.Entity<Organizations>(b =>
+            {
+                b.ToTable("organizations");
+            });
+            modelBuilder.Entity<OrganizationExpansion>(b =>
+            {
+                b.ToTable("organizationexpansions");
+                b.HasKey(k => new { k.OrganizationId, k.SonId });
             });
         }
 

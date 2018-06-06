@@ -20,6 +20,8 @@ const initState = {
     expandSearchBox: true,
     pageIndex: 0,
     pageSize: 10,
+    lstChildren: [],
+    organizate: "",
     searchResult: {extension: [{key: '1', id: 'tt', username: 'test', idcard: 'hhee'}], pageIndex: 0, pageSize: 10, totalCount: 1},//搜索结果
 };
 let reducerMap = {};
@@ -127,8 +129,18 @@ reducerMap[actionTypes.UPDATE_BLACKLST] = function(state, action) {
     return Object.assign({}, state, {blackList: action.payload} );
 }
 
+reducerMap[actionTypes.DELETE_UPDATEBLACKINFO] = function(state, action) {
+    state.blackList.extension.splice(state.blackList.extension.findIndex(item => action.payload.idCard === item.idCard), 1);
+    return Object.assign({}, state, {blackList: state.blackList});
+}
+
 reducerMap[actionTypes.UPDATE_SALARYINFO] = function(state, action) {
     return Object.assign({}, state, {achievementList: action.payload} );
 }
+reducerMap[actionTypes.SET_SEARCH_LOADING] = function(state, action) {
+    return Object.assign({}, state, {showLoading: action.payload} );
+}
+
+
 
 export default handleActions(reducerMap, initState);

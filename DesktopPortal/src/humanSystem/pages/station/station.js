@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { createStation, getOrgList, getDicParList, setStation, deleteStation, getcreateStation, setLoadingVisible } from '../../actions/actionCreator';
+import { createStation, getOrgList, getDicParList, setStation, deleteStation, getcreateStation, setSearchLoadingVisible } from '../../actions/actionCreator';
 import React, { Component } from 'react'
 import {Table, Input, Form, Select, Cascader, Button, Row, Col, Spin} from 'antd'
 import './station.less';
@@ -166,7 +166,7 @@ class Station extends Component {
 
     componentWillMount() {
         this.props.dispatch(getDicParList(["POSITION_TYPE"]));
-        this.props.dispatch(setLoadingVisible(false));
+        this.props.dispatch(setSearchLoadingVisible(false));
     }
 
     hasErrors(fieldsError) {
@@ -184,7 +184,7 @@ class Station extends Component {
 
     handleDepartmentChange = (e) => {
         if (!e) {
-            this.props.dispatch(setLoadingVisible(true));
+            this.props.dispatch(setSearchLoadingVisible(true));
             this.props.dispatch(getcreateStation(this.state.department));
         }
     }
