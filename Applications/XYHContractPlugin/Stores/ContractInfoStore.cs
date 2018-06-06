@@ -483,6 +483,7 @@ namespace XYHContractPlugin.Stores
                             DeleteUser = eu.UserName,
                             CompanyAId = b.CompanyAId,
                             ExamineStatus = modify.ExamineStatus,
+                        
                         };
 
       

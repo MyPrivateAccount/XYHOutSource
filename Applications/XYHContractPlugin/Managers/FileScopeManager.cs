@@ -122,7 +122,26 @@ namespace XYHContractPlugin.Managers
             return scopeinfo.ContractID;
         }
 
+        public virtual async Task UpdateFileExtInfo(List<FileItemRequest> fileItems, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            List<FileInfo> list = new List<FileInfo>();
+            for (int i = 0; i < fileItems.Count; i ++)
+            {
+                var item = fileItems[i];
+                var fileList = await _fileInfoStore.ListAsync(a => a.Where(b => b.FileGuid == item.FileGuid && !b.IsDeleted));
+                if (fileList != null && fileList.Count > 0)
+                {
 
+                    fileList.ForEach(info =>{
+                            info.Ext1 = item.Ext1;
+                            info.Ext2 = item.Ext2;
+                        });
+                    list.AddRange(fileList);
+                }
+            }
+            await _fileInfoStore.UpdateListAsync(list, cancellationToken);
+
+        }
 
 /*
                 public virtual async Task<BuildingFileScope> FindByBuildingFileGuidAsync(string userId, string buildingFileGuid, CancellationToken cancellationToken = default(CancellationToken))

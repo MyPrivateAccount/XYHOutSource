@@ -291,7 +291,28 @@ export function* submitContractInfo(action) {
     }
 }
 
+export function* invalidateContract(action){
+    let url = WebApiConfig.contractBasic.invalidateContract + action.payload.id;
+    console.log(`合同作废url:${url}}`);
+    let res;
+    let isSuccess = false;
+    let msg = "合同作废失败!";
+    try{
+        res = yield call(ApiClient.post, url);
+        console.log("作废合同结果:", res);
+        if(res.data.code === '0'){
+            isSuccess = true;
+            msg = "合同已作废";
+        }
 
+    }catch(e){
+        msg = "合同作废异常";
+    }
+    notification[isSuccess ? 'success' : 'error']({
+        message: msg,
+        duration: 3
+    })
+}
 
 export function* watchContractAllAsync() {
     yield takeLatest(actionUtils.getActionType(actionTypes.CONTRACT_BASIC_SAVE), saveContractBasicAsync);
@@ -307,6 +328,6 @@ export function* watchContractAllAsync() {
     // yield takeLatest(actionUtils.getActionType(actionTypes.BATCH_BUILDING_SAVE_ASYNC), saveBatchBuildingAsync);
      yield takeLatest(actionUtils.getActionType(actionTypes.CONTRACT_SAVE_PICTURE_ASYNC), savePictureAsync);
      yield takeLatest(actionUtils.getActionType(actionTypes.DELETE_PICTURE_ASYNC), deletePicAsync);
-    
+     yield takeLatest(actionUtils.getActionType(actionTypes.INVALIDATE_CONTRACT), invalidateContract);
     // yield takeLatest(actionUtils.getActionType(actionTypes.RULES_SAVE), saveRulesInfo);
 }

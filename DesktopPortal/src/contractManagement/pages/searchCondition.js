@@ -24,6 +24,7 @@ class SearchCondition extends Component {
             //IsExpire:false,
             discard:0,
             follow:0,
+            overTime:0,
             orderRule: 0,
             pageIndex: 0,
             pageSize: 10
@@ -200,6 +201,10 @@ class SearchCondition extends Component {
                                 <label>已续签：</label>
                                     <Checkbox onChange={this.handleFollow}></Checkbox>
                             </Col>
+                            <Col span={4}>
+                                <label>已作废：</label>
+                                    <Checkbox onChange={this.handleInvalid}></Checkbox>
+                            </Col>
                         </Row>
                         {
                         <Row className="normalInfo">
@@ -216,7 +221,7 @@ class SearchCondition extends Component {
                                 {
                                     checkStateDefine.map((item, i) => {
                                         return(
-                                            <Col span={4}>
+                                            <Col span={4} key={i}>
                                                 <label>{item.key}:</label>
                                                 <Checkbox onChange={(e) =>this.handleCheckChange(e, item.type)} checked={this.isChecked(item.type)}></Checkbox>
                                             </Col>

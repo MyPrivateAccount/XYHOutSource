@@ -27,6 +27,7 @@ class AttachEdit extends Component {
     // completeFileList: [],
     // deletePicList: [],
     deleteIdArr: [],
+    midifyFileArr:[],
     picGroup: '1', // 图片分类值
     imgFiles: {}
   }
@@ -236,39 +237,36 @@ class AttachEdit extends Component {
     this.props.dispatch(attchLoadingStart())
     const { deleteIdArr } = this.state;
     const { completeFileList, deletePicList } = this.props;
-    console.log(completeFileList, deletePicList, '???s删除图片？？？？？？？？')
-    let id = this.props.basicInfo.id;
-    if(completeFileList.length !== 0 || deletePicList.length !== 0){
-      this.props.save({
-        fileInfo: {addFileList:completeFileList || [], deleteFileList:deletePicList || []},
-        completeFileList: completeFileList,
-        id: id,
-        //type: this.props.type, // shops  building  updataRecord
-      });
+    let modifyArr = this.state.midifyFileArr;
+    
+    for(let i = 0; i < deletePicList.length >0; i ++){
+      modifyArr = modifyArr.filter(item => item.fileGuid === deletePicList[i]);
     }
-    // if (completeFileList.length !== 0) {
-    //   console.log('进入的是新增么？？')
-      
-    //   // this.setState({ uploading: true });
+    modifyArr.map(item =>{
+      completeFileList.map(file => {
+        if(file.fileGuid === item.fileGuid){
+          file = item;
+        }
+      })
+    })
+    let newModifyArr =  modifyArr.filter(item =>{
+      if((completeFileList.find(file => file.fileGuid === item.fileGuid)) === undefined){
+        return true;
+      }
+      return false;
+    })
+    
+    console.log(completeFileList, deletePicList,newModifyArr, '???s提交图片？？？？？？？？')
+    let id = this.props.basicInfo.id;
+    // if(completeFileList.length !== 0 || deletePicList.length !== 0){
     //   this.props.save({
-    //     fileInfo: completeFileList,
-    //     completeFileList: completeFileList,
-    //     id: id,
-    //     type: this.props.type, // shops  building  updataRecord
+    //    fileInfo: {addFileList:completeFileList || [], deleteFileList:deletePicList || [], modifyFileList: newModifyArr || []},
+    //    completeFileList: completeFileList,
+    //    id: id,
+    //     //type: this.props.type, // shops  building  updataRecord
     //   });
-    //   //return;
     // }
-    // if (deletePicList.length !== 0) { // 删除图片
-    //   console.log('进入的是删除么？？')
-    //   // this.setState({ uploading: true });
-    //   this.props.dispatch(deletePicAsync({
-    //     fileInfo: deleteIdArr,
-    //     id: id,
-    //     deletePicList: deletePicList,
-    //     type: this.props.type,
-    //   }))
-    //   return;
-    // }
+
   }
 
   UploadFile = (file, callback) => {
@@ -342,7 +340,37 @@ class AttachEdit extends Component {
     // console.log(key, 'key')
     this.setState({picGroup: key})
   }
+  onDescChange = (e, item) =>{
+    item.ext1  = e.target.value;
+    if(this.props.attachInfo.fileList){
+      let fileList = this.props.attachInfo.fileList;
 
+     
+      let modifyArr =this.state.midifyFileArr;
+      let isFind = false;
+      modifyArr.map((file) => {
+          if(file.fileGuid === item.uid){
+            file.ext1 = e.target.value;
+            isFind = true;
+          }
+        })
+      if(!isFind){
+        let temp = this.props.completeFileList.find(file => file.fileGuid === item.uid);
+        if(temp !== undefined){
+          modifyArr =  [...this.state.midifyFileArr, temp];
+        }
+        else{
+          let curFile = fileList.find(file => file.fileGuid === item.uid);
+          if(curFile !== undefined){
+            modifyArr =  [...this.state.midifyFileArr, curFile];
+          }
+        }
+      }
+
+      
+      this.setState({midifyFileArr: modifyArr});
+    }
+  }
   render() {
     let attachPicOperType = this.props.operInfo.attachPicOperType;
     let { previewVisible, previewImage, fileList } = this.state;
@@ -353,7 +381,7 @@ class AttachEdit extends Component {
         <div className="ant-upload-text">添加图片</div>
       </div>
     );
-
+ 
     let propsPic = {
       multiple: true,
       listType: "picture-card",
@@ -367,6 +395,7 @@ class AttachEdit extends Component {
     }
 
     console.log( "imgFiles图片:", this.state.imgFiles);
+  
 
     return (
       <div className="">
@@ -390,15 +419,44 @@ class AttachEdit extends Component {
                           this.props.basicData.contractAttachTypes.map((item, i) => {
                                 return (
                                   <TabPane tab={item.key} key={item.value} >
-                                    <div className='picBox'>
+					
+                                      <div className='picBox'>
                                         <div className="clearfix">
+                                        {
+                                              this.state.imgFiles[item.value] ?  (this.state.imgFiles[item.value] || []).map((fileItem, index) =>{
+                                              let arr = [];
+                                              arr.push(fileItem);
+                                              return(            
+                                                <Row type='flex' align="bottom" key={fileItem.uid}>        
+                                                  <Col span={4}>
+                                                    <Upload  listType="picture-card"
+                                                      fileList= {arr}
+                                                      onPreview={this.handlePreview} 
+                                                      beforeUpload={this.handleBeforeUpload} 
+                                                      onRemove={this.hanldeRemove} >
+                                                    
+                                                    </Upload>
+                                                  </Col>
+                                                  <Col span={12}>
+                                                 
+                                                    <span>{"附件备注:"}</span>
+                                                    <Input type="textarea" placeholder="备注信息" size='default'  style={{marginBottom: '10px'}} defaultValue={fileItem.ext1} onChange={(e) =>this.onDescChange(e, fileItem) } maxLength="200" autosize={{ minRows: 2, maxRows: 4 }}/>
+                                                  </Col>
+                                                </Row>        
+                                                )
+                                            }) 
+                                            : null
+                                        }
+                                            
+                                            <br/>
                                             <Upload  listType="picture-card"
-                                                     fileList= {this.state.imgFiles[item.value]}
-                                                     onPreview={this.handlePreview} 
-                                                     beforeUpload={this.handleBeforeUpload} 
-                                                     onRemove={this.hanldeRemove}>
-                                                {uploadButton}
-                                            </Upload>
+                                                  fileList= {[]}
+                                                  onPreview={this.handlePreview} 
+                                                  beforeUpload={this.handleBeforeUpload} 
+                                                  onRemove={this.hanldeRemove}>
+                                                   {uploadButton}
+                                                </Upload>
+                                           
                                             <Modal visible={previewVisible} footer={null} onCancel={this.handleCancel}>
                                                 <img alt="example" style={{ width: '100%' }} src={previewImage} />
                                             </Modal>
@@ -464,7 +522,7 @@ class AttachEdit extends Component {
 }
 
 function mapStateToProps(state) {
-  console.log("attachedit state",state)
+ 
   return {
     isDisabled: state.contractData.isDisabled,
     basicData: state.basicData,
@@ -475,18 +533,7 @@ function mapStateToProps(state) {
     completeFileList: state.contractData.completeFileList,
     deletePicList: state.contractData.deletePicList,
     isCurShowContractDetail: state.contractData.isCurShowContractDetail,
-    /*
-    buildingOperInfo: state.building.operInfo,
-    shopsInfo: state.shop.shopsInfo,
-    buildInfo: state.building.buildInfo,
-    attachInfo: state.building.buildInfo.attachInfo,
-    shopAttachInfo: state.shop.shopsInfo.attachInfo,
-    completeFileList: state.shop.completeFileList,
-    deletePicList: state.shop.deletePicList,
-    
-    loadingState: state.building.attachloading,
-    user: (state.oidc.user || {}).profile || {},
-    */
+
   }
 }
 
