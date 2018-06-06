@@ -134,6 +134,8 @@ class BasicInfo extends Component {
                     <Row className='viewRow'>
                         
                         <Col span={12}>备注:{basicInfo.remark}</Col>   
+                        <Col span={12}>备注:{basicInfo.remark}</Col>   
+                        <Col span={12}>是否作废:{basicInfo.isInvalid ? '是' : '否'}</Col>   
                     </Row>
                     {/* <Row className='viewRow'>
                         <Col span={24}>补充协议:{this.props.complementInfo.contentInfo}</Col>   

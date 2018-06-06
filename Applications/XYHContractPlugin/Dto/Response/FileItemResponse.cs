@@ -18,6 +18,8 @@ namespace XYHContractPlugin.Dto.Response
 
         public string Group { get; set; }
 
+        public string Ext1 { get; set; }
+        public string Ext2 { get; set; }
 
     }
 }

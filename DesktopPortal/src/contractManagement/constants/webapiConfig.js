@@ -26,6 +26,7 @@ const WebApiConfig = {
         Base: basicDataBaseApiUrl + "contractinfo/addsimplecontract",//
         Modify: basicDataBaseApiUrl + "contractinfo/modifysimplecontract",
         Submit: basicDataBaseApiUrl + "contractinfo/checksimplecontract",//
+        invalidateContract: basicDataBaseApiUrl + "contractinfo/discardcontract/",
     },
     complement:{
         GetComplement: basicDataBaseApiUrl + "",

@@ -166,7 +166,8 @@ namespace XYHContractPlugin.Controllers
             fi.Original = fl.FirstOrDefault(x => x.Type == "ORIGINAL")?.Uri;
             fi.Medium = fl.FirstOrDefault(x => x.Type == "MEDIUM")?.Uri;
             fi.Small = fl.FirstOrDefault(x => x.Type == "SMALL")?.Uri;
-
+            fi.Ext1 = fl.FirstOrDefault()?.Ext1 ;
+            fi.Ext2 = fl.FirstOrDefault()?.Ext2;
             string fr = ApplicationCore.ApplicationContext.Current.FileServerRoot;
             fr = (fr ?? "").TrimEnd('/');
             if (!String.IsNullOrEmpty(fi.Icon))

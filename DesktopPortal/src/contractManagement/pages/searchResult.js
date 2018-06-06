@@ -1,15 +1,16 @@
 import {connect} from 'react-redux';
 import { openComplement, searchStart, saveSearchCondition, setLoadingVisible,
-openAttachMent, openContractRecord, gotoThisContract, openContractRecordNavigator, getAllExportData, endExportAllData} from '../actions/actionCreator';
+openAttachMent, openContractRecord, gotoThisContract, openContractRecordNavigator, getAllExportData, endExportAllData, invalidateContract} from '../actions/actionCreator';
 import React, {Component} from 'react';
-import {Button, Row, Col, Table} from 'antd';
+import {Button, Row, Col, Table, Modal} from 'antd';
 import moment from 'moment';
 import XLSX from 'xlsx';
 
 const buttonDef = [
     { buttonID:"record", buttonName:"录入", icon:'', type:'primary', size:'small', requirePermission:['RECORD_FUC']},
     { buttonID:"uploadFile", buttonName:"附件上传", icon:'', type:'primary', size:'small',requirePermission:['UPLOAD_FILE']},
-    { buttonID:"export", buttonName:"导出", icon:'', type:'primary', size:'small', requirePermission:['EXPORT_CONTRACT']},
+    //{ buttonID:"export", buttonName:"导出", icon:'', type:'primary', size:'small', requirePermission:['EXPORT_CONTRACT']},
+    { buttonID:"invalidate", buttonName:"作废", icon:'', type:'primary', size:'small', requirePermission:['INVALIDATE_CONTRACT']},
     { buttonID:"exportAll", buttonName:"导出查询结果", icon:'', type:'primary', size:'small', requirePermission:['EXPORT_ALL_CONTRACT']},
    
 ];
@@ -307,6 +308,25 @@ class SearchResult extends Component {
         })
         return data;
     }
+
+    onClickInvalidate = (record) =>{
+        //console.log("作废record；", record)
+        Modal.confirm({
+            title: '是否确定作废此合同!',
+            content: `合同名称为${record.name}`,
+            onOk() {
+              //console.log('OK');
+              this.props.dispatch(invalidateContract({id:record.id}));
+         
+              let condition = {...this.props.searchInfo.searchCondition};
+              this.props.dispatch(setLoadingVisible(true));
+              this.props.dispatch(searchStart(condition));
+            },
+            onCancel() {
+              console.log('取消作废');
+            },
+          });
+    }
     //导出
     onClickExPort = (record) =>{
         let header = [{v:"序号", position:'A1', key: 'num'}];
@@ -509,6 +529,14 @@ class SearchResult extends Component {
                     return <span>{text ? '续签' : '新签'}</span>
                 }
             },
+            {
+                title: '作废',
+                dataIndex:'isInvalid',
+                key:'isInvalid',
+                render:(text, record) =>{
+                    return <span>{text ? '是' : '否'}</span>
+                }
+            },
             // {
             //     title: '备注',
             //     dataIndex:'remark',
@@ -572,11 +600,15 @@ class SearchResult extends Component {
                 title: button.buttonName,
                 dataIndex: button.buttonID,
                 key: button.buttonID,
-                render: (text, record) => (
+                render: (text, record) => {
+                    let isDisabled = true;
+                    if((button.buttonID === 'invalidate' && ([0,16].includes(record.examineStatus))) || button.buttonID !== 'invalidate' )//可以作废
+                    {
+                        isDisabled = false;
+                    }
+                    return <Button key = {i} id= {button.buttonID}  icon={button.icon} size={button.size} type={button.type} disabled={isDisabled} onClick={button.buttonID === 'invalidate' ? (e) => this.onClickInvalidate(record) : (e) => this.onClickUploadFile(record)}>{button.buttonName}</Button>
+                }
                     
-                    <Button key = {i} id= {button.buttonID}  icon={button.icon} size={button.size} type={button.type} onClick={button.buttonID === 'export' ? (e) => this.onClickExPort(record) : (e) => this.onClickUploadFile(record)}>{button.buttonName}</Button>
-                )
-            
         };
     }
     //其他信息列
@@ -703,10 +735,8 @@ class SearchResult extends Component {
     }
 
     getMainButton = (button, i) =>{
-        if(this.hasPermission(button)&& (button.buttonID !='uploadFile' ) && (button.buttonID != 'export')){
-            // if(button.buttonID ==='export' && this.state.checkList.length === 0){
-            //     return null;
-            // }
+        if(this.hasPermission(button)&& (button.buttonID !='uploadFile' ) && (button.buttonID != 'export') && (button.buttonID != 'invalidate')){
+   
             return <Button key = {i} id= {button.buttonID} style={{marginBottom: '10px', marginRight: '10px', border:0}}  onClick = {this.handleClickFucButton(button.buttonID)} icon={button.icon} size={button.size} type={button.type}>{button.buttonName}</Button> ;
         }else{
             return null;
@@ -724,7 +754,7 @@ class SearchResult extends Component {
         if (["menu_index"].includes(this.props.searchInfo.activeMenu)) {
             showSlection = true;
         }
-        // const tableScrollX = this.getTableScrollX();
+
         return (
   
             <div id="searchResult">

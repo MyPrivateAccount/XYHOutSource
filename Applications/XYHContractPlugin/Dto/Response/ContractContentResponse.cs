@@ -53,6 +53,7 @@ namespace XYHContractPlugin.Dto.Response
         public DateTime? FollowTime { get; set; }
         public string Ext1 { get; set; }
         public string Ext2 { get; set; }
+        public bool IsInvalid { get; set; }
     }
     public class ContractContentResponse
     {

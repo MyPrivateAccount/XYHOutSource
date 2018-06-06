@@ -33,7 +33,7 @@ const ToolMenuPermissionDefine = [
             {id:'EXPORT_CONTRACT', name:'导出'},
             {id:'EXPORT_ALL_CONTRACT',name: '全部导出'},
             {id:'COMPANYA_MANAGE', name: '甲方管理'},
-            
+            {id:'INVALIDATE_CONTRACT', name: '合同作废'},
         ]
     }
 ]

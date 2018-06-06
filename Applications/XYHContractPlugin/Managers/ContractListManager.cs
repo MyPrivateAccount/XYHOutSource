@@ -42,7 +42,7 @@ namespace XYHContractPlugin.Managers
                 throw new ArgumentNullException(nameof(condition));
             }
             var pagingResponse = new ContractSearchResponse<ContractInfoResponse>();
-            var query = _icontractInfoStore.ContractInfoAll().Where(a => !a.IsDelete);
+            var query = _icontractInfoStore.ContractInfoAll().Where(a =>  true);
             query = SearchConditionFiltration(condition, query);
             var organsPer = await _permissionExpansionManager.GetOrganizationOfPermission(user.Id, "ContractSearchOrg");
             //查询部门
@@ -152,7 +152,7 @@ namespace XYHContractPlugin.Managers
 
             if (condition.Discard == 1)
             {
-                query = query.Where(x => !x.IsDelete);//这个后面考虑
+                query = query.Where(x => x.IsDelete);//这个后面考虑
             }
 
             if (condition.OverTime == 1)//过期和时间限定分开

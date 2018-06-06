@@ -28,12 +28,35 @@ namespace XYHContractPlugin.Dto.Request
         public string Driver { get; set; }
         [StringLength(255)]
         public string Group { get; set; }
+
+        public string Ext1 { get; set; }
+        public string Ext2 { get; set; }
     }
 
+    public class FileItemRequest
+    {
+        public string FileGuid { get; set; }
+
+        public string Icon { get; set; }
+
+        public string Original { get; set; }
+
+        public string Medium { get; set; }
+
+        public string Small { get; set; }
+
+        public string Group { get; set; }
+
+        public string Ext1 { get; set; }
+        public string Ext2 { get; set; }
+
+    }
     public class FileUploadRequest
     {
 
         public List<FileInfoRequest> AddFileList { get; set; }
         public List<string> DeleteFileList { get; set; }
+
+        public List<FileItemRequest> ModifyFileList { get; set; }
     }
 }
