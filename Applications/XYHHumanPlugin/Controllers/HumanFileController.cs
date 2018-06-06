@@ -61,6 +61,31 @@ namespace XYHHumanPlugin.Controllers
             return response;
         }
 
+        [HttpGet("getfileinfo/{humanid}")]
+        [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
+        public async Task<ResponseMessage<FileItemResponse>> GetFileInfo([FromRoute]string humanid)
+        {
+            var Response = new ResponseMessage<FileItemResponse>();
+            if (string.IsNullOrEmpty(humanid))
+            {
+                Response.Code = ResponseCodeDefines.ModelStateInvalid;
+                Response.Message = "请求参数不正确";
+            }
+
+            try
+            {
+                Response.Extension = await _humanManage.GetFilelistAsync(humanid, HttpContext.RequestAborted);
+            }
+            catch (Exception e)
+            {
+                Response.Code = ResponseCodeDefines.ServiceError;
+                Response.Message = "服务器错误：" + e.ToString();
+                Logger.Error("error");
+            }
+
+            return Response;
+        }
+
         [Authorize(AuthenticationSchemes = OAuthValidationDefaults.AuthenticationScheme)]
         [HttpPost("{dest}/uploadmore/")]
         [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "FileUpload" })]
@@ -85,7 +110,7 @@ namespace XYHHumanPlugin.Controllers
                 string response2 = await _restClient.Post(ApplicationContext.Current.NWFUrl, nwf, "POST", nameValueCollection);
                 Logger.Info("返回：\r\n{0}", response2);
 
-                await _humanManage.CreateFileScopeAsync(user.Id, fileInfoRequests, HttpContext.RequestAborted);
+                await _humanManage.CreateFileScopeAsync(user.Id, dest, fileInfoRequests, HttpContext.RequestAborted);
 
                 response.Message = response2;
             }

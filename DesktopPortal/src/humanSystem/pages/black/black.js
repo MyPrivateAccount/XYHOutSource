@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { setLoadingVisible, adduserPage } from '../../actions/actionCreator';
+import { setLoadingVisible, adduserPage, deleteBlackInfo, getBlackList } from '../../actions/actionCreator';
 import React, { Component } from 'react';
 import { Input, Spin, Checkbox, Button, notification } from 'antd';
 //import {getDicParList} from '../actions/actionCreator';
@@ -19,7 +19,7 @@ class MainIndex extends Component {
     }
 
     componentWillMount() {
-        this.props.dispatch(setLoadingVisible(false));//测试
+        
     }
 
     handleClickFucButton = (e) => {
@@ -37,6 +37,7 @@ class MainIndex extends Component {
              }
         } else if (e.target.id === "delete") {
             if (this.props.selBlacklist.length > 0) {
+                this.props.dispatch(deleteBlackInfo(this.props.selBlacklist[this.props.selBlacklist.length -1]));
                 //this.props.dispatch(adduserPage({menuID: 'costcharge', disname: '删除黑名单', type:'item'}));//删除要个jb啊
             }
              else {

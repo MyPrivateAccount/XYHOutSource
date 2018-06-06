@@ -55,8 +55,14 @@ export function* getSearchConditionAsync(state) {
              result.isOk = true;
              let lv = res.data.extension;
              let data = lv.map(function(v, k) {
-                 return {key: k, id: v.userID, username: v.name, idcard: v.idCard};
-             });
+                let sn = "";
+                 (v.sex==1)&&(sn = "男");
+                 (v.sex==2)&&(sn = "女");
+                 return {key: k, id: v.id, name: v.name,
+                    sex: v.sex, sexname:sn, idcard: v.idCard, position: v.position,
+                    entryTime: v.entryTime?v.entryTime.replace("T", " "):"", becomeTime: v.becomeTime?v.becomeTime.replace("T", " "):"", baseSalary: v.baseSalary,
+                    socialInsurance: v.IsSocialInsurance?"是":"否", contract: v.contract?"是":"否"};
+            });
              let re = {extension: data, 
                 pageIndex: res.data.pageIndex, 
                 pageSize: res.data.pageSize,
@@ -85,7 +91,13 @@ export function* getHumanListAsync(state) {
              result.isOk = true;
              let lv = res.data.extension;
              let data = lv.map(function(v, k) {
-                 return {key: k, id: v.userID, username: v.name, idcard: v.idCard};
+                 let sn = "";
+                 (v.sex==1)&&(sn = "男");
+                 (v.sex==2)&&(sn = "女");
+                 return {key: k, id: v.id, name: v.name,
+                    sex: v.sex, sexname:sn, idcard: v.idCard, position: v.position,
+                    entryTime: v.entryTime?v.entryTime.replace("T", " "):"", becomeTime: v.becomeTime?v.becomeTime.replace("T", " "):"", baseSalary: v.baseSalary,
+                    socialInsurance: v.IsSocialInsurance?"是":"否", contract: v.contract?"是":"否"};
              });
 
              yield put ({type: actionUtils.getActionType(actionTypes.UPDATE_ALLHUMANINFO), payload: data});
@@ -145,12 +157,12 @@ export function* getBlackListAsync(state) {
         if (res.data.code == 0) {
             result.isOk = true;
             let lv = res.data.extension;
-            lv = lv.extension.map(function(v, k) {
-                return {};
-            });
-
-            // yield put ({type: actionUtils.getActionType(actionTypes.MONTH_UPDATEMONTHLIST),
-            //      payload: {extension: lv, pageIndex: lv.pageIndex, pageSize: lv.pageSize, totalCount: lv.totalCount, lastTime: lv.lastTime}});
+           
+            yield put ({type: actionUtils.getActionType(actionTypes.UPDATE_BLACKLST),
+                payload: {extension:lv.extension.map(function(v, i) {
+                    return Object.assign({key: i}, v);
+                }), pageIndex: lv.pageIndex, pageSize: lv.pageSize, totalCount: lv.totalCount, lastTime: lv.lastTime}});
+                // payload: res.data.extension});
         }
     } catch (e) {
         result.msg = '检索关键字接口调用异常';
@@ -220,6 +232,7 @@ export function* getSalaryItemAsync(state) {
         });
     }
 }
+
 
 export default function* watchAllSearchAsync() {
     yield takeLatest(actionUtils.getActionType(actionTypes.SEARCH_CUSTOMER), getCustomerListAsync);

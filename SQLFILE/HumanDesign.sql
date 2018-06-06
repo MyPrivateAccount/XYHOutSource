@@ -11,6 +11,7 @@ CREATE TABLE `XYH_HU_HUMANMANAGE` (
   `IDCard` varchar(127) NOT NULL DEFAULT '',/*身份证号*/
   `Age` int(11) NOT NULL DEFAULT 0,
   `Sex` int(11) NOT NULL DEFAULT 0,
+  `DepartmentId` varchar(127) DEFAULT '',/*部门*/
   `Position` varchar(127) DEFAULT '',/*职位--外链*/
   `CreateUser` varchar(127) DEFAULT '',/*创建人*/
   `Modify` int(11) DEFAULT '0',/*修改个数*/
@@ -97,6 +98,22 @@ CREATE TABLE `XYH_HU_BLACKLIST` (
   PRIMARY KEY (`IDCard`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+
+DROP TABLE IF EXISTS `XYH_HU_SOCIALINSURANCE`;/*社保*/
+CREATE TABLE `XYH_HU_SOCIALINSURANCE` (
+  `IDCard` varchar(127) NOT NULL DEFAULT '',/*身份证号*/
+  `IsSocial` tinyint DEFAULT 0,/*是否社保*/
+  `Giveup` tinyint DEFAULT 0,/*放弃社保*/
+  `GiveupSign` tinyint DEFAULT 0,/*放弃陈诺书*/
+  `EnTime` datetime(6) DEFAULT NULL,/*参保时间*/
+  `EnPlace` varchar(255) DEFAULT NULL,
+  `Pension` int(11) DEFAULT 0,/*养老*/
+  `Medical` int(11) DEFAULT 0,/*医疗*/
+  `WorkInjury` int(11) DEFAULT 0,/*工伤*/
+  `Unemployment` int(11) DEFAULT 0,/*失业*/
+  `Fertility` int(11) DEFAULT 0,/*生育*/
+  PRIMARY KEY (`IDCard`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 -- ----------------------------
 -- Table structure for XYH_HU_ATTENDANCE
 -- ----------------------------

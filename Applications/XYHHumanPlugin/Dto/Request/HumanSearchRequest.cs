@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using XYHHumanPlugin.Dto.Response;
 
 namespace XYHHumanPlugin.Dto.Request
 {
@@ -25,9 +26,16 @@ namespace XYHHumanPlugin.Dto.Request
         public int SearchTimeType { get; set; }
         public DateTime? CreateDateStart { get; set; }
         public DateTime? CreateDateEnd { get; set; }
+        public List<string> LstChildren { get; set; }
 
         public int OrderRule { get; set; }
         public int pageIndex { get; set; }
         public int pageSize { get; set; }
+    }
+
+    public class HumanInfoRequest
+    {
+        public HumanInfoResponse humaninfo { get; set; }
+        public FileInfoRequest fileinfo { get; set; }
     }
 }

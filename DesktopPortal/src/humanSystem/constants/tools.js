@@ -6,13 +6,6 @@ export const SearchHumanTypes = [
     { value: 3, label: '黑名单'}
 ]
 
-
-export const ListColums = [
-    { title: 'ID', dataIndex: 'id', key: 'id' },
-    { title: '用户名', dataIndex: 'username', key: 'username' },
-    { title: '身份证号', dataIndex: 'idcard', key: 'idcard' }
-]
-
 export const MonthListColums = [
     { title: '上一月结时间', dataIndex: 'last', key: 'last' },
     { title: '月结时间', dataIndex: 'monthtime', key: 'monthtime' },

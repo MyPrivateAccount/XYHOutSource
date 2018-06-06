@@ -17,11 +17,14 @@ const WebApiConfig = {
         LastMonth: basicDataBaseApiUrl + "month/lastmonth",
         RecoverMonth: basicDataBaseApiUrl + "month/backmonth",
         CreateMonth: basicDataBaseApiUrl + "month/createmonth",
-        SetBlacklst: basicDataBaseApiUrl + "humaninfo/setblack",
+        SetBlack: basicDataBaseApiUrl + "humanblack/setblack",
+        DeleteBlack: basicDataBaseApiUrl + "humanblack/deleteblack",
         SetStation: basicDataBaseApiUrl + "humanstation/setstation",
         DeleteStation: basicDataBaseApiUrl + "humanstation/deletesalary",
         setSalary: basicDataBaseApiUrl + "humansalary/setsalary",
         deleteSalary: basicDataBaseApiUrl + "humansalary/deletestation",
+        getHumanImage: basicDataBaseApiUrl + "humanfile/getfileinfo",
+
     },
     search: {
         searchHumanList: basicDataBaseApiUrl + 'humaninfo/searchhumaninfo',
@@ -30,7 +33,7 @@ const WebApiConfig = {
         getCustomerByUserID: basicDataBaseApiUrl + 'customerInfo/salesmancustomer/',//根据用户ID获取客户列表
         getAuditHistory: basicDataBaseApiUrl + "examines/",//获取审核历史详细
         getAllMonthList: basicDataBaseApiUrl + 'month/monthlist',
-        getBlackList: basicDataBaseApiUrl + 'humaninfo/getblacklist',
+        getBlackList: basicDataBaseApiUrl + 'humanblack/blacklist',
         getStationList: basicDataBaseApiUrl + 'humanstation/stationlist',
         getSalaryList: basicDataBaseApiUrl + 'humansalary/salarylist',
         getSalaryItem: basicDataBaseApiUrl + 'humansalary/salaryitem',

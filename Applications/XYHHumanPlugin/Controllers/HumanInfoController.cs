@@ -12,12 +12,12 @@ using XYH.Core.Log;
 using XYHHumanPlugin.Dto.Request;
 using XYHHumanPlugin.Dto.Response;
 using XYHHumanPlugin.Stores;
-using HumanInfRequest = XYHHumanPlugin.Dto.Response.HumanInfoResponse;
 using XYHHumanPlugin.Managers;
 using System.Collections.Specialized;
 using XYHHumanPlugin.Dto.Common;
 using GatewayInterface;
 using Microsoft.Extensions.DependencyInjection;
+using SocialInsuranceRequest = XYHHumanPlugin.Dto.Response.SocialInsuranceResponse;
 
 namespace XYHHumanPlugin.Controllers
 {
@@ -97,9 +97,36 @@ namespace XYHHumanPlugin.Controllers
             return pagingResponse;
         }
 
+
+        [HttpPost("becomehuman")]
+        [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
+        public async Task<ResponseMessage> BecomeHumanInfo(UserInfo User, [FromBody]SocialInsuranceRequest condition)
+        {
+            var pagingResponse = new ResponseMessage();
+            if (!ModelState.IsValid)
+            {
+                pagingResponse.Code = ResponseCodeDefines.ModelStateInvalid;
+                Logger.Warn($"用户{User?.UserName ?? ""}({User?.Id ?? ""})查询人事条件(PostCustomerListSaleMan)模型验证失败：\r\n{pagingResponse.Message ?? ""}，\r\n请求参数为：\r\n" + (condition != null ? JsonHelper.ToJson(condition) : ""));
+                return pagingResponse;
+            }
+
+            try
+            {
+                
+            }
+            catch (Exception e)
+            {
+                pagingResponse.Code = ResponseCodeDefines.ServiceError;
+                pagingResponse.Message = "服务器错误:" + e.ToString();
+                Logger.Error($"用户{User?.UserName ?? ""}({User?.Id ?? ""})查询业务员条件(PostCustomerListSaleMan)请求失败：\r\n{pagingResponse.Message ?? ""}，\r\n请求参数为：\r\n" + (condition != null ? JsonHelper.ToJson(condition) : ""));
+
+            }
+            return pagingResponse;
+        }
+
         [HttpPost("addhuman")]
         [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
-        public async Task<ResponseMessage<List<HumanInfoResponse>>> AddHumanInfo(UserInfo User, [FromBody]HumanInfRequest condition, [FromBody]FileInfoRequest fileInfoRequests)
+        public async Task<ResponseMessage<List<HumanInfoResponse>>> AddHumanInfo(UserInfo User, [FromBody]HumanInfoRequest condition)
         {
             var Response = new ResponseMessage<List<HumanInfoResponse>>();
             try
@@ -107,9 +134,9 @@ namespace XYHHumanPlugin.Controllers
                 string modifyid = Guid.NewGuid().ToString();
 
                 GatewayInterface.Dto.ExamineSubmitRequest exarequest = new GatewayInterface.Dto.ExamineSubmitRequest();
-                exarequest.ContentId = condition.ID;
+                exarequest.ContentId = condition.humaninfo.ID;
                 exarequest.ContentType = "ContractCommit";
-                exarequest.ContentName = $"addhuman {condition.Name}";
+                exarequest.ContentName = $"addhuman {condition.humaninfo.Name}";
                 exarequest.SubmitDefineId = modifyid;
                 exarequest.Source = "";
                 exarequest.CallbackUrl = ApplicationContext.Current.UpdateExamineCallbackUrl;
@@ -133,20 +160,20 @@ namespace XYHHumanPlugin.Controllers
                     return Response;
                 }
 
-                if (fileInfoRequests != null)
+                if (condition.fileinfo != null)
                 {
                     NameValueCollection nameValueCollection = new NameValueCollection();
-                    var nwf = CreateNwf(User, "humaninfo", fileInfoRequests);
+                    var nwf = CreateNwf(User, "humaninfo", condition.fileinfo);
 
                     nameValueCollection.Add("appToken", "app:nwf");
                     Logger.Info("nwf协议");
                     string response2 = await _restClient.Post(ApplicationContext.Current.NWFUrl, nwf, "POST", nameValueCollection);
                     Logger.Info("返回：\r\n{0}", response2);
 
-                    await _humanManage.CreateFileScopeAsync(User.Id, fileInfoRequests, HttpContext.RequestAborted);
+                    await _humanManage.CreateFileScopeAsync(User.Id, condition.humaninfo.ID, condition.fileinfo, HttpContext.RequestAborted);
                 }
                 
-                await _humanManage.AddHuman(User, condition, modifyid, "TEST", HttpContext.RequestAborted);
+                await _humanManage.AddHuman(User, condition.humaninfo, modifyid, "TEST", HttpContext.RequestAborted);
                 Response.Message = $"addhumaninfo sucess";
             }
             catch (Exception e)

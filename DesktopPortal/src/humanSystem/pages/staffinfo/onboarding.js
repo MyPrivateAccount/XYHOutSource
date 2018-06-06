@@ -37,11 +37,29 @@ class OnBoarding extends Component {
 
     componentWillMount() {
         this.state.userinfo.id = NewGuid();
+        
         //this.props.dispatch(getallOrgTree('PublicRoleOper'));
     }
 
     componentDidMount() {
-        this.getWorkNumber();
+        let len = this.props.selHumanList.length;
+        if (this.props.ismodify == 1) {//修改界面
+            if (len > 0) {
+                this.state.userinfo.id = this.state.id = this.props.selHumanList[len-1].id;
+                this.props.form.setFieldsValue({name: this.props.selHumanList[len-1].name});
+                this.props.form.setFieldsValue({sex: this.props.selHumanList[len-1].sex});
+                this.props.form.setFieldsValue({idcard: this.props.selHumanList[len-1].idcard});
+                //this.props.form.setFieldsValue({position: this.props.selHumanList[len-1].position});
+                this.props.form.setFieldsValue({entryTime: this.props.selHumanList[len-1].entryTime});
+                this.props.form.setFieldsValue({becomeTime: this.props.selHumanList[len-1].becomeTime});
+                this.props.form.setFieldsValue({baseSalary: this.props.selHumanList[len-1].baseSalary});
+                this.props.form.setFieldsValue({socialInsurance: this.props.selHumanList[len-1].socialInsurance});
+                this.props.form.setFieldsValue({contract: this.props.selHumanList[len-1].contract});
+            }
+        }
+        else {
+            this.getWorkNumber();
+        }
     }
     
     isCardID(rule, value, callback) {
@@ -102,7 +120,7 @@ class OnBoarding extends Component {
                 from: 'pc-upload',
                 WXPath: r.extension,
                 sourceId: id,
-                appId: 'contractManagement',
+                appId: 'HumanIndex',
                 localUrl: file.url,
                 name: file.name
               }
@@ -160,6 +178,9 @@ class OnBoarding extends Component {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (!err) {
+                if (values.departmentId instanceof Array) {
+                    values.departmentId = values.departmentId[values.departmentId.length-1];
+                }
                 this.props.dispatch(postHumanInfo({humaninfo:values, fileinfo:this.state.fileinfo}));
             }
         });
@@ -185,10 +206,15 @@ class OnBoarding extends Component {
 
     render() {
         let self = this;
-        const { previewVisible, previewImage, fileList } = this.state;
+        let fileList = this.state.fileList;
+        const { previewVisible, previewImage } = this.state;
         const { getFieldDecorator, getFieldsError, getFieldsValue, isFieldTouched } = this.props.form;
 
-        const uploadButton = (
+        if (this.props.ismodify == 1) {
+            fileList = this.props.humanImage;
+        }
+
+        const uploadButton = (this.props.ismodify == 1)?null:(
             <div>
               <Icon type='plus' />
               <div className="ant-upload-text">Upload</div>
@@ -206,7 +232,7 @@ class OnBoarding extends Component {
                             validator: this.isCardID
                         }]
                     })(
-                        <Input placeholder="请输入身份证号码" />
+                        <Input disabled={this.props.ismodify == 1} placeholder="请输入身份证号码" />
                     )}
                 </FormItem>
                 <FormItem {...formItemLayout1} label="姓名">
@@ -215,7 +241,7 @@ class OnBoarding extends Component {
                             required:true, message: 'please entry Name',
                         }]
                     })(
-                        <Input placeholder="请输入姓名" />
+                        <Input disabled={this.props.ismodify == 1} placeholder="请输入姓名" />
                     )}
                 </FormItem>
                 <FormItem {...formItemLayout1} label="性别">
@@ -224,7 +250,7 @@ class OnBoarding extends Component {
                             required:true, message: 'please entry Age',
                         }]
                     })(
-                        <Select
+                        <Select disabled={this.props.ismodify == 1}
                             placeholder="选择性别">
                             <Option value="1">男</Option>
                             <Option value="2">女</Option>
@@ -237,7 +263,7 @@ class OnBoarding extends Component {
                             required:true, message: 'please entry Age',
                         }]
                     })(
-                        <InputNumber style={{width: '100%'}} />
+                        <InputNumber disabled={this.props.ismodify == 1} style={{width: '100%'}} />
                     )}
                 </FormItem>
                 <FormItem {...formItemLayout1} label="生日">
@@ -246,7 +272,7 @@ class OnBoarding extends Component {
                             required:true, message: 'please entry Birthday',
                         }]
                     })(
-                        <DatePicker format='YYYY-MM-DD' style={{width: '100%'}} />
+                        <DatePicker disabled={this.props.ismodify == 1} format='YYYY-MM-DD' style={{width: '100%'}} />
                     )}
                 </FormItem>
                 <FormItem {...formItemLayout1} label="工号">
@@ -257,7 +283,7 @@ class OnBoarding extends Component {
                             initialValue: this.state.userinfo.worknumber
                         }]
                     })(
-                        <Input disabled={true} />
+                        <Input disabled={this.props.ismodify == 1} disabled={true} />
                     )}
                 </FormItem>
                 <FormItem {...formItemLayout} label="图片">
@@ -285,17 +311,17 @@ class OnBoarding extends Component {
                                 initialValue: moment()
                             }]
                         })(
-                            <DatePicker format='YYYY-MM-DD' style={{ width: '70%' }} />
+                            <DatePicker disabled={this.props.ismodify == 1} format='YYYY-MM-DD' style={{ width: '70%' }} />
                         )}
                 </FormItem>
                 <FormItem {...formItemLayout} label="所属部门">
-                    {getFieldDecorator('orgdepartment', {
+                    {getFieldDecorator('departmentId', {
                                 reules: [{
                                     required:true,
-                                    message: 'please entry Orgdepartment',
+                                    message: 'please entry',
                                 }]
                             })(
-                                <Cascader style={{ width: '70%' }} options={this.props.setDepartmentOrgTree} onChange={this.handleChooseDepartmentChange} onPopupVisibleChange={this.handleDepartmentChange} changeOnSelect  placeholder="归属部门"/>
+                                <Cascader disabled={this.props.ismodify == 1} style={{ width: '70%' }} options={this.props.setDepartmentOrgTree} onChange={this.handleChooseDepartmentChange} onPopupVisibleChange={this.handleDepartmentChange} changeOnSelect  placeholder="归属部门"/>
                             )}
                 </FormItem>
                 <FormItem {...formItemLayout} label="职位">
@@ -305,7 +331,7 @@ class OnBoarding extends Component {
                                     message: 'please entry Position',
                                 }]
                             })(
-                                <Select style={{ width: '70%' }} onChange={this.handleSelectChange} placeholder="选择职位">
+                                <Select disabled={this.props.ismodify == 1} style={{ width: '70%' }} onChange={this.handleSelectChange} placeholder="选择职位">
                                     {
                                         (self.props.stationList && self.props.stationList.length > 0) ?
                                             self.props.stationList.map(
@@ -321,35 +347,35 @@ class OnBoarding extends Component {
                     {getFieldDecorator('baseSalary', {
                         initialValue: self.props.selSalaryItem? self.props.selSalaryItem.baseSalary:null
                     })(
-                                    <InputNumber style={{ width: '70%' }} />
+                                    <InputNumber disabled={this.props.ismodify == 1} style={{ width: '70%' }} />
                                 )}
                 </FormItem>
                 <FormItem {...formItemLayout1} label="岗位补贴">
                     {getFieldDecorator('subsidy', {
                         initialValue: self.props.selSalaryItem? self.props.selSalaryItem.subsidy:null
                     })(
-                                        <InputNumber style={{ width: '70%' }} />
+                                        <InputNumber disabled={this.props.ismodify == 1} style={{ width: '70%' }} />
                                     )}
                 </FormItem>
                 <FormItem {...formItemLayout1} label="工装扣款">
                     {getFieldDecorator('clothesBack', {
                         initialValue: self.props.selSalaryItem? self.props.selSalaryItem.clothesBack:null
                     })(
-                                    <InputNumber style={{width: '70%'}} />
+                                    <InputNumber disabled={this.props.ismodify == 1} style={{width: '70%'}} />
                                 )}
                 </FormItem>
                 <FormItem {...formItemLayout1} label="行政扣款">
                     {getFieldDecorator('administrativeBack', {
                         initialValue: self.props.selSalaryItem? self.props.selSalaryItem.administrativeBack:null
                     })(
-                                    <InputNumber style={{width: '70%'}} />
+                                    <InputNumber disabled={this.props.ismodify == 1} style={{width: '70%'}} />
                                 )}
                 </FormItem>
                 <FormItem {...formItemLayout1} label="端口扣款">
                     {getFieldDecorator('portBack', {
                         initialValue: self.props.selSalaryItem? self.props.selSalaryItem.portBack:null
                     })(
-                                    <InputNumber style={{width: '70%'}} />
+                                    <InputNumber disabled={this.props.ismodify == 1} style={{width: '70%'}} />
                                 )}
                 </FormItem>
                 <FormItem wrapperCol={{ span: 12, offset: 6 }}>
@@ -368,6 +394,8 @@ function stafftableMapStateToProps(state) {
         setDepartmentOrgTree: state.basicData.searchOrgTree,
         stationList: state.search.stationList,
         selSalaryItem: state.basicData.selSalaryItem,
+        selHumanList: state.basicData.selHumanList,
+        humanImage: state.basicData.humanImage,
     }
 }
 

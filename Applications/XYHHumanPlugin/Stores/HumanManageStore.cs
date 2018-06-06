@@ -54,6 +54,7 @@ namespace XYHHumanPlugin.Stores
             humaninfo.Modify = 1;
             humaninfo.RecentModify = modifyid;
             humaninfo.CreateTime = DateTime.Now;
+            humaninfo.StaffStatus = 0;//回调2
             Context.Add(humaninfo);
             Context.Add(modify);
 
@@ -130,6 +131,26 @@ namespace XYHHumanPlugin.Stores
             await Context.SaveChangesAsync(cle);
         }
 
+        public async Task SetBlackAsync(BlackInfo salaryinfo, CancellationToken cle = default(CancellationToken))
+        {
+            if (salaryinfo == null)
+            {
+                throw new ArgumentNullException(nameof(salaryinfo));
+            }
+
+            if (Context.BlackInfos.Any(x => x.IDCard == salaryinfo.IDCard))
+            {
+                Context.Attach(salaryinfo);
+                Context.Update(salaryinfo);
+            }
+            else
+            {
+                Context.Add(salaryinfo);
+            }
+
+            await Context.SaveChangesAsync(cle);
+        }
+
         public async Task CreateMonthSalaryAsync(SalaryFormInfo forminfo, CancellationToken cle = default(CancellationToken))
         {
             if (forminfo == null)
@@ -172,6 +193,11 @@ namespace XYHHumanPlugin.Stores
             await Context.SaveChangesAsync(cancellationToken);
         }
 
+        public async Task BecomeHuman(SocialInsurance info, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var ff = await GetAsync(a => a.Where(b => b.IDCard == info.IDCard));
+        }
+
         public async Task DeleteStationAsync(PositionInfo positioninfo, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (positioninfo == null)
@@ -185,6 +211,17 @@ namespace XYHHumanPlugin.Stores
         }
 
         public async Task DeleteSalaryAsync(SalaryInfo monthinfo, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (monthinfo == null)
+            {
+                throw new ArgumentNullException(nameof(monthinfo));
+            }
+            Context.Remove(monthinfo);
+
+            await Context.SaveChangesAsync(cancellationToken);
+        }
+
+        public async Task DeleteBlackAsync(BlackInfo monthinfo, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (monthinfo == null)
             {
@@ -276,6 +313,24 @@ namespace XYHHumanPlugin.Stores
                 throw new ArgumentNullException(nameof(query));
             }
             return query.Invoke(Context.HumanInfos.AsNoTracking()).SingleOrDefaultAsync(cancellationToken);
+        }
+
+        public Task<List<TResult>> GetFileListAsync<TResult>(Func<IQueryable<FileInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (query == null)
+            {
+                throw new ArgumentNullException(nameof(query));
+            }
+            return query.Invoke(Context.FileInfos.AsNoTracking()).ToListAsync(cancellationToken);
+        }
+
+        public Task<List<TResult>> GetScopeFileListAsync<TResult>(Func<IQueryable<AnnexInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (query == null)
+            {
+                throw new ArgumentNullException(nameof(query));
+            }
+            return query.Invoke(Context.AnnexInfos.AsNoTracking()).ToListAsync(cancellationToken);
         }
 
         public Task<TResult> GetSalaryAsync<TResult>(Func<IQueryable<SalaryInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken))

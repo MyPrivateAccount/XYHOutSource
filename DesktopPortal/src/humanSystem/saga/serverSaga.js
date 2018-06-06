@@ -15,14 +15,14 @@ export function* postHumanInfoAsync(state) {
     let humanResult = { isOk: false, msg: '人事信息提交失败！' };
 
     try {
-        humanResult = yield call(ApiClient.post, urlhuman, state.payload.humaninfo, state.payload.fileinfo);
+        humanResult = yield call(ApiClient.post, urlhuman, state.payload);
 
         //弹消息，返回
         if (humanResult.data.code == 0) {
             humanResult.isOk = true;
             humanResult.message = '人事信息提交成功';
 
-            yield put({ type: actionUtils.getActionType(actionTypes.MINUS_USER_BREAD), payload: {} });
+            yield put({ type: actionUtils.getActionType(actionTypes.SET_USER_BREADITEMINDEX), payload: 0 });
         }
     } catch (e) {
         humanResult.msg = "部门用户获取接口调用异常!";
@@ -104,14 +104,14 @@ export function* createMonth(state) {
 }
 
 export function* setBlackLst(state) {
-    let url = WebApiConfig.server.SetBlacklst;
+    let url = WebApiConfig.server.SetBlack;
     let huResult = { isOk: false, msg: '创建黑名单失败！' };
     try {
         huResult = yield call(ApiClient.post, url, state.payload);
         //弹消息，返回
         if (huResult.data.code == 0) {
             huResult.data.message = '创建黑名单成功';
-            //yield put({ type: actionUtils.getActionType(actionTypes.MONTH_GETALLMONTHLIST), payload: state.payload.result});
+            yield put({ type: actionUtils.getActionType(actionTypes.SET_USER_BREADITEMINDEX), payload: 0 });
         }
     } catch (e) {
         huResult.data.message = "创建黑名单接口调用异常!";
@@ -189,7 +189,7 @@ export function* deleteStation(state) {
         huResult.data.message = "删除职位接口调用异常!";
     }
     
-    if (huResult.data.code !== 0) {
+    if (huResult.data.code != 0) {
         notification.error({
             message: huResult.data.message,
             duration: 3
@@ -217,7 +217,7 @@ export function* setSalary(state) {
         huResult.data.message = "设置薪酬接口调用异常!";
     }
     
-    if (huResult.data.code !== 0) {
+    if (huResult.data.code != 0) {
         notification.error({
             message: huResult.data.message,
             duration: 3
@@ -244,7 +244,58 @@ export function* deleteSalary(state) {
         huResult.data.message = "删除薪酬接口调用异常!";
     }
     
-    if (huResult.data.code !== 0) {
+    if (huResult.data.code != 0) {
+        notification.error({
+            message: huResult.data.message,
+            duration: 3
+        });
+    }
+}
+
+export function* getHumanImage(state) {
+    let url = WebApiConfig.server.getHumanImage + '/' +state.payload;
+    let huResult = { isOk: false, msg: '获取图片失败！' };
+
+    try {
+        huResult = yield call(ApiClient.get, url);
+        if (huResult.data.code == 0) {
+            huResult.data.message = '获取图片成功';
+            let f = [{uid: -1, name: "", status: 'done', url: huResult.data.extension.original}];
+            yield put({ type: actionUtils.getActionType(actionTypes.UPDATE_HUMANIMAGE), payload: f});
+        }
+    } catch (e) {
+        huResult.data.message = "获取图片接口调用异常!";
+    }
+    
+    if (huResult.data.code != 0) {
+        notification.error({
+            message: huResult.data.message,
+            duration: 3
+        });
+    }
+}
+
+export function* deleteBlackInfo(state) {
+    let url = WebApiConfig.server.DeleteBlack;
+    let huResult = { isOk: false, msg: '删除黑名单失败！' };
+
+    try {
+        huResult = yield call(ApiClient.post, url, state.payload);
+        if (huResult.data.code == 0) {
+            huResult.data.message = '删除黑名单成功';
+
+            yield put({ type: actionUtils.getActionType(actionTypes.DELETE_UPDATEBLACKINFO), payload: state.payload});
+            notification.success({
+                message: huResult.data.message,
+                duration: 3
+            });
+            return;
+        }
+    } catch (e) {
+        huResult.data.message = "删除黑名单接口调用异常!";
+    }
+    
+    if (huResult.data.code != 0) {
         notification.error({
             message: huResult.data.message,
             duration: 3
@@ -263,4 +314,6 @@ export default function* watchDicAllAsync() {
     yield takeLatest(actionUtils.getActionType(actionTypes.DELETE_STATION), deleteStation);
     yield takeLatest(actionUtils.getActionType(actionTypes.SET_SALARYINFO), setSalary);
     yield takeLatest(actionUtils.getActionType(actionTypes.DELETE_SALARYINFO), deleteSalary);
+    yield takeLatest(actionUtils.getActionType(actionTypes.GET_HUMANIMAGE), getHumanImage);
+    yield takeLatest(actionUtils.getActionType(actionTypes.DELETE_BLACKINFO), deleteBlackInfo);
 }

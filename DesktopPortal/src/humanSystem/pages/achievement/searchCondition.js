@@ -1,5 +1,5 @@
 import {connect} from 'react-redux';
-import { setLoadingVisible, postSearchCondition, getSalaryList} from '../../actions/actionCreator';
+import { setSearchLoadingVisible, postSearchCondition, getSalaryList} from '../../actions/actionCreator';
 import React, {Component} from 'react'
 import {Input, InputNumber, Select, Icon, Button, Row, Col, Spin} from 'antd'
 import './search.less';
@@ -7,7 +7,7 @@ import './search.less';
 class SearchCondition extends Component {
 
     componentWillMount() {
-        this.props.dispatch(setLoadingVisible(true));
+        this.props.dispatch(setSearchLoadingVisible(true));
         this.props.dispatch(getSalaryList(this.props.searchInfo.achievementList));
     }
 
@@ -16,7 +16,7 @@ class SearchCondition extends Component {
     }
 
     handleSearch = () => {
-        this.props.dispatch(setLoadingVisible(true));
+        this.props.dispatch(setSearchLoadingVisible(true));
         this.props.dispatch(getSalaryList(this.props.searchInfo));
     }
 
