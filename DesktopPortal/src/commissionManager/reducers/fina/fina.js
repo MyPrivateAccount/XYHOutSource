@@ -38,4 +38,8 @@ finaReducerMap[actionTypes.FINA_QUERY_SFKJQRB_SUCCESS] = function (state, action
     console.log("readucer实发扣减确认表" + JSON.stringify(action.payload));
     return Object.assign({}, state, { dataSource:action.payload ,operInfo:{operType:'FINA_QUERY_SFKJQRB_SUCCESS'}});
 }
+finaReducerMap[actionTypes.FINA_QUERY_FYXQB_SUCCESS] = function (state, action) {
+    console.log("readucer分佣详情表" + JSON.stringify(action.payload));
+    return Object.assign({}, state, { dataSource:action.payload ,operInfo:{operType:'FINA_QUERY_FYXQB_SUCCESS'}});
+}
 export default handleActions(finaReducerMap, initState)
