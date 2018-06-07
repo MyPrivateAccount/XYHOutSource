@@ -42,4 +42,12 @@ finaReducerMap[actionTypes.FINA_QUERY_FYXQB_SUCCESS] = function (state, action) 
     console.log("readucer分佣详情表" + JSON.stringify(action.payload));
     return Object.assign({}, state, { dataSource:action.payload ,operInfo:{operType:'FINA_QUERY_FYXQB_SUCCESS'}});
 }
+finaReducerMap[actionTypes.FINA_QUERY_YJTZHZ_SUCCESS] = function (state, action) {
+    console.log("readucer业绩调整汇总" + JSON.stringify(action.payload));
+    return Object.assign({}, state, { dataSource:action.payload ,operInfo:{operType:'FINA_QUERY_YJTZHZ_SUCCESS'}});
+}
+finaReducerMap[actionTypes.FINA_QUERY_TYXQ_SUCCESS] = function (state, action) {
+    console.log("readucer调佣详情表" + JSON.stringify(action.payload));
+    return Object.assign({}, state, { dataSource:action.payload ,operInfo:{operType:'FINA_QUERY_TYXQ_SUCCESS'}});
+}
 export default handleActions(finaReducerMap, initState)

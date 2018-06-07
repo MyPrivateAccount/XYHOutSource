@@ -80,3 +80,7 @@ export const searchLzryyjqrb = createAction(actionTypes.FINA_QUERY_LZRYYJQRB);
 export const searchSfkjqrb = createAction(actionTypes.FINA_QUERY_SFKJQRB);
 //查询分佣详情表
 export const searchfyxqReport= createAction(actionTypes.FINA_QUERY_FYXQB);
+//查询业绩调整汇总
+export const searchYjtzhz = createAction(actionTypes.FINA_QUERY_YJTZHZ);
+//查询调佣详情表
+export const searchTyxq = createAction(actionTypes.FINA_QUERY_TYXQ);

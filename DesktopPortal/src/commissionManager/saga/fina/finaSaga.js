@@ -232,6 +232,62 @@ export function* searchFyxqbDataAsync(state){
         });
     }
 }
+//查询业绩调整汇总表
+export function* searchYjtzhzDataAsync(state){
+    let result = { isOk: false, extension: [], msg: '查询业绩调整汇总表信息成功' };
+    let url = WebApiConfig.fina.searchPPFt;
+    try {
+        console.log(url)
+        console.log('searchYjtzhzDataAsync:', state);
+        let res = yield call(ApiClient.post, url,state.payload);
+       
+        //console.log(res, '获取参数列表');
+        getApiResult(res, result);
+        if (result.isOk) {
+            console.log('searchYjtzhzDataAsync返回成功:',result)
+            yield put({ type: actionUtils.getActionType(actionTypes.FINA_QUERY_YJTZHZ_SUCCESS), payload: result });
+            // yield put({ type: actionUtils.getActionType(actionTypes.SET_SEARCH_LOADING), payload: false });
+        }
+    } catch (e) {
+        result.msg = "查询业绩调整汇总表信息异常!";
+    }
+    if (!result.isOk) {
+        console.log(result.msg)
+        notification.error({
+            message: '提示',
+            description: '查询业绩调整汇总表信息失败!',
+            duration: 3
+        });
+    }
+}
+//查询调佣详情表
+export function* searchTyxqDataAsync(state){
+    let result = { isOk: false, extension: [], msg: '查询调佣详情表信息成功' };
+    let url = WebApiConfig.fina.searchPPFt;
+    try {
+        console.log(url)
+        console.log('searchTyxqDataAsync:', state);
+        let res = yield call(ApiClient.post, url,state.payload);
+       
+        //console.log(res, '获取参数列表');
+        getApiResult(res, result);
+        if (result.isOk) {
+            console.log('searchTyxqDataAsync返回成功:',result)
+            yield put({ type: actionUtils.getActionType(actionTypes.FINA_QUERY_TYXQ_SUCCESS), payload: result });
+            // yield put({ type: actionUtils.getActionType(actionTypes.SET_SEARCH_LOADING), payload: false });
+        }
+    } catch (e) {
+        result.msg = "查询调佣详情表信息异常!";
+    }
+    if (!result.isOk) {
+        console.log(result.msg)
+        notification.error({
+            message: '提示',
+            description: '查询调佣详情表信息失败!',
+            duration: 3
+        });
+    }
+}
 export default function* watchAllFinaAsync(){
     yield takeLatest(actionUtils.getActionType(actionTypes.FINA_QUERYPPFT), searchPPFtDataAsync);
     yield takeLatest(actionUtils.getActionType(actionTypes.FINA_QUERY_YFTCB), searchYftcbDataAsync);
@@ -241,4 +297,6 @@ export default function* watchAllFinaAsync(){
     yield takeLatest(actionUtils.getActionType(actionTypes.FINA_QUERY_LZRYYJQRB), searchLzryyjqrbDataAsync);
     yield takeLatest(actionUtils.getActionType(actionTypes.FINA_QUERY_SFKJQRB), searchSfkjqrbDataAsync);
     yield takeLatest(actionUtils.getActionType(actionTypes.FINA_QUERY_FYXQB), searchFyxqbDataAsync);
+    yield takeLatest(actionUtils.getActionType(actionTypes.FINA_QUERY_YJTZHZ), searchYjtzhzDataAsync);
+    yield takeLatest(actionUtils.getActionType(actionTypes.FINA_QUERY_TYXQ), searchTyxqDataAsync);
 }

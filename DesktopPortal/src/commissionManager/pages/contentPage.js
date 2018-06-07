@@ -63,6 +63,14 @@ const LoadableFYXQBPage = Loadable({//分佣详情表
     loader:()=>import('./fullRp/fyxqQuery'),
     loading:()=><LoadableLoading/>
 });
+const LoadableYJTZHZPage = Loadable({//调整佣
+    loader:()=>import('./fullRp/yjtzhzQuery'),
+    loading:()=><LoadableLoading/>
+});
+const LoadableTYXQPage = Loadable({//调整佣
+    loader:()=>import('./fullRp/tyxqQuery'),
+    loading:()=><LoadableLoading/>
+});
 
 function ContentPage(props) {
     const { curMenuID } = props;
@@ -124,6 +132,12 @@ function ContentPage(props) {
     }
     else if(curMenuID === 'menu_fyxcb'){
         return <LoadableFYXQBPage/>;
+    }
+    else if(curMenuID === 'menu_yjtzmxb'){
+        return <LoadableYJTZHZPage/>;
+    }
+    else if(curMenuID === 'menu_tymxb'){
+        return <LoadableTYXQPage/>;
     }
     return null;
 }
