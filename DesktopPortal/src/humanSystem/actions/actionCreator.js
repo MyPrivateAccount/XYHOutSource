@@ -82,3 +82,6 @@ export const deleteSalaryInfo = createAction(actionTypes.DELETE_SALARYINFO);
 
 //离职
 export const leavePosition = createAction(actionTypes.LEAVE_POSITON);
+
+//异动
+export const postChangeHuman = createAction(actionTypes.POST_CHANGEHUMAN);

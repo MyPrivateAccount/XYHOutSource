@@ -198,4 +198,30 @@ namespace XYHHumanPlugin.Models
         public bool IsFormalities { get; set; }
         public bool IsReduceSocialEnsure { get; set; }
     }
+
+    public class ChangeInfo
+    {
+        [Key]
+        [MaxLength(127)]
+        public string IDCard { get; set; }
+        public DateTime? ChangeTime { get; set; }
+        public int? ChangeType { get; set; }
+        public int? ChangeReason { get; set; }
+        [MaxLength(127)]
+        public string OtherReason { get; set; }
+        [MaxLength(127)]
+        public string OrgDepartmentId { get; set; }
+        [MaxLength(127)]
+        public string OrgPosition { get; set; }
+        [MaxLength(127)]
+        public string NewPosition { get; set; }
+        [MaxLength(127)]
+        public string NewDepartmentId { get; set; }
+        public int? BaseSalary { get; set; }
+        public int? Subsidy { get; set; }
+        public int? ClothesBack { get; set; }
+        public int? AdministrativeBack { get; set; }
+        public int? PortBack { get; set; }
+        public int? OtherBack { get; set; }
+    }
 }

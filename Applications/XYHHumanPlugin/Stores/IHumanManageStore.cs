@@ -40,6 +40,7 @@ namespace XYHHumanPlugin.Stores
 
         Task BecomeHuman(SocialInsurance info , string huid, CancellationToken cancellationToken = default(CancellationToken));
         Task LeaveHuman(LeaveInfo info, string huid, CancellationToken cancellationToken = default(CancellationToken));
+        Task ChangeHuman(ChangeInfo info, string huid, CancellationToken cancellationToken = default(CancellationToken));
 
         Task<TResult> GetAsync<TResult>(Func<IQueryable<HumanInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken));
         Task<TResult> GetMonthAsync<TResult>(Func<IQueryable<MonthInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken));

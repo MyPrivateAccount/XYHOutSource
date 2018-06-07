@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { createStation, getOrgList, getDicParList, getcreateStation } from '../../actions/actionCreator';
+import { createStation, postChangeHuman, getDicParList, getcreateStation } from '../../actions/actionCreator';
 import React, { Component } from 'react'
 import {InputNumber, Input, Form, Select, Button, Row, Col, Checkbox, DatePicker, Cascader} from 'antd'
 
@@ -21,6 +21,10 @@ class Change extends Component {
         this.props.dispatch(getDicParList(["HUMAN_CHANGE_TYPE", "HUMAN_CHANGEREASON_TYPE"]));
     }
 
+    componentDidMount() {
+        
+    }
+
     hasErrors(fieldsError) {
         return !Object.keys(fieldsError).some(field => fieldsError[field]);
     }
@@ -29,7 +33,7 @@ class Change extends Component {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                //this.props.dispatch(postBlackLst(values));
+                this.props.dispatch(postChangeHuman(values));
             }
         });
     }

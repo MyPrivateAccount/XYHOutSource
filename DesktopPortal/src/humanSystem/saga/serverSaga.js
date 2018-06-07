@@ -359,6 +359,35 @@ export function* leavePosition(state) {
     }
 }
 
+export function* changeHuman(state) {
+    let url = WebApiConfig.server.leavePositon;
+    let huResult = { isOk: false, msg: '异动失败！' };
+
+    try {
+        huResult = yield call(ApiClient.post, url, state.payload);
+        if (huResult.data.code == 0) {
+            huResult.data.message = '异动成功';
+
+            yield put({ type: actionUtils.getActionType(actionTypes.SET_USER_BREADITEMINDEX), payload: 0 });
+
+            notification.success({
+                message: huResult.data.message,
+                duration: 3
+            });
+
+            return;
+        }
+    } catch (e) {
+        huResult.data.message = "离职接口调用异常!";
+    }
+    
+    if (huResult.data.code != 0) {
+        notification.error({
+            message: huResult.data.message,
+            duration: 3
+        });
+    }
+}
 export default function* watchDicAllAsync() {
     yield takeLatest(actionUtils.getActionType(actionTypes.POST_HUMANINFO), postHumanInfoAsync);
     yield takeLatest(actionUtils.getActionType(actionTypes.GET_HUMANINFONUMBER), getWorkNumber);
@@ -374,4 +403,5 @@ export default function* watchDicAllAsync() {
     yield takeLatest(actionUtils.getActionType(actionTypes.DELETE_BLACKINFO), deleteBlackInfo);
     yield takeLatest(actionUtils.getActionType(actionTypes.POST_SOCIALINSURANCE), setSocialInsure);
     yield takeLatest(actionUtils.getActionType(actionTypes.LEAVE_POSITON), leavePosition);
+    yield takeLatest(actionUtils.getActionType(actionTypes.POST_CHANGEHUMAN), changeHuman);
 }
