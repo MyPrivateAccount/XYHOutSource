@@ -19,6 +19,7 @@ using GatewayInterface;
 using Microsoft.Extensions.DependencyInjection;
 using SocialInsuranceRequest = XYHHumanPlugin.Dto.Response.SocialInsuranceResponse;
 using LeaveInfoRequest = XYHHumanPlugin.Dto.Response.LeaveInfoResponse;
+using ChangeInfoRequest = XYHHumanPlugin.Dto.Response.ChangeInfoResponse;
 
 namespace XYHHumanPlugin.Controllers
 {
@@ -113,7 +114,7 @@ namespace XYHHumanPlugin.Controllers
 
             try
             {
-                _humanManage.BecomeHuman(condition, HttpContext.RequestAborted);
+               await _humanManage.BecomeHuman(condition, HttpContext.RequestAborted);
             }
             catch (Exception e)
             {
@@ -138,7 +139,7 @@ namespace XYHHumanPlugin.Controllers
 
             try
             {
-                _humanManage.LeaveHuman();
+                await _humanManage.LeaveHuman(condition, HttpContext.RequestAborted);
                 //_humanManage.BecomeHuman(condition, HttpContext.RequestAborted);
             }
             catch (Exception e)
@@ -146,6 +147,31 @@ namespace XYHHumanPlugin.Controllers
                 pagingResponse.Code = ResponseCodeDefines.ServiceError;
                 pagingResponse.Message = "服务器错误:" + e.ToString();
                 Logger.Error($"用户{User?.UserName ?? ""}({User?.Id ?? ""})员工离职条件(PostCustomerListSaleMan)请求失败：\r\n{pagingResponse.Message ?? ""}，\r\n请求参数为：\r\n" + (condition != null ? JsonHelper.ToJson(condition) : ""));
+            }
+            return pagingResponse;
+        }
+
+        [HttpPost("changehuman")]
+        [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
+        public async Task<ResponseMessage> ChangeHumanInfo(UserInfo User, [FromBody]ChangeInfoRequest condition)
+        {
+            var pagingResponse = new ResponseMessage();
+            if (!ModelState.IsValid)
+            {
+                pagingResponse.Code = ResponseCodeDefines.ModelStateInvalid;
+                Logger.Warn($"用户{User?.UserName ?? ""}({User?.Id ?? ""})人事异动条件(PostCustomerListSaleMan)模型验证失败：\r\n{pagingResponse.Message ?? ""}，\r\n请求参数为：\r\n" + (condition != null ? JsonHelper.ToJson(condition) : ""));
+                return pagingResponse;
+            }
+
+            try
+            {
+                await _humanManage.ChangeHuman(condition, HttpContext.RequestAborted);
+            }
+            catch (Exception e)
+            {
+                pagingResponse.Code = ResponseCodeDefines.ServiceError;
+                pagingResponse.Message = "服务器错误:" + e.ToString();
+                Logger.Error($"用户{User?.UserName ?? ""}({User?.Id ?? ""})员工异动条件(PostCustomerListSaleMan)请求失败：\r\n{pagingResponse.Message ?? ""}，\r\n请求参数为：\r\n" + (condition != null ? JsonHelper.ToJson(condition) : ""));
             }
             return pagingResponse;
         }

@@ -202,7 +202,7 @@ namespace XYHHumanPlugin.Stores
                     ID = huid,
                     IsSocialInsurance = info.IsSocial,
                     SocialInsuranceInfo = info.IDCard,
-                    BecomeTime = DateTime.Now,
+                    BecomeTime = info.EnTime,
                     StaffStatus = 3
                 };
 
@@ -222,23 +222,59 @@ namespace XYHHumanPlugin.Stores
             
         }
 
-        public async Task LeaveHuman(string idcard, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task LeaveHuman(LeaveInfo info, string huid, CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (idcard == null)
+            if (info == null)
             {
-                throw new ArgumentNullException(nameof(idcard));
+                throw new ArgumentNullException(nameof(info));
             }
             HumanInfo buildings = new HumanInfo()
             {
-                ID = idcard,
+                ID = huid,
                 LeaveTime = DateTime.Now,
                 StaffStatus = 1
             };
 
+            Context.Add(info);
             Context.Attach(buildings);
             var entry = Context.Entry(buildings);
             entry.Property(x => x.LeaveTime).IsModified = true;
             entry.Property(x => x.StaffStatus).IsModified = true;
+            
+            await Context.SaveChangesAsync(cancellationToken);
+        }
+
+        public async Task Task ChangeHuman(ChangeInfo info, string huid, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (info == null)
+            {
+                throw new ArgumentNullException(nameof(info));
+            }
+
+            HumanInfo buildings = new HumanInfo()
+            {
+                ID = huid,
+                Position = info.NewPosition,
+                DepartmentId = info.NewDepartmentId,
+                BaseSalary = info.BaseSalary,
+                Subsidy = info.Subsidy,
+                ClothesBack = info.ClothesBack,
+                AdministrativeBack = info.AdministrativeBack,
+                PortBack = info.PortBack,
+                OtherBack = info.OtherBack
+            };
+
+            Context.Add(info);
+            Context.Attach(buildings);
+            var entry = Context.Entry(buildings);
+            entry.Property(x => x.Position).IsModified = true;
+            entry.Property(x => x.DepartmentId).IsModified = true;
+            entry.Property(x => x.BaseSalary).IsModified = true;
+            entry.Property(x => x.Subsidy).IsModified = true;
+            entry.Property(x => x.ClothesBack).IsModified = true;
+            entry.Property(x => x.AdministrativeBack).IsModified = true;
+            entry.Property(x => x.PortBack).IsModified = true;
+            entry.Property(x => x.OtherBack).IsModified = true;
             
             await Context.SaveChangesAsync(cancellationToken);
         }

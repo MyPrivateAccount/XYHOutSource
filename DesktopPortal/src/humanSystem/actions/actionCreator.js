@@ -19,6 +19,8 @@ export const openOrgSelect = createAction(actionTypes.OPEN_ORG_SELECT);
 export const closeOrgSelect = createAction(actionTypes.CLOSE_ORG_SELECT);
 export const changeActiveOrg = createAction(actionTypes.CHAGNE_ACTIVE_ORG);
 
+export const setVisibleHead = createAction(actionTypes.SET_VISIBLEHEAD);
+
 //搜索处理
 export const searchKeyWord = createAction(actionTypes.SEARCH_KEYWORD);
 export const searchCondition = createAction(actionTypes.SEARCH_CONDITION);
@@ -77,3 +79,9 @@ export const setSalaryInfo = createAction(actionTypes.SET_SALARYINFO);
 //export const updateSalaryInfo = createAction(actionTypes.UPDATE_SALARYINFO);
 export const setSelSalaryList = createAction(actionTypes.SET_SELSALARYLIST);
 export const deleteSalaryInfo = createAction(actionTypes.DELETE_SALARYINFO);
+
+//离职
+export const leavePosition = createAction(actionTypes.LEAVE_POSITON);
+
+//异动
+export const postChangeHuman = createAction(actionTypes.POST_CHANGEHUMAN);

@@ -104,7 +104,8 @@ CREATE TABLE `XYH_HU_SOCIALINSURANCE` (
   `IsSocial` tinyint DEFAULT 0,/*是否社保*/
   `Giveup` tinyint DEFAULT 0,/*放弃社保*/
   `GiveupSign` tinyint DEFAULT 0,/*放弃陈诺书*/
-  `EnTime` datetime(6) DEFAULT NULL,/*参保时间*/
+  `EnTime` datetime(6) DEFAULT NULL,/*转正时间*/
+  `SureTime` datetime(6) DEFAULT NULL,/*参保时间*/
   `EnPlace` varchar(255) DEFAULT NULL,
   `Pension` int(11) DEFAULT 0,/*养老*/
   `Medical` int(11) DEFAULT 0,/*医疗*/
@@ -157,6 +158,26 @@ CREATE TABLE `XYH_HU_SALARY` (
   `PortBack` int(11) DEFAULT 0,/*端口扣款*/
   `OtherBack` int(11) DEFAULT 0,/*其它扣款*/
   PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `XYH_HU_CHANGE`;/*异动调薪*/
+CREATE TABLE `XYH_HU_CHANGE` (
+  `IDCard` varchar(127) NOT NULL DEFAULT '',/**/
+  `ChangeTime` datetime NOT NULL, /*变动时间*/
+  `ChangeType` int(11) NOT NULL,/*异动类型*/
+  `ChangeReason` int(11) NOT NULL,/*异动原因*/
+  `OtherReason` varchar(127) DEFAULT '',/*其它原因*/
+  `OrgDepartmentId` varchar(127) DEFAULT '',/**/
+  `OrgStation` varchar(127) DEFAULT '',/**/
+  `NewStation` varchar(127) DEFAULT '',/**/
+  `NewDepartmentId` varchar(127) DEFAULT '',/**/
+  `BaseSalary` int(11) DEFAULT 0,/*基本工资*/
+  `Subsidy`int(11) DEFAULT 0,/*岗位补贴*/
+  `ClothesBack` int(11) DEFAULT 0,/*工装扣款*/
+  `AdministrativeBack` int(11) DEFAULT 0,/*行政扣款*/
+  `PortBack` int(11) DEFAULT 0,/*端口扣款*/
+  `OtherBack` int(11) DEFAULT 0,/*其它扣款*/
+  PRIMARY KEY (`IDCard`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `XYH_HU_MONTH`;/*月结*/

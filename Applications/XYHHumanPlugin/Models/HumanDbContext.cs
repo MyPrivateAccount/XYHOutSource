@@ -27,6 +27,7 @@ namespace XYHHumanPlugin.Models
         public DbSet<AnnexInfo> AnnexInfos { get; set; }
         public DbSet<FileInfo> FileInfos { get; set; }
         public DbSet<Users> Users { get; set; }
+        public DbSet<LeaveInfo> LeaveInfos { get; set; }
 
         public DbSet<SocialInsurance> SocialInsurances { get; set; }
         public DbSet<Organizations> Organizations { get; set; }
@@ -92,6 +93,10 @@ namespace XYHHumanPlugin.Models
             modelBuilder.Entity<SocialInsurance>(b => {
                 b.HasKey(k => new { k.IDCard });
                 b.ToTable("XYH_HU_SOCIALINSURANCE");
+            });
+            modelBuilder.Entity<LeaveInfo>(b => {
+                b.HasKey(k => new { k.IDCard });
+                b.ToTable("XYH_HU_LEAVEINFO");
             });
             modelBuilder.Entity<Users>(b =>
             {

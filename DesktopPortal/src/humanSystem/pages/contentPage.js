@@ -16,7 +16,7 @@ const LoadableBecomeStaffdPage = Loadable({
     loading: () => <LoadableLoading />,
 });
 const LoadableLeftdPage = Loadable({
-    loader: () => import('./staffinfo/left'),
+    loader: () => import('./staffinfo/leave'),
     loading: () => <LoadableLoading />,
 });
 const LoadableChangedPage = Loadable({

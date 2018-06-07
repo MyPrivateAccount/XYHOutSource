@@ -8,7 +8,7 @@ import getApiResult from './sagaUtil';
 import { notification } from 'antd';
 
 const actionUtils = appAction(actionTypes.ACTION_ROUTE)
-
+const PositionStatus = ["未入职", "离职", "入职", "转正"];
 export function* getCustomerListAsync(state) {
     let result = { isOk: false, extension: [], msg: '客源查询失败！' };
     let url = WebApiConfig.search.getSaleManCustomerList;//默认为业务员客户查询
@@ -55,11 +55,12 @@ export function* getSearchConditionAsync(state) {
              result.isOk = true;
              let lv = res.data.extension;
              let data = lv.map(function(v, k) {
-                let sn = "";
+                let sn = "", fn = "";
                  (v.sex==1)&&(sn = "男");
                  (v.sex==2)&&(sn = "女");
+                 fn = v.staffStatus?PositionStatus[v.staffStatus]:"未入职"
                  return {key: k, id: v.id, name: v.name,
-                    sex: v.sex, sexname:sn, idcard: v.idCard, position: v.position,
+                    sex: v.sex, sexname:sn, idcard: v.idCard, position: v.position,staffStatus: fn,
                     entryTime: v.entryTime?v.entryTime.replace("T", " "):"", becomeTime: v.becomeTime?v.becomeTime.replace("T", " "):"", baseSalary: v.baseSalary,
                     socialInsurance: v.IsSocialInsurance?"是":"否", contract: v.contract?"是":"否"};
             });
@@ -91,13 +92,14 @@ export function* getHumanListAsync(state) {
              result.isOk = true;
              let lv = res.data.extension;
              let data = lv.map(function(v, k) {
-                 let sn = "";
-                 (v.sex==1)&&(sn = "男");
-                 (v.sex==2)&&(sn = "女");
-                 return {key: k, id: v.id, name: v.name,
-                    sex: v.sex, sexname:sn, idcard: v.idCard, position: v.position,
-                    entryTime: v.entryTime?v.entryTime.replace("T", " "):"", becomeTime: v.becomeTime?v.becomeTime.replace("T", " "):"", baseSalary: v.baseSalary,
-                    socialInsurance: v.IsSocialInsurance?"是":"否", contract: v.contract?"是":"否"};
+                let sn = "", fn = "";
+                (v.sex==1)&&(sn = "男");
+                (v.sex==2)&&(sn = "女");
+                fn = v.staffStatus?PositionStatus[v.staffStatus]:"未入职"
+                return {key: k, id: v.id, name: v.name,
+                   sex: v.sex, sexname:sn, idcard: v.idCard, position: v.position,staffStatus: fn,
+                   entryTime: v.entryTime?v.entryTime.replace("T", " "):"", becomeTime: v.becomeTime?v.becomeTime.replace("T", " "):"", baseSalary: v.baseSalary,
+                   socialInsurance: v.IsSocialInsurance?"是":"否", contract: v.contract?"是":"否"};
              });
 
              yield put ({type: actionUtils.getActionType(actionTypes.UPDATE_ALLHUMANINFO), payload: data});

@@ -11,26 +11,38 @@ const initState = {
     selHumanList: [],
     searchOrgTree: [],
     stationTypeList: [],
+    changeTypeList: [],
+    changeResonList: [],
     humanImage:[],
     navigator: [{id: 20, menuID: "menu_user_mgr", displayName: "员工信息管理", menuIcon: 'contacts'}],//导航记录
     monthresult: {extension: [{key: '1', last: 'tt', monthtime: 'test', operater: 'hhee'}], pageIndex: 0, pageSize: 10, totalCount: 1},
     monthlast: '2018.5',
-    activeOrg: {},
     headVisible: true,
 };
 let reducerMap = {};
 //字典数据
 reducerMap[actionTypes.DIC_GET_PARLIST_COMPLETE] = function (state, action) {
     let stationTypeList = [...state.stationTypeList];
+    let changeTypeList = [...state.changeTypeList];
+    let changeResonList = [...state.changeResonList];
 
     action.payload.map((group) => {
         if(group.groupId === "POSITION_TYPE") {
             group.dictionaryDefines = group.dictionaryDefines.sort((aItem, bItem) => aItem.order - bItem.order);
             stationTypeList = group.dictionaryDefines;
+        } else if(group.groupId === "HUMAN_CHANGE_TYPE") {
+            group.dictionaryDefines = group.dictionaryDefines.sort((aItem, bItem) => aItem.order - bItem.order);
+            changeTypeList = group.dictionaryDefines;
+        } else if(group.groupId === "HUMAN_CHANGEREASON_TYPE") {
+            group.dictionaryDefines = group.dictionaryDefines.sort((aItem, bItem) => aItem.order - bItem.order);
+            changeResonList = group.dictionaryDefines;
         }
+
     });
     return Object.assign({}, state, {
         stationTypeList: stationTypeList,
+        changeTypeList: changeTypeList,
+        changeResonList: changeResonList,
     });
 }
 //区域数据
@@ -232,6 +244,9 @@ reducerMap[actionTypes.UPDATE_BLACKLST] = function(state, action) {
 }
 reducerMap[actionTypes.UPDATE_ALLHUMANINFO] = function(state, action) {
     return Object.assign({}, state, { headVisible: true} );
+}
+reducerMap[actionTypes.SET_VISIBLEHEAD] = function(state, action) {
+    return Object.assign({}, state, { headVisible: action.payload.headVisible} );
 }
 
 export default handleActions(reducerMap, initState);

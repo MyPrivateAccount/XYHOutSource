@@ -12,6 +12,7 @@ namespace XYHHumanPlugin.Dto.Response
         public bool Giveup { get; set; }
         public bool GiveupSign { get; set; }
         public DateTime? EnTime { get; set; }
+        public DateTime? SureTime { get; set; }
         public string EnPlace { get; set; }
         public int? Pension { get; set; }
         public int? Medical { get; set; }
