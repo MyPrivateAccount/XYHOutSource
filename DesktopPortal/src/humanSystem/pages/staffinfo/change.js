@@ -22,7 +22,25 @@ class Change extends Component {
     }
 
     componentDidMount() {
-        
+        let len = this.props.selHumanList.length;
+        if (this.props.ismodify == 1) {//修改界面
+            if (len > 0) {
+
+                let lstvalue = [];
+                this.findCascaderLst(this.props.selHumanList[len-1].departmentId, this.props.setDepartmentOrgTree, lstvalue);
+
+                this.state.id = this.props.selHumanList[len-1].id;
+                this.props.form.setFieldsValue({name: this.props.selHumanList[len-1].name});
+                this.props.form.setFieldsValue({idcard: this.props.selHumanList[len-1].idcard});
+                this.props.form.setFieldsValue({orgDepartmentId: lstvalue});
+
+                this.props.form.setFieldsValue({baseSalary: this.props.selHumanList[len-1].baseSalary});
+                this.props.form.setFieldsValue({subsidy: this.props.selHumanList[len-1].subsidy});
+                this.props.form.setFieldsValue({clothesBack: this.props.selHumanList[len-1].clothesBack});
+                this.props.form.setFieldsValue({administrativeBack: this.props.selHumanList[len-1].administrativeBack});
+                this.props.form.setFieldsValue({portBack: this.props.selHumanList[len-1].portBack});
+            }
+        }
     }
 
     hasErrors(fieldsError) {
@@ -48,6 +66,21 @@ class Change extends Component {
         this.state.department = e[e.length-1];
     }
 
+    findCascaderLst(id, tree, lst) {
+        if (tree) {
+            if (tree.children&&tree.children.length === 0&&tree.id === id) {
+                lst.unshift(tree.id);
+                return true;
+            } else {
+                if (tree.children.findIndex(org => this.getChildrenID(org)) !== -1) {
+                    lst.unshift(tree.id);
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     render() {
         let self = this;
         const { getFieldDecorator, getFieldsError, getFieldsValue, isFieldTouched } = this.props.form;
@@ -56,6 +89,24 @@ class Change extends Component {
                 <Form onSubmit={this.handleSubmit}>
                     <FormItem {...formItemLayout1}/>
                     <FormItem {...formItemLayout1}/>
+                    <FormItem {...formItemLayout1} label="姓名">
+                        {getFieldDecorator('name', {
+                            reules: [{
+                                required:true, message: 'please entry',
+                            }]
+                        })(
+                            <Input disabled={true} placeholder="请输入姓名" />
+                        )}
+                    </FormItem>
+                    <FormItem {...formItemLayout1} label="身份证号">
+                        {getFieldDecorator('idcard', {
+                            reules: [{
+                                required:true, message: 'please entry',
+                            }]
+                        })(
+                            <Input disabled={true} placeholder="请输入身份证号" />
+                        )}
+                    </FormItem>
                     <FormItem {...formItemLayout1} label="异动类型">
                         {getFieldDecorator('changeType', {
                             reules: [{
@@ -102,13 +153,13 @@ class Change extends Component {
                         )}
                     </FormItem>
                     <FormItem {...formItemLayout1} label="所属部门">
-                        {getFieldDecorator('orgdepartmentId', {
+                        {getFieldDecorator('orgDepartmentId', {
                                     reules: [{
                                         required:true,
                                         message: 'please entry',
                                     }]
                                 })(
-                                    <Cascader disabled={this.props.ismodify == 1} style={{ width: '70%' }} options={this.props.setDepartmentOrgTree} onChange={this.handleChooseDepartmentChange} onPopupVisibleChange={this.handleDepartmentChange} changeOnSelect  placeholder="归属部门"/>
+                                    <Cascader disabled={true} style={{ width: '70%' }} options={this.props.setDepartmentOrgTree} onChange={this.handleChooseDepartmentChange} onPopupVisibleChange={this.handleDepartmentChange} changeOnSelect  placeholder="归属部门"/>
                                 )}
                     </FormItem>
                     <FormItem {...formItemLayout1} label="原职位">
@@ -117,7 +168,7 @@ class Change extends Component {
                                 required:true, message: 'please entry',
                             }]
                         })(
-                            <Input disabled={true} placeholder="请输入职位" />
+                            <Cascader style={{ width: '70%' }} options={this.props.setDepartmentOrgTree} onChange={this.handleChooseDepartmentChange} onPopupVisibleChange={this.handleDepartmentChange} changeOnSelect  placeholder="归属部门"/>
                         )}
                     </FormItem>
                     <FormItem {...formItemLayout1} label="新职位">
@@ -126,7 +177,16 @@ class Change extends Component {
                                 required:true, message: 'please entry',
                             }]
                         })(
-                            <Input placeholder="请输入新职位" />
+                            <Select disabled={this.props.ismodify == 1} style={{ width: '70%' }} onChange={this.handleSelectChange} placeholder="选择职位">
+                                {
+                                    (self.props.stationList && self.props.stationList.length > 0) ?
+                                        self.props.stationList.map(
+                                            function (params) {
+                                                return <Option key={params.key} value={params.id}>{params.stationname}</Option>;
+                                            }
+                                        ):null
+                                }
+                            </Select>
                         )}
                     </FormItem>
                     <FormItem {...formItemLayout1} label="新部门">
@@ -187,9 +247,11 @@ class Change extends Component {
 
 function tableMapStateToProps(state) {
     return {
+        stationList: state.search.stationList,
         selSalaryItem: state.basicData.selSalaryItem,
         changeResonList: state.basicData.changeResonList,
         changeTypeList: state.basicData.changeTypeList,
+        selHumanList: state.basicData.selHumanList,
         setDepartmentOrgTree: state.basicData.searchOrgTree,
     }
 }
