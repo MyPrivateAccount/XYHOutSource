@@ -59,10 +59,10 @@ export function* getSearchConditionAsync(state) {
                  (v.sex==1)&&(sn = "男");
                  (v.sex==2)&&(sn = "女");
                  fn = v.staffStatus?PositionStatus[v.staffStatus]:"未入职"
-                 return {key: k, id: v.id, name: v.name,
-                    sex: v.sex, sexname:sn, idcard: v.idCard, position: v.position,staffStatus: fn,
-                    entryTime: v.entryTime?v.entryTime.replace("T", " "):"", becomeTime: v.becomeTime?v.becomeTime.replace("T", " "):"", baseSalary: v.baseSalary,
-                    socialInsurance: v.IsSocialInsurance?"是":"否", contract: v.contract?"是":"否"};
+                 return {key: k, sexname: sn, staffStatus: fn,
+                    entryTime: v.entryTime?v.entryTime.replace("T", " "):"", becomeTime: v.becomeTime?v.becomeTime.replace("T", " "):"",
+                    socialInsurance: v.IsSocialInsurance?"是":"否", contract: v.contract?"是":"否",
+                    ...v};
             });
              let re = {extension: data, 
                 pageIndex: res.data.pageIndex, 
@@ -95,11 +95,11 @@ export function* getHumanListAsync(state) {
                 let sn = "", fn = "";
                 (v.sex==1)&&(sn = "男");
                 (v.sex==2)&&(sn = "女");
-                fn = v.staffStatus?PositionStatus[v.staffStatus]:"未入职"
-                return {key: k, id: v.id, name: v.name,
-                   sex: v.sex, sexname:sn, idcard: v.idCard, position: v.position,staffStatus: fn,
-                   entryTime: v.entryTime?v.entryTime.replace("T", " "):"", becomeTime: v.becomeTime?v.becomeTime.replace("T", " "):"", baseSalary: v.baseSalary,
-                   socialInsurance: v.IsSocialInsurance?"是":"否", contract: v.contract?"是":"否"};
+                fn = v.staffStatus?PositionStatus[v.staffStatus]:"未入职";
+                return {key: k, sexname: sn, staffStatus: fn,
+                        entryTime: v.entryTime?v.entryTime.replace("T", " "):"", becomeTime: v.becomeTime?v.becomeTime.replace("T", " "):"",
+                        socialInsurance: v.IsSocialInsurance?"是":"否", contract: v.contract?"是":"否",
+                        ...v};
              });
 
              yield put ({type: actionUtils.getActionType(actionTypes.UPDATE_ALLHUMANINFO), payload: data});
@@ -189,10 +189,7 @@ export function* getSalaryListAsync(state) {
 
             let lv = res.data.extension;
             let data = lv.extension.map(function(v, k) {
-                return {key: k, id: v.id, organize: v.organize, position:v.position,
-                     positionName: v.positionName, baseSalary: v.baseSalary,
-                     subsidy: v.subsidy, clothesBack: v.clothesBack, administrativeBack: v.administrativeBack,
-                     portBack: v.portBack};
+                return {key: k, ...v};
             });
             let re = {extension: data, 
                pageIndex: lv.pageIndex, 
