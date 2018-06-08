@@ -13,7 +13,7 @@ class DRpSearchCondition extends Component {
 
     componentWillMount() {
         this.setState({ isDataLoading: true, tip: '信息初始化中...' })
-        this.props.dispatch(getDicParList(['COMMISSION_BSWY_CATEGORIES', 'COMMISSION_CJBG_TYPE', 'COMMISSION_JY_TYPE', 'COMMISSION_PAY_TYPE', 'COMMISSION_PROJECT_TYPE', 'COMMISSION_CONTRACT_TYPE', 'COMMISSION_OWN_TYPE', 'COMMISSION_TRADEDETAIL_TYPE', 'COMMISSION_SFZJJG_TYPE']));
+        this.props.dispatch(getDicParList(['COMMISSION_BSWY_CATEGORIES', 'COMMISSION_CJBG_TYPE', 'COMMISSION_JY_TYPE', 'COMMISSION_PAY_TYPE', 'COMMISSION_PROJECT_TYPE', 'COMMISSION_CONTRACT_TYPE', 'COMMISSION_OWN_TYPE', 'COMMISSION_TRADEDETAIL_TYPE', 'COMMISSION_SFZJJG_TYPE','COMMISSION_DEAL_STATS','COMMISSION_GH_TYPES','COMMISSION_KHINFO_SOURCE','COMMISSION_RP_STATE','COMMISSION_WY_WYLX']));
     }
     componentWillReceiveProps(newProps){
         this.setState({isDataLoading:false})
@@ -116,10 +116,10 @@ class DRpSearchCondition extends Component {
         let tradeTypes = this.props.basicData.tradeTypes;
         let payTypes = this.props.basicData.payTypes;
         let wyWylxTypes = this.props.basicData.wyWylxTypes;
-        let cjTypes = [{key:'未成交',value:1},{key:'已成交',value:2}]
-        let ghTypes = [{key:'未过户',value:1},{key:'已过户',value:2}]
-        let khTypes = [{key:'推荐',value:1},{key:'其它',value:2}]
-        let spTypes = [{key:'通过',value:1},{key:'未通过',value:2}]
+        let cjTypes = this.props.basicData.cjTypes;
+        let ghTypes = this.props.basicData.ghTypes;
+        let khTypes = this.props.basicData.khTypes;
+        let spTypes = this.props.basicData.spTypes;
         return (
             <div className='searchCondition'>
                 <Spin spinning={this.state.isDataLoading} tip={this.state.tip}>

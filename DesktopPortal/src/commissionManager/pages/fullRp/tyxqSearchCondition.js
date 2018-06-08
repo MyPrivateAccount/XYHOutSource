@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { Row, Col, Button, Icon, DatePicker, Input, Select, Tooltip, Spin } from 'antd';
 import './search.less'
 import { connect } from 'react-redux';
+import { getDicParList } from '../../actions/actionCreator'
 
 class TyxqSearchCondition extends Component {
 
@@ -12,8 +13,8 @@ class TyxqSearchCondition extends Component {
     }
 
     componentWillMount() {
-        //this.setState({ isDataLoading: true, tip: '信息初始化中...' })
-        //this.props.dispatch(getDicParList(['COMMISSION_BSWY_CATEGORIES', 'COMMISSION_CJBG_TYPE', 'COMMISSION_JY_TYPE', 'COMMISSION_PAY_TYPE', 'COMMISSION_PROJECT_TYPE', 'COMMISSION_CONTRACT_TYPE', 'COMMISSION_OWN_TYPE', 'COMMISSION_TRADEDETAIL_TYPE', 'COMMISSION_SFZJJG_TYPE']));
+        this.setState({ isDataLoading: true, tip: '信息初始化中...' })
+        this.props.dispatch(getDicParList(['COMMISSION_JY_TYPE','COMMISSION_RP_STATE']));
     }
     componentWillReceiveProps(newProps) {
         this.setState({ isDataLoading: false })
@@ -99,7 +100,7 @@ class TyxqSearchCondition extends Component {
     }
     render() {
         let tradeTypes = this.props.basicData.tradeTypes;
-        let statusTypes = [{ key: '通过', value: 1 }, { key: '未通过', value: 0 }]
+        let statusTypes = this.props.basicData.spTypes;
 
         return (
             <div className='searchCondition'>
@@ -111,10 +112,10 @@ class TyxqSearchCondition extends Component {
                                     <DatePicker disabledDate={this.disabledDate} onChange={(e, dateString) => this.handleCreateTime(dateString, 'createDateStart')} />- <DatePicker disabledDate={this.disabledDate} onChange={(e, dateString) => this.handleCreateTime(dateString, 'createDateEnd')} />
                                 </label>
                             </Col>
-                            <Col span={4}>
+                            <Col span={12}>
                                 <label>
                                     <span style={{ marginRight: '10px' }}>成交编号</span>
-                                    <Input style={{ width: 80 }} onChange={(e) => this.handleInput(e, 'cjbh')}></Input>
+                                    <Input style={{ width: 200 }} onChange={(e) => this.handleInput(e, 'cjbh')}></Input>
                                 </label>
                             </Col>
                         </Row>

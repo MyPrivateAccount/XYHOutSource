@@ -67,7 +67,7 @@ class TradeCustomer extends Component {
               <FormItem {...formItemLayout} label={(<span>名称</span>)}>
                 {
                   getFieldDecorator('khMc', {
-                    rules: [{ required: false }],
+                    rules: [{ required: true,message:'请填写客户名称' }],
                     initialValue: this.state.rpData.khMc,
                   })(
                     <Input style={{ width: 200 }}></Input>
@@ -79,7 +79,7 @@ class TradeCustomer extends Component {
               <FormItem {...formItemLayout} label={(<span>身份证</span>)}>
                 {
                   getFieldDecorator('khZjhm', {
-                    rules: [{ required: false }],
+                    rules: [{ required: true,message:'请填写客户身份证' }],
                     initialValue: this.state.rpData.khZjhm,
                   })(
                     <Input style={{ width: 200 }}></Input>
@@ -105,7 +105,7 @@ class TradeCustomer extends Component {
               <FormItem {...formItemLayout} label={(<span>手机</span>)}>
                 {
                   getFieldDecorator('khSj', {
-                    rules: [{ required: false, message: '请填写成交人!' }],
+                    rules: [{ required: true, message: '请填写手机号码!' }],
                     initialValue: this.state.rpData.khSj,
                   })(
                     <Input style={{ width: 200 }}></Input>
@@ -117,7 +117,7 @@ class TradeCustomer extends Component {
               <FormItem {...formItemLayout} label={(<span>客户来源</span>)}>
                 {
                   getFieldDecorator('khKhly', {
-                    rules: [{ required: false, message: '请选择成交日期!' }],
+                    rules: [{ required: true, message: '请选择客户来源!' }],
                     initialValue: this.state.rpData.khKhly,
                   })(
                     <Input style={{ width: 200 }}></Input>

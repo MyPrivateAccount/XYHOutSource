@@ -66,7 +66,7 @@ class TradeBnsOwner extends Component {
               <FormItem {...formItemLayout} label={(<span>名称</span>)}>
                 {
                   getFieldDecorator('yzMc', {
-                    rules: [{ required: false }],
+                    rules: [{ required: true,message:'请填写业主名称' }],
                     initialValue: this.state.rpData.yzMc,
                   })(
                     <Input style={{ width: 200 }}></Input>

@@ -195,7 +195,7 @@ class TradeContract extends Component {
                             <FormItem {...formItemLayout} label={(<span>分行名称</span>)}>
                                 {
                                     getFieldDecorator('fyzId', {
-                                        rules: [{ required: false, message: '请填写分行名称!' }],
+                                        rules: [{ required: true, message: '请填写分行名称!' }],
                                         initialValue: this.state.rpData.fyzId,
                                     })(
                                         <Input style={{ width: 200 }}></Input>
@@ -207,7 +207,7 @@ class TradeContract extends Component {
                             <FormItem {...formItemLayout} label={(<span>成交人</span>)}>
                                 {
                                     getFieldDecorator('cjrId', {
-                                        rules: [{ required: false, message: '请填写成交人!' }],
+                                        rules: [{ required: true, message: '请填写成交人!' }],
                                         initialValue: this.state.rpData.cjrId,
                                     })(
                                         <Input style={{ width: 200 }}></Input>
@@ -219,7 +219,7 @@ class TradeContract extends Component {
                             <FormItem {...formItemLayout} label={(<span>成交日期</span>)}>
                                 {
                                     getFieldDecorator('cjrq', {
-                                        rules: [{ required: false, message: '请选择成交日期!' }],
+                                        rules: [{ required: true, message: '请选择成交日期!' }],
                                         initialValue: moment(this.getInvalidDate(this.state.rpData.cjrq)),
                                     })(
                                         <DatePicker style={{ width: 200 }}  onChange={this.cjrq_dateChange}></DatePicker>
@@ -233,7 +233,7 @@ class TradeContract extends Component {
                             <FormItem {...formItemLayout} label={(<span>成交报告编号</span>)}>
                                 {
                                     getFieldDecorator('cjbgbh', {
-                                        rules: [{ required: false }],
+                                        rules: [{ required: true, message: '请填写成交编号'}],
                                         initialValue: this.state.rpData.cjbgbh,
                                     })(
                                         <Input style={{ width: 200 }}></Input>
@@ -259,7 +259,7 @@ class TradeContract extends Component {
                             <FormItem {...formItemLayout} label={(<span>备注</span>)}>
                                 {
                                     getFieldDecorator('bz', {
-                                        rules: [{ required: false }],
+                                        rules: [{ required: true ,message: '请填写备注'}],
                                         initialValue: this.state.rpData.bz,
                                     })(
                                         <Input.TextArea rows={4} style={{ width: 510 }}></Input.TextArea>
@@ -345,7 +345,7 @@ class TradeContract extends Component {
                             <FormItem {...formItemLayout} label={(<span>成交总价</span>)}>
                                 {
                                     getFieldDecorator('cjzj', {
-                                        rules: [{ required: false, message: '请选择成交日期!' }],
+                                        rules: [{ required: true, message: '请填写成交总价!' }],
                                         initialValue: this.state.rpData.cjzj,
                                     })(
                                         <Input style={{ width: 200 }}></Input>
@@ -357,7 +357,7 @@ class TradeContract extends Component {
                             <FormItem {...formItemLayout} label={(<span>佣金</span>)}>
                                 {
                                     getFieldDecorator('ycjyj', {
-                                        rules: [{ required: false, message: '请选择成交日期!' }],
+                                        rules: [{ required: true, message: '请填写佣金金额!' }],
                                         initialValue: this.state.rpData.ycjyj,
                                     })(
                                         <Input style={{ width: 200 }}></Input>
@@ -511,7 +511,7 @@ class TradeContract extends Component {
                             <FormItem {...formItemLayout} label={(<span>自制合同</span>)}>
                                 {
                                     getFieldDecorator('zzhtbh', {
-                                        rules: [{ required: false }],
+                                        rules: [{ required: true,message:'请填写自制合同编号' }],
                                         initialValue: this.state.rpData.zzhtbh,
                                     })(
                                         <Input style={{ width: 200 }}></Input>

@@ -30,8 +30,15 @@ const initState = {
     //过户
     ghDknxTypes:[],
     //业绩分配
-    sfdxTypes:[]//收付对象
-
+    sfdxTypes:[],//收付对象
+    //成交状态
+    cjTypes:[],
+    //过户状态
+    ghTypes:[],
+    //客户来源
+    khTypes:[],
+    //成交报告审核状态
+    spTypes:[]
 };
 let reducerMap = {};
 //字典数据
@@ -64,6 +71,11 @@ reducerMap[actionTypes.DIC_GET_PARLIST_COMPLETE] = function (state, action) {
     let ghDknxTypes = [...state.ghDknxTypes];
     //
     let sfdxTypes = [...state.sfdxTypes];
+    //
+    let cjTypes = [...state.cjTypes];
+    let ghTypes = [...state.ghTypes];
+    let khTypes = [...state.khTypes];
+    let spTypes = [...state.spTypes];
     
     console.log('字典数据：', action.payload);
     action.payload.map((group) => {
@@ -155,6 +167,22 @@ reducerMap[actionTypes.DIC_GET_PARLIST_COMPLETE] = function (state, action) {
             group.dictionaryDefines = group.dictionaryDefines.sort((aItem, bItem) => aItem.order - bItem.order);
             sfdxTypes = group.dictionaryDefines;
         }
+        else if(group.groupId === 'COMMISSION_DEAL_STATS'){
+            group.dictionaryDefines = group.dictionaryDefines.sort((aItem, bItem) => aItem.order - bItem.order);
+            cjTypes = group.dictionaryDefines;
+        }
+        else if(group.groupId === 'COMMISSION_GH_TYPES'){
+            group.dictionaryDefines = group.dictionaryDefines.sort((aItem, bItem) => aItem.order - bItem.order);
+            ghTypes = group.dictionaryDefines;
+        }
+        else if(group.groupId === 'COMMISSION_KHINFO_SOURCE'){
+            group.dictionaryDefines = group.dictionaryDefines.sort((aItem, bItem) => aItem.order - bItem.order);
+            khTypes = group.dictionaryDefines;
+        }
+        else if(group.groupId === 'COMMISSION_RP_STATE'){
+            group.dictionaryDefines = group.dictionaryDefines.sort((aItem, bItem) => aItem.order - bItem.order);
+            spTypes = group.dictionaryDefines;
+        }
   
 
     });
@@ -180,7 +208,11 @@ reducerMap[actionTypes.DIC_GET_PARLIST_COMPLETE] = function (state, action) {
         yzChtscTypes:yzChtscTypes,
         khKhxzTypes:khKhxzTypes,
         ghDknxTypes:ghDknxTypes,
-        sfdxTypes:sfdxTypes
+        sfdxTypes:sfdxTypes,
+        cjTypes:cjTypes,
+        khTypes:khTypes,
+        ghTypes:ghTypes,
+        spTypes:spTypes
     });
 }
 
