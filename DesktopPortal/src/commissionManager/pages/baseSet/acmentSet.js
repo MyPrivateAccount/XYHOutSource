@@ -42,7 +42,7 @@ class AcmentSet extends Component{
         console.log(e)
         SearchCondition.acmentListCondition.pageIndex = 0;
         SearchCondition.acmentListCondition.pageSize = 10;
-        SearchCondition.acmentListCondition.OrganizationId = '';
+        SearchCondition.acmentListCondition.OrganizationId = e;
         console.log("查询条件", SearchCondition.acmentListCondition);
         this.setState({ isDataLoading: true });
         this.props.dispatch(acmentParamListGet(SearchCondition.acmentListCondition));

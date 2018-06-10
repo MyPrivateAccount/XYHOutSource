@@ -65,6 +65,14 @@ const WebApiConfig = {
     server: {
         uploadImg: basicDataBaseApiUrl + "yj/commissionfiles/",
     },
+    baseset:{
+        acmentlistget:basicDataBaseApiUrl+'yj/allocationsettings/',
+        acmentdetail:basicDataBaseApiUrl+'yj/allocationsettings/',
+        acmentsave:basicDataBaseApiUrl+'yj/allocationsettings/',
+        orgsave:basicDataBaseApiUrl+'yj/branchsettings/',
+        ppftsave:basicDataBaseApiUrl+'yj/brandsharesetting',
+        incomesave:basicDataBaseApiUrl+'yj/costbranch'
+    }
 
 }
 

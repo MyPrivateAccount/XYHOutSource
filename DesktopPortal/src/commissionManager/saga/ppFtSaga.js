@@ -18,8 +18,32 @@ export function* getPPFTDataListByOrgIdAsyncs(state){
 }
 //保存数据
 export function* savePPFTDataAsync(state){
-    let result = { isOk: false, msg: '保存分摊项数据失败!' };
     //等待数据接口
+    let result = { isOk: false, msg: '保存组织分摊设置成功!' };
+    console.log(state)
+    let url = WebApiConfig.baseset.ppftsave;
+    try {
+        console.log(url)
+        console.log('savePPFTDataAsync:', state);
+        let res = yield call(ApiClient.put, url, state.payload);
+       
+        //console.log(res, '获取参数列表');
+        getApiResult(res, result);
+        if (result.isOk) {
+            yield put({ type: actionUtils.getActionType(actionTypes.ORG_FT_PARAM_SAVE_SUCCESS), payload: result });
+            // yield put({ type: actionUtils.getActionType(actionTypes.SET_SEARCH_LOADING), payload: false });
+        }
+    } catch (e) {
+        result.msg = "保存组织分摊接口调用异常！";
+    }
+    if (!result.isOk) {
+        console.log(result.msg)
+        notification.error({
+            message: '提示',
+            description: '保存组织分摊失败!',
+            duration: 3
+        });
+    }
 }
 //删除数据
 export function* delPPFTDataAsync(state){

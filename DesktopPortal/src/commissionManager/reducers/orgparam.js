@@ -25,4 +25,8 @@ orgParamReducerMap[actionTypes.ORG_PARAM_DIALOG_CLOSE] = function (state, action
     console.log("readucer退出dialog" + JSON.stringify(action.payload));
     return Object.assign({}, state, { operInfo: { objType: '', operType: ''} });
 }
+orgParamReducerMap[actionTypes.ORG_PARAM_SAVE_UPDATE] = function (state, action) {
+    console.log("组织参数设置保存成功" + JSON.stringify(action.payload));
+    return Object.assign({}, state, { operInfo: { objType: '', operType: 'orgparam_save_success'} });
+}
 export default handleActions(orgParamReducerMap, initState)

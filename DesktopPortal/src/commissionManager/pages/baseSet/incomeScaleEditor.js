@@ -34,7 +34,7 @@ class InComeScaleEditor extends Component{
             if (!err) {
                 console.log('Received values of form: ', values);
                 //调用保存接口，进行数据保存,待续
-                this.props.dispatch(incomeScaleSave());
+                this.props.dispatch(incomeScaleSave(values));
             }
         });
     };
@@ -60,7 +60,7 @@ class InComeScaleEditor extends Component{
                                 </span>
                             )}
                             hasFeedback>
-                            {getFieldDecorator('orgName', {
+                            {getFieldDecorator('OrganizationId', {
 
                                 initialValue: this.state.paramInfo.orgName,
                             })(
