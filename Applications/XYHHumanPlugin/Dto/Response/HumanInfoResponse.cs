@@ -13,6 +13,7 @@ namespace XYHHumanPlugin.Dto.Response
         public int Age { get; set; }
         public int Sex { get; set; }
         public string Position { get; set; }
+        public string PositionName { get; set; }
         public string DepartmentId { get; set; }
         public int? Payment { get; set; }
         public int? Modify { get; set; }

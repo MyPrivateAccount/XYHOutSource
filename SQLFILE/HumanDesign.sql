@@ -17,7 +17,7 @@ CREATE TABLE `XYH_HU_HUMANMANAGE` (
   `Modify` int(11) DEFAULT '0',/*修改个数*/
   `Picture` varchar(256) DEFAULT '',/*员工照片*/
   `RecentModify` varchar(127) DEFAULT '',/*最近修改:创建kl入职 离职--外链表*/
-  `StaffStatus` int(11) DEFAULT 0,/*0 未入职 1离职 2入职 3转正*/
+  `StaffStatus` int(11) DEFAULT 0,/*-1黑名单 0 未入职 1离职 2入职 3转正 */
   `Contract` varchar(127) DEFAULT '',/*合同上传内容个数--外链*/
   `CreateTime` datetime DEFAULT NULL,/*创建时间*/
   `EntryTime` datetime DEFAULT NULL,/*入职时间*/

@@ -19,7 +19,7 @@ class Black extends Component {
     componentDidMount() {
         let len = this.props.selBlacklist.length;
         if (this.props.ismodify == 1) {//修改界面
-            this.props.form.setFieldsValue({idcard: this.props.selBlacklist[len-1].idCard});
+            this.props.form.setFieldsValue({idCard: this.props.selBlacklist[len-1].idCard});
             this.props.form.setFieldsValue({name: this.props.selBlacklist[len-1].name});
             this.props.form.setFieldsValue({reason: this.props.selBlacklist[len-1].reason});
         }
@@ -46,9 +46,9 @@ class Black extends Component {
                     <FormItem {...formItemLayout1}/>
                     <FormItem {...formItemLayout1}/>
                     <FormItem {...formItemLayout1} label="身份证号码">
-                        {getFieldDecorator('idcard', {
+                        {getFieldDecorator('idCard', {
                             reules: [{
-                                required:true, message: 'please entry idcard',
+                                required:true, message: 'please entry idCard',
                             }]
                         })(
                             <Input disabled={this.props.ismodify==1} placeholder="请输入身份证号码" />

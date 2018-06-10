@@ -131,12 +131,26 @@ namespace XYHHumanPlugin.Stores
             await Context.SaveChangesAsync(cle);
         }
 
-        public async Task SetBlackAsync(BlackInfo salaryinfo, CancellationToken cle = default(CancellationToken))
+        public async Task SetBlackAsync(BlackInfo salaryinfo, string id = null, CancellationToken cle = default(CancellationToken))
         {
             if (salaryinfo == null)
             {
                 throw new ArgumentNullException(nameof(salaryinfo));
             }
+
+            if (id != null)
+            {
+                HumanInfo buildings = new HumanInfo()
+                {
+                    ID = id,
+                    StaffStatus = -1
+                };
+
+                Context.Attach(buildings);
+                var entry = Context.Entry(buildings);
+                entry.Property(x => x.StaffStatus).IsModified = true;
+            }
+            
 
             if (Context.BlackInfos.Any(x => x.IDCard == salaryinfo.IDCard))
             {
@@ -213,7 +227,16 @@ namespace XYHHumanPlugin.Stores
                 entry.Property(x => x.BecomeTime).IsModified = true;
                 entry.Property(x => x.StaffStatus).IsModified = true;
 
-                Context.Add(info);
+                if (Context.SocialInsurances.Any(x => x.IDCard == info.IDCard))
+                {
+                    Context.Attach(info);
+                    Context.Update(info);
+                }
+                else
+                {
+                    Context.Add(info);
+                }
+
                 await Context.SaveChangesAsync(cancellationToken);
             }
             else {
@@ -235,7 +258,17 @@ namespace XYHHumanPlugin.Stores
                 StaffStatus = 1
             };
 
-            Context.Add(info);
+            if (Context.LeaveInfos.Any(x => x.IDCard == info.IDCard))
+            {
+                Context.Attach(info);
+                Context.Update(info);
+            }
+            else
+            {
+                Context.Add(info);
+            }
+
+
             Context.Attach(buildings);
             var entry = Context.Entry(buildings);
             entry.Property(x => x.LeaveTime).IsModified = true;
@@ -244,7 +277,7 @@ namespace XYHHumanPlugin.Stores
             await Context.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task Task ChangeHuman(ChangeInfo info, string huid, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task ChangeHuman(ChangeInfo info, string huid, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (info == null)
             {
@@ -264,7 +297,16 @@ namespace XYHHumanPlugin.Stores
                 OtherBack = info.OtherBack
             };
 
-            Context.Add(info);
+            if (Context.ChangeInfos.Any(x => x.IDCard == info.IDCard))
+            {
+                Context.Attach(info);
+                Context.Update(info);
+            }
+            else
+            {
+                Context.Add(info);
+            }
+
             Context.Attach(buildings);
             var entry = Context.Entry(buildings);
             entry.Property(x => x.Position).IsModified = true;
@@ -394,6 +436,15 @@ namespace XYHHumanPlugin.Stores
                 throw new ArgumentNullException(nameof(query));
             }
             return query.Invoke(Context.HumanInfos.AsNoTracking()).SingleOrDefaultAsync(cancellationToken);
+        }
+
+        public Task<TResult> GetStationAsync<TResult>(Func<IQueryable<PositionInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (query == null)
+            {
+                throw new ArgumentNullException(nameof(query));
+            }
+            return query.Invoke(Context.PositionInfos.AsNoTracking()).SingleOrDefaultAsync(cancellationToken);
         }
 
         public Task<List<TResult>> GetFileListAsync<TResult>(Func<IQueryable<FileInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken))

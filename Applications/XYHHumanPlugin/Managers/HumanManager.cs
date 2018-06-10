@@ -72,8 +72,12 @@ namespace XYHHumanPlugin.Managers
         public virtual async Task<FileItemResponse> GetFilelistAsync(string humanid, CancellationToken cancellationToken = default(CancellationToken))
         {
             var f = await _Store.GetScopeFileListAsync(a => a.Where(b => b.ID == humanid));
-            var fileinfo = await _Store.GetFileListAsync(a => a.Where(b => b.FileGuid == f[0].FileGuid));
-            return ConvertToFileItem(f[0].FileGuid, fileinfo);
+            if (f.Count > 0)
+            {
+                var fileinfo = await _Store.GetFileListAsync(a => a.Where(b => b.FileGuid == f[0].FileGuid));
+                return ConvertToFileItem(f[0].FileGuid, fileinfo);
+            }
+            return null;
         }
         
         private FileItemResponse ConvertToFileItem(string fileGuid, List<FileInfo> fl)
@@ -167,7 +171,7 @@ namespace XYHHumanPlugin.Managers
             {
                 throw new ArgumentNullException(nameof(info));
             }
-            await _Store.ChangeHuman(_mapper.Map<HumanInfo>(info), info.ID, cancellationToken);
+            await _Store.ChangeHuman(_mapper.Map<ChangeInfo>(info), info.ID, cancellationToken);
         }
 
         #region 检索
@@ -324,12 +328,23 @@ namespace XYHHumanPlugin.Managers
 
                 for (; begin < end; begin++)
                 {
+                    
                     result.Add(query.ElementAt(begin));
                 }
 
                 Response.PageIndex = condition.pageIndex;
                 Response.PageSize = condition.pageSize;
                 Response.Extension = _mapper.Map<List<HumanInfoResponse>>(result);
+
+                foreach (var item in Response.Extension)
+                {
+                    var tf = await _Store.GetStationAsync(a => a.Where(b => b.ID == item.Position));
+                    if (tf != null)
+                    {
+                        item.PositionName = tf.PositionName;
+                    }
+                    
+                }
             }
             catch (Exception e)
             {

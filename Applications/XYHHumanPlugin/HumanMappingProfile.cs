@@ -41,6 +41,9 @@ namespace XYHHumanPlugin
 
             CreateMap<LeaveInfo, LeaveInfoResponse>();
             CreateMap<LeaveInfoResponse, LeaveInfo>();
+
+            CreateMap<ChangeInfoResponse, ChangeInfo>();
+            CreateMap<ChangeInfo, ChangeInfoResponse>();
         }
     }
 }

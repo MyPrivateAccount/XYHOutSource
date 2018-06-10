@@ -18,7 +18,7 @@ namespace XYHHumanPlugin.Stores
         Task CreateAsync(FileInfo fileinfo, CancellationToken cancellationToken = default(CancellationToken));
         Task SetStationAsync(PositionInfo fileinfo, CancellationToken cancellationToken = default(CancellationToken));
         Task SetSalaryAsync(SalaryInfo salaryinfo, CancellationToken cle = default(CancellationToken));
-        Task SetBlackAsync(BlackInfo salaryinfo, CancellationToken cle = default(CancellationToken));
+        Task SetBlackAsync(BlackInfo salaryinfo, string id = null, CancellationToken cle = default(CancellationToken));
 
 
         Task CreateMonthAsync(SimpleUser userinfo, MonthInfo monthinf, CancellationToken cancellationToken = default(CancellationToken));
@@ -50,6 +50,7 @@ namespace XYHHumanPlugin.Stores
 
         Task<List<TResult>> GetHumanListAsync<TResult>(Func<IQueryable<HumanInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken));
 
+        Task<TResult> GetStationAsync<TResult>(Func<IQueryable<PositionInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken));
         Task<List<TResult>> GetStationListAsync<TResult>(Func<IQueryable<PositionInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken));
         Task<TResult> GetModifyAsync<TResult>(Func<IQueryable<ModifyInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken));
         Task<List<TResult>> GetListModifyAsync<TResult>(Func<IQueryable<ModifyInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken));

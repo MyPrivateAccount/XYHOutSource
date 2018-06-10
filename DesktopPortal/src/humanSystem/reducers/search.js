@@ -6,6 +6,7 @@ const initState = {
     attendanceList: {extension: [{key: "1", time: "tt", name: "tt", idcard: "tta", signed: "today"}], pageIndex: 0, pageSize: 10, totalCount: 1},
     achievementList: {extension: [], pageIndex: 0, pageSize: 10, totalCount: 1},
     stationList: [],//选中的部门职位
+    orgstationList: [],//选中的部门职位
     blackList: {extension: [{key: '1', idcard: 'tt', name: 'test', reason: "tta"}], pageIndex: 0, pageSize: 10, totalCount: 1},//黑名单结果
     showLoading: false,
     showOrgSelect: false,//部门选择
@@ -98,6 +99,13 @@ reducerMap[actionTypes.UPDATE_STATIONLIST] = function (state, action) {
         return {key: i+"", stationname: v.positionName, isnew: false, positionType:v.positionType, id: v.id};
     });
     return Object.assign({}, state, {stationList: f, showLoading: false});
+}
+
+reducerMap[actionTypes.UPDATE_ORGSTATIONLIST] = function (state, action) {
+    let f = action.payload.map(function(v, i) {
+        return {key: i+"", stationname: v.positionName, isnew: false, positionType:v.positionType, id: v.id};
+    });
+    return Object.assign({}, state, {orgstationList: f, showLoading: false});
 }
 
 //保存查询条件

@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { getDicParList, setHumanInfo, searchConditionType,setSearchLoadingVisible, getHumanImage, setbreadPageIndex, searchHumanType,searchAgeType,searchOrderType, adduserPage } from '../../actions/actionCreator';
+import { postBlackLst, setHumanInfo, searchConditionType,setSearchLoadingVisible, getHumanImage, setbreadPageIndex, searchHumanType,searchAgeType,searchOrderType, adduserPage } from '../../actions/actionCreator';
 import React, { Component } from 'react'
 import {Table, Layout, Input, Select, Icon, Button, Row, Col, Checkbox, Tag, Pagination, Spin, notification} from 'antd'
 import '../search.less'
@@ -32,8 +32,8 @@ class Staffinfo extends Component {
             { title: 'ID', dataIndex: 'id', key: 'id' },
             { title: '用户名', dataIndex: 'name', key: 'name' },
             { title: '性别', dataIndex: 'sexname', key: 'sexname' },
-            { title: '身份证号', dataIndex: 'idcard', key: 'idcard' },
-            { title: '职位', dataIndex: 'position', key: 'position' },
+            { title: '身份证号', dataIndex: 'idCard', key: 'idCard' },
+            { title: '职位', dataIndex: 'positionName', key: 'positionName' },
             { title: '状态', dataIndex: 'staffStatus', key: 'staffStatus' },
             { title: '入职时间', dataIndex: 'entryTime', key: 'entryTime' },
             { title: '转正时间', dataIndex: 'becomeTime', key: 'becomeTime' },
@@ -67,6 +67,8 @@ class Staffinfo extends Component {
 
     componentWillMount() {
         this.props.dispatch(setSearchLoadingVisible(true));
+
+        this.props.dispatch(setHumanInfo([]));
         this.props.dispatch(searchConditionType(SearchCondition.topteninfo));
         
     }
@@ -144,6 +146,19 @@ class Staffinfo extends Component {
             });
         }
         
+    }
+
+    handleAddBlack = () => {
+        let len = this.props.selHumanList.length;
+        if (len > 0) {
+            this.props.dispatch(postBlackLst({id: this.props.selHumanList[len-1].id, 
+                idCard: this.props.selHumanList[len-1].idCard, name: this.props.selHumanList[len-1].name}));
+        } else {
+            notification.error({
+                message: "请选择员工",
+                duration: 3
+            });
+        }
     }
 
     render() {

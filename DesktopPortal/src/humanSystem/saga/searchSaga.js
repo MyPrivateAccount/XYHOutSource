@@ -59,10 +59,10 @@ export function* getSearchConditionAsync(state) {
                  (v.sex==1)&&(sn = "男");
                  (v.sex==2)&&(sn = "女");
                  fn = v.staffStatus?PositionStatus[v.staffStatus]:"未入职"
-                 return {key: k, sexname: sn, staffStatus: fn,
+                 return {key: k, sexname: sn, staffStatus: fn,...v,
                     entryTime: v.entryTime?v.entryTime.replace("T", " "):"", becomeTime: v.becomeTime?v.becomeTime.replace("T", " "):"",
                     socialInsurance: v.IsSocialInsurance?"是":"否", contract: v.contract?"是":"否",
-                    ...v};
+                    };
             });
              let re = {extension: data, 
                 pageIndex: res.data.pageIndex, 
@@ -96,10 +96,10 @@ export function* getHumanListAsync(state) {
                 (v.sex==1)&&(sn = "男");
                 (v.sex==2)&&(sn = "女");
                 fn = v.staffStatus?PositionStatus[v.staffStatus]:"未入职";
-                return {key: k, sexname: sn, staffStatus: fn,
+                return {key: k, sexname: sn, staffStatus: fn,...v,
                         entryTime: v.entryTime?v.entryTime.replace("T", " "):"", becomeTime: v.becomeTime?v.becomeTime.replace("T", " "):"",
                         socialInsurance: v.IsSocialInsurance?"是":"否", contract: v.contract?"是":"否",
-                        ...v};
+                        };
              });
 
              yield put ({type: actionUtils.getActionType(actionTypes.UPDATE_ALLHUMANINFO), payload: data});

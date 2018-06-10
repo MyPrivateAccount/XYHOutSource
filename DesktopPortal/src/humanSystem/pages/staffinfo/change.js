@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { createStation, postChangeHuman, getDicParList, getcreateStation } from '../../actions/actionCreator';
+import { createStation, postChangeHuman, getDicParList, getcreateStation, getcreateOrgStation, getSalaryItem } from '../../actions/actionCreator';
 import React, { Component } from 'react'
 import {InputNumber, Input, Form, Select, Button, Row, Col, Checkbox, DatePicker, Cascader} from 'antd'
 
@@ -19,28 +19,30 @@ class Change extends Component {
 
     componentWillMount() {
         this.props.dispatch(getDicParList(["HUMAN_CHANGE_TYPE", "HUMAN_CHANGEREASON_TYPE"]));
+        this.props.dispatch(getcreateOrgStation(this.props.selHumanList[this.props.selHumanList.length-1].departmentId));
     }
 
     componentDidMount() {
         let len = this.props.selHumanList.length;
-        if (this.props.ismodify == 1) {//修改界面
-            if (len > 0) {
+       
+        if (len > 0) {
 
-                let lstvalue = [];
-                this.findCascaderLst(this.props.selHumanList[len-1].departmentId, this.props.setDepartmentOrgTree, lstvalue);
+            let lstvalue = [];
+            this.props.setDepartmentOrgTree.findIndex(e => this.findCascaderLst(this.props.selHumanList[len-1].departmentId, e, lstvalue));
+            //this.findCascaderLst(this.props.selHumanList[len-1].departmentId, this.props.setDepartmentOrgTree, lstvalue);
 
-                this.state.id = this.props.selHumanList[len-1].id;
-                this.props.form.setFieldsValue({name: this.props.selHumanList[len-1].name});
-                this.props.form.setFieldsValue({idcard: this.props.selHumanList[len-1].idcard});
-                this.props.form.setFieldsValue({orgDepartmentId: lstvalue});
+            this.state.id = this.props.selHumanList[len-1].id;
+            this.props.form.setFieldsValue({name: this.props.selHumanList[len-1].name});
+            this.props.form.setFieldsValue({idCard: this.props.selHumanList[len-1].idCard});
+            this.props.form.setFieldsValue({orgDepartmentId: lstvalue});
 
-                this.props.form.setFieldsValue({baseSalary: this.props.selHumanList[len-1].baseSalary});
-                this.props.form.setFieldsValue({subsidy: this.props.selHumanList[len-1].subsidy});
-                this.props.form.setFieldsValue({clothesBack: this.props.selHumanList[len-1].clothesBack});
-                this.props.form.setFieldsValue({administrativeBack: this.props.selHumanList[len-1].administrativeBack});
-                this.props.form.setFieldsValue({portBack: this.props.selHumanList[len-1].portBack});
-            }
+            // this.props.form.setFieldsValue({baseSalary: this.props.selHumanList[len-1].baseSalary});
+            // this.props.form.setFieldsValue({subsidy: this.props.selHumanList[len-1].subsidy});
+            // this.props.form.setFieldsValue({clothesBack: this.props.selHumanList[len-1].clothesBack});
+            // this.props.form.setFieldsValue({administrativeBack: this.props.selHumanList[len-1].administrativeBack});
+            // this.props.form.setFieldsValue({portBack: this.props.selHumanList[len-1].portBack});
         }
+        
     }
 
     hasErrors(fieldsError) {
@@ -66,13 +68,17 @@ class Change extends Component {
         this.state.department = e[e.length-1];
     }
 
+    handleSelectChange = (e) => {
+        this.props.dispatch(getSalaryItem(e));
+    }
+
     findCascaderLst(id, tree, lst) {
         if (tree) {
-            if (tree.children&&tree.children.length === 0&&tree.id === id) {
+            if (tree.id === id) {
                 lst.unshift(tree.id);
                 return true;
-            } else {
-                if (tree.children.findIndex(org => this.getChildrenID(org)) !== -1) {
+            } else if (tree.children && tree.children.length>0) {
+                if (tree.children.findIndex(org => this.findCascaderLst(id,org, lst)) !== -1) {
                     lst.unshift(tree.id);
                     return true;
                 }
@@ -83,6 +89,8 @@ class Change extends Component {
 
     render() {
         let self = this;
+        
+        let len = this.props.selHumanList.length;
         const { getFieldDecorator, getFieldsError, getFieldsValue, isFieldTouched } = this.props.form;
         return (
             <div>
@@ -99,7 +107,7 @@ class Change extends Component {
                         )}
                     </FormItem>
                     <FormItem {...formItemLayout1} label="身份证号">
-                        {getFieldDecorator('idcard', {
+                        {getFieldDecorator('idCard', {
                             reules: [{
                                 required:true, message: 'please entry',
                             }]
@@ -166,6 +174,26 @@ class Change extends Component {
                         {getFieldDecorator('orgStation', {
                             reules: [{
                                 required:true, message: 'please entry',
+                            }],
+                            initialValue: this.props.selHumanList[len-1].position? this.props.selHumanList[len-1].position:null
+                        })(
+                            <Select disabled={true} style={{ width: '70%' }} onChange={this.handleSelectChange} placeholder="选择职位">
+                                {
+                                    (self.props.orgstationList && self.props.orgstationList.length > 0) ?
+                                        self.props.orgstationList.map(
+                                            function (params) {
+                                                return <Option key={params.key} value={params.id}>{params.stationname}</Option>;
+                                            }
+                                        ):null
+                                }
+                            </Select>
+                        )}
+                    </FormItem>
+                    <FormItem {...formItemLayout1} label="新部门">
+                        {getFieldDecorator('newDepartmentId', {
+                            reules: [{
+                                required:true,
+                                message: 'please entry',
                             }]
                         })(
                             <Cascader style={{ width: '70%' }} options={this.props.setDepartmentOrgTree} onChange={this.handleChooseDepartmentChange} onPopupVisibleChange={this.handleDepartmentChange} changeOnSelect  placeholder="归属部门"/>
@@ -189,50 +217,41 @@ class Change extends Component {
                             </Select>
                         )}
                     </FormItem>
-                    <FormItem {...formItemLayout1} label="新部门">
-                        {getFieldDecorator('newDepartmentId', {
-                            reules: [{
-                                required:true, message: 'please entry',
-                            }]
-                        })(
-                            <Input placeholder="请输入部门" />
-                        )}
-                    </FormItem>
                     <FormItem {...formItemLayout1} colon={false} label="新工资信息">
                     </FormItem>
                     <FormItem {...formItemLayout1} label="基本工资">
                         {getFieldDecorator('baseSalary', {
-                            initialValue: self.props.selSalaryItem? self.props.selSalaryItem.baseSalary:null
+                            initialValue: self.props.selSalaryItem?self.props.selSalaryItem.baseSalary:null
                         })(
-                                        <InputNumber disabled={this.props.ismodify == 1} style={{ width: '70%' }} />
+                                        <InputNumber style={{ width: '70%' }} />
                                     )}
                     </FormItem>
                     <FormItem {...formItemLayout1} label="岗位补贴">
                         {getFieldDecorator('subsidy', {
-                            initialValue: self.props.selSalaryItem? self.props.selSalaryItem.subsidy:null
+                            initialValue: self.props.selSalaryItem?self.props.selSalaryItem.subsidy:null
                         })(
-                                            <InputNumber disabled={this.props.ismodify == 1} style={{ width: '70%' }} />
+                                            <InputNumber style={{ width: '70%' }} />
                                         )}
                     </FormItem>
                     <FormItem {...formItemLayout1} label="工装扣款">
                         {getFieldDecorator('clothesBack', {
-                            initialValue: self.props.selSalaryItem? self.props.selSalaryItem.clothesBack:null
+                            initialValue: self.props.selSalaryItem?self.props.selSalaryItem.clothesBack:null
                         })(
-                                        <InputNumber disabled={this.props.ismodify == 1} style={{width: '70%'}} />
+                                        <InputNumber style={{width: '70%'}} />
                                     )}
                     </FormItem>
                     <FormItem {...formItemLayout1} label="行政扣款">
                         {getFieldDecorator('administrativeBack', {
-                            initialValue: self.props.selSalaryItem? self.props.selSalaryItem.administrativeBack:null
+                            initialValue: self.props.selSalaryItem?self.props.selSalaryItem.administrativeBack:null
                         })(
-                                        <InputNumber disabled={this.props.ismodify == 1} style={{width: '70%'}} />
+                                        <InputNumber style={{width: '70%'}} />
                                     )}
                     </FormItem>
                     <FormItem {...formItemLayout1} label="端口扣款">
                         {getFieldDecorator('portBack', {
-                            initialValue: self.props.selSalaryItem? self.props.selSalaryItem.portBack:null
+                            initialValue:self.props.selSalaryItem?self.props.selSalaryItem.portBack:null
                         })(
-                                        <InputNumber disabled={this.props.ismodify == 1} style={{width: '70%'}} />
+                                        <InputNumber style={{width: '70%'}} />
                                     )}
                     </FormItem>
                     <FormItem wrapperCol={{ span: 12, offset: 6 }}>
@@ -248,6 +267,7 @@ class Change extends Component {
 function tableMapStateToProps(state) {
     return {
         stationList: state.search.stationList,
+        orgstationList: state.search.orgstationList,
         selSalaryItem: state.basicData.selSalaryItem,
         changeResonList: state.basicData.changeResonList,
         changeTypeList: state.basicData.changeTypeList,
