@@ -1,9 +1,10 @@
 
 export const SearchHumanTypes = [
     { value: 0, label: '不限'},
-    { value: 1, label: '在职'},
-    { value: 2, label: '离职'},
-    { value: 3, label: '黑名单'}
+    { value: 1, label: '未入职'},
+    { value: 2, label: '在职'},
+    { value: 3, label: '离职'},
+    { value: 4, label: '黑名单'}
 ]
 
 export const MonthListColums = [

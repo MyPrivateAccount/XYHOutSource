@@ -15,6 +15,19 @@ namespace XYHHumanPlugin.Stores
 {
     public class HumanManageStore : IHumanManageStore
     {
+        //一共俩份
+        public const int CreateNOModifyType = 0;//无
+        public const int CreateHumanModifyType = 1;//未入
+        public const int EntryHumanModifyType = 3;//入职
+        public const int BecomeHumanModifyType = 5;//转正
+        public const int ChangeHumanModifyType = 6;//异动
+        public const int LeaveHumanModifyType = 7;//离职
+
+        public const int HumanBlackType = -1;//-1黑名单 0 未入职 1离职 2入职 3转正 
+        public const int HumanCreateType = 0;
+        public const int HumanLeaveType = 1;
+        public const int HumanEntryType = 2;
+        public const int HumanBecomeType = 3;
 
         public HumanManageStore(HumanDbContext hudb)
         {
@@ -42,19 +55,21 @@ namespace XYHHumanPlugin.Stores
 
             var modify = new ModifyInfo();
             modify.ID = modifyid;
-            modify.Type = 1;//创建
+            modify.Type = CreateHumanModifyType;//创建
             modify.IDCard = humaninfo.IDCard;
             modify.ModifyPepole = userinfo.Id;
             modify.ModifyStartTime = DateTime.Now;
             modify.ExamineStatus = (int)ExamineStatusEnum.Auditing;
             modify.ExamineTime = modify.ModifyStartTime;
             modify.ModifyCheck = checkaction;
+            modify.Ext1 = humaninfo.ID;
+            modify.Ext2 = humaninfo.Name;
 
             humaninfo.CreateUser = userinfo.Id;
             humaninfo.Modify = 1;
             humaninfo.RecentModify = modifyid;
             humaninfo.CreateTime = DateTime.Now;
-            humaninfo.StaffStatus = 0;//回调2
+            humaninfo.StaffStatus = HumanCreateType;//-1黑名单 0 未入职 1离职 2入职 3转正 
             Context.Add(humaninfo);
             Context.Add(modify);
 
@@ -143,7 +158,7 @@ namespace XYHHumanPlugin.Stores
                 HumanInfo buildings = new HumanInfo()
                 {
                     ID = id,
-                    StaffStatus = -1
+                    StaffStatus = HumanBlackType
                 };
 
                 Context.Attach(buildings);
@@ -207,6 +222,29 @@ namespace XYHHumanPlugin.Stores
             await Context.SaveChangesAsync(cancellationToken);
         }
 
+        public async Task PreBecomeHuman(SimpleUser userinfo, string modifyid, string huid, string info, string idcard, string checkaction, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (string.IsNullOrEmpty(modifyid))
+            {
+                modifyid = Guid.NewGuid().ToString();
+            }
+
+            var modify = new ModifyInfo();
+            modify.ID = modifyid;
+            modify.Type = BecomeHumanModifyType;
+            modify.IDCard = idcard;
+            modify.ModifyPepole = userinfo.Id;
+            modify.ModifyStartTime = DateTime.Now;
+            modify.ExamineStatus = (int)ExamineStatusEnum.Auditing;
+            modify.ExamineTime = modify.ModifyStartTime;
+            modify.ModifyCheck = checkaction;
+            modify.Ext1 = huid;
+            modify.Ext2 = info;
+
+            Context.Add(modify);
+            await Context.SaveChangesAsync(cancellationToken);
+        }
+
         public async Task BecomeHuman(SocialInsurance info, string huid, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (!string.IsNullOrEmpty(info.IDCard))
@@ -217,7 +255,7 @@ namespace XYHHumanPlugin.Stores
                     IsSocialInsurance = info.IsSocial,
                     SocialInsuranceInfo = info.IDCard,
                     BecomeTime = info.EnTime,
-                    StaffStatus = 3
+                    StaffStatus = HumanBecomeType
                 };
 
                 Context.Attach(buildings);
@@ -245,6 +283,30 @@ namespace XYHHumanPlugin.Stores
             
         }
 
+        
+        public async Task PreLeaveHuman(SimpleUser userinfo, string modifyid, string huid, string info, string idcard, string checkaction, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (string.IsNullOrEmpty(modifyid))
+            {
+                modifyid = Guid.NewGuid().ToString();
+            }
+
+            var modify = new ModifyInfo();
+            modify.ID = modifyid;
+            modify.Type = LeaveHumanModifyType;
+            modify.IDCard = idcard;
+            modify.ModifyPepole = userinfo.Id;
+            modify.ModifyStartTime = DateTime.Now;
+            modify.ExamineStatus = (int)ExamineStatusEnum.Auditing;
+            modify.ExamineTime = modify.ModifyStartTime;
+            modify.ModifyCheck = checkaction;
+            modify.Ext1 = huid;
+            modify.Ext2 = info;
+
+            Context.Add(modify);
+            await Context.SaveChangesAsync(cancellationToken);
+        }
+
         public async Task LeaveHuman(LeaveInfo info, string huid, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (info == null)
@@ -255,7 +317,7 @@ namespace XYHHumanPlugin.Stores
             {
                 ID = huid,
                 LeaveTime = DateTime.Now,
-                StaffStatus = 1
+                StaffStatus = HumanLeaveType
             };
 
             if (Context.LeaveInfos.Any(x => x.IDCard == info.IDCard))
@@ -274,6 +336,29 @@ namespace XYHHumanPlugin.Stores
             entry.Property(x => x.LeaveTime).IsModified = true;
             entry.Property(x => x.StaffStatus).IsModified = true;
             
+            await Context.SaveChangesAsync(cancellationToken);
+        }
+
+        public async Task PreChangeHuman(SimpleUser userinfo, string modifyid, string huid, string info, string idcard, string checkaction, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (string.IsNullOrEmpty(modifyid))
+            {
+                modifyid = Guid.NewGuid().ToString();
+            }
+
+            var modify = new ModifyInfo();
+            modify.ID = modifyid;
+            modify.Type = ChangeHumanModifyType;
+            modify.IDCard = idcard;
+            modify.ModifyPepole = userinfo.Id;
+            modify.ModifyStartTime = DateTime.Now;
+            modify.ExamineStatus = (int)ExamineStatusEnum.Auditing;
+            modify.ExamineTime = modify.ModifyStartTime;
+            modify.ModifyCheck = checkaction;
+            modify.Ext1 = huid;
+            modify.Ext2 = info;
+
+            Context.Add(modify);
             await Context.SaveChangesAsync(cancellationToken);
         }
 
@@ -554,25 +639,63 @@ namespace XYHHumanPlugin.Stores
         {
             
         }
-        public async Task UpdateExamineStatus(string modifyId, ExamineStatusEnum status, int type, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ModifyInfo> UpdateExamineStatus(string modifyId, ExamineStatusEnum status, CancellationToken cancellationToken = default(CancellationToken))
         {
-            ModifyInfo buildings = new ModifyInfo()
+            var modify = GetModifyAsync(a => a.Where(b => b.ID == modifyId));
+            if (modify != null)
             {
-                ID = modifyId,
-                ExamineTime = DateTime.Now,
-                ExamineStatus = (int)status,
-                Type = type
-            };
-            Context.Attach(buildings);
-            var entry = Context.Entry(buildings);
-            entry.Property(x => x.ExamineStatus).IsModified = true;
-            entry.Property(x => x.Type).IsModified = true;
-            entry.Property(x => x.ExamineTime).IsModified = true;
-            try
-            {
+                switch (modify.Type)
+                {
+                    case CreateHumanModifyType:
+                    {
+                        HumanInfo buildings = new HumanInfo()
+                        {
+                            ID = modify.Ext1,
+                            StaffStatus = HumanEntryType
+                        };
+
+                        Context.Attach(buildings);
+                        var entry = Context.Entry(buildings);
+                        entry.Property(x => x.StaffStatus).IsModified = true;
+
+                    } break;
+
+                    case BecomeHumanModifyType:
+                    {
+                        SocialInsurance responinfo = JsonHelper.ToObject<SocialInsurance>(modify.Ext2);
+                        BecomeHuman(responinfo, modify.Ext1, cancellationToken);
+                    } break;
+
+                    case ChangeHumanModifyType: 
+                    {
+                        ChangeInfo responinfo = JsonHelper.ToObject<ChangeInfo>(modify.Ext2);
+                        ChangeHuman(responinfo, modify.Ext1, cancellationToken);
+                    } break;
+
+                    case LeaveHumanModifyType:
+                    {
+                        LeaveInfo responinfo = JsonHelper.ToObject<LeaveInfo>(modify.Ext2);
+                        LeaveHuman(responinfo, modify.Ext1, cancellationToken);
+                    } break;
+
+                    default:
+                }
+
+                /////////////////////
+                ModifyInfo mbuildings = new ModifyInfo()
+                {
+                    ID = modifyId,
+                    ExamineTime = DateTime.Now,
+                    ExamineStatus = (int)status,
+                };
+                Context.Attach(mbuildings);
+                var mentry = Context.Entry(buildings);
+                mentry.Property(x => x.ExamineStatus).IsModified = true;
+                mentry.Property(x => x.ExamineTime).IsModified = true;
+
                 await Context.SaveChangesAsync(cancellationToken);
             }
-            catch (DbUpdateConcurrencyException) { throw; }
+            return modify;
         }
     }
 }

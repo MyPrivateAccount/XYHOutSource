@@ -44,6 +44,9 @@ namespace XYHHumanPlugin
 
             CreateMap<ChangeInfoResponse, ChangeInfo>();
             CreateMap<ChangeInfo, ChangeInfoResponse>();
+
+            CreateMap<ModifyInfoResponse, ModifyInfo>();
+            CreateMap<ModifyInfo, ModifyInfoResponse>();
         }
     }
 }

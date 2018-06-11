@@ -38,6 +38,10 @@ namespace XYHHumanPlugin.Stores
         Task DeleteListAsync(List<SalaryFormInfo> monthList, CancellationToken cancellationToken = default(CancellationToken));
         Task DeleteListAsync(List<AttendanceFormInfo> monthList, CancellationToken cancellationToken = default(CancellationToken));
 
+        Task PreChangeHuman(SimpleUser userinfo, string modifyid, string huid, string info, string idcard, string checkaction, CancellationToken cancellationToken = default(CancellationToken));
+        Task PreLeaveHuman(SimpleUser userinfo, string modifyid, string huid, string info, string idcard, string checkaction, CancellationToken cancellationToken = default(CancellationToken));
+        Task PreBecomeHuman(SimpleUser userinfo, string modifyid, string huid, string info, string idcard, string checkaction, CancellationToken cancellationToken = default(CancellationToken));
+
         Task BecomeHuman(SocialInsurance info , string huid, CancellationToken cancellationToken = default(CancellationToken));
         Task LeaveHuman(LeaveInfo info, string huid, CancellationToken cancellationToken = default(CancellationToken));
         Task ChangeHuman(ChangeInfo info, string huid, CancellationToken cancellationToken = default(CancellationToken));
@@ -63,7 +67,7 @@ namespace XYHHumanPlugin.Stores
         Task UpdateListAsync(List<HumanInfo> buildingBaseList, CancellationToken cancellationToken = default(CancellationToken));
 
         Task SaveAsync(HumanInfo humaninfo, CancellationToken cancellationToken = default(CancellationToken));
-        Task UpdateExamineStatus(string modifyId, ExamineStatusEnum status, int type, CancellationToken cancellationToken = default(CancellationToken));
+        Task<ModifyInfo> UpdateExamineStatus(string modifyId, ExamineStatusEnum status, CancellationToken cancellationToken = default(CancellationToken));
 
     }
 }
