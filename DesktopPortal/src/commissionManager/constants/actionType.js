@@ -64,6 +64,8 @@ export const DEALRP_RP_SAVE = 'DEALRP_RP_SAVE';//交易合同保存
 export const DEALRP_RP_SAVEUPDATE = 'DEALRP_RP_SAVEUPDATE';//交易合同保存成功
 export const DEALRP_RP_GET = 'DEALRP_RP_GET';//异步获取报告数据
 export const DEALRP_RP_GETUPDATE = 'DEALRP_RP_GETUPDATE';//获取报告数据更新
+export const DEALRP_CJBB_GET = 'DEALRP_CJBB_GET';//获取成交报备
+export const DEALRP_CJBB_LISTUPDATE = 'DEALRP_CJBB_LISTUPDATE'//更新成功
 //成交报告-物业页面
 export const DEALRP_WY_SAVE = 'DEALRP_WY_SAVE';
 export const DEALRP_WY_SAVEUPDATE = 'DEALRP_WY_SAVEUPDATE';

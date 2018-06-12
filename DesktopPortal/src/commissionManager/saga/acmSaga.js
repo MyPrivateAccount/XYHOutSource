@@ -13,11 +13,11 @@ const actionUtils = appAction(actionTypes.ACTION_ROUTE);
 export function* getAcmentDataListAsyncs(state){
     let result = { isOk: false, msg: '获取业绩分摊列表数据成功!' };
     console.log(state)
-    let url = WebApiConfig.baseset.acmentlistget;
+    let url = WebApiConfig.baseset.acmentlistget+state.payload.branchId;
     try {
         console.log(url)
         console.log('getAcmentDataListAsyncs:', state);
-        let res = yield call(ApiClient.post, url, state.payload);
+        let res = yield call(ApiClient.get, url);
        
         //console.log(res, '获取参数列表');
         getApiResult(res, result);

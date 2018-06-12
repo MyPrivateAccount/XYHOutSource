@@ -16,8 +16,8 @@ class PeopleSet extends Component{
         orgid:''
     }
     appTableColumns = [
-        { title: '组织', dataIndex: 'orgName', key: 'orgName' },
-        { title: '分摊比例', dataIndex: 'ftScale', key: 'ftScale' },
+        { title: '组织', dataIndex: 'branchId', key: 'branchId' },
+        { title: '分摊比例', dataIndex: 'ftbl', key: 'ftbl' },
         {
             title: '操作', dataIndex: 'edit', key: 'edit', render: (text, recored) => (
                 <span>
@@ -43,9 +43,7 @@ class PeopleSet extends Component{
     }
     handleSearch = (e) => {
         console.log(e)
-        SearchCondition.ppFtListCondition.pageIndex = 0;
-        SearchCondition.ppFtListCondition.pageSize = 10;
-        SearchCondition.ppFtListCondition.OrganizationId = e;
+        SearchCondition.ppFtListCondition.branchId = e;
         console.log("查询条件", SearchCondition);
         this.setState({ isDataLoading: true });
         this.props.dispatch(orgFtParamListGet(SearchCondition.ppFtListCondition));
@@ -90,7 +88,7 @@ class PeopleSet extends Component{
                     <Button type='primary' shape='circle' icon='plus' onClick={this.handleNew} style={{'margin':10}}/>
                 </Tooltip>
                 <Spin spinning={this.state.isDataLoading}>
-                 <Table pagination={this.state.pagination} columns={this.appTableColumns} dataSource={this.props.ppFtSearchResult.ext} onChange={this.handleTableChange}></Table>
+                 <Table  columns={this.appTableColumns} dataSource={this.props.ppFtSearchResult.ext}></Table>
                  </Spin>
                 <PeopleOrgFtEditor/>
             </Layout>

@@ -60,7 +60,7 @@ class InComeScaleEditor extends Component{
                                 </span>
                             )}
                             hasFeedback>
-                            {getFieldDecorator('OrganizationId', {
+                            {getFieldDecorator('branchId', {
 
                                 initialValue: this.state.paramInfo.orgName,
                             })(
@@ -74,7 +74,7 @@ class InComeScaleEditor extends Component{
                         <FormItem
                             {...formItemLayout}
                             label={(<span>职位类别</span>)}>
-                            {getFieldDecorator('paramRankPos', {
+                            {getFieldDecorator('code', {
                                 initialValue: this.state.paramInfo.rankPos
                             })(
                                 <Input style={{float: 'left',width:300}}></Input>
@@ -86,7 +86,7 @@ class InComeScaleEditor extends Component{
                         <FormItem
                             {...formItemLayout}
                             label={(<span>起始业绩</span>)}>
-                            {getFieldDecorator('paramStyj', {
+                            {getFieldDecorator('startYj', {
                                 initialValue: this.state.paramInfo.paramStyj,
                                 rules: [{required: true, message: '请填写起始业绩!' }]
                             })(
@@ -99,7 +99,7 @@ class InComeScaleEditor extends Component{
                         <FormItem
                             {...formItemLayout}
                             label={(<span>结束业绩</span>)}>
-                            {getFieldDecorator('paramEdyj', {
+                            {getFieldDecorator('endYj', {
                                 initialValue: this.state.paramInfo.paramEdyj,
                                 rules: [{required: true, message: '请填写结束业绩!' }]
                             })(
@@ -113,7 +113,7 @@ class InComeScaleEditor extends Component{
                         <FormItem
                             {...formItemLayout}
                             label={(<span>提成比例</span>)}>
-                            {getFieldDecorator('paramScale', {
+                            {getFieldDecorator('percent', {
                                 initialValue: this.state.paramInfo.paramEdyj,
                                 rules: [{required: true, message: '请填写提成比例!' }]
                             })(

@@ -4,7 +4,8 @@ import { connect } from 'react-redux';
 import React, { Component } from 'react';
 import moment from 'moment'
 import { getDicParList,dealRpSave} from '../../../actions/actionCreator'
-import {notification, DatePicker, Form, Span, Layout, Table, Button, Radio, Popconfirm, Tooltip, Row, Col, Input, Spin, Select, TreeSelect } from 'antd'
+import {notification, DatePicker, Form, Span, Layout, Table, Button, Radio, Popconfirm, Tooltip, Row, Col, Input, Spin, Select, TreeSelect,Modal} from 'antd'
+import TradeReportTable from './tradeReportTable'
 import './trade.less'
 
 const RadioGroup = Radio.Group;
@@ -17,7 +18,8 @@ class TradeContract extends Component {
         yxsqyrq:'',
         yjfksj:'',
         kflfrq:'',
-        htqyrq:''
+        htqyrq:'',
+        isShowChooseReport:false
     }
     componentWillMount = () => {
         this.setState({isDataLoading:true,tip:'信息初始化中...'})
@@ -108,6 +110,14 @@ class TradeContract extends Component {
         }
         return dt
     }
+    //选择成交报备
+    chooseReport=()=>{
+        this.cjbbdlg.show()
+    }
+    //
+    onSelf=(e)=>{
+        this.cjbbdlg = e;
+    }
     render() {
         const { getFieldDecorator } = this.props.form;
         const formItemLayout = {
@@ -126,6 +136,7 @@ class TradeContract extends Component {
 
         return (
             <Layout>
+                <TradeReportTable onSelf = {this.onSelf}/>
                 <div style={{ marginLeft: 12 }}>
                     <Row>
                         <Col span={12} pull={1}>
@@ -136,7 +147,7 @@ class TradeContract extends Component {
                             </FormItem>
                         </Col>
                         <Col span={12} pull={5}>
-                            <Button>选择</Button>
+                            <Button onClick={this.chooseReport}>选择</Button>
                         </Col>
                     </Row>
                     <Spin spinning={this.state.isDataLoading} tip={this.state.tip}>

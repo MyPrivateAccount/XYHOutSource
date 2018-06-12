@@ -18,6 +18,12 @@ class DRpDlg extends Component {
     handleCancel = (e) => {
         this.setState({vs:false})
     };
+    componentDidMount(){
+        this.props.onDlgSelf(this)
+    }
+    show=()=>{
+        this.setState({vs:true})
+    }
     render() {
         return (
             <Modal title={'收款'} width={800} maskClosable={false} visible={this.state.vs}

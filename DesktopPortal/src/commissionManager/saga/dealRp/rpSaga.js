@@ -371,6 +371,32 @@ export function* getMyRpDataAsync(state){
         getApiResult(res, result);
         if (result.isOk) {
             console.log('getMyRpDataAsync返回成功:',result)
+            let data = result.extension;
+            for(let i=0;i<data.length;i++){
+                if(data[i].cjrq!==null){
+                    var newdt = ''+data[i].cjrq;
+                    if(newdt.indexOf('T')!==-1){
+                        newdt = newdt.substr(0,newdt.length-9);
+                        data[i].cjrq = newdt
+                    }
+                }
+                if(data[i].examineStatus === 0){
+                    data[i].examineStatus = '未提交'
+                }
+                else if(data[i].examineStatus === 1){
+                    data[i].examineStatus = '审核中'
+                }
+                else if(data[i].examineStatus === 8){
+                    data[i].examineStatus = '审核通过'
+                }
+                else if(data[i].examineStatus === 16){
+                    data[i].examineStatus = '审核驳回'
+                }
+                else{
+                    data[i].examineStatus = '未知'
+                }
+            }
+            result.extension = data;
             yield put({ type: actionUtils.getActionType(actionTypes.DEALRP_MYREPORT_GETUPDATE), payload: result });
             // yield put({ type: actionUtils.getActionType(actionTypes.SET_SEARCH_LOADING), payload: false });
         }
@@ -399,6 +425,32 @@ export function* searchRpDataAsync(state){
         getApiResult(res, result);
         if (result.isOk) {
             console.log('searchRpDataAsync返回成功:',result)
+            let data = result.extension;
+            for(let i=0;i<data.length;i++){
+                if(data[i].cjrq!==null){
+                    var newdt = ''+data[i].cjrq;
+                    if(newdt.indexOf('T')!==-1){
+                        newdt = newdt.substr(0,newdt.length-9);
+                        data[i].cjrq = newdt
+                    }
+                }
+                if(data[i].examineStatus === 0){
+                    data[i].examineStatus = '未提交'
+                }
+                else if(data[i].examineStatus === 1){
+                    data[i].examineStatus = '审核中'
+                }
+                else if(data[i].examineStatus === 8){
+                    data[i].examineStatus = '审核通过'
+                }
+                else if(data[i].examineStatus === 16){
+                    data[i].examineStatus = '审核驳回'
+                }
+                else{
+                    data[i].examineStatus = '未知'
+                }
+            }
+            result.extension = data;
             yield put({ type: actionUtils.getActionType(actionTypes.DEALRP_REPORT_SEARCH_UPDATE), payload: result });
             // yield put({ type: actionUtils.getActionType(actionTypes.SET_SEARCH_LOADING), payload: false });
         }
@@ -410,6 +462,36 @@ export function* searchRpDataAsync(state){
         notification.error({
             message: '提示',
             description: '搜索成交报告列表信息失败!',
+            duration: 3
+        });
+    }
+}
+//获取成交报备数据表
+export function* getCjbbDataAsync(state){
+    let result = { isOk: false, extension: [], msg: '获取成交报备列表信息成功！' };
+    let url = WebApiConfig.rp.getcjbb;
+    try {
+        console.log(url)
+        console.log('getCjbbDataAsync:', state);
+        let res = yield call(ApiClient.get, url);
+       
+        //console.log(res, '获取参数列表');
+        getApiResult(res, result);
+        if (result.isOk) {
+            console.log('getCjbbDataAsync返回成功:',result)
+            let data = result.extension;
+            result.extension = data;
+            yield put({ type: actionUtils.getActionType(actionTypes.DEALRP_CJBB_LISTUPDATE), payload: result });
+            // yield put({ type: actionUtils.getActionType(actionTypes.SET_SEARCH_LOADING), payload: false });
+        }
+    } catch (e) {
+        result.msg = "获取成交报备列表信息异常!";
+    }
+    if (!result.isOk) {
+        console.log(result.msg)
+        notification.error({
+            message: '提示',
+            description: '获取成交报备列表信息失败!',
             duration: 3
         });
     }
@@ -432,4 +514,5 @@ export default function* watchAllRpAsync(){
     yield takeLatest(actionUtils.getActionType(actionTypes.DEALRP_ATTACT_UPLOADFILE), uploadFileAsync);
     yield takeLatest(actionUtils.getActionType(actionTypes.DEALRP_MYREPORT_GET), getMyRpDataAsync);
     yield takeLatest(actionUtils.getActionType(actionTypes.DEALRP_REPORT_SEARCH), searchRpDataAsync);
+    yield takeLatest(actionUtils.getActionType(actionTypes.DEALRP_CJBB_GET), getCjbbDataAsync);
 }

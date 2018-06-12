@@ -12,10 +12,10 @@ class AcmentSet extends Component{
         isDataLoading:false,
     }
     appTableColumns = [
-        { title: '分摊项名称', dataIndex: 'ftName', key: 'ftName' },
-        { title: '分摊类型', dataIndex: 'ftType', key: 'ftType' },
-        { title: '默认分摊比例', dataIndex: 'ftScale', key: 'ftScale' },
-        { title: '是否固定比例', dataIndex: 'isFixScale', key: 'isFixScale' },
+        { title: '分摊项名称', dataIndex: 'name', key: 'name' },
+        { title: '分摊类型', dataIndex: 'type', key: 'type' },
+        { title: '默认分摊比例', dataIndex: 'percent', key: 'percent' },
+        { title: '是否固定比例', dataIndex: 'isfixed', key: 'isfixed' },
         {
             title: '操作', dataIndex: 'edit', key: 'edit', render: (text, recored) => (
                 <span>
@@ -40,9 +40,7 @@ class AcmentSet extends Component{
     }
     handleSearch = (e) => {
         console.log(e)
-        SearchCondition.acmentListCondition.pageIndex = 0;
-        SearchCondition.acmentListCondition.pageSize = 10;
-        SearchCondition.acmentListCondition.OrganizationId = e;
+        SearchCondition.acmentListCondition.branchId = e;
         console.log("查询条件", SearchCondition.acmentListCondition);
         this.setState({ isDataLoading: true });
         this.props.dispatch(acmentParamListGet(SearchCondition.acmentListCondition));
@@ -88,7 +86,7 @@ class AcmentSet extends Component{
                     <Button type='primary' shape='circle' icon='plus' onClick={this.handleNew} style={{'margin':'10'}}/>
                 </Tooltip>
                 <Spin spinning={this.state.isDataLoading}>
-                 <Table pagination={this.state.pagination} columns={this.appTableColumns} dataSource={this.props.scaleSearchResult.ext} onChange={this.handleTableChange}></Table>
+                 <Table  columns={this.appTableColumns} dataSource={this.props.scaleSearchResult}></Table>
                  </Spin>
                  <AcmentEditor/>
             </Layout>

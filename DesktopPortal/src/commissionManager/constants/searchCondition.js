@@ -9,10 +9,7 @@ const SearchCondition = {
         OrganizationId:''
     },
     orgParamListCondition: {
-        pageIndex: 0,
-        pageSize: defaultPageSize,
-        keyWords: '',
-        OrganizationId:''
+        branchId:''
     },
     incomeScaleListCondition:{
         pageIndex: 0,
@@ -22,10 +19,7 @@ const SearchCondition = {
         rankPos:''//职位等级
     },
     acmentListCondition:{
-        pageIndex: 0,
-        pageSize: defaultPageSize,
-        keyWords: '',
-        OrganizationId:''
+        branchId:''
     },
     rpListCondition:{
         pageIndex: 0,

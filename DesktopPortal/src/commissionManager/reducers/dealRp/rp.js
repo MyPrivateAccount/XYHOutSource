@@ -6,7 +6,11 @@ const initState = {
     operInfo: { operType: ''},
     ext:[],
     rpSearchResult:[],
-    searchCondition:{}
+    rpCJBBResult:[],
+    searchCondition:{
+        pageIndex:0,
+        pageSize:10,
+    }
 };
 let rpReducerMap = {};
 //保存接口反馈
@@ -70,5 +74,9 @@ rpReducerMap[actionTypes.DEALRP_REPORT_SEARCH_UPDATE] = function (state, action)
 rpReducerMap[actionTypes.DEALRP_ATTACT_UPLOAD_COMPLETE] = function (state, action) {
     console.log("readucer上传文件成功" + JSON.stringify(action.payload));
     return Object.assign({}, state, { ext:action.payload ,operInfo:{operType:'DEALRP_ATTACT_UPLOAD_COMPLETE'}});
+}
+rpReducerMap[actionTypes.DEALRP_CJBB_LISTUPDATE] = function (state, action) {
+    console.log("readucer获取成交报备列表成功" + JSON.stringify(action.payload));
+    return Object.assign({}, state, { rpCJBBResult:action.payload ,operInfo:{operType:'DEALRP_CJBB_LISTUPDATE'}});
 }
 export default handleActions(rpReducerMap, initState)
