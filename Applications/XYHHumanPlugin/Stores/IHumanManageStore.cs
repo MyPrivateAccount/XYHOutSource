@@ -18,7 +18,7 @@ namespace XYHHumanPlugin.Stores
         Task CreateAsync(FileInfo fileinfo, CancellationToken cancellationToken = default(CancellationToken));
         Task SetStationAsync(PositionInfo fileinfo, CancellationToken cancellationToken = default(CancellationToken));
         Task SetSalaryAsync(SalaryInfo salaryinfo, CancellationToken cle = default(CancellationToken));
-        Task SetBlackAsync(BlackInfo salaryinfo, CancellationToken cle = default(CancellationToken));
+        Task SetBlackAsync(BlackInfo salaryinfo, string id = null, CancellationToken cle = default(CancellationToken));
 
 
         Task CreateMonthAsync(SimpleUser userinfo, MonthInfo monthinf, CancellationToken cancellationToken = default(CancellationToken));
@@ -38,6 +38,10 @@ namespace XYHHumanPlugin.Stores
         Task DeleteListAsync(List<SalaryFormInfo> monthList, CancellationToken cancellationToken = default(CancellationToken));
         Task DeleteListAsync(List<AttendanceFormInfo> monthList, CancellationToken cancellationToken = default(CancellationToken));
 
+        Task PreChangeHuman(SimpleUser userinfo, string modifyid, string huid, string info, string idcard, string checkaction, CancellationToken cancellationToken = default(CancellationToken));
+        Task PreLeaveHuman(SimpleUser userinfo, string modifyid, string huid, string info, string idcard, string checkaction, CancellationToken cancellationToken = default(CancellationToken));
+        Task PreBecomeHuman(SimpleUser userinfo, string modifyid, string huid, string info, string idcard, string checkaction, CancellationToken cancellationToken = default(CancellationToken));
+
         Task BecomeHuman(SocialInsurance info , string huid, CancellationToken cancellationToken = default(CancellationToken));
         Task LeaveHuman(LeaveInfo info, string huid, CancellationToken cancellationToken = default(CancellationToken));
         Task ChangeHuman(ChangeInfo info, string huid, CancellationToken cancellationToken = default(CancellationToken));
@@ -50,6 +54,7 @@ namespace XYHHumanPlugin.Stores
 
         Task<List<TResult>> GetHumanListAsync<TResult>(Func<IQueryable<HumanInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken));
 
+        Task<TResult> GetStationAsync<TResult>(Func<IQueryable<PositionInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken));
         Task<List<TResult>> GetStationListAsync<TResult>(Func<IQueryable<PositionInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken));
         Task<TResult> GetModifyAsync<TResult>(Func<IQueryable<ModifyInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken));
         Task<List<TResult>> GetListModifyAsync<TResult>(Func<IQueryable<ModifyInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken));
@@ -62,7 +67,7 @@ namespace XYHHumanPlugin.Stores
         Task UpdateListAsync(List<HumanInfo> buildingBaseList, CancellationToken cancellationToken = default(CancellationToken));
 
         Task SaveAsync(HumanInfo humaninfo, CancellationToken cancellationToken = default(CancellationToken));
-        Task UpdateExamineStatus(string modifyId, ExamineStatusEnum status, int type, CancellationToken cancellationToken = default(CancellationToken));
+        Task<ModifyInfo> UpdateExamineStatus(string modifyId, ExamineStatusEnum status, CancellationToken cancellationToken = default(CancellationToken));
 
     }
 }

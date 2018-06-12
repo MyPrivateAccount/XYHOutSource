@@ -11,7 +11,7 @@ namespace ApplicationCore.Stores
     public interface IOrganizationExpansionStore
     {
         IQueryable<OrganizationExpansion> OrganizationExpansions { get; }
-
+        string GetFullName(string departmentid);
         Task<OrganizationExpansion> CreateAsync(OrganizationExpansion organizationExpansion);
         Task<List<OrganizationExpansion>> CreateListAsync(List<OrganizationExpansion> organizationExpansionList);
         Task DeleteAsync(OrganizationExpansion organizationExpansion);

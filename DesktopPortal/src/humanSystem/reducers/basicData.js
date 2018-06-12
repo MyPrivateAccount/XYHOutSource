@@ -11,8 +11,8 @@ const initState = {
     selHumanList: [],
     searchOrgTree: [],
     stationTypeList: [],
-    changeTypeList: [],
-    changeResonList: [],
+    changeTypeList: [{value: 0, key: "tt"}],
+    changeResonList: [{value: 0, key: "dd"}],
     humanImage:[],
     navigator: [{id: 20, menuID: "menu_user_mgr", displayName: "员工信息管理", menuIcon: 'contacts'}],//导航记录
     monthresult: {extension: [{key: '1', last: 'tt', monthtime: 'test', operater: 'hhee'}], pageIndex: 0, pageSize: 10, totalCount: 1},

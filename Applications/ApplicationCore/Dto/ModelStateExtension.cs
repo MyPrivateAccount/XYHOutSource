@@ -12,17 +12,25 @@ namespace ApplicationCore.Dto
         {
             if (ModelState.IsValid)
                 return "";
-            var error = "";
-            var errors = ModelState.Values.ToList();
-            foreach (var item in errors)
+            System.Text.StringBuilder sbErrors = new System.Text.StringBuilder();
+            foreach (var item in ModelState.Values)
             {
-                foreach (var e in item.Errors)
+                if (item.Errors.Count > 0)
                 {
-                    error += e.Exception.Message + "  ";
+                    for (int i = item.Errors.Count - 1; i >= 0; i--)
+                    {
+                        string msg = item.Errors[i].ErrorMessage;
+                        if (String.IsNullOrEmpty(msg) && item.Errors[i].Exception != null)
+                        {
+                            msg = item.Errors[i].Exception.Message ?? "";
+                        }
+                        sbErrors.AppendLine(msg + ":" + (item.RawValue?.ToString()));
+                    }
                 }
             }
-            return error;
+            return sbErrors.ToString();
 
         }
+
     }
 }

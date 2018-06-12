@@ -71,6 +71,7 @@ export const getcreateStation = createAction(actionTypes.GET_CRATESTATION);
 export const setStation = createAction(actionTypes.SET_STATION);
 export const deleteStation = createAction(actionTypes.DELETE_STATION);
 export const getStationType = createAction(actionTypes.GET_STATIONTYPELIST);
+export const getcreateOrgStation = createAction(actionTypes.GET_CRATEORGSTATION);
 
 //薪酬管理
 export const getSalaryItem = createAction(actionTypes.GET_SALARYITEM);

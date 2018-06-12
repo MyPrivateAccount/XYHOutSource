@@ -34,6 +34,13 @@ namespace XYHHumanPlugin.Controllers
         private string _lastDate;
         private int _lastNumber;
 
+        //一共俩份
+        private const int CreateNOModifyType = 0;//无
+        private const int CreateHumanModifyType = 1;//未入
+        private const int EntryHumanModifyType = 3;//入职
+        private const int BecomeHumanModifyType = 5;//转正
+        private const int LeaveHumanModifyType = 7;//离职
+
         public HumanInfoController( RestClient rsc, HumanManager human)
         {
             _humanManage = human;
@@ -100,7 +107,7 @@ namespace XYHHumanPlugin.Controllers
         }
 
 
-        [HttpPost("becomehuman")]
+        [HttpPost("becomehuman")]//转正
         [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
         public async Task<ResponseMessage> BecomeHumanInfo(UserInfo User, [FromBody]SocialInsuranceRequest condition)
         {
@@ -108,19 +115,49 @@ namespace XYHHumanPlugin.Controllers
             if (!ModelState.IsValid)
             {
                 pagingResponse.Code = ResponseCodeDefines.ModelStateInvalid;
-                Logger.Warn($"用户{User?.UserName ?? ""}({User?.Id ?? ""})查询人事条件(PostCustomerListSaleMan)模型验证失败：\r\n{pagingResponse.Message ?? ""}，\r\n请求参数为：\r\n" + (condition != null ? JsonHelper.ToJson(condition) : ""));
+                Logger.Warn($"用户{User?.UserName ?? ""}({User?.Id ?? ""})转正人事条件(PostCustomerListSaleMan)模型验证失败：\r\n{pagingResponse.Message ?? ""}，\r\n请求参数为：\r\n" + (condition != null ? JsonHelper.ToJson(condition) : ""));
                 return pagingResponse;
             }
 
             try
             {
-               await _humanManage.BecomeHuman(condition, HttpContext.RequestAborted);
+                string modifyid = Guid.NewGuid().ToString();
+
+                GatewayInterface.Dto.ExamineSubmitRequest exarequest = new GatewayInterface.Dto.ExamineSubmitRequest();
+                exarequest.ContentId = condition.humaninfo.ID;
+                exarequest.ContentType = "HumanCommit";
+                exarequest.ContentName = $"beconmehuman {condition.humaninfo.Name}";
+                exarequest.SubmitDefineId = modifyid;
+                exarequest.Source = "";
+                exarequest.CallbackUrl = ApplicationContext.Current.UpdateExamineCallbackUrl;
+                exarequest.Action = "TEST"/*exarequest.ContentType*/;
+                exarequest.TaskName = $"{User.UserName}提交转正请求{exarequest.ContentName}的动态{exarequest.ContentType}"; ;
+                GatewayInterface.Dto.UserInfo userinfo = new GatewayInterface.Dto.UserInfo()
+                {
+                    Id = User.Id,
+                    KeyWord = User.KeyWord,
+                    OrganizationId = User.OrganizationId,
+                    OrganizationName = User.OrganizationName,
+                    UserName = User.UserName
+                };
+
+                var examineInterface = ApplicationContext.Current.Provider.GetRequiredService<IExamineInterface>();
+                var reponse = await examineInterface.Submit(userinfo, exarequest);
+                if (reponse.Code != ResponseCodeDefines.SuccessCode)
+                {
+                    Response.Code = ResponseCodeDefines.ServiceError;
+                    Response.Message = "向审核中心发起审核请求失败：" + reponse.Message;
+                    return Response;
+                }
+
+                await _humanManage.PreBecomeHuman(User, modifyid, condition, "TEST", HttpContext.RequestAborted);
+                //await _humanManage.BecomeHuman(condition, HttpContext.RequestAborted);
             }
             catch (Exception e)
             {
                 pagingResponse.Code = ResponseCodeDefines.ServiceError;
                 pagingResponse.Message = "服务器错误:" + e.ToString();
-                Logger.Error($"用户{User?.UserName ?? ""}({User?.Id ?? ""})查询业务员条件(PostCustomerListSaleMan)请求失败：\r\n{pagingResponse.Message ?? ""}，\r\n请求参数为：\r\n" + (condition != null ? JsonHelper.ToJson(condition) : ""));
+                Logger.Error($"用户{User?.UserName ?? ""}({User?.Id ?? ""})转正条件(PostCustomerListSaleMan)请求失败：\r\n{pagingResponse.Message ?? ""}，\r\n请求参数为：\r\n" + (condition != null ? JsonHelper.ToJson(condition) : ""));
             }
             return pagingResponse;
         }
@@ -139,8 +176,37 @@ namespace XYHHumanPlugin.Controllers
 
             try
             {
-                await _humanManage.LeaveHuman(condition, HttpContext.RequestAborted);
-                //_humanManage.BecomeHuman(condition, HttpContext.RequestAborted);
+                string modifyid = Guid.NewGuid().ToString();
+
+                GatewayInterface.Dto.ExamineSubmitRequest exarequest = new GatewayInterface.Dto.ExamineSubmitRequest();
+                exarequest.ContentId = condition.humaninfo.ID;
+                exarequest.ContentType = "HumanCommit";
+                exarequest.ContentName = $"leavehuman {condition.humaninfo.Name}";
+                exarequest.SubmitDefineId = modifyid;
+                exarequest.Source = "";
+                exarequest.CallbackUrl = ApplicationContext.Current.UpdateExamineCallbackUrl;
+                exarequest.Action = "TEST"/*exarequest.ContentType*/;
+                exarequest.TaskName = $"{User.UserName}提交离职请求{exarequest.ContentName}的动态{exarequest.ContentType}"; ;
+                GatewayInterface.Dto.UserInfo userinfo = new GatewayInterface.Dto.UserInfo()
+                {
+                    Id = User.Id,
+                    KeyWord = User.KeyWord,
+                    OrganizationId = User.OrganizationId,
+                    OrganizationName = User.OrganizationName,
+                    UserName = User.UserName
+                };
+
+                var examineInterface = ApplicationContext.Current.Provider.GetRequiredService<IExamineInterface>();
+                var reponse = await examineInterface.Submit(userinfo, exarequest);
+                if (reponse.Code != ResponseCodeDefines.SuccessCode)
+                {
+                    Response.Code = ResponseCodeDefines.ServiceError;
+                    Response.Message = "向审核中心发起审核请求失败：" + reponse.Message;
+                    return Response;
+                }
+
+                await _humanManage.PreLeaveHuman(User, modifyid, condition, "TEST", HttpContext.RequestAborted);
+                //await _humanManage.LeaveHuman(condition, HttpContext.RequestAborted);
             }
             catch (Exception e)
             {
@@ -165,7 +231,36 @@ namespace XYHHumanPlugin.Controllers
 
             try
             {
-                await _humanManage.ChangeHuman(condition, HttpContext.RequestAborted);
+                string modifyid = Guid.NewGuid().ToString();
+
+                GatewayInterface.Dto.ExamineSubmitRequest exarequest = new GatewayInterface.Dto.ExamineSubmitRequest();
+                exarequest.ContentId = condition.humaninfo.ID;
+                exarequest.ContentType = "HumanCommit";
+                exarequest.ContentName = $"changehuman {condition.humaninfo.Name}";
+                exarequest.SubmitDefineId = modifyid;
+                exarequest.Source = "";
+                exarequest.CallbackUrl = ApplicationContext.Current.UpdateExamineCallbackUrl;
+                exarequest.Action = "TEST"/*exarequest.ContentType*/;
+                exarequest.TaskName = $"{User.UserName}提交离职请求{exarequest.ContentName}的动态{exarequest.ContentType}"; ;
+                GatewayInterface.Dto.UserInfo userinfo = new GatewayInterface.Dto.UserInfo()
+                {
+                    Id = User.Id,
+                    KeyWord = User.KeyWord,
+                    OrganizationId = User.OrganizationId,
+                    OrganizationName = User.OrganizationName,
+                    UserName = User.UserName
+                };
+
+                var examineInterface = ApplicationContext.Current.Provider.GetRequiredService<IExamineInterface>();
+                var reponse = await examineInterface.Submit(userinfo, exarequest);
+                if (reponse.Code != ResponseCodeDefines.SuccessCode)
+                {
+                    Response.Code = ResponseCodeDefines.ServiceError;
+                    Response.Message = "向审核中心发起审核请求失败：" + reponse.Message;
+                    return Response;
+                }
+                await _humanManage.PreChangeHuman(User, modifyid, condition, "TEST", HttpContext.RequestAborted);
+                //await _humanManage.ChangeHuman(condition, HttpContext.RequestAborted);
             }
             catch (Exception e)
             {
@@ -187,7 +282,7 @@ namespace XYHHumanPlugin.Controllers
 
                 GatewayInterface.Dto.ExamineSubmitRequest exarequest = new GatewayInterface.Dto.ExamineSubmitRequest();
                 exarequest.ContentId = condition.humaninfo.ID;
-                exarequest.ContentType = "ContractCommit";
+                exarequest.ContentType = "HumanCommit";
                 exarequest.ContentName = $"addhuman {condition.humaninfo.Name}";
                 exarequest.SubmitDefineId = modifyid;
                 exarequest.Source = "";
@@ -362,7 +457,20 @@ namespace XYHHumanPlugin.Controllers
 
                 if (examineResponse.ExamineStatus == ExamineStatus.Examined)
                 {
-                    await _humanManage.SubmitAsync(examineResponse.SubmitDefineId, ExamineStatusEnum.Approved);
+                    var hr = await _humanManage.SubmitAsync(examineResponse.SubmitDefineId, ExamineStatusEnum.Approved);
+                    switch (hr.Type)
+                    {
+                        case CreateHumanModifyType://入职后要建表
+                        {
+                            UserInfoRequest user = new UserInfoRequest();
+                            user.Password = "123456";
+                            user.UserName = modifyid.Ext1;
+                            user.TrueName = modifyid.Ext2;
+
+                            string response2 = await _restClient.Post("http://localhost:5000/api/user/", user, "POST", nameValueCollection);
+                        } break;
+                        default: break;
+                    }
                 }
                 else if (examineResponse.ExamineStatus == ExamineStatus.Reject)
                 {

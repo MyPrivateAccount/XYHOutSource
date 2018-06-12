@@ -38,5 +38,15 @@ namespace ApplicationCore.Models
         public string PhoneNumber { get; set; }
 
         public bool IsDeleted { get; set; }
+
+        public DateTime? DeleteTime { get; set; }
+        [MaxLength(127)]
+        public string DeleteUser { get; set; }
+
+        public DateTime? CreateTime { get; set; }
+        [MaxLength(127)]
+        public string CreateUser { get; set; }
+        [MaxLength(127)]
+        public string ParentId { get; set; }
     }
 }

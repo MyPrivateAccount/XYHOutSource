@@ -147,6 +147,28 @@ export function* getcreateStation(state) {
     }
 }
 
+export function* getorgcreateStation(state) {
+    let url = WebApiConfig.search.getStationList+"/"+state.payload;
+    let huResult = { isOk: false, msg: '获取职位失败！' };
+
+    try {
+        huResult = yield call(ApiClient.get, url);
+        if (huResult.data.code == 0) {
+            huResult.data.message = '获取职位成功';
+            yield put({ type: actionUtils.getActionType(actionTypes.UPDATE_ORGSTATIONLIST), payload: huResult.data.extension});
+        }
+    } catch (e) {
+        huResult.data.message = "获取职位接口调用异常!";
+    }
+    
+    if (huResult.data.code != 0) {
+        notification.error({
+            message: huResult.data.message,
+            duration: 3
+        });
+    }
+}
+
 export function* setStation(state) {
     let url = WebApiConfig.server.SetStation;
     let huResult = { isOk: false, msg: '设置职位失败！' };
@@ -159,7 +181,7 @@ export function* setStation(state) {
                 message: huResult.data.message,
                 duration: 3
             });
-            yield put({ type: actionUtils.getActionType(actionTypes.MINUS_USER_BREAD), payload: {} });
+            yield put({ type: actionUtils.getActionType(actionTypes.SET_USER_BREADITEMINDEX), payload: 0 });
             return;
             //yield put({ type: actionUtils.getActionType(actionTypes.UPDATE_STATIONLIST), payload: huResult.data.extension});
         }
@@ -206,7 +228,7 @@ export function* setSalary(state) {
         if (huResult.data.code == 0) {
             huResult.data.message = '设置薪酬成功';
 
-            yield put({ type: actionUtils.getActionType(actionTypes.MINUS_USER_BREAD), payload: {} });
+            yield put({ type: actionUtils.getActionType(actionTypes.SET_USER_BREADITEMINDEX), payload: 0 });
             notification.success({
                 message: "设置成功",
                 duration: 3
@@ -395,6 +417,7 @@ export default function* watchDicAllAsync() {
     yield takeLatest(actionUtils.getActionType(actionTypes.MONTH_CREATE), createMonth);
     yield takeLatest(actionUtils.getActionType(actionTypes.POST_ADDBLACKLST), setBlackLst);
     yield takeLatest(actionUtils.getActionType(actionTypes.GET_CRATESTATION), getcreateStation);
+    yield takeLatest(actionUtils.getActionType(actionTypes.GET_CRATEORGSTATION), getorgcreateStation);
     yield takeLatest(actionUtils.getActionType(actionTypes.SET_STATION), setStation);
     yield takeLatest(actionUtils.getActionType(actionTypes.DELETE_STATION), deleteStation);
     yield takeLatest(actionUtils.getActionType(actionTypes.SET_SALARYINFO), setSalary);

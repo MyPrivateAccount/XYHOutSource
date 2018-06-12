@@ -10,7 +10,7 @@ namespace XYHHumanInterfacePlugin
 {
     public class Plugin : PluginBase
     {
-        public override string Description => "合同SDK";
+        public override string Description => "人事SDK";
 
         public override string PluginID => "8104363e-eb80-4082-94aa-8108030e397c";
         // {}

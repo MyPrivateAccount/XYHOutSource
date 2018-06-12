@@ -25,5 +25,7 @@ namespace ApplicationCore.Models
         public virtual string Type { get; set; }
 
         public int PoolDay { get; set; }
+
+        public bool IsDeleted { get; set; }
     }
 }

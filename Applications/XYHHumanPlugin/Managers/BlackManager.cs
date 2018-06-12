@@ -25,7 +25,7 @@ namespace XYHHumanPlugin.Managers
         protected IHumanManageStore _Store { get; }
         protected IMapper _mapper { get; }
 
-        public virtual async Task SetBlack(BlackInfoRequest black, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual async Task SetBlack(BlackInfoRequest black,  CancellationToken cancellationToken = default(CancellationToken))
         {
             if (black == null)
             {
@@ -36,7 +36,7 @@ namespace XYHHumanPlugin.Managers
                 throw new ArgumentNullException(nameof(black));
             }
 
-            await _Store.SetBlackAsync(_mapper.Map<BlackInfo>(black), cancellationToken);
+            await _Store.SetBlackAsync(_mapper.Map<BlackInfo>(black), black.ID, cancellationToken);
         }
 
         public virtual async Task DeleteBlack(BlackInfoRequest black, CancellationToken cancellationToken = default(CancellationToken))

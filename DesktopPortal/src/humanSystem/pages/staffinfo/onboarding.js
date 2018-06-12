@@ -6,7 +6,7 @@ import reducers from '../../reducers';
 import moment from 'moment';
 import WebApiConfig from '../../constants/webapiConfig';
 import './staff.less';
-import { getworkNumbar, postHumanInfo, getallOrgTree, getcreateStation, getSalaryItem} from '../../actions/actionCreator';
+import { getworkNumbar, postHumanInfo, getcreateOrgStation, getcreateStation, getSalaryItem} from '../../actions/actionCreator';
 import { NewGuid } from '../../../utils/appUtils';
 import ApiClient from '../../../utils/apiClient';
 
@@ -37,7 +37,9 @@ class OnBoarding extends Component {
 
     componentWillMount() {
         this.state.userinfo.id = NewGuid();
-        
+        if (this.props.ismodify == 1) {
+            this.props.dispatch(getcreateOrgStation(this.props.selHumanList[this.props.selHumanList.length-1].departmentId));
+        }
         //this.props.dispatch(getallOrgTree('PublicRoleOper'));
     }
 
@@ -49,7 +51,11 @@ class OnBoarding extends Component {
                 this.props.form.setFieldsValue({name: this.props.selHumanList[len-1].name});
                 this.props.form.setFieldsValue({sex: this.props.selHumanList[len-1].sex});
                 this.props.form.setFieldsValue({idcard: this.props.selHumanList[len-1].idcard});
-                //this.props.form.setFieldsValue({position: this.props.selHumanList[len-1].position});
+
+                let lstvalue = [];
+                this.props.setDepartmentOrgTree.findIndex(e => this.findCascaderLst(this.props.selHumanList[len-1].departmentId, e, lstvalue));
+                this.props.form.setFieldsValue({departmentId: lstvalue});
+
                 this.props.form.setFieldsValue({entryTime: this.props.selHumanList[len-1].entryTime});
                 this.props.form.setFieldsValue({becomeTime: this.props.selHumanList[len-1].becomeTime});
                 this.props.form.setFieldsValue({baseSalary: this.props.selHumanList[len-1].baseSalary});
@@ -60,6 +66,21 @@ class OnBoarding extends Component {
         else {
             this.getWorkNumber();
         }
+    }
+
+    findCascaderLst(id, tree, lst) {
+        if (tree) {
+            if (tree.id === id) {
+                lst.unshift(tree.id);
+                return true;
+            } else if (tree.children && tree.children.length>0) {
+                if (tree.children.findIndex(org => this.findCascaderLst(id,org, lst)) !== -1) {
+                    lst.unshift(tree.id);
+                    return true;
+                }
+            }
+        }
+        return false;
     }
     
     isCardID(rule, value, callback) {
@@ -210,6 +231,8 @@ class OnBoarding extends Component {
         const { previewVisible, previewImage } = this.state;
         const { getFieldDecorator, getFieldsError, getFieldsValue, isFieldTouched } = this.props.form;
 
+        let psition = this.props.selHumanList[this.props.selHumanList.length-1].position;
+
         if (this.props.ismodify == 1) {
             fileList = this.props.humanImage;
         }
@@ -329,7 +352,8 @@ class OnBoarding extends Component {
                                 reules: [{
                                     required:true,
                                     message: 'please entry Position',
-                                }]
+                                }],
+                                initialValue: self.props.ismodify? psition:null
                             })(
                                 <Select disabled={this.props.ismodify == 1} style={{ width: '70%' }} onChange={this.handleSelectChange} placeholder="选择职位">
                                     {

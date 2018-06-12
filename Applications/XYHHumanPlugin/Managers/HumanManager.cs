@@ -21,10 +21,7 @@ namespace XYHHumanPlugin.Managers
 {
     public class HumanManager
     {
-        public static int NotOnBoard = 1;//未入职
-        public static int OnBoardinged = 2;//已入职
-
-
+        
         public HumanManager(IHumanManageStore stor, IMapper mapper,
             IOrganizationExpansionStore organizationExpansionStore,
             PermissionExpansionManager permissionExpansionManager)
@@ -72,8 +69,12 @@ namespace XYHHumanPlugin.Managers
         public virtual async Task<FileItemResponse> GetFilelistAsync(string humanid, CancellationToken cancellationToken = default(CancellationToken))
         {
             var f = await _Store.GetScopeFileListAsync(a => a.Where(b => b.ID == humanid));
-            var fileinfo = await _Store.GetFileListAsync(a => a.Where(b => b.FileGuid == f[0].FileGuid));
-            return ConvertToFileItem(f[0].FileGuid, fileinfo);
+            if (f.Count > 0)
+            {
+                var fileinfo = await _Store.GetFileListAsync(a => a.Where(b => b.FileGuid == f[0].FileGuid));
+                return ConvertToFileItem(f[0].FileGuid, fileinfo);
+            }
+            return null;
         }
         
         private FileItemResponse ConvertToFileItem(string fileGuid, List<FileInfo> fl)
@@ -124,7 +125,7 @@ namespace XYHHumanPlugin.Managers
             await _Store.CreateListAsync(fileInfos, cancellationToken);
         }
 
-        public virtual async Task SubmitAsync(string modifyid, ExamineStatusEnum ext, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual async Task<ModifyInfoResponse> SubmitAsync(string modifyid, ExamineStatusEnum ext, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (modifyid == null)
             {
@@ -133,13 +134,23 @@ namespace XYHHumanPlugin.Managers
 
             if (ext == ExamineStatusEnum.Approved)
             {
-                await _Store.UpdateExamineStatus(modifyid, ext, OnBoardinged, cancellationToken);
+                return _mapper.Map<ModifyInfoResponse>(await _Store.UpdateExamineStatus(modifyid, ext, cancellationToken));
             }
             else if (ext == ExamineStatusEnum.Reject)
             {
-                await _Store.UpdateExamineStatus(modifyid, ext, NotOnBoard, cancellationToken);
+                return _mapper.Map<ModifyInfoResponse>(await _Store.UpdateExamineStatus(modifyid, ext, cancellationToken));
+            }
+            return 0;
+        }
+
+        public virtual async Task PreBecomeHuman(UserInfo userinfo, string modifyid, SocialInsuranceRequest info, string checkaction, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (userinfo == null)
+            {
+                throw new ArgumentNullException(nameof(userinfo));
             }
 
+            await _Store.PreBecomeHuman(_mapper.Map<SimpleUser>(userinfo), modifyid, info.ID, JsonHelper.ToJson(_mapper.Map<SocialInsurance>(info)), info.IDCard, checkaction, cancellationToken);
         }
 
         public virtual async Task BecomeHuman(SocialInsuranceRequest hr, CancellationToken cancellationToken = default(CancellationToken))
@@ -152,6 +163,16 @@ namespace XYHHumanPlugin.Managers
             await _Store.BecomeHuman(_mapper.Map<SocialInsurance>(hr), hr.ID, cancellationToken);
         }
 
+        public virtual async Task PreLeaveHuman(UserInfo userinfo, string modifyid, LeaveInfoRequest info, string checkaction, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (userinfo == null)
+            {
+                throw new ArgumentNullException(nameof(userinfo));
+            }
+
+            await _Store.PreLeaveHuman(_mapper.Map<SimpleUser>(userinfo), modifyid, info.ID, JsonHelper.ToJson(_mapper.Map<LeaveInfo>(info)), info.IDCard, checkaction, cancellationToken);
+        }
+
         public virtual async Task LeaveHuman(LeaveInfoRequest info, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (info == null)
@@ -161,13 +182,23 @@ namespace XYHHumanPlugin.Managers
             await _Store.LeaveHuman(_mapper.Map<LeaveInfo>(info), info.ID, cancellationToken);
         }
 
+        public virtual async Task PreChangeHuman(UserInfo userinfo, string modifyid, ChangeInfoRequest info, string checkaction, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (userinfo == null)
+            {
+                throw new ArgumentNullException(nameof(userinfo));
+            }
+
+            await _Store.PreChangeHuman(_mapper.Map<SimpleUser>(userinfo), modifyid, info.ID, JsonHelper.ToJson(_mapper.Map<ChangeInfo>(info)), info.IDCard, checkaction, cancellationToken);
+        }
+
         public virtual async Task ChangeHuman(ChangeInfoRequest info, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (info == null)
             {
                 throw new ArgumentNullException(nameof(info));
             }
-            await _Store.ChangeHuman(_mapper.Map<HumanInfo>(info), info.ID, cancellationToken);
+            await _Store.ChangeHuman(_mapper.Map<ChangeInfo>(info), info.ID, cancellationToken);
         }
 
         #region 检索
@@ -181,7 +212,7 @@ namespace XYHHumanPlugin.Managers
             var Response = new HumanSearchResponse<HumanInfoResponse>();
             var sql = @"SELECT a.* from XYH_HU_HUMANMANAGE as a where";
 
-            if (condition?.CheckStatu > 0 || condition?.HumanType > 0)
+            if (condition?.CheckStatu > 0)
             {
                 sql = @"SELECT a.* from XYH_HU_HUMANMANAGE as a LEFT JOIN XYH_HU_MODIFY as b ON a.`RecentModify`=b.`ID` where";
             }
@@ -198,6 +229,35 @@ namespace XYHHumanPlugin.Managers
                 connectstr = " and ";
             }
 
+            if (condition?.HumanType > 0)//0不限 1未入职 2在职 3离职 4黑名单
+            {
+                switch (condition?.HumanType)
+                {
+                    case 1: 
+                    {
+                        sql += connectstr + @"a.`StaffStatus`=0";
+                        connectstr = " and ";
+                    } break;
+
+                    case 2: 
+                    {
+                        sql += connectstr + @"a.`StaffStatus`>1";
+                        connectstr = " and ";
+                    } break;
+
+                    case 3: 
+                    {
+                        sql += connectstr + @"a.`StaffStatus`=1";
+                        connectstr = " and ";
+                    } break;
+
+                    case 4: 
+                    {
+                        sql += connectstr + @"a.`StaffStatus`=-1";
+                        connectstr = " and ";
+                    } break;
+                }
+            }
 
             if (condition?.SearchTimeType > 0)
             {
@@ -324,12 +384,23 @@ namespace XYHHumanPlugin.Managers
 
                 for (; begin < end; begin++)
                 {
+                    
                     result.Add(query.ElementAt(begin));
                 }
 
                 Response.PageIndex = condition.pageIndex;
                 Response.PageSize = condition.pageSize;
                 Response.Extension = _mapper.Map<List<HumanInfoResponse>>(result);
+
+                foreach (var item in Response.Extension)
+                {
+                    var tf = await _Store.GetStationAsync(a => a.Where(b => b.ID == item.Position));
+                    if (tf != null)
+                    {
+                        item.PositionName = tf.PositionName;
+                    }
+                    
+                }
             }
             catch (Exception e)
             {
