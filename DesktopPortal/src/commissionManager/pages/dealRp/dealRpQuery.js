@@ -5,8 +5,8 @@ import DRpSearchCondition from './dRpSearchCondition'
 import DRpSearchResult from './dRpSearchResult'
 import DRpDlg from './dRpDlg'
 class DealRpQuery extends Component {
-    state={
-        SearchCondition:{}
+    state = {
+        SearchCondition: {}
     }
     handleSearch = (cd) => {
         this.rstb.handleSearch(cd)
@@ -17,20 +17,26 @@ class DealRpQuery extends Component {
     onRSTableRef = (ref) => {
         this.rstb = ref
     }
+    onOpenDlg = (e) => {
+        this.drpDlg.show()
+    }
+    onDlgSelf = (e) => {
+        this.drpDlg = e;
+    }
     render() {
         return (
             <Layout>
                 <Row>
                     <Col span={24}>
-                        <DRpSearchCondition handleSearch={this.handleSearch} handleReset={this.handleReset}/>
+                        <DRpSearchCondition handleSearch={this.handleSearch} handleReset={this.handleReset} />
                     </Col>
                 </Row>
                 <Row>
                     <Col span={24}>
-                        <DRpSearchResult cd = {this.state.SearchCondition} onRSTableRef={this.onRSTableRef}/>
+                        <DRpSearchResult cd={this.state.SearchCondition} onRSTableRef={this.onRSTableRef} onOpenDlg={this.onOpenDlg} />
                     </Col>
                 </Row>
-                <DRpDlg/>
+                <DRpDlg onDlgSelf={this.onDlgSelf} />
             </Layout>
         )
     }

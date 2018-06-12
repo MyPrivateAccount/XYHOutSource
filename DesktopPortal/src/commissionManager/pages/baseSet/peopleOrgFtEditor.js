@@ -39,6 +39,7 @@ class PeopleOrgFtEditor extends Component{
             if (!err) {
                 console.log('Received values of form: ', values);
                 //调用保存接口，进行数据保存,待续
+                this.props.dispatch(orgFtParamSave(values))
             }
         });
     };
@@ -71,7 +72,7 @@ class PeopleOrgFtEditor extends Component{
                                 </span>
                             )}
                             hasFeedback>
-                            {getFieldDecorator('organizationId', {
+                            {getFieldDecorator('branchId', {
 
                                 initialValue: this.state.ppftInfo.organizationId,
                                 rules: [{ required: true, message: '请选择所属组织!' }]
@@ -91,7 +92,7 @@ class PeopleOrgFtEditor extends Component{
                         <FormItem
                             {...formItemLayout}
                             label={(<span>分摊比例</span>)}>
-                            {getFieldDecorator('proportions', {
+                            {getFieldDecorator('ftbl', {
                                 initialValue: this.state.ppftInfo.proportions,
                                 rules: [{required: true, message: '请填写分摊比例!' }]
                             })(

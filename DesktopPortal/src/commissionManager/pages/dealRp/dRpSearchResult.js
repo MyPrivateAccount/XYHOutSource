@@ -17,13 +17,16 @@ class DRpSearchResult extends Component {
     handleSearch=(cd)=>{
         this.rptb.handleSearch(cd)
     }
+    onOpenDlg=(e)=>{
+        this.props.onOpenDlg(e)
+    }
     render() {
         return (
             <div>
                 <Tooltip title="导出">
                     <Button type='primary' onClick={this.handleNew} style={{ 'margin': '10' }} >导出</Button>
                 </Tooltip>
-                <DealRpTable SearchCondition={this.props.cd} onRpTable={this.onRpTable}/>
+                <DealRpTable SearchCondition={this.props.cd} onRpTable={this.onRpTable} onOpenDlg={this.onOpenDlg}/>
             </div>
         )
     }

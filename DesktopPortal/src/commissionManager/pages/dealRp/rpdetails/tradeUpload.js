@@ -19,7 +19,7 @@ class Avatar extends React.Component {
     }],
   };
   componentDidMount() {
-    if (this.props.fileList.length !== 0) {
+    if (this.props.fileList!==null&&this.props.fileList.length !== 0) {
       this.setState({ fileList: this.props.fileList })
     }
   }

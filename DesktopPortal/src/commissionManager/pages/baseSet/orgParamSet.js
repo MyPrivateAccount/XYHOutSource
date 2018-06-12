@@ -14,9 +14,9 @@ class OrgParamSet extends Component{
         isDataLoading:false,
     }
     appTableColumns = [
-        { title: '组织', dataIndex: 'orgName', key: 'orgName' },
-        { title: '参数名称', dataIndex: 'paramName', key: 'paramName' },
-        { title: '参数值', dataIndex: 'paramVal', key: 'paramVal' },
+        { title: '组织', dataIndex: 'branchId', key: 'branchId' },
+        { title: '参数名称', dataIndex: 'parValue', key: 'parValue' },
+        { title: '参数值', dataIndex: 'parCode', key: 'parCode' },
         {
             title: '操作', dataIndex: 'edit', key: 'edit', render: (text, recored) => (
                 <span>
@@ -37,9 +37,7 @@ class OrgParamSet extends Component{
     }
     handleSearch = (e) => {
         console.log(e)
-        SearchCondition.orgParamListCondition.pageIndex = 0;
-        SearchCondition.orgParamListCondition.pageSize = 10;
-        SearchCondition.orgParamListCondition.OrganizationId = e;
+        SearchCondition.orgParamListCondition.branchId = e;
         console.log("查询条件", SearchCondition.orgParamListCondition);
         this.setState({ isDataLoading: true });
         this.props.dispatch(orgParamListGet(SearchCondition.orgParamListCondition));
@@ -85,7 +83,7 @@ class OrgParamSet extends Component{
                     <Button type='primary' shape='circle' icon='plus' onClick={this.handleNew} style={{'margin':'10'}}/>
                 </Tooltip>
                 <Spin spinning={this.state.isDataLoading}>
-                 <Table pagination={this.state.pagination} columns={this.appTableColumns} dataSource={this.props.orgParamSearchResult.ext} onChange={this.handleTableChange}></Table>
+                 <Table  columns={this.appTableColumns} dataSource={this.props.orgParamSearchResult} ></Table>
                  </Spin>
                  <OrgParamEditor/>
             </Layout>

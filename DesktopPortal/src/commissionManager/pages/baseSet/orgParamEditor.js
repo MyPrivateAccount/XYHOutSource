@@ -34,7 +34,7 @@ class OrgParamEditor extends Component{
             if (!err) {
                 console.log('Received values of form: ', values);
                 //调用保存接口，进行数据保存,待续
-                this.props.dispatch(orgParamSave());
+                this.props.dispatch(orgParamSave(values));
             }
         });
     };
@@ -60,7 +60,7 @@ class OrgParamEditor extends Component{
                                 </span>
                             )}
                             hasFeedback>
-                            {getFieldDecorator('orgName', {
+                            {getFieldDecorator('branchId', {
 
                                 initialValue: this.state.paramInfo.orgName,
                             })(
@@ -74,7 +74,7 @@ class OrgParamEditor extends Component{
                         <FormItem
                             {...formItemLayout}
                             label={(<span>参数名称</span>)}>
-                            {getFieldDecorator('paramName', {
+                            {getFieldDecorator('parCode', {
                                 initialValue: this.state.paramInfo.paramName
                             })(
                                 <Select defaultValue="lucy" style={{ width: 120 }}>
@@ -91,7 +91,7 @@ class OrgParamEditor extends Component{
                         <FormItem
                             {...formItemLayout}
                             label={(<span>参数值</span>)}>
-                            {getFieldDecorator('paramVal', {
+                            {getFieldDecorator('parValue', {
                                 initialValue: this.state.paramInfo.paramVal,
                                 rules: [{required: true, message: '请填写参数值!' }]
                             })(

@@ -54,7 +54,8 @@ const WebApiConfig = {
         ghGet:basicDataBaseApiUrl+'yj/reportgh/',
         fpGet:basicDataBaseApiUrl+'yj/reportyjfp/',
         myrpGet:basicDataBaseApiUrl+'yj/report/myreport',
-        searchRp:basicDataBaseApiUrl+'yj/report/search'
+        searchRp:basicDataBaseApiUrl+'yj/report/search',
+        getcjbb:basicDataBaseApiUrl+'customerdeal/yj',
     },
     fina:{
         searchPPFt:basicDataBaseApiUrl+'yj/ppft/search'
@@ -65,6 +66,14 @@ const WebApiConfig = {
     server: {
         uploadImg: basicDataBaseApiUrl + "yj/commissionfiles/",
     },
+    baseset:{
+        acmentlistget:basicDataBaseApiUrl+'yj/allocationsettings/',
+        acmentdetail:basicDataBaseApiUrl+'yj/allocationsettings/',
+        acmentsave:basicDataBaseApiUrl+'yj/allocationsettings/',
+        orgsave:basicDataBaseApiUrl+'yj/branchsettings/',
+        ppftsave:basicDataBaseApiUrl+'yj/brandsharesetting',
+        incomesave:basicDataBaseApiUrl+'yj/rules/'
+    }
 
 }
 

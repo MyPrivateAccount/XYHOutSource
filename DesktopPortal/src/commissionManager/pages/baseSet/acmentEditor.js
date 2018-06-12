@@ -13,7 +13,7 @@ class AcmentEditor extends Component{
         dialogTitle:'',
         visible:false,
         iedVisible:false,
-        paramInfo:{isCheck:true}
+        paramInfo:{isCheck:true,branchId:'',code:'',type:1}
     }
     componentWillMount(){
 
@@ -29,7 +29,16 @@ class AcmentEditor extends Component{
         }
     }
     handleOk = (e) => {
-        
+
+        this.props.form.validateFields((err, values) => {
+            if (!err) {
+              values.branchId = this.state.paramInfo.branchId;
+              values.code = this.state.paramInfo.code;
+              values.type = this.state.paramInfo.type;
+              console.log(values);
+              this.props.dispatch(acmentParamSave(values))
+            }
+          });
     };
     handleCancel = (e) => {//关闭对话框
         this.setState({iedVisible:false})
@@ -40,7 +49,10 @@ class AcmentEditor extends Component{
     }
     handleItemValue = (e)=>{
         this.setState({iedVisible: false});
-        this.setState({paramInfo:{ftItem:e.itemName}});
+        let pp = [...this.state.paramInfo]
+        pp.name = e.itemName
+        pp.code = e.itemCode
+        this.setState({paramInfo:pp});
     }
     handleback = (e)=>{
         this.setState({iedVisible: false});
@@ -65,9 +77,9 @@ class AcmentEditor extends Component{
                                 </span>
                             )}
                             hasFeedback>
-                            {getFieldDecorator('ftItem', {
+                            {getFieldDecorator('name', {
 
-                                initialValue: this.state.paramInfo.ftItem,
+                                initialValue: this.state.paramInfo.name,
                             })(
                                 <Input style={{float: 'left',width:200}}></Input>
                                 )}
@@ -84,8 +96,8 @@ class AcmentEditor extends Component{
                         <FormItem
                             {...formItemLayout}
                             label={(<span>默认分摊比例</span>)}>
-                            {getFieldDecorator('ftScale', {
-                                initialValue: this.state.paramInfo.ftScale,
+                            {getFieldDecorator('percent', {
+                                initialValue: this.state.paramInfo.percent,
                                 rules: [{required: true, message: '请填写默认分摊比例!' }]
                             })(
                                 <Input style={{float: 'left',width:200}}></Input>
@@ -96,7 +108,7 @@ class AcmentEditor extends Component{
                 <Row>
                     <Col span={12} push={5}>
                         <FormItem>
-                        {getFieldDecorator('ftCheck', {
+                        {getFieldDecorator('isfixed', {
                                 initialValue: this.state.paramInfo.isCheck,
                             })(
                                 <Checkbox defaultChecked={this.state.paramInfo.isCheck}>固定比例</Checkbox>

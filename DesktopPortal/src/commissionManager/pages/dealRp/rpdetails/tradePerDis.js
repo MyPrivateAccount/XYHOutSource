@@ -170,7 +170,7 @@ class TradePerDis extends Component {
                                     rules: [{ required: false, message: '请选择成交日期!' }],
                                     initialValue: moment(this.getInvalidDate(this.state.rpData.yjYzyjdqr)),
                                 })(
-                                    <DatePicker style={{ width: 200 }} onChange={this.yjYzyjdqr_dateChange}></DatePicker>
+                                    <DatePicker disabled={true} style={{ width: 200 }} onChange={this.yjYzyjdqr_dateChange}></DatePicker>
                                 )
                             }
                         </FormItem>
@@ -195,7 +195,7 @@ class TradePerDis extends Component {
                                     rules: [{ required: false, message: '请选择成交日期!' }],
                                     initialValue: moment(this.getInvalidDate(this.state.rpData.yjKhyjdqr)),
                                 })(
-                                    <DatePicker style={{ width: 200 }} onChange={this.yjKhyjdqr_dateChange}></DatePicker>
+                                    <DatePicker disabled={true}  style={{ width: 200 }} onChange={this.yjKhyjdqr_dateChange}></DatePicker>
                                 )
                             }
                         </FormItem>

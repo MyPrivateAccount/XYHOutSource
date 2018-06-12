@@ -11,6 +11,7 @@ export const ORG_FT_PARAM_DELETE = 'ORG_FT_PARAM_DELETE';//人数组织分摊参
 export const ORG_FT_DIALOG_CLOSE = 'ORG_FT_DIALOG_CLOSE';//窗口关闭
 export const ORG_FT_PARAMLIST_GET = 'ORG_FT_PARAMLIST_GET';//获取数据列表
 export const ORG_FT_PARAMLIST_UPDATE = 'ORG_FT_PARAMLIST_UPDATE';//更新数据列表
+export const ORG_FT_PARAM_SAVE_SUCCESS = 'ORG_FT_PARAM_SAVE_SUCCESS';
 //组织参数设置
 export const ORG_PARAM_ADD = 'ORG_PARAM_ADD';//添加组织参数
 export const ORG_PARAM_EDIT = 'ORG_PARAM_EDIT';//修改组织参数
@@ -18,6 +19,7 @@ export const ORG_PARAM_DIALOG_CLOSE = 'ORG_PARAM_DIALOG_CLOSE';//对话框关闭
 export const ORG_PARAMLIST_GET = 'ORG_PARAMLIST_GET';//组织参数列表数据获取
 export const ORG_PARAMLIST_UPDATE = 'ORG_PARAMLIST_UPDATE';//组织参数列表数据更新
 export const ORG_PARAM_SAVE = 'ORG_PARAM_SAVE';//组织参数保存
+export const ORG_PARAM_SAVE_UPDATE = 'ORG_PARAM_SAVE_UPDATE';
 //提成比例设置
 export const INCOME_SCALE_ADD = 'INCOME_SCALE_ADD';//新增提成比例设置
 export const INCOME_SCALE_EDIT = 'INCOME_SCALE_EDIT';//提成比例修改
@@ -26,6 +28,7 @@ export const INCOME_SCALE_DEL = 'INCOME_SCALE_DEL';//提成比例删除
 export const INCOME_SCALE_DLGCLOSE = 'INCOME_SCALE_DLGCLOSE';//取消关闭对话框
 export const INCOME_SCALE_LIST_GET = 'INCOME_SCALE_LIST_GET';//获取提成比例数据列表
 export const INCOME_SCALE_LIST_UPDATE = 'INCOME_SCALE_LIST_UPDATE';//更新提成比例数据列表
+export const INCOME_SCALE_SAVE_SUCCESS = 'INCOME_SCALE_SAVE_SUCCESS';
 //业绩分摊设置
 export const ACMENT_PARAM_ADD = 'ACMENT_PARAM_ADD';
 export const ACMENT_PARAM_EDIT = 'ACMENT_PARAM_EDIT';
@@ -37,6 +40,8 @@ export const ACMENT_PARAM_LIST_UPDATE = 'ACMENT_PARAM_LIST_UPDATE';
 export const ACMENT_PARAM_ITEM_SAVE = 'ACMENT_PARAM_ITEM_SAVE';
 export const ACMENT_PARAM_ITEM_SAVEUPDATE = 'ACMENT_PARAM_ITEM_SAVEUPDATE';
 export const ACMENT_PARAM_ITEM_ADD = 'ACMENT_PARAM_ITEM_ADD';
+export const ACMENT_PARAM_GET = 'ACMENT_PARAM_GET';
+export const ACMENT_PARAM_UPDATE = 'ACMENT_PARAM_UPDATE';
 
 //遮罩层
 export const SET_SEARCH_LOADING = 'SET_SEARCH_LOADING';
@@ -59,6 +64,8 @@ export const DEALRP_RP_SAVE = 'DEALRP_RP_SAVE';//交易合同保存
 export const DEALRP_RP_SAVEUPDATE = 'DEALRP_RP_SAVEUPDATE';//交易合同保存成功
 export const DEALRP_RP_GET = 'DEALRP_RP_GET';//异步获取报告数据
 export const DEALRP_RP_GETUPDATE = 'DEALRP_RP_GETUPDATE';//获取报告数据更新
+export const DEALRP_CJBB_GET = 'DEALRP_CJBB_GET';//获取成交报备
+export const DEALRP_CJBB_LISTUPDATE = 'DEALRP_CJBB_LISTUPDATE'//更新成功
 //成交报告-物业页面
 export const DEALRP_WY_SAVE = 'DEALRP_WY_SAVE';
 export const DEALRP_WY_SAVEUPDATE = 'DEALRP_WY_SAVEUPDATE';

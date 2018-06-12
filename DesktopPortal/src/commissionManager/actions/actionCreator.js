@@ -44,6 +44,7 @@ export const acmentParamItemAdd = createAction(actionTypes.ACMENT_PARAM_ITEM_ADD
 //交易合同页面action
 export const dealRpSave = createAction(actionTypes.DEALRP_RP_SAVE);
 export const dealRpGet  = createAction(actionTypes.DEALRP_RP_GET);
+export const getTradeReg = createAction(actionTypes.DEALRP_CJBB_GET);
 //物业页面action
 export const dealWySave = createAction(actionTypes.DEALRP_WY_SAVE);
 export const dealWyGet = createAction(actionTypes.DEALRP_WY_GET);
