@@ -24,4 +24,9 @@ namespace ApplicationCore.Models
         public string FullName { get; set; }
 
     }
+
+    public class SonOrganizationExpansion : OrganizationExpansion
+    {
+        public string SonType { get; set; }
+    }
 }
