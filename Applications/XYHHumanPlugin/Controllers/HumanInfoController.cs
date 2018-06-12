@@ -124,9 +124,9 @@ namespace XYHHumanPlugin.Controllers
                 string modifyid = Guid.NewGuid().ToString();
 
                 GatewayInterface.Dto.ExamineSubmitRequest exarequest = new GatewayInterface.Dto.ExamineSubmitRequest();
-                exarequest.ContentId = condition.humaninfo.ID;
+                exarequest.ContentId = condition.ID;
                 exarequest.ContentType = "HumanCommit";
-                exarequest.ContentName = $"beconmehuman {condition.humaninfo.Name}";
+                exarequest.ContentName = $"beconmehuman {condition.IDCard}";
                 exarequest.SubmitDefineId = modifyid;
                 exarequest.Source = "";
                 exarequest.CallbackUrl = ApplicationContext.Current.UpdateExamineCallbackUrl;
@@ -145,9 +145,9 @@ namespace XYHHumanPlugin.Controllers
                 var reponse = await examineInterface.Submit(userinfo, exarequest);
                 if (reponse.Code != ResponseCodeDefines.SuccessCode)
                 {
-                    Response.Code = ResponseCodeDefines.ServiceError;
-                    Response.Message = "向审核中心发起审核请求失败：" + reponse.Message;
-                    return Response;
+                    pagingResponse.Code = ResponseCodeDefines.ServiceError;
+                    pagingResponse.Message = "向审核中心发起审核请求失败：" + reponse.Message;
+                    return pagingResponse;
                 }
 
                 await _humanManage.PreBecomeHuman(User, modifyid, condition, "TEST", HttpContext.RequestAborted);
@@ -179,9 +179,9 @@ namespace XYHHumanPlugin.Controllers
                 string modifyid = Guid.NewGuid().ToString();
 
                 GatewayInterface.Dto.ExamineSubmitRequest exarequest = new GatewayInterface.Dto.ExamineSubmitRequest();
-                exarequest.ContentId = condition.humaninfo.ID;
+                exarequest.ContentId = condition.ID;
                 exarequest.ContentType = "HumanCommit";
-                exarequest.ContentName = $"leavehuman {condition.humaninfo.Name}";
+                exarequest.ContentName = $"leavehuman {condition.IDCard}";
                 exarequest.SubmitDefineId = modifyid;
                 exarequest.Source = "";
                 exarequest.CallbackUrl = ApplicationContext.Current.UpdateExamineCallbackUrl;
@@ -200,9 +200,9 @@ namespace XYHHumanPlugin.Controllers
                 var reponse = await examineInterface.Submit(userinfo, exarequest);
                 if (reponse.Code != ResponseCodeDefines.SuccessCode)
                 {
-                    Response.Code = ResponseCodeDefines.ServiceError;
-                    Response.Message = "向审核中心发起审核请求失败：" + reponse.Message;
-                    return Response;
+                    pagingResponse.Code = ResponseCodeDefines.ServiceError;
+                    pagingResponse.Message = "向审核中心发起审核请求失败：" + reponse.Message;
+                    return pagingResponse;
                 }
 
                 await _humanManage.PreLeaveHuman(User, modifyid, condition, "TEST", HttpContext.RequestAborted);
@@ -234,9 +234,9 @@ namespace XYHHumanPlugin.Controllers
                 string modifyid = Guid.NewGuid().ToString();
 
                 GatewayInterface.Dto.ExamineSubmitRequest exarequest = new GatewayInterface.Dto.ExamineSubmitRequest();
-                exarequest.ContentId = condition.humaninfo.ID;
+                exarequest.ContentId = condition.ID;
                 exarequest.ContentType = "HumanCommit";
-                exarequest.ContentName = $"changehuman {condition.humaninfo.Name}";
+                exarequest.ContentName = $"changehuman {condition.IDCard}";
                 exarequest.SubmitDefineId = modifyid;
                 exarequest.Source = "";
                 exarequest.CallbackUrl = ApplicationContext.Current.UpdateExamineCallbackUrl;
@@ -255,9 +255,9 @@ namespace XYHHumanPlugin.Controllers
                 var reponse = await examineInterface.Submit(userinfo, exarequest);
                 if (reponse.Code != ResponseCodeDefines.SuccessCode)
                 {
-                    Response.Code = ResponseCodeDefines.ServiceError;
-                    Response.Message = "向审核中心发起审核请求失败：" + reponse.Message;
-                    return Response;
+                    pagingResponse.Code = ResponseCodeDefines.ServiceError;
+                    pagingResponse.Message = "向审核中心发起审核请求失败：" + reponse.Message;
+                    return pagingResponse;
                 }
                 await _humanManage.PreChangeHuman(User, modifyid, condition, "TEST", HttpContext.RequestAborted);
                 //await _humanManage.ChangeHuman(condition, HttpContext.RequestAborted);
@@ -458,18 +458,25 @@ namespace XYHHumanPlugin.Controllers
                 if (examineResponse.ExamineStatus == ExamineStatus.Examined)
                 {
                     var hr = await _humanManage.SubmitAsync(examineResponse.SubmitDefineId, ExamineStatusEnum.Approved);
-                    switch (hr.Type)
+                    if (hr != null)
                     {
-                        case CreateHumanModifyType://入职后要建表
+                        switch (hr.Type)
                         {
-                            UserInfoRequest user = new UserInfoRequest();
-                            user.Password = "123456";
-                            user.UserName = modifyid.Ext1;
-                            user.TrueName = modifyid.Ext2;
+                            case CreateHumanModifyType://入职后要建表
+                                {
+                                    UserInfoRequest user = new UserInfoRequest();
+                                    user.Password = "123456";
+                                    user.UserName = hr.Ext1;
+                                    user.TrueName = hr.Ext2;
 
-                            string response2 = await _restClient.Post("http://localhost:5000/api/user/", user, "POST", nameValueCollection);
-                        } break;
-                        default: break;
+                                    NameValueCollection nameValueCollection = new NameValueCollection();
+                                    //nameValueCollection.Add("appToken", "app:nwf");
+
+                                    string response2 = await _restClient.Post("http://localhost:5000/api/user/", user, "POST", nameValueCollection);
+                                }
+                                break;
+                            default: break;
+                        }
                     }
                 }
                 else if (examineResponse.ExamineStatus == ExamineStatus.Reject)

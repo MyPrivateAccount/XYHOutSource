@@ -19,7 +19,7 @@ namespace ApplicationCore.Stores
 
         protected virtual TContext Context { get; }
 
-        public IQueryable<OrganizationExpansion> OrganizationExpansions { get; }
+        public DbSet<OrganizationExpansion> OrganizationExpansions { get; }
 
         public async Task<OrganizationExpansion> CreateAsync(OrganizationExpansion organizationExpansion)
         {
@@ -137,21 +137,6 @@ namespace ApplicationCore.Stores
             {
                 throw;
             }
-        }
-
-        /// <summary>
-        /// 根据部门ID获取一条部门展开信息
-        /// </summary>
-        /// <param name="departmentid"></param>
-        /// <returns></returns>
-        public string GetFullName(string departmentid)
-        {
-            if (string.IsNullOrEmpty(departmentid))
-            {
-                return "未找到相应部门";
-            }
-            var response = Context.OrganizationExpansions.AsNoTracking().Where(x => x.SonId == departmentid && x.Type == "Region").SingleOrDefault();
-            return response == null ? "未找到相应部门" : response.FullName;
         }
     }
 }

@@ -16,6 +16,7 @@ using ApplicationCore.Managers;
 using SocialInsuranceRequest = XYHHumanPlugin.Dto.Response.SocialInsuranceResponse;
 using LeaveInfoRequest = XYHHumanPlugin.Dto.Response.LeaveInfoResponse;
 using ChangeInfoRequest = XYHHumanPlugin.Dto.Response.ChangeInfoResponse;
+using ApplicationCore;
 
 namespace XYHHumanPlugin.Managers
 {
@@ -140,7 +141,7 @@ namespace XYHHumanPlugin.Managers
             {
                 return _mapper.Map<ModifyInfoResponse>(await _Store.UpdateExamineStatus(modifyid, ext, cancellationToken));
             }
-            return 0;
+            return null;
         }
 
         public virtual async Task PreBecomeHuman(UserInfo userinfo, string modifyid, SocialInsuranceRequest info, string checkaction, CancellationToken cancellationToken = default(CancellationToken))

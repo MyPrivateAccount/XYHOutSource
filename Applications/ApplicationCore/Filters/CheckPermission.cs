@@ -67,10 +67,7 @@ namespace ApplicationCore.Filters
                     {
                         Id = identity.FindFirst("sub")?.Value,
                         OrganizationId = identity.FindFirst("org")?.Value,
-                        UserName = identity.FindFirst("name")?.Value,
-                        TureName = identity.FindFirst("nickname")?.Value,
-                        FilialeId = identity.FindFirst("filiale")?.Value,
-                        FilialeName = identity.FindFirst("filialename")?.Value,
+                        UserName = identity.FindFirst("name")?.Value
                     };
                 }
 
@@ -82,10 +79,7 @@ namespace ApplicationCore.Filters
                 {
                     Id = identity.FindFirst("sub")?.Value,
                     OrganizationId = identity.FindFirst("org")?.Value,
-                    UserName = identity.FindFirst("name")?.Value,
-                    TureName = identity.FindFirst("nickname")?.Value,
-                    FilialeId = identity.FindFirst("filiale")?.Value,
-                    FilialeName = identity.FindFirst("filialename")?.Value,
+                    UserName = identity.FindFirst("name")?.Value
                 };
             }
 

@@ -14,11 +14,8 @@ namespace ApplicationCore.Stores
         public UserStore(TContext context)
         {
             Context = context ?? throw new ArgumentNullException(nameof(context));
-            Users = Context.Users;
         }
         protected virtual TContext Context { get; }
-
-        public IQueryable<Users> Users { get; set; }
 
         public virtual async Task<TResult> GetAsync<TResult>(Func<IQueryable<Users>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken))
         {

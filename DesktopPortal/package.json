@@ -9,6 +9,7 @@
     "babel-eslint": "7.2.3",
     "babel-jest": "20.0.3",
     "babel-loader": "7.1.1",
+    "babel-polyfill": "^6.9.1",
     "babel-preset-react-app": "^3.0.2",
     "babel-runtime": "6.26.0",
     "case-sensitive-paths-webpack-plugin": "2.1.1",
@@ -30,8 +31,8 @@
     "html-webpack-plugin": "^2.29.0",
     "is-wsl": "^1.1.0",
     "jest": "20.0.4",
+    "jquery": "^1.11.0",
     "js-base64": "^2.3.2",
- 
     "lodash.keys": "^4.2.0",
     "object-assign": "4.1.1",
     "oidc-client": "^1.4.1",
@@ -71,7 +72,8 @@
     "url-loader": "0.5.9",
     "webpack-manifest-plugin": "1.2.1",
     "whatwg-fetch": "2.0.3",
-    "xlsx": "^0.12.6"
+    "xlsx": "^0.12.6",
+    "xlsx-style": "^0.8.13"
   },
   "scripts": {
     "start": "node scripts/start.js",

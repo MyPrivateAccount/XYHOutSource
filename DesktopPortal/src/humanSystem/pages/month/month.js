@@ -4,6 +4,7 @@ import React, { Component } from 'react'
 import {Table, Layout, Input, Select, Icon, Button, Row, Col, Checkbox, Tag, Pagination, Spin} from 'antd'
 import SearchCondition from '../../constants/searchCondition'
 import { MonthListColums} from '../../constants/tools'
+import { Test } from './export';
 
 const { Header, Sider, Content } = Layout;
 const CheckboxGroup = Checkbox.Group;
@@ -50,6 +51,10 @@ class Staffinfo extends Component {
         this.props.dispatch(recoverMonth({last:this.props.monthLast,result:this.props.monthresult}));
     }
 
+    createMonthForm = () => {
+        Test();
+    }
+
     render() {
         let recoverinfo = "恢复到:";
         let nextMonth = new Date(this.props.monthLast);
@@ -80,6 +85,11 @@ class Staffinfo extends Component {
                     <Row>
                         <Col span={8} offset={8}>
                             <Button style={{padding:'5px 12px', margin: '5px 5px', width: '120px'}} type="primary" onClick={(e) => this.recoverMonth()}>{recoverinfo}</Button>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col span={8} offset={8}>
+                            <Button style={{padding:'5px 12px', margin: '5px 5px', width: '120px'}} type="primary" onClick={(e) => this.createMonthForm()}>生成本月报表</Button>
                         </Col>
                     </Row>
                     <p style={{padding: '15px 10px', borderBottom: '1px solid #e0e0e0', fontSize: '1.4rem', fontWeight: 'bold'}}>目前已为你筛选出<b style={{color: '#f36366'}}> {monthList.length || 0} </b>条月结信息</p>

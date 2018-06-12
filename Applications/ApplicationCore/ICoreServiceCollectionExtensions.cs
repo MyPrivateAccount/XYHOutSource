@@ -36,9 +36,6 @@ namespace ApplicationCore
             services.AddScoped<IPermissionExpansionStore, PermissionExpansionStore<CoreDbContext>>();
             services.AddScoped<IUserStore, Stores.UserStore<CoreDbContext>>();
 
-            //services.AddSingleton<PublicDataExecute>();
-            services.AddScoped<PublicDataExecute>();
-
             return new CoreDefinedBuilder(services);
         }
 

@@ -1,36 +1,203 @@
-import XLSX from 'xlsx';
+//import XLSX from 'xlsx';
 
+import XLSX from "xlsx-style";
 //允许对角线合并
 //subhead数组情况必须相同
 const AllHead = [//以第一层为基准, 必须平行
     {
         t: "s", 
         v: "新汇耀有限公司",//基本工资
-        s: { 
-            fill : {
-                fgColor : {
-                    theme : 8,
-                    tint : 0.3999755851924192,
-                    rgb : '08CB26'
-                }
+        s: {
+            font: {
+                name: 'Times New Roman',
+                sz: 25,
+                color: {rgb: "#FFFFFFFF"},
+                bold: true,
+                italic: false,
+                underline: false
             },
-            font : {
-                color : {
-                    rgb : "FFFFFF"
-                },
-                bold : true
+            alignment: {
+                vertical: "center",
+                horizontal: "center",
             },
+            border: {
+                top: {style: "thin", color: {auto: 1}},
+                right: {style: "thin", color: {auto: 1}},
+                bottom: {style: "thin", color: {auto: 1}},
+                left: {style: "thin", color: {auto: 1}}
+            }
         },
         row: 1,
         col: 7,
         subhead: [
-            {t: "s", v: "序号", row: 2, col: 1,},
-            {t: "s", V: "身份证号", row: 2,col: 1,},
-            {t: "s", v: "工号", row: 2,col: 1,},
-            {t: "s", v: "姓名", row: 2,col: 1,},
-            {t: "s", v: "部门", row: 2,col: 1},
-            {t: "s", v: "职位", row: 2,col: 1},
-            {t: "s", v: "应出勤天数", row: 2,col: 1},
+            {
+                t: "s", v: "序号", row: 2, col: 1,
+                s: {
+                    fill: {
+                        patternType: "solid",
+                        bgColor: { indexed: 64 },
+                        fgColor: {rgb: "BFBFBF"}
+                    },
+                    font: {
+                        name: "Calibri",
+                        sz: 10,
+                        color: {rgb: "FFFF00"},
+                        bold: false,
+                        italic: false,
+                        underline: false
+                    },
+                    border: {
+                        top: {style: "thin", color: {auto: 1}},
+                        right: {style: "thin", color: {auto: 1}},
+                        bottom: {style: "thin", color: {auto: 1}},
+                        left: {style: "thin", color: {auto: 1}}
+                    }
+                }
+            },
+            {
+                t: "s", v: "身份证号", row: 2,col: 1,
+                s: {
+                    fill: {
+                        patternType: "solid",
+                        bgColor: { indexed: 64 },
+                        fgColor: {rgb: "BFBFBF"}
+                    },
+                    font: {
+                        name: "Calibri",
+                        sz: 10,
+                        color: {rgb: "FFFF00"},
+                        bold: false,
+                        italic: false,
+                        underline: false
+                    },
+                    border: {
+                        top: {style: "thin", color: {auto: 1}},
+                        right: {style: "thin", color: {auto: 1}},
+                        bottom: {style: "thin", color: {auto: 1}},
+                        left: {style: "thin", color: {auto: 1}}
+                    }
+                }
+            },
+            {
+                t: "s", v: "工号", row: 2,col: 1,
+                s: {
+                    fill: {
+                        patternType: "solid",
+                        bgColor: { indexed: 64 },
+                        fgColor: {rgb: "BFBFBF"}
+                    },
+                    font: {
+                        name: "Calibri",
+                        sz: 10,
+                        color: {rgb: "FFFF00"},
+                        bold: false,
+                        italic: false,
+                        underline: false
+                    },
+                    border: {
+                        top: {style: "thin", color: {auto: 1}},
+                        right: {style: "thin", color: {auto: 1}},
+                        bottom: {style: "thin", color: {auto: 1}},
+                        left: {style: "thin", color: {auto: 1}}
+                    }
+                }
+            },
+            {
+                t: "s", v: "姓名", row: 2,col: 1,
+                s: {
+                    fill: {
+                        patternType: "solid",
+                        bgColor: { indexed: 64 },
+                        fgColor: {rgb: "BFBFBF"}
+                    },
+                    font: {
+                        name: "Calibri",
+                        sz: 10,
+                        color: {rgb: "FFFF00"},
+                        bold: false,
+                        italic: false,
+                        underline: false
+                    },
+                    border: {
+                        top: {style: "thin", color: {auto: 1}},
+                        right: {style: "thin", color: {auto: 1}},
+                        bottom: {style: "thin", color: {auto: 1}},
+                        left: {style: "thin", color: {auto: 1}}
+                    }
+                }
+            },
+            {
+                t: "s", v: "部门", row: 2,col: 1,
+                s: {
+                    fill: {
+                        patternType: "solid",
+                        bgColor: { indexed: 64 },
+                        fgColor: {rgb: "BFBFBF"}
+                    },
+                    font: {
+                        name: "Calibri",
+                        sz: 10,
+                        color: {rgb: "FFFF00"},
+                        bold: false,
+                        italic: false,
+                        underline: false
+                    },
+                    border: {
+                        top: {style: "thin", color: {auto: 1}},
+                        right: {style: "thin", color: {auto: 1}},
+                        bottom: {style: "thin", color: {auto: 1}},
+                        left: {style: "thin", color: {auto: 1}}
+                    }
+                }
+            },
+            {
+                t: "s", v: "职位", row: 2,col: 1,
+                s: {
+                    fill: {
+                        patternType: "solid",
+                        bgColor: { indexed: 64 },
+                        fgColor: {rgb: "BFBFBF"}
+                    },
+                    font: {
+                        name: "Calibri",
+                        sz: 10,
+                        color: {rgb: "FFFF00"},
+                        bold: false,
+                        italic: false,
+                        underline: false
+                    },
+                    border: {
+                        top: {style: "thin", color: {auto: 1}},
+                        right: {style: "thin", color: {auto: 1}},
+                        bottom: {style: "thin", color: {auto: 1}},
+                        left: {style: "thin", color: {auto: 1}}
+                    }
+                }
+            },
+            {
+                t: "s", v: "应出勤天数", row: 2,col: 1,
+                s: {
+                    fill: {
+                        patternType: "solid",
+                        bgColor: { indexed: 64 },
+                        fgColor: {rgb: "BFBFBF"}
+                    },
+                    font: {
+                        name: "Calibri",
+                        sz: 10,
+                        color: {rgb: "FFFF00"},
+                        bold: false,
+                        italic: false,
+                        underline: false
+                    },
+                    border: {
+                        top: {style: "thin", color: {auto: 1}},
+                        right: {style: "thin", color: {auto: 1}},
+                        bottom: {style: "thin", color: {auto: 1}},
+                        left: {style: "thin", color: {auto: 1}}
+                    }
+                }
+            },
         ],
     },
     {
@@ -42,15 +209,174 @@ const AllHead = [//以第一层为基准, 必须平行
             {
                 t: "s",
                 v: "应发",
+                s: {
+                    fill: {
+                        patternType: "solid",
+                        bgColor: { indexed: 64 },
+                        fgColor: {rgb: "BFBFBF"}
+                    },
+                    font: {
+                        name: "Calibri",
+                        sz: 10,
+                        color: {rgb: "FFFF00"},
+                        bold: false,
+                        italic: false,
+                        underline: false
+                    },
+                    border: {
+                        top: {style: "thin", color: {auto: 1}},
+                        right: {style: "thin", color: {auto: 1}},
+                        bottom: {style: "thin", color: {auto: 1}},
+                        left: {style: "thin", color: {auto: 1}}
+                    }
+                },
                 row: 1,
                 col: 6,
                 subhead: [
-                    {t: "s", v: "基本工资",row: 1, col: 1},
-                    {t: "s", v: "交通补贴",row: 1, col: 1},
-                    {t: "s", v: "通信补贴",row: 1, col: 1},
-                    {t: "s", v: "其它补贴",row: 1, col: 1},
-                    {t: "s", v: "加班",row: 1, col: 1},
-                    {t: "s", v: "绩效奖励",row: 1, col: 1},
+                    {
+                        t: "s", v: "基本工资",row: 1, col: 1,
+                        s: {
+                            fill: {
+                                patternType: "solid",
+                                bgColor: { indexed: 64 },
+                                fgColor: {rgb: "BFBFBF"}
+                            },
+                            font: {
+                                name: "Calibri",
+                                sz: 10,
+                                color: {rgb: "FFFF00"},
+                                bold: false,
+                                italic: false,
+                                underline: false
+                            },
+                            border: {
+                                top: {style: "thin", color: {auto: 1}},
+                                right: {style: "thin", color: {auto: 1}},
+                                bottom: {style: "thin", color: {auto: 1}},
+                                left: {style: "thin", color: {auto: 1}}
+                            }
+                        }
+                    },
+                    {
+                        t: "s", v: "交通补贴",row: 1, col: 1,
+                        s: {
+                            fill: {
+                                patternType: "solid",
+                                bgColor: { indexed: 64 },
+                                fgColor: {rgb: "BFBFBF"}
+                            },
+                            font: {
+                                name: "Calibri",
+                                sz: 10,
+                                color: {rgb: "FFFF00"},
+                                bold: false,
+                                italic: false,
+                                underline: false
+                            },
+                            border: {
+                                top: {style: "thin", color: {auto: 1}},
+                                right: {style: "thin", color: {auto: 1}},
+                                bottom: {style: "thin", color: {auto: 1}},
+                                left: {style: "thin", color: {auto: 1}}
+                            }
+                        }
+                    },
+                    {
+                        t: "s", v: "通信补贴",row: 1, col: 1,
+                        s: {
+                            fill: {
+                                patternType: "solid",
+                                bgColor: { indexed: 64 },
+                                fgColor: {rgb: "BFBFBF"}
+                            },
+                            font: {
+                                name: "Calibri",
+                                sz: 10,
+                                color: {rgb: "FFFF00"},
+                                bold: false,
+                                italic: false,
+                                underline: false
+                            },
+                            border: {
+                                top: {style: "thin", color: {auto: 1}},
+                                right: {style: "thin", color: {auto: 1}},
+                                bottom: {style: "thin", color: {auto: 1}},
+                                left: {style: "thin", color: {auto: 1}}
+                            }
+                        }
+                    },
+                    {
+                        t: "s", v: "其它补贴",row: 1, col: 1,
+                        s: {
+                            fill: {
+                                patternType: "solid",
+                                bgColor: { indexed: 64 },
+                                fgColor: {rgb: "BFBFBF"}
+                            },
+                            font: {
+                                name: "Calibri",
+                                sz: 10,
+                                color: {rgb: "FFFF00"},
+                                bold: false,
+                                italic: false,
+                                underline: false
+                            },
+                            border: {
+                                top: {style: "thin", color: {auto: 1}},
+                                right: {style: "thin", color: {auto: 1}},
+                                bottom: {style: "thin", color: {auto: 1}},
+                                left: {style: "thin", color: {auto: 1}}
+                            }
+                        }
+                    },
+                    {
+                        t: "s", v: "加班",row: 1, col: 1,
+                        s: {
+                            fill: {
+                                patternType: "solid",
+                                bgColor: { indexed: 64 },
+                                fgColor: {rgb: "BFBFBF"}
+                            },
+                            font: {
+                                name: "Calibri",
+                                sz: 10,
+                                color: {rgb: "FFFF00"},
+                                bold: false,
+                                italic: false,
+                                underline: false
+                            },
+                            border: {
+                                top: {style: "thin", color: {auto: 1}},
+                                right: {style: "thin", color: {auto: 1}},
+                                bottom: {style: "thin", color: {auto: 1}},
+                                left: {style: "thin", color: {auto: 1}}
+                            }
+                        }
+                    },
+                    {
+                        t: "s", v: "绩效奖励",row: 1, col: 1,
+                        s: {
+                            fill: {
+                                patternType: "solid",
+                                bgColor: { indexed: 64 },
+                                fgColor: {rgb: "BFBFBF"}
+                            },
+                            font: {
+                                name: "Calibri",
+                                sz: 10,
+                                color: {rgb: "FFFF00"},
+                                bold: false,
+                                italic: false,
+                                underline: false
+                            },
+                            border: {
+                                top: {style: "thin", color: {auto: 1}},
+                                right: {style: "thin", color: {auto: 1}},
+                                bottom: {style: "thin", color: {auto: 1}},
+                                left: {style: "thin", color: {auto: 1}}
+                            }
+                        }
+                    },
                 ],
             }
         ],
@@ -64,14 +390,150 @@ const AllHead = [//以第一层为基准, 必须平行
             {
                 t: "s",
                 v: "应扣",
+                s: {
+                    fill: {
+                        patternType: "solid",
+                        bgColor: { indexed: 64 },
+                        fgColor: {rgb: "BFBFBF"}
+                    },
+                    font: {
+                        name: "Calibri",
+                        sz: 10,
+                        color: {rgb: "FFFF00"},
+                        bold: false,
+                        italic: false,
+                        underline: false
+                    },
+                    border: {
+                        top: {style: "thin", color: {auto: 1}},
+                        right: {style: "thin", color: {auto: 1}},
+                        bottom: {style: "thin", color: {auto: 1}},
+                        left: {style: "thin", color: {auto: 1}}
+                    }
+                },
                 row: 1,
                 col: 5,
                 subhead: [
-                    {t: "s", v: "迟到", row: 1, col: 1},
-                    {t: "s", v: "事假", row: 1, col: 1,},
-                    {t: "s", v: "旷工", row: 1, col: 1},
-                    {t: "s", v: "行政扣款", row: 1, col: 1,},
-                    {t: "s", v: "端口扣款", row: 1, col: 1,},
+                    {
+                        t: "s", v: "迟到", row: 1, col: 1,
+                        s: {
+                            fill: {
+                                patternType: "solid",
+                                bgColor: { indexed: 64 },
+                                fgColor: {rgb: "BFBFBF"}
+                            },
+                            font: {
+                                name: "Calibri",
+                                sz: 10,
+                                color: {rgb: "FFFF00"},
+                                bold: false,
+                                italic: false,
+                                underline: false
+                            },
+                            border: {
+                                top: {style: "thin", color: {auto: 1}},
+                                right: {style: "thin", color: {auto: 1}},
+                                bottom: {style: "thin", color: {auto: 1}},
+                                left: {style: "thin", color: {auto: 1}}
+                            }
+                        }
+                    },
+                    {
+                        t: "s", v: "事假", row: 1, col: 1,
+                        s: {
+                            fill: {
+                                patternType: "solid",
+                                bgColor: { indexed: 64 },
+                                fgColor: {rgb: "BFBFBF"}
+                            },
+                            font: {
+                                name: "Calibri",
+                                sz: 10,
+                                color: {rgb: "FFFF00"},
+                                bold: false,
+                                italic: false,
+                                underline: false
+                            },
+                            border: {
+                                top: {style: "thin", color: {auto: 1}},
+                                right: {style: "thin", color: {auto: 1}},
+                                bottom: {style: "thin", color: {auto: 1}},
+                                left: {style: "thin", color: {auto: 1}}
+                            }
+                        }
+                    },
+                    {
+                        t: "s", v: "旷工", row: 1, col: 1,
+                        s: {
+                            fill: {
+                                patternType: "solid",
+                                bgColor: { indexed: 64 },
+                                fgColor: {rgb: "BFBFBF"}
+                            },
+                            font: {
+                                name: "Calibri",
+                                sz: 10,
+                                color: {rgb: "FFFF00"},
+                                bold: false,
+                                italic: false,
+                                underline: false
+                            },
+                            border: {
+                                top: {style: "thin", color: {auto: 1}},
+                                right: {style: "thin", color: {auto: 1}},
+                                bottom: {style: "thin", color: {auto: 1}},
+                                left: {style: "thin", color: {auto: 1}}
+                            }
+                        }
+                    },
+                    {
+                        t: "s", v: "行政扣款", row: 1, col: 1,
+                        s: {
+                            fill: {
+                                patternType: "solid",
+                                bgColor: { indexed: 64 },
+                                fgColor: {rgb: "BFBFBF"}
+                            },
+                            font: {
+                                name: "Calibri",
+                                sz: 10,
+                                color: {rgb: "FFFF00"},
+                                bold: false,
+                                italic: false,
+                                underline: false
+                            },
+                            border: {
+                                top: {style: "thin", color: {auto: 1}},
+                                right: {style: "thin", color: {auto: 1}},
+                                bottom: {style: "thin", color: {auto: 1}},
+                                left: {style: "thin", color: {auto: 1}}
+                            }
+                        }
+                    },
+                    {
+                        t: "s", v: "端口扣款", row: 1, col: 1,
+                        s: {
+                            fill: {
+                                patternType: "solid",
+                                bgColor: { indexed: 64 },
+                                fgColor: {rgb: "BFBFBF"}
+                            },
+                            font: {
+                                name: "Calibri",
+                                sz: 10,
+                                color: {rgb: "FFFF00"},
+                                bold: false,
+                                italic: false,
+                                underline: false
+                            },
+                            border: {
+                                top: {style: "thin", color: {auto: 1}},
+                                right: {style: "thin", color: {auto: 1}},
+                                bottom: {style: "thin", color: {auto: 1}},
+                                left: {style: "thin", color: {auto: 1}}
+                            }
+                        }
+                    },
                 ],
             }
         ],
@@ -87,6 +549,27 @@ const AllHead = [//以第一层为基准, 必须平行
                 row: 2,
                 col: 1,
                 v: "应发合计",
+                s: {
+                    fill: {
+                        patternType: "solid",
+                        bgColor: { indexed: 64 },
+                        fgColor: {rgb: "BFBFBF"}
+                    },
+                    font: {
+                        name: "Calibri",
+                        sz: 10,
+                        color: {rgb: "FFFF00"},
+                        bold: false,
+                        italic: false,
+                        underline: false
+                    },
+                    border: {
+                        top: {style: "thin", color: {auto: 1}},
+                        right: {style: "thin", color: {auto: 1}},
+                        bottom: {style: "thin", color: {auto: 1}},
+                        left: {style: "thin", color: {auto: 1}}
+                    }
+                }
             }
         ],
     },
@@ -101,6 +584,27 @@ const AllHead = [//以第一层为基准, 必须平行
                 row: 2,
                 col: 1,
                 v: "意外险",
+                s: {
+                    fill: {
+                        patternType: "solid",
+                        bgColor: { indexed: 64 },
+                        fgColor: {rgb: "BFBFBF"}
+                    },
+                    font: {
+                        name: "Calibri",
+                        sz: 10,
+                        color: {rgb: "FFFF00"},
+                        bold: false,
+                        italic: false,
+                        underline: false
+                    },
+                    border: {
+                        top: {style: "thin", color: {auto: 1}},
+                        right: {style: "thin", color: {auto: 1}},
+                        bottom: {style: "thin", color: {auto: 1}},
+                        left: {style: "thin", color: {auto: 1}}
+                    }
+                }
             }
         ],
     },
@@ -115,6 +619,27 @@ const AllHead = [//以第一层为基准, 必须平行
                 row: 2,
                 col: 1,
                 v: "工作服",
+                s: {
+                    fill: {
+                        patternType: "solid",
+                        bgColor: { indexed: 64 },
+                        fgColor: {rgb: "BFBFBF"}
+                    },
+                    font: {
+                        name: "Calibri",
+                        sz: 10,
+                        color: {rgb: "FFFF00"},
+                        bold: false,
+                        italic: false,
+                        underline: false
+                    },
+                    border: {
+                        top: {style: "thin", color: {auto: 1}},
+                        right: {style: "thin", color: {auto: 1}},
+                        bottom: {style: "thin", color: {auto: 1}},
+                        left: {style: "thin", color: {auto: 1}}
+                    }
+                }
             }
         ],
     },
@@ -127,14 +652,150 @@ const AllHead = [//以第一层为基准, 必须平行
             {
                 t: "s",
                 v: "代扣",
+                s: {
+                    fill: {
+                        patternType: "solid",
+                        bgColor: { indexed: 64 },
+                        fgColor: {rgb: "BFBFBF"}
+                    },
+                    font: {
+                        name: "Calibri",
+                        sz: 10,
+                        color: {rgb: "FFFF00"},
+                        bold: false,
+                        italic: false,
+                        underline: false
+                    },
+                    border: {
+                        top: {style: "thin", color: {auto: 1}},
+                        right: {style: "thin", color: {auto: 1}},
+                        bottom: {style: "thin", color: {auto: 1}},
+                        left: {style: "thin", color: {auto: 1}}
+                    }
+                },
                 row: 1,
                 col: 5,
                 subhead: [
-                    {t: "s", v: "养老", row: 1, col: 1,},
-                    {t: "s", v: "失业", row: 1, col: 1,},
-                    {t: "s", v: "医疗", row: 1, col: 1,},
-                    {t: "s", v: "工伤", row: 1, col: 1,},
-                    {t: "s", v: "公积金", row: 1, col: 1,},
+                    {
+                        t: "s", v: "养老", row: 1, col: 1,
+                        s: {
+                            fill: {
+                                patternType: "solid",
+                                bgColor: { indexed: 64 },
+                                fgColor: {rgb: "BFBFBF"}
+                            },
+                            font: {
+                                name: "Calibri",
+                                sz: 10,
+                                color: {rgb: "FFFF00"},
+                                bold: false,
+                                italic: false,
+                                underline: false
+                            },
+                            border: {
+                                top: {style: "thin", color: {auto: 1}},
+                                right: {style: "thin", color: {auto: 1}},
+                                bottom: {style: "thin", color: {auto: 1}},
+                                left: {style: "thin", color: {auto: 1}}
+                            }
+                        }
+                    },
+                    {
+                        t: "s", v: "失业", row: 1, col: 1,
+                        s: {
+                            fill: {
+                                patternType: "solid",
+                                bgColor: { indexed: 64 },
+                                fgColor: {rgb: "BFBFBF"}
+                            },
+                            font: {
+                                name: "Calibri",
+                                sz: 10,
+                                color: {rgb: "FFFF00"},
+                                bold: false,
+                                italic: false,
+                                underline: false
+                            },
+                            border: {
+                                top: {style: "thin", color: {auto: 1}},
+                                right: {style: "thin", color: {auto: 1}},
+                                bottom: {style: "thin", color: {auto: 1}},
+                                left: {style: "thin", color: {auto: 1}}
+                            }
+                        }
+                    },
+                    {
+                        t: "s", v: "医疗", row: 1, col: 1,
+                        s: {
+                            fill: {
+                                patternType: "solid",
+                                bgColor: { indexed: 64 },
+                                fgColor: {rgb: "BFBFBF"}
+                            },
+                            font: {
+                                name: "Calibri",
+                                sz: 10,
+                                color: {rgb: "FFFF00"},
+                                bold: false,
+                                italic: false,
+                                underline: false
+                            },
+                            border: {
+                                top: {style: "thin", color: {auto: 1}},
+                                right: {style: "thin", color: {auto: 1}},
+                                bottom: {style: "thin", color: {auto: 1}},
+                                left: {style: "thin", color: {auto: 1}}
+                            }
+                        }
+                    },
+                    {
+                        t: "s", v: "工伤", row: 1, col: 1,
+                        s: {
+                            fill: {
+                                patternType: "solid",
+                                bgColor: { indexed: 64 },
+                                fgColor: {rgb: "BFBFBF"}
+                            },
+                            font: {
+                                name: "Calibri",
+                                sz: 10,
+                                color: {rgb: "FFFF00"},
+                                bold: false,
+                                italic: false,
+                                underline: false
+                            },
+                            border: {
+                                top: {style: "thin", color: {auto: 1}},
+                                right: {style: "thin", color: {auto: 1}},
+                                bottom: {style: "thin", color: {auto: 1}},
+                                left: {style: "thin", color: {auto: 1}}
+                            }
+                        }
+                    },
+                    {
+                        t: "s", v: "公积金", row: 1, col: 1,
+                        s: {
+                            fill: {
+                                patternType: "solid",
+                                bgColor: { indexed: 64 },
+                                fgColor: {rgb: "BFBFBF"}
+                            },
+                            font: {
+                                name: "Calibri",
+                                sz: 10,
+                                color: {rgb: "FFFF00"},
+                                bold: false,
+                                italic: false,
+                                underline: false
+                            },
+                            border: {
+                                top: {style: "thin", color: {auto: 1}},
+                                right: {style: "thin", color: {auto: 1}},
+                                bottom: {style: "thin", color: {auto: 1}},
+                                left: {style: "thin", color: {auto: 1}}
+                            }
+                        }
+                    },
                 ],
             }
         ],
@@ -150,6 +811,27 @@ const AllHead = [//以第一层为基准, 必须平行
                 row: 2,
                 col: 1,
                 v: "实发工资",
+                s: {
+                    fill: {
+                        patternType: "solid",
+                        bgColor: { indexed: 64 },
+                        fgColor: {rgb: "BFBFBF"}
+                    },
+                    font: {
+                        name: "Calibri",
+                        sz: 10,
+                        color: {rgb: "FFFF00"},
+                        bold: false,
+                        italic: false,
+                        underline: false
+                    },
+                    border: {
+                        top: {style: "thin", color: {auto: 1}},
+                        right: {style: "thin", color: {auto: 1}},
+                        bottom: {style: "thin", color: {auto: 1}},
+                        left: {style: "thin", color: {auto: 1}}
+                    }
+                }
             }
         ],
     },
@@ -229,8 +911,30 @@ export function insertColum(head, data) {
     return ret;
 }
 
+function saveAs(obj, fileName) {
+    var tmpa = document.createElement("a");
+    tmpa.download = fileName || "下载";
+    tmpa.href = URL.createObjectURL(obj);
+    tmpa.click();
+    setTimeout(function () {
+        URL.revokeObjectURL(obj);
+    }, 100);
+}
+function s2ab(s) {
+    if (typeof ArrayBuffer !== 'undefined') {
+        var buf = new ArrayBuffer(s.length);
+        var view = new Uint8Array(buf);
+        for (var i = 0; i != s.length; ++i) view[i] = s.charCodeAt(i) & 0xFF;
+        return buf;
+    } else {
+        var buf = new Array(s.length);
+        for (var i = 0; i != s.length; ++i) buf[i] = s.charCodeAt(i) & 0xFF;
+        return buf;
+    }
+}
 export function writeFile(merge, data) {
-    let na = "A1:"+Letter[merge.clen+1]+(data.length+merge.level+1);
+
+    let na = "A1:"+Letter[merge.clen]+(data.length+merge.level+1);
     let obj = {};
     for (const it of data) {
         obj = Object.assign(obj, it);
@@ -241,12 +945,37 @@ export function writeFile(merge, data) {
         ...obj,
         "!merges":[...merge],
     };
-    XLSX.writeFile({
-        SheetNames:["工资表"],
-        Sheets: {
-            工资表: sh
+    let tmpWB = {
+            SheetNames:["工资表"],
+            Sheets: {
+                工资表: sh
+            }
         }
-    }, 'test.xlsx');
+
+    let tmpDown = new Blob([s2ab(XLSX.write(tmpWB,
+        { bookType:'xlsx', bookSST: false, type: 'binary' }//这里的数据是用来定义导出的格式类型
+    ))], {
+            type: ""
+        });
+    saveAs(tmpDown, 'test.xlsx');
+
+    // let na = "A1:"+Letter[merge.clen]+(data.length+merge.level+1);
+    // let obj = {};
+    // for (const it of data) {
+    //     obj = Object.assign(obj, it);
+    // }
+    // let sh = {
+    //     "!ref": na,
+    //     ...merge.head,
+    //     ...obj,
+    //     "!merges":[...merge],
+    // };
+    // XLSX.writeFileSync({
+    //     SheetNames:["工资表"],
+    //     Sheets: {
+    //         工资表: sh
+    //     }
+    // }, 'test.xlsx');
 }
 
 export function Test() {
@@ -256,3 +985,17 @@ export function Test() {
     ac:1,ad:1,ae:1,af:1,ag:1,ah:1,ai:1,aj:1,ak:1,al:1,am:1}]);
     writeFile(f, ret);
 }
+
+
+
+// jquery@1.11.0
+// babel-polyfill@6.9.1
+// xlsx-style@0.8.13
+
+// node
+
+// externals: [
+//     {
+//         './cptable': 'var cptable'
+//     }
+// ],

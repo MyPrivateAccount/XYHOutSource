@@ -1,6 +1,5 @@
 ﻿using ApplicationCore.Interface;
 using ApplicationCore.Plugin;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -19,8 +18,6 @@ namespace ApplicationCore
         public static ApplicationContext Current { get; private set; }
 
         public IServiceProvider Provider { get; set; }
-        public IApplicationBuilder ApplicationBuilder { get; set; }
-        public IServiceProvider ServiceProvider { get; set; }
 
         public ApplicationConfig Config { get; protected set; }
         public IPluginFactory PluginFactory { get; set; }
@@ -28,13 +25,9 @@ namespace ApplicationCore
 
         public string NWFUrl { get; set; }
         public string NWFExamineCallbackUrl { get; set; }
-        public string ExamineCenterUrl { get; set; }
-
-        public string AppGatewayUrl { get; set; }
-
-
-        //public string BuildingExamineCallbackUrl { get; set; }
-        //public string UpdateExamineCallbackUrl { get; set; }
+        public string ExamineUrl { get; set; }
+        public string BuildingExamineCallbackUrl { get; set; }
+        public string UpdateExamineCallbackUrl { get; set; }
         public string FileServerRoot { get; set; }
 
         public string MessageServerUrl { get; set; }
