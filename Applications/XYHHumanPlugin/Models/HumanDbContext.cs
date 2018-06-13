@@ -112,6 +112,7 @@ namespace XYHHumanPlugin.Models
             });
             modelBuilder.Entity<Organizations>(b =>
             {
+                b.HasKey(k => new { k.Id });
                 b.ToTable("organizations");
             });
             modelBuilder.Entity<OrganizationExpansion>(b =>

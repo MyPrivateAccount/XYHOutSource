@@ -43,7 +43,7 @@ namespace XYHHumanPlugin.Controllers
             try
             {
                 var lastmonth = await _monthManage.GetLastMonth();
-                Response.Extension = lastmonth.SettleTime.Value;
+                Response.Extension = lastmonth.SettleTime.GetValueOrDefault();
             }
             catch (Exception e)
             {
@@ -56,19 +56,19 @@ namespace XYHHumanPlugin.Controllers
 
         [HttpGet("monthformdata")]
         [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
-        public async Task<ResponseMessage<DateTime>> GetMonthFormData([FromBody]DateTime testinfo)
+        public async Task<ResponseMessage<List<MonthFormResponse>>> GetMonthFormData(UserInfo User)
         {
-            var Response = new ResponseMessage<DateTime>();
-            if (string.IsNullOrEmpty(testinfo))
+            var Response = new ResponseMessage<List<MonthFormResponse>>();
+            if (!ModelState.IsValid)
             {
                 Response.Code = ResponseCodeDefines.ModelStateInvalid;
-                Response.Message = "请求参数不正确";
+                Logger.Warn($"用户{User?.UserName ?? ""}({User?.Id ?? ""})获取报表信息(PostCustomerListSaleMan)模型验证失败：\r\n{Response.Message ?? ""}，\r\n请求参数为：\r\n");
+                return Response;
             }
 
             try
             {
-                var lastmonth = await _monthManage.GetLastMonth();
-                Response.Extension = lastmonth.SettleTime.Value;
+                Response.Extension = await _monthManage.GetMonthForm();
             }
             catch (Exception e)
             {

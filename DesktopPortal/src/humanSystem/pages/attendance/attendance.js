@@ -9,7 +9,7 @@ import './search.less';
 
 const buttonDef = [
     { buttonID:"import", buttonName:"导入", icon:'', type:'primary', size:'large',},
-    { buttonID:"addnew", buttonName:"新建", icon:'', type:'primary', size:'large',},
+    { buttonID:"setting", buttonName:"配置", icon:'', type:'primary', size:'large',},
     { buttonID:"modify", buttonName:"修改", icon:'', type:'primary', size:'large',},
     { buttonID:"delete", buttonName:"删除", icon:'', type:'primary', size:'large',},
 ];

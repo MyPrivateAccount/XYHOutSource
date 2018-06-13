@@ -461,7 +461,21 @@ namespace XYHHumanPlugin.Stores
             }
         }
 
-        
+        public async Task<SocialInsurance> GetSocialInfoAsync(string idcard)
+        {
+            return Context.SocialInsurances.AsNoTracking().Where(x => (x.IDCard == idcard)).FirstOrDefault();
+        }
+        public async Task<string> GetOrganizationFullName(string departmentid)
+        {
+            if (string.IsNullOrEmpty(departmentid))
+            {
+                return "未找到相应部门";
+            }
+            
+            var response = Context.OrganizationExpansions.AsNoTracking().Where(x => (x.SonId == departmentid) || (x.OrganizationId == departmentid)).FirstOrDefault();
+            return response == null ? "未找到相应部门" : response.FullName;
+        }
+
         public async Task DeleteListAsync(List<HumanInfo> buildingBaseList, CancellationToken cancellationToken = default(CancellationToken))
         { }
 

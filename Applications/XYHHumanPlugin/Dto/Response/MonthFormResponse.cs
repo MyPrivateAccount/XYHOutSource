@@ -12,7 +12,7 @@ public class MonthFormResponse
     public string A4 { get; set; }//姓名
     public string A5 { get; set; }//部门
     public string A6 { get; set; }//职位
-    public string A7 { get; set; }//应出勤天数
+    public int A7 { get; set; }//应出勤天数
     public int A8 { get; set; }//基本工资
     public int A9 { get; set; }//交通补贴
     public int A10 { get; set; }//通信补贴
