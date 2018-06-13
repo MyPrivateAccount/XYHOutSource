@@ -898,7 +898,7 @@ export function insertColum(head, data) {
         let i = 0;
         let va = {};
         for (const key in itm) {
-            if (itm.constructor === String) {
+            if (itm[key].constructor === String) {
                 va[Letter[i++]+row] = {t: 's', v: itm[key]};
             } else {
                 va[Letter[i++]+row] = {t: 'n', v: itm[key]};
@@ -932,7 +932,7 @@ function s2ab(s) {
         return buf;
     }
 }
-export function writeFile(merge, data, sheetname,name) {
+export function writeMonthFile(merge, data, sheetname,name) {
 
     let na = "A1:"+Letter[merge.clen]+(data.length+merge.level+1);
     let obj = {};
@@ -946,9 +946,9 @@ export function writeFile(merge, data, sheetname,name) {
         "!merges":[...merge],
     };
     let tmpWB = {
-            SheetNames:[sheetname],
+            SheetNames:["月结工资"],
             Sheets: {
-                sheetname: sh
+                月结工资: sh
             }
         }
 
@@ -983,7 +983,7 @@ export function Test() {
     let ret = insertColum(f, [{a:1,b:1,c:1,d:1,e:1,f:1,g:1,h:1,i:1,j:1,k:1,l:1,m:1,n:1,
     o:1,p:1,q:1,r:1,s:1,t:1,u:1,v:1,w:1,x:1,y:1,z:1,aa:1,ab:1,
     ac:1,ad:1,ae:1,af:1,ag:1,ah:1,ai:1,aj:1,ak:1,al:1,am:1}]);
-    writeFile(f, ret, "工资表","tt.xlsx");
+    writeMonthFile(f, ret, "工资表","tt.xlsx");
 }
 
 

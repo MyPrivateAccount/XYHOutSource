@@ -6,7 +6,7 @@ import WebApiConfig from '../constants/webapiConfig';
 import appAction from '../../utils/appUtils';
 import getApiResult from './sagaUtil';
 import { notification } from 'antd';
-import { createMergeHead, insertColum, writeFile, MonthHead} from '../constants/export';
+import { createMergeHead, insertColum, writeMonthFile, MonthHead} from '../constants/export';
 
 const actionUtils = appAction(actionTypes.ACTION_ROUTE)
 
@@ -421,9 +421,11 @@ export function* exportMonthForm(state) {
         if (huResult.data.code == 0) {
             huResult.data.message = '获取月结表信息异动成功';
 
-            let f = createMergeHead(MonthHead);
-            let ret = insertColum(f, huResult.data.extension);
-            writeFile(f, ret, "工资表","tt.xlsx");
+            if (huResult.data.extension) {
+                let f = createMergeHead(MonthHead);
+                let ret = insertColum(f, huResult.data.extension);
+                writeMonthFile(f, ret, "工资表","月结.xlsx");    
+            }
 
             notification.success({
                 message: huResult.data.message,
