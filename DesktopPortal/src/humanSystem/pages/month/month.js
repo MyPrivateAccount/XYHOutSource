@@ -1,10 +1,10 @@
 import { connect } from 'react-redux';
-import { searchConditionType,getAllMonthList, recoverMonth, createMonth,monthLast} from '../../actions/actionCreator';
+import { searchConditionType,getAllMonthList, recoverMonth, createMonth,exportMonthForm} from '../../actions/actionCreator';
 import React, { Component } from 'react'
 import {Table, Layout, Input, Select, Icon, Button, Row, Col, Checkbox, Tag, Pagination, Spin} from 'antd'
 import SearchCondition from '../../constants/searchCondition'
 import { MonthListColums} from '../../constants/tools'
-import { Test } from './export';
+import { Test, } from '../../constants/export';
 
 const { Header, Sider, Content } = Layout;
 const CheckboxGroup = Checkbox.Group;
@@ -52,7 +52,7 @@ class Staffinfo extends Component {
     }
 
     createMonthForm = () => {
-        Test();
+        this.props.dispatch(exportMonthForm());
     }
 
     render() {
@@ -89,7 +89,7 @@ class Staffinfo extends Component {
                     </Row>
                     <Row>
                         <Col span={8} offset={8}>
-                            <Button style={{padding:'5px 12px', margin: '5px 5px', width: '120px'}} type="primary" onClick={(e) => this.createMonthForm()}>生成本月报表</Button>
+                            <Button style={{padding:'5px 12px', margin: '5px 5px', width: '120px'}} type="primary" onClick={(e) => this.createMonthForm()}>生成月结报表</Button>
                         </Col>
                     </Row>
                     <p style={{padding: '15px 10px', borderBottom: '1px solid #e0e0e0', fontSize: '1.4rem', fontWeight: 'bold'}}>目前已为你筛选出<b style={{color: '#f36366'}}> {monthList.length || 0} </b>条月结信息</p>

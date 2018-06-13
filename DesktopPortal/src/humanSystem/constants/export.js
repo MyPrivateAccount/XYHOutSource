@@ -3,7 +3,7 @@
 import XLSX from "xlsx-style";
 //允许对角线合并
 //subhead数组情况必须相同
-const AllHead = [//以第一层为基准, 必须平行
+export const MonthHead = [//以第一层为基准, 必须平行
     {
         t: "s", 
         v: "新汇耀有限公司",//基本工资
@@ -932,7 +932,7 @@ function s2ab(s) {
         return buf;
     }
 }
-export function writeFile(merge, data) {
+export function writeFile(merge, data, sheetname,name) {
 
     let na = "A1:"+Letter[merge.clen]+(data.length+merge.level+1);
     let obj = {};
@@ -946,9 +946,9 @@ export function writeFile(merge, data) {
         "!merges":[...merge],
     };
     let tmpWB = {
-            SheetNames:["工资表"],
+            SheetNames:[sheetname],
             Sheets: {
-                工资表: sh
+                sheetname: sh
             }
         }
 
@@ -957,7 +957,7 @@ export function writeFile(merge, data) {
     ))], {
             type: ""
         });
-    saveAs(tmpDown, 'test.xlsx');
+    saveAs(tmpDown, name);
 
     // let na = "A1:"+Letter[merge.clen]+(data.length+merge.level+1);
     // let obj = {};
@@ -979,17 +979,16 @@ export function writeFile(merge, data) {
 }
 
 export function Test() {
-    let f = createMergeHead(AllHead);
+    let f = createMergeHead(MonthHead);
     let ret = insertColum(f, [{a:1,b:1,c:1,d:1,e:1,f:1,g:1,h:1,i:1,j:1,k:1,l:1,m:1,n:1,
     o:1,p:1,q:1,r:1,s:1,t:1,u:1,v:1,w:1,x:1,y:1,z:1,aa:1,ab:1,
     ac:1,ad:1,ae:1,af:1,ag:1,ah:1,ai:1,aj:1,ak:1,al:1,am:1}]);
-    writeFile(f, ret);
+    writeFile(f, ret, "工资表","tt.xlsx");
 }
 
 
-
-// jquery@1.11.0
 // babel-polyfill@6.9.1
+// jquery@1.11.0
 // xlsx-style@0.8.13
 
 // node

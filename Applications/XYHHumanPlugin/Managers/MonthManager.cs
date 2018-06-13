@@ -51,6 +51,16 @@ namespace XYHHumanPlugin.Managers
             }
         }
 
+        public async Task<MonthFormResponse> GetMonthForm(DateTime date)
+        {
+            var tf = await GetLastMonth();
+            if (tf != null)
+            {
+                var month = _Store.GetMonthAsync(a => a.Where(b => b.SettleTime.ToString("Y") == date.ToString("Y")));
+                
+            }
+        }
+
         public virtual async Task<SearchMonthInfoResponse> GetAllMonthInfo(XYHHumanPlugin.Dto.Request.MonthRequest req, CancellationToken cancellationToken = default(CancellationToken))
         {
             var list = await _Store.GetListMonthAsync(a => a.Where(b => b.ID != ""), cancellationToken);
@@ -65,8 +75,6 @@ namespace XYHHumanPlugin.Managers
 
             if (list != null)
             {
-                
-
                 SearchMonthInfoResponse result = new SearchMonthInfoResponse();
                 result.extension = _mapper.Map<List<MonthInfoResponse>>(info);
                 result.pageIndex = req.pageIndex;
@@ -86,6 +94,7 @@ namespace XYHHumanPlugin.Managers
             }
             return null;
         }
+
         public virtual async Task<bool> CreateMonth(UserInfo user, DateTime date, CancellationToken cancellationToken = default(CancellationToken))
         {
             List<MonthInfo> monthlist = new List<MonthInfo>();
@@ -108,6 +117,32 @@ namespace XYHHumanPlugin.Managers
                 }
             }
             return false;
+        }
+
+        private async Task<List<MonthFormResponse>> GetMonthSalaryForm(string monthid, List<HumanInfo> humaninfolist, CancellationToken cle = default(CancellationToken))
+        {
+            var relst = new List<MonthFormResponse>();
+            var salarylst = _Store.GetListSalaryFormAsync(a => a.Where(b => b.MonthID == monthid));
+            foreach (var item in salarylst)
+            {
+                var human = _Store.GetHumanAsync(a => a.Where(b => b.ID == item.HumanID));
+                if (human != null)
+                {
+                    var tf = await _Store.GetStationAsync(a => a.Where(b => b.ID == human.Position));
+                    if (tf != null)
+                    {
+                        tf.PositionName;
+
+                        var it = new MonthFormResponse();
+                        it.A1 = relst.Count;
+                        it.A2 = human.IDCard;
+                        it.A3 = human.ID;
+                        it.A4 = human.Name;
+                        it.A5 = ;
+                        it.A6 = tf.PositionName;
+                    }
+                }
+            }
         }
 
         private async Task<bool> CreateMonthSalaryForm(string monthid, string salaryid, List<HumanInfo> humaninfolist, CancellationToken cle = default(CancellationToken))

@@ -515,7 +515,7 @@ namespace XYHHumanPlugin.Stores
             }
         }
 
-        public Task<TResult> GetAsync<TResult>(Func<IQueryable<HumanInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<TResult> GetHumanAsync<TResult>(Func<IQueryable<HumanInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (query == null)
             {

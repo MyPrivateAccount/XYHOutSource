@@ -117,3 +117,6 @@ export const LEAVE_POSITON = "LEAVE_POSITON";
 
 //异动
 export const POST_CHANGEHUMAN = "POST_CHANGEHUMAN";
+
+//导表
+export const EXPORT_MONTHFORM = "EXPORT_MONTHFORM";

@@ -17,6 +17,7 @@ const WebApiConfig = {
         LastMonth: basicDataBaseApiUrl + "month/lastmonth",
         RecoverMonth: basicDataBaseApiUrl + "month/backmonth",
         CreateMonth: basicDataBaseApiUrl + "month/createmonth",
+        monthFormData: basicDataBaseApiUrl + "month/monthformdata",
         SetBlack: basicDataBaseApiUrl + "humanblack/setblack",
         DeleteBlack: basicDataBaseApiUrl + "humanblack/deleteblack",
         SetStation: basicDataBaseApiUrl + "humanstation/setstation",

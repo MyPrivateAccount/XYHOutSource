@@ -54,6 +54,32 @@ namespace XYHHumanPlugin.Controllers
             return Response;
         }
 
+        [HttpGet("monthformdata")]
+        [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
+        public async Task<ResponseMessage<DateTime>> GetMonthFormData([FromBody]DateTime testinfo)
+        {
+            var Response = new ResponseMessage<DateTime>();
+            if (string.IsNullOrEmpty(testinfo))
+            {
+                Response.Code = ResponseCodeDefines.ModelStateInvalid;
+                Response.Message = "请求参数不正确";
+            }
+
+            try
+            {
+                var lastmonth = await _monthManage.GetLastMonth();
+                Response.Extension = lastmonth.SettleTime.Value;
+            }
+            catch (Exception e)
+            {
+                Response.Code = ResponseCodeDefines.ServiceError;
+                Response.Message = "服务器错误：" + e.ToString();
+                Logger.Error("error");
+            }
+
+            return Response;
+        }
+
         [HttpPost("monthlist")]
         [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
         public async Task<ResponseMessage<SearchMonthInfoResponse>> PostMonthList([FromBody] MonthRequest req)

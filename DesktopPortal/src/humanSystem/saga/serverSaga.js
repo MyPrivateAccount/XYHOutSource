@@ -6,6 +6,7 @@ import WebApiConfig from '../constants/webapiConfig';
 import appAction from '../../utils/appUtils';
 import getApiResult from './sagaUtil';
 import { notification } from 'antd';
+import { createMergeHead, insertColum, writeFile, MonthHead} from '../constants/export';
 
 const actionUtils = appAction(actionTypes.ACTION_ROUTE)
 
@@ -410,6 +411,39 @@ export function* changeHuman(state) {
         });
     }
 }
+
+export function* exportMonthForm(state) {
+    let url = WebApiConfig.server.monthFormData;
+    let huResult = { isOk: false, msg: '获取月结表信息异动失败！' };
+
+    try {
+        huResult = yield call(ApiClient.get, url);
+        if (huResult.data.code == 0) {
+            huResult.data.message = '获取月结表信息异动成功';
+
+            let f = createMergeHead(MonthHead);
+            let ret = insertColum(f, huResult.data.extension);
+            writeFile(f, ret, "工资表","tt.xlsx");
+
+            notification.success({
+                message: huResult.data.message,
+                duration: 3
+            });
+
+            return;
+        }
+    } catch (e) {
+        huResult.data.message = "获取月结表信息接口调用异常!";
+    }
+    
+    if (huResult.data.code != 0) {
+        notification.error({
+            message: huResult.data.message,
+            duration: 3
+        });
+    }
+}
+
 export default function* watchDicAllAsync() {
     yield takeLatest(actionUtils.getActionType(actionTypes.POST_HUMANINFO), postHumanInfoAsync);
     yield takeLatest(actionUtils.getActionType(actionTypes.GET_HUMANINFONUMBER), getWorkNumber);
@@ -427,4 +461,6 @@ export default function* watchDicAllAsync() {
     yield takeLatest(actionUtils.getActionType(actionTypes.POST_SOCIALINSURANCE), setSocialInsure);
     yield takeLatest(actionUtils.getActionType(actionTypes.LEAVE_POSITON), leavePosition);
     yield takeLatest(actionUtils.getActionType(actionTypes.POST_CHANGEHUMAN), changeHuman);
+    //导表
+    yield takeLatest(actionUtils.getActionType(actionTypes.EXPORT_MONTHFORM), exportMonthForm);
 }
