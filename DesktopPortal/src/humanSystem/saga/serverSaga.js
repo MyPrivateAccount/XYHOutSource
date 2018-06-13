@@ -422,6 +422,7 @@ export function* exportMonthForm(state) {
             huResult.data.message = '获取月结表信息异动成功';
 
             if (huResult.data.extension) {
+                MonthHead[0].v = MonthHead[0].v+state.payload+"月结表";
                 let f = createMergeHead(MonthHead);
                 let ret = insertColum(f, huResult.data.extension);
                 writeMonthFile(f, ret, "工资表","月结.xlsx");    

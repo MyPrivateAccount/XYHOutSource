@@ -161,6 +161,9 @@ class Staffinfo extends Component {
         }
     }
 
+    handleExport = () => {
+    }
+
     render() {
         let self = this;
         const rowSelection = {
@@ -239,7 +242,7 @@ class Staffinfo extends Component {
                             <Button type="primary" className="statuButton" onClick={(e) => this.handleLeft()}>离职</Button>
                             <Button type="primary" className="statuButton" onClick={(e) => this.handleUploadContract()}>合同上传</Button>
                             <Button type="primary" className="statuButton" onClick={(e) => this.handleAddBlack()}>加入黑名单</Button>
-                            <Button type="primary" className="statuButton" onClick={(e) => this.handleHistory()}>历史信息</Button>
+                            <Button type="primary" className="statuButton" onClick={(e) => this.handleExport()}>导出花名册</Button>
                         </Col>
                     </Row>
                     <p style={{padding: '15px 10px', borderBottom: '1px solid #e0e0e0', fontSize: '1.4rem', fontWeight: 'bold'}}>目前已为你筛选出<b style={{color: '#f36366'}}> {humanList.length || 0} </b>条员工信息</p>

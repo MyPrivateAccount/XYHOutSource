@@ -52,7 +52,8 @@ class Staffinfo extends Component {
     }
 
     createMonthForm = () => {
-        this.props.dispatch(exportMonthForm());
+        let nextMonth = new Date(this.props.monthLast);
+        this.props.dispatch(exportMonthForm(nextMonth.getFullYear() + "." + (nextMonth.getMonth()+1)));
     }
 
     render() {

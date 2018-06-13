@@ -106,6 +106,31 @@ namespace XYHHumanPlugin.Controllers
             return pagingResponse;
         }
 
+        [HttpGet("humanformdata")]
+        [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
+        public async Task<ResponseMessage<List<MonthFormResponse>>> GetHumanFormData(UserInfo User)
+        {
+            var Response = new ResponseMessage<List<MonthFormResponse>>();
+            if (!ModelState.IsValid)
+            {
+                Response.Code = ResponseCodeDefines.ModelStateInvalid;
+                Logger.Warn($"用户{User?.UserName ?? ""}({User?.Id ?? ""})获取报表信息(PostCustomerListSaleMan)模型验证失败：\r\n{Response.Message ?? ""}，\r\n请求参数为：\r\n");
+                return Response;
+            }
+
+            try
+            {
+                //Response.Extension = await _monthManage.GetMonthForm();
+            }
+            catch (Exception e)
+            {
+                Response.Code = ResponseCodeDefines.ServiceError;
+                Response.Message = "服务器错误：" + e.ToString();
+                Logger.Error("error");
+            }
+
+            return Response;
+        }
 
         [HttpPost("becomehuman")]//转正
         [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]

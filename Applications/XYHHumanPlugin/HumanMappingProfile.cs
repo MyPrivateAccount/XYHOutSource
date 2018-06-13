@@ -47,6 +47,10 @@ namespace XYHHumanPlugin
 
             CreateMap<ModifyInfoResponse, ModifyInfo>();
             CreateMap<ModifyInfo, ModifyInfoResponse>();
+
+            CreateMap<HumanInfo, HumanInfoFormResponse>()
+                .ForMember(d => d.SexName, m => m.MapFrom(src => src.Sex == 1 ? "男" : src.Sex == 2 ? "女" : "不明"))
+                ;
         }
     }
 }
