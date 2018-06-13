@@ -79,4 +79,16 @@ rpReducerMap[actionTypes.DEALRP_CJBB_LISTUPDATE] = function (state, action) {
     console.log("readucer获取成交报备列表成功" + JSON.stringify(action.payload));
     return Object.assign({}, state, { rpCJBBResult:action.payload ,operInfo:{operType:'DEALRP_CJBB_LISTUPDATE'}});
 }
+rpReducerMap[actionTypes.DEALRP_FACTGET_SUCCESS] = function (state, action) {
+    console.log("readucer获取收付信息成功" + JSON.stringify(action.payload));
+    return Object.assign({}, state, { ext:action.payload ,operInfo:{operType:'DEALRP_FACTGET_SUCCESS'}});
+}
+rpReducerMap[actionTypes.DEALRP_FACTGET_GET_SAVE_SUCCESS] = function (state, action) {
+    console.log("readucer保存收款信息成功" + JSON.stringify(action.payload));
+    return Object.assign({}, state, { ext:action.payload ,operInfo:{operType:'DEALRP_FACTGET_GET_SAVE_SUCCESS'}});
+}
+rpReducerMap[actionTypes.DEALRP_FACTGET_PAY_SAVE_SUCCESS] = function (state, action) {
+    console.log("readucer保存付款信息成功" + JSON.stringify(action.payload));
+    return Object.assign({}, state, { ext:action.payload ,operInfo:{operType:'DEALRP_FACTGET_PAY_SAVE_SUCCESS'}});
+}
 export default handleActions(rpReducerMap, initState)

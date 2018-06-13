@@ -4,6 +4,9 @@ import { Layout, Row, Col } from 'antd';
 import DRpSearchCondition from './dRpSearchCondition'
 import DRpSearchResult from './dRpSearchResult'
 import DRpDlg from './dRpDlg'
+import ZYComponet from './zYComponet'
+import TYComponet from './tYComponet'
+
 class DealRpQuery extends Component {
     state = {
         SearchCondition: {}
@@ -18,10 +21,22 @@ class DealRpQuery extends Component {
         this.rstb = ref
     }
     onOpenDlg = (e) => {
-        this.drpDlg.show()
+        this.drpDlg.show(e)
     }
     onDlgSelf = (e) => {
         this.drpDlg = e;
+    }
+    onOpenZy=(e)=>{
+        this.zyDlg.show()
+    }
+    onZYSelf=(e)=>{
+        this.zyDlg = e;
+    }
+    onTYSelf=(e)=>{
+        this.tyDlg = e;
+    }
+    onOpenTy=(e)=>{
+        this.tyDlg.show()
     }
     render() {
         return (
@@ -33,10 +48,12 @@ class DealRpQuery extends Component {
                 </Row>
                 <Row>
                     <Col span={24}>
-                        <DRpSearchResult cd={this.state.SearchCondition} onRSTableRef={this.onRSTableRef} onOpenDlg={this.onOpenDlg} />
+                        <DRpSearchResult cd={this.state.SearchCondition} onRSTableRef={this.onRSTableRef} onOpenDlg={this.onOpenDlg} onOpenZy={this.onOpenZy} onOpenTy={this.onOpenTy}/>
                     </Col>
                 </Row>
                 <DRpDlg onDlgSelf={this.onDlgSelf} />
+                <ZYComponet onZYSelf = {this.onZYSelf}/>
+                <TYComponet onTYSelf = {this.onTYSelf}/>
             </Layout>
         )
     }

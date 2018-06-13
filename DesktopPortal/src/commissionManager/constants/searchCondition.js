@@ -6,7 +6,7 @@ const SearchCondition = {
         pageIndex: 0,
         pageSize: defaultPageSize,
         keyWords: '',
-        OrganizationId:''
+        OrganizationIds:[]
     },
     orgParamListCondition: {
         branchId:''
@@ -15,7 +15,7 @@ const SearchCondition = {
         pageIndex: 0,
         pageSize: defaultPageSize,
         keyWords: '',
-        OrganizationId:'',//组织id
+        OrganizationIds:[],//组织id
         rankPos:''//职位等级
     },
     acmentListCondition:{

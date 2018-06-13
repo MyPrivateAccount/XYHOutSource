@@ -60,7 +60,7 @@ class TradeReportTable extends Component{
     }
     render(){
         return (
-            <Modal width={800} title={'成交报备列表'} maskClosable={false} visible={this.state.visible}
+            <Modal width={900} title={'成交报备列表'} maskClosable={false} visible={this.state.visible}
                 onOk={this.handleOk} onCancel={this.handleCancel} >
                 <Spin spinning={this.state.isDataLoading}>
                     <Table columns={this.appTableColumns} dataSource={this.props.rpCJBBResult.extension} pagination={this.state.pagination} onChange={this.handleTableChange} bordered={true}></Table> 

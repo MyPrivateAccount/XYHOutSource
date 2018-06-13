@@ -182,7 +182,7 @@ class TradeNTable extends Component {
     render() {
         const { dataSource } = this.state
         return (
-            <Table columns={this.appTableColumns} dataSource={dataSource}></Table>
+            <Table bordered columns={this.appTableColumns} dataSource={dataSource}></Table>
         )
     }
 }

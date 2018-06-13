@@ -7,6 +7,7 @@ export const getDicParList = createAction(actionTypes.DIC_GET_PARLIST);
 
 //部门组织树
 export const orgGetPermissionTree = createAction(actionTypes.ORG_GET_PERMISSION_TREE);
+export const getEmpList = createAction(actionTypes.EMP_GET_LIST);
 //添加 
 export const orgFtParamAdd = createAction(actionTypes.ORG_FT_PARAM_ADD);
 //修改
@@ -85,3 +86,9 @@ export const searchfyxqReport= createAction(actionTypes.FINA_QUERY_FYXQB);
 export const searchYjtzhz = createAction(actionTypes.FINA_QUERY_YJTZHZ);
 //查询调佣详情表
 export const searchTyxq = createAction(actionTypes.FINA_QUERY_TYXQ);
+//收付
+export const factGet = createAction(actionTypes.DEALRP_FACTGET);
+//收款
+export const factGetGet = createAction(actionTypes.DEALRP_FACTGET_GET_SAVE);
+//付款
+export const factGetPay = createAction(actionTypes.DEALRP_FACTGET_PAY_SAVE);

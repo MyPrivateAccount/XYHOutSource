@@ -44,13 +44,13 @@ class DealRpTable extends Component {
                         <Button type='primary' shape='circle' size='small' icon='team' onClick={(e) => this.handleSKClick(recored)} />
                     </Tooltip>
                     <Tooltip title='付款'>
-                    <Button type='primary' shape='circle' size='small' icon='team' onClick={(e) => this.handleModClick(recored)} />
+                    <Button type='primary' shape='circle' size='small' icon='team' onClick={(e) => this.handleFKClick(recored)} />
                     </Tooltip>
                     <Tooltip title='调佣'>
-                    <Button type='primary' shape='circle' size='small' icon='team' onClick={(e) => this.handleModClick(recored)} />
+                    <Button type='primary' shape='circle' size='small' icon='team' onClick={(e) => this.handleTYClick(recored)} />
                     </Tooltip>
                     <Tooltip title='转移'>
-                        <Button type='primary' shape='circle' size='small' icon='team' onClick={(e) => this.handleModClick(recored)} />
+                        <Button type='primary' shape='circle' size='small' icon='team' onClick={(e) => this.handleZYClick(recored)} />
                     </Tooltip>
                     <Popconfirm title="请确认xxx报告的结佣资料是否已经收齐?" onConfirm={this.jyconfirm} onCancel={this.jycancel} okText="确认" cancelText="取消">
                         <Button type='primary' shape='circle' size='small' icon='team' />
@@ -72,7 +72,26 @@ class DealRpTable extends Component {
 
     }
     handleSKClick=(e)=>{
-        this.props.onOpenDlg(e)
+        if(this.props.onOpenDlg!==null){
+            e.type = 'sk'
+            this.props.onOpenDlg(e)
+        }
+    }
+    handleFKClick=(e)=>{
+        if(this.props.onOpenDlg!==null){
+            e.type = 'fk'
+            this.props.onOpenDlg(e)
+        }
+    }
+    handleTYClick=(e)=>{
+        if(this.props.onOpenTy!==null){
+            this.props.onOpenTy(e)
+        }
+    }
+    handleZYClick=(e)=>{
+        if(this.props.onOpenZy!==null){
+            this.props.onOpenZy(e)
+        }
     }
     handleSearch = (e, type) => {
         console.log(e)

@@ -71,4 +71,9 @@ function getAllChildrenNode(node, parentId, formatNodeLit) {
     return nodeList;
 }
 
+treeReducerMap[actionTypes.EMP_LIST_UPDATE] = function (state, action) {
+    console.log("readucer用户的列表:" + JSON.stringify(action.payload.extension));
+    return Object.assign({}, state, { empList: action.payload.extension });
+}
+
 export default handleActions(treeReducerMap, initState)
