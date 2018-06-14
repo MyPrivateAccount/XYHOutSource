@@ -6,9 +6,10 @@ import WebApiConfig from '../constants/webapiConfig';
 import appAction from '../../utils/appUtils';
 import getApiResult from './sagaUtil';
 import { notification } from 'antd';
-import { createMergeHead, insertColum, writeMonthFile, MonthHead} from '../constants/export';
+import { createMergeHead, createColumData, writeMonthFile, MonthHead, writeHumanFile, HumanHead} from '../constants/export';
 
 const actionUtils = appAction(actionTypes.ACTION_ROUTE)
+const PositionStatus = ["未入职", "离职", "入职", "转正"];
 
 export function* postHumanInfoAsync(state) {
     let urlhuman = WebApiConfig.server.PostHumaninfo;
@@ -424,7 +425,7 @@ export function* exportMonthForm(state) {
             if (huResult.data.extension) {
                 MonthHead[0].v = MonthHead[0].v+state.payload+"月结表";
                 let f = createMergeHead(MonthHead);
-                let ret = insertColum(f, huResult.data.extension);
+                let ret = createColumData(f, huResult.data.extension);
                 writeMonthFile(f, ret, "工资表","月结.xlsx");    
             }
 
@@ -442,6 +443,66 @@ export function* exportMonthForm(state) {
     if (huResult.data.code != 0) {
         notification.error({
             message: huResult.data.message,
+            duration: 3
+        });
+    }
+}
+
+function findCascaderLst(id, tree, lst) {
+    if (tree) {
+        if (tree.id === id) {
+            lst.unshift(tree.id);
+            return true;
+        } else if (tree.children && tree.children.length>0) {
+            if (tree.children.findIndex(org => this.findCascaderLst(id,org, lst)) !== -1) {
+                lst.unshift(tree.id);
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+export function* exportHumanForm(state) {
+    let result = {isOk: false, extension: {}, msg: '检索关键字失败！'};
+    let url = WebApiConfig.search.searchHumanList;
+    try {
+        let res = yield call(ApiClient.post, url, state.payload.data);
+         if (res.data.code == 0) {
+             result.isOk = true;
+             let lv = res.data.extension;
+             let data = lv.map(function(v, k) {
+                let sn = "", fn = "";
+                (v.sex==1)&&(sn = "男");
+                (v.sex==2)&&(sn = "女");
+                fn = v.staffStatus?PositionStatus[v.staffStatus]:"未入职";
+
+                let lstvalue = [];
+                state.payload.tree.findIndex(
+                    e => findCascaderLst(v.departmentId, e, lstvalue)
+                );
+                return {a1: k, a2: v.id, a3: v.name, a4: sn, a5: v.idCard, a6: lstvalue.join('/'),
+                        a7: v.positionName, a8: fn, a9: v.entryTime?v.entryTime.replace("T", " "):"",
+                        a10: v.becomeTime?v.becomeTime.replace("T", " "):"",
+                        a11: v.BaseSalary, a12: v.IsSocialInsurance?"是":"否", a13: v.contract?"是":"否"};
+             });
+
+            let f = createMergeHead(HumanHead);
+            let ret = createColumData(f, data);
+            writeHumanFile(f, ret, "人事员工表","人事员工.xlsx");
+
+            notification.success({
+                message: "导出成功",
+                duration: 3
+            });
+         }
+    } catch (e) {
+        result.msg = '检索关键字接口调用异常';
+    }
+
+    if (!result.isOk) {
+        notification.error({
+            description: result.msg,
             duration: 3
         });
     }
@@ -466,4 +527,5 @@ export default function* watchDicAllAsync() {
     yield takeLatest(actionUtils.getActionType(actionTypes.POST_CHANGEHUMAN), changeHuman);
     //导表
     yield takeLatest(actionUtils.getActionType(actionTypes.EXPORT_MONTHFORM), exportMonthForm);
+    yield takeLatest(actionUtils.getActionType(actionTypes.EXPORT_HUMANFORM), exportHumanForm);
 }

@@ -89,3 +89,4 @@ export const postChangeHuman = createAction(actionTypes.POST_CHANGEHUMAN);
 
 //导表
 export const exportMonthForm = createAction(actionTypes.EXPORT_MONTHFORM);
+export const exportHumanForm = createAction(actionTypes.EXPORT_HUMANFORM);

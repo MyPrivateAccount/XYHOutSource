@@ -108,9 +108,9 @@ namespace XYHHumanPlugin.Controllers
 
         [HttpGet("humanformdata")]
         [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
-        public async Task<ResponseMessage<List<MonthFormResponse>>> GetHumanFormData(UserInfo User)
+        public async Task<ResponseMessage<List<HumanInfoFormResponse>>> GetHumanFormData(UserInfo User)
         {
-            var Response = new ResponseMessage<List<MonthFormResponse>>();
+            var Response = new ResponseMessage<List<HumanInfoFormResponse>>();
             if (!ModelState.IsValid)
             {
                 Response.Code = ResponseCodeDefines.ModelStateInvalid;

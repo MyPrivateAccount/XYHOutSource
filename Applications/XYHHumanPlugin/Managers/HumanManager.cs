@@ -380,13 +380,18 @@ namespace XYHHumanPlugin.Managers
                 Response.TotalCount = query.Count;
 
                 List<HumanInfo> result = new List<HumanInfo>();
-                var begin = (condition.pageIndex) * condition.pageSize;
-                var end = (begin + condition.pageSize) > query.Count ? query.Count : (begin + condition.pageSize);
-
-                for (; begin < end; begin++)
+                if (condition.pageIndex == -1 && condition.pageSize == -1)
                 {
-                    
-                    result.Add(query.ElementAt(begin));
+                    result = query;
+                }
+                else
+                {
+                    var begin = (condition.pageIndex) * condition.pageSize;
+                    var end = (begin + condition.pageSize) > query.Count ? query.Count : (begin + condition.pageSize);
+                    for (; begin < end; begin++)
+                    {
+                        result.Add(query.ElementAt(begin));
+                    }
                 }
 
                 Response.PageIndex = condition.pageIndex;
@@ -400,7 +405,6 @@ namespace XYHHumanPlugin.Managers
                     {
                         item.PositionName = tf.PositionName;
                     }
-                    
                 }
             }
             catch (Exception e)
