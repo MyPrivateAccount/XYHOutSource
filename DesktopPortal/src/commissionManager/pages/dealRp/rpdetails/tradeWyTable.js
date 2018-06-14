@@ -2,28 +2,8 @@
 import { connect } from 'react-redux';
 import React, { Component } from 'react';
 import { Table, Button, Tooltip, Input, Select } from 'antd'
-import { getDicParList } from '../../../actions/actionCreator'
+import { getDicParList} from '../../../actions/actionCreator'
 
-const testItems = {
-    kxlxItems: [
-        {
-            key: '平台费',
-            percent: 0.3
-        },
-        {
-            key: '其它费用',
-            percent: 0.5
-        }
-    ],
-    sfdxItems: [
-        {
-            key: '业主'
-        },
-        {
-            key: '客户'
-        }
-    ]
-}
 class TradeWyTable extends Component {
     constructor(props) {
         super(props);
@@ -44,7 +24,7 @@ class TradeWyTable extends Component {
                 <span>
                     <Select style={{ width: 80 }} onChange={this.onCellChange(recored.key, 'moneyType')}>
                         {
-                            text.map(tp => <Select.Option key={tp.key} value={tp.key}>{tp.key}</Select.Option>)
+                            text.map(tp => <Select.Option key={tp.name} value={tp.name}>{tp.name}</Select.Option>)
                         }
                     </Select>
                 </span>
@@ -95,10 +75,8 @@ class TradeWyTable extends Component {
     }
     componentDidMount() {
         this.props.onWyTableRef(this)
-        this.setState({ kxlxItems: testItems.kxlxItems, sfdxItems: testItems.sfdxItems })
     }
     componentWillReceiveProps(newProps) {
-
     }
     //选择了款项类型
     onCellChange = (key, dataIndex) => {
@@ -126,6 +104,9 @@ class TradeWyTable extends Component {
                 this.setState({ dataSource });
             }
         };
+    }
+    setKxlxItems=(items)=>{
+        this.setState({kxlxItems:items})
     }
     //新增
     handleAdd = () => {
@@ -181,10 +162,10 @@ class TradeWyTable extends Component {
         return dt;
     }
     getPercent(key) {
-        let items = testItems.kxlxItems;
+        let items = this.state.kxlxItems;
         console.log("getPercent:" + key)
         for (let i = 0; i < items.length; i++) {
-            if (items[i].key === key) {
+            if (items[i].name === key) {
                 console.log(items[i].percent)
                 return items[i].percent
             }
@@ -202,8 +183,9 @@ function MapStateToProps(state) {
 
     return {
         basicData: state.base,
-        operInfo: state.rp.operInfo,
-        ext: state.rp.ext
+        operInfo: state.acm.operInfo,
+        ext: state.rp.ext,
+        scaleSearchResult:state.acm.scaleSearchResult
     }
 }
 

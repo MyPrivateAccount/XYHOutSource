@@ -3,7 +3,7 @@
 import { connect } from 'react-redux';
 import React, { Component } from 'react';
 import moment from 'moment'
-import { getDicParList,dealRpSave} from '../../../actions/actionCreator'
+import { getDicParList,dealRpSave,syncYJDate} from '../../../actions/actionCreator'
 import {notification, DatePicker, Form, Span, Layout, Table, Button, Radio, Popconfirm, Tooltip, Row, Col, Input, Spin, Select, TreeSelect,Modal} from 'antd'
 import './trade.less'
 
@@ -25,8 +25,6 @@ class TradeContract extends Component {
         this.props.dispatch(getDicParList(['COMMISSION_BSWY_CATEGORIES', 'COMMISSION_CJBG_TYPE', 'COMMISSION_JY_TYPE', 'COMMISSION_PAY_TYPE', 'COMMISSION_PROJECT_TYPE', 'COMMISSION_CONTRACT_TYPE', 'COMMISSION_OWN_TYPE', 'COMMISSION_TRADEDETAIL_TYPE', 'COMMISSION_SFZJJG_TYPE']));
     }
     componentDidMount=()=>{
-        this.props.onSelf(this,'rpds')
-        this.loadData()
     }
     componentWillReceiveProps(newProps) {
         this.setState({ isDataLoading: false });
@@ -43,17 +41,14 @@ class TradeContract extends Component {
             this.setState({ rpData: newProps.ext});
             newProps.operInfo.operType = ''
         }
-    }
-    loadData=()=>{
-        if(JSON.stringify(this.props.ds)!=='{}'){
-            let ds = this.props.ds
-            let rpData = [...this.state.rpData]
-            rpData.fyzId = ds.fyzId
-            rpData.cjrId = ds.cjrId
-            rpData.cjrq = ds.cjrq
-            rpData.cjzj = ds.cjzj
-            rpData.ycjyj = ds.ycjyj
-            this.setState({rpData})
+        else if(newProps.syncRpOp.operType === 'DEALRP_SYNC_RP'){
+            let newdata = newProps.syncRpData
+            this.props.form.setFieldsValue({'fyzId':newdata.fyzId})
+            this.props.form.setFieldsValue({'cjrId':newdata.cjrId})
+            this.props.form.setFieldsValue({'cjrq':moment(newdata.cjrq)})
+            this.props.form.setFieldsValue({'cjzj':newdata.cjzj})
+            this.props.form.setFieldsValue({'ycjyj':newdata.ycjyj})
+            newProps.syncRpOp.operType = ''
         }
     }
     handleSave = (e) => {
@@ -100,6 +95,7 @@ class TradeContract extends Component {
     cjrq_dateChange=(value,dateString)=>{
         console.log(dateString)
         this.setState({cjrq:dateString})
+        this.props.dispatch(syncYJDate(dateString))//同步日期給业绩分配页面
     }
     wqrq_dateChange=(value,dateString)=>{
         console.log(dateString)
@@ -555,7 +551,9 @@ function MapStateToProps(state) {
     return {
         basicData: state.base,
         operInfo:state.rp.operInfo,
-        ext:state.rp.ext
+        ext:state.rp.ext,
+        syncRpData:state.rp.syncRpData,
+        syncRpOp:state.rp.syncRpOp
     }
 }
 

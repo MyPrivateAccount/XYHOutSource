@@ -12,7 +12,18 @@ const initState = {
         pageSize:10,
     },
     shopInfo:[],
-    buildingInfo:[]
+    buildingInfo:[],
+    syncData:'',
+    syncRpData:{},
+    syncRpOp:{operType:''},
+    syncWyData:{},
+    syncWyOp:{operType:''},
+    syncYzData:{},
+    syncYzOp:{operType:''},
+    syncKhData:{},
+    syncKhOp:{operType:''},
+    syncFpData:{},
+    syncFpOp:{operType:''}
 };
 let rpReducerMap = {};
 //保存接口反馈
@@ -100,5 +111,29 @@ rpReducerMap[actionTypes.DEALRP_BUILDING_GET_SUCCESS] = function (state, action)
 rpReducerMap[actionTypes.DEALRP_SHOP_GET_SUCCESS] = function (state, action) {
     console.log("readucer获取商铺详情成功" + JSON.stringify(action.payload));
     return Object.assign({}, state, { shopInfo:action.payload ,operInfo:{operType:'DEALRP_SHOP_GET_SUCCESS'}});
+}
+rpReducerMap[actionTypes.DEALRP_SYNC_DATE] = function (state, action) {
+    console.log("readucer日期同步成功" + JSON.stringify(action.payload));
+    return Object.assign({}, state, { syncData:action.payload ,operInfo:{operType:'DEALRP_SYNC_DATE'}});
+}
+rpReducerMap[actionTypes.DEALRP_SYNC_RP] = function (state, action) {
+    console.log("readucer报告基础同步" + JSON.stringify(action.payload));
+    return Object.assign({}, state, { syncRpData:action.payload ,syncRpOp:{operType:'DEALRP_SYNC_RP'}});
+}
+rpReducerMap[actionTypes.DEALRP_SYNC_WY] = function (state, action) {
+    console.log("readucer报告物业同步" + JSON.stringify(action.payload));
+    return Object.assign({}, state, { syncWyData:action.payload ,syncWyOp:{operType:'DEALRP_SYNC_WY'}});
+}
+rpReducerMap[actionTypes.DEALRP_SYNC_YZ] = function (state, action) {
+    console.log("readucer报告业主同步" + JSON.stringify(action.payload));
+    return Object.assign({}, state, { syncYzData:action.payload ,syncYzOp:{operType:'DEALRP_SYNC_YZ'}});
+}
+rpReducerMap[actionTypes.DEALRP_SYNC_KH] = function (state, action) {
+    console.log("readucer报告客户同步" + JSON.stringify(action.payload));
+    return Object.assign({}, state, { syncKhData:action.payload ,syncKhOp:{operType:'DEALRP_SYNC_KH'}});
+}
+rpReducerMap[actionTypes.DEALRP_SYNC_FP] = function (state, action) {
+    console.log("readucer报告分配同步" + JSON.stringify(action.payload));
+    return Object.assign({}, state, { syncFpData:action.payload ,syncFpOp:{operType:'DEALRP_SYNC_FP'}});
 }
 export default handleActions(rpReducerMap, initState)

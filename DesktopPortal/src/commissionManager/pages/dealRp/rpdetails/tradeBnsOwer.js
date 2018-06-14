@@ -17,9 +17,8 @@ class TradeBnsOwner extends Component {
     this.setState({ isDataLoading: true, tip: '信息初始化中' })
     this.props.dispatch(getDicParList(['COMMISSION_YZ_QHTSC']));
   }
-  componentDidMount=()=>{
-    this.props.onSelf(this,'yzds')
-    this.loadData()
+  componentDidMount = () => {
+    
   }
   componentWillReceiveProps(newProps) {
     this.setState({ isDataLoading: false });
@@ -35,14 +34,11 @@ class TradeBnsOwner extends Component {
       this.setState({ rpData: newProps.ext });
       newProps.operInfo.operType = ''
     }
-  }
-  loadData = (e)=>{
-    if (JSON.stringify(this.props.ds) !== '{}') {
-      let ds = this.props.ds
-      let rpData = [...this.state.rpData]
-      rpData.yzMc = ds.yzMc
-      rpData.yzSj = ds.yzSj
-      this.setState({ rpData })
+    else if (newProps.syncYzOp.operType === 'DEALRP_SYNC_YZ') {
+      let newdata = newProps.syncYzData
+      this.props.form.setFieldsValue({'yzMc':newdata.yzMc })
+      this.props.form.setFieldsValue({'yzSj':newdata.yzSj })
+      newProps.syncYzOp.operType = ''
     }
   }
   handleSave = (e) => {
@@ -235,7 +231,9 @@ function MapStateToProps(state) {
   return {
     basicData: state.base,
     operInfo: state.rp.operInfo,
-    ext: state.rp.ext
+    ext: state.rp.ext,
+    syncYzOp:state.rp.syncYzOp,
+    syncYzData:state.rp.syncYzData
   }
 }
 

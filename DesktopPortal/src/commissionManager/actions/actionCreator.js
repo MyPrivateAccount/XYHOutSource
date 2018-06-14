@@ -96,3 +96,11 @@ export const factGetPay = createAction(actionTypes.DEALRP_FACTGET_PAY_SAVE);
 export const getShopDetail = createAction(actionTypes.DEALRP_SHOP_GET);
 //获取楼盘详情
 export const getBuildingDetail = createAction(actionTypes.DEALRP_BUILDING_GET);
+//同步日期
+export const syncYJDate = createAction(actionTypes.DEALRP_SYNC_DATE);
+//同步报告基础信息
+export const syncRp = createAction(actionTypes.DEALRP_SYNC_RP);
+export const syncWy = createAction(actionTypes.DEALRP_SYNC_WY);
+export const syncYz = createAction(actionTypes.DEALRP_SYNC_YZ);
+export const syncKh = createAction(actionTypes.DEALRP_SYNC_KH);
+export const syncFp = createAction(actionTypes.DEALRP_SYNC_FP);

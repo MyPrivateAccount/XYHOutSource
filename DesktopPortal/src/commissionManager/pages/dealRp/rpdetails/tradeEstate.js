@@ -22,8 +22,6 @@ class TradeEstate extends Component {
         this.props.dispatch(getDicParList(['COMMISSION_WY_CQ', 'COMMISSION_WY_PQ', 'COMMISSION_WY_WYLX', 'COMMISSION_WY_KJLX', 'COMMISSION_WY_ZXZK', 'COMMISSION_WY_ZXND', 'COMMISSION_WY_ZXJJ', 'COMMISSION_WY_WYCX','COMMISSION_PAY_TYPE']));
     }
     componentDidMount=()=>{
-        this.props.onSelf(this,'wyds')
-        this.loadData()
     }
     componentWillReceiveProps(newProps) {
         this.setState({ isDataLoading: false });
@@ -39,15 +37,12 @@ class TradeEstate extends Component {
             this.setState({ rpData: newProps.ext});
             newProps.operInfo.operType = ''
         }
-    }
-    loadData=()=>{
-        if(JSON.stringify(this.props.ds)!=='{}'){
-            let ds = this.props.ds
-            let rpData = [...this.state.rpData]
-            rpData.wyCq = ds.wyCq
-            rpData.wyPq = ds.wyPq
-            rpData.wyMc = ds.wyMc
-            this.setState({rpData})
+        else if(newProps.syncWyOp.operType === 'DEALRP_SYNC_WY'){
+            let newdata = newProps.syncWyData
+            this.props.form.setFieldsValue({'wyCq':newdata.wyCq})
+            this.props.form.setFieldsValue({'wyPq':newdata.wyPq})
+            this.props.form.setFieldsValue({'wyMc':newdata.wyMc})
+            newProps.syncWyOp.operType = ''
         }
     }
     handleSave = (e) => {
@@ -546,7 +541,9 @@ function MapStateToProps(state) {
     return {
         basicData: state.base,
         operInfo:state.rp.operInfo,
-        ext:state.rp.ext
+        ext:state.rp.ext,
+        syncWyOp:state.rp.syncWyOp,
+        syncWyData:state.rp.syncWyData
     }
 }
 

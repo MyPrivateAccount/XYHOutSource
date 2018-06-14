@@ -18,8 +18,6 @@ class TradeCustomer extends Component {
     this.props.dispatch(getDicParList(['COMMISSION_KH_KHXZ', 'COMMISSION_YZ_QHTSC']));
   }
   componentDidMount=()=>{
-    this.props.onSelf(this,'khds')
-    this.loadData()
   }
   componentWillReceiveProps(newProps) {
     this.setState({ isDataLoading: false });
@@ -35,14 +33,11 @@ class TradeCustomer extends Component {
       this.setState({ rpData: newProps.ext});
       newProps.operInfo.operType = ''
     }
-  }
-  loadData=()=>{
-    if (JSON.stringify(this.props.ds) !== '{}') {
-      let ds = this.props.ds
-      let rpData = [...this.state.rpData]
-      rpData.khMc = ds.khMc
-      rpData.khSj = ds.khSj
-      this.setState({ rpData })
+    else if (newProps.syncKhOp.operType === 'DEALRP_SYNC_KH') {
+      let newdata = newProps.syncKhData
+      this.props.form.setFieldsValue({ 'khMc': newdata.khMc })
+      this.props.form.setFieldsValue({ 'khSj': newdata.khSj })
+      newProps.syncKhOp.operType = ''
     }
   }
   handleSave = (e) => {
@@ -278,7 +273,9 @@ function MapStateToProps(state) {
   return {
     basicData: state.base,
     operInfo: state.rp.operInfo,
-    ext:state.rp.ext
+    ext:state.rp.ext,
+    syncKhOp:state.rp.syncKhOp,
+    syncKhData:state.rp.syncKhData
   }
 }
 
