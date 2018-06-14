@@ -28,6 +28,8 @@ class TradePerDis extends Component {
     componentWillMount = () => {
     }
     componentDidMount=()=>{
+        this.props.onSelf(this,'fpds')
+        this.loadData()
     }
     componentWillReceiveProps(newProps) {
         this.setState({ isDataLoading: false });
@@ -46,6 +48,17 @@ class TradePerDis extends Component {
             }
             newProps.operInfo.operType = ''
         }
+    }
+    loadData=()=>{
+        if (JSON.stringify(this.props.ds) !== '{}') {
+            let ds = this.props.ds
+            let rpData = [...this.state.rpData]
+            rpData.yjYzys = parseFloat(ds.yjYzys,10)
+            rpData.yjKhys = 0
+            rpData.yjYzyjdqr = ds.yjYzyjdqr
+            rpData.yjKhyjdqr = ds.yjKhyjdqr
+            this.setState({ rpData },()=>this.reCountZyj())
+          }
     }
     handleSave = (e) => {
         e.preventDefault();

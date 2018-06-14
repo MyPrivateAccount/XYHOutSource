@@ -5,7 +5,6 @@ import React, { Component } from 'react';
 import moment from 'moment'
 import { getDicParList,dealRpSave} from '../../../actions/actionCreator'
 import {notification, DatePicker, Form, Span, Layout, Table, Button, Radio, Popconfirm, Tooltip, Row, Col, Input, Spin, Select, TreeSelect,Modal} from 'antd'
-import TradeReportTable from './tradeReportTable'
 import './trade.less'
 
 const RadioGroup = Radio.Group;
@@ -26,6 +25,8 @@ class TradeContract extends Component {
         this.props.dispatch(getDicParList(['COMMISSION_BSWY_CATEGORIES', 'COMMISSION_CJBG_TYPE', 'COMMISSION_JY_TYPE', 'COMMISSION_PAY_TYPE', 'COMMISSION_PROJECT_TYPE', 'COMMISSION_CONTRACT_TYPE', 'COMMISSION_OWN_TYPE', 'COMMISSION_TRADEDETAIL_TYPE', 'COMMISSION_SFZJJG_TYPE']));
     }
     componentDidMount=()=>{
+        this.props.onSelf(this,'rpds')
+        this.loadData()
     }
     componentWillReceiveProps(newProps) {
         this.setState({ isDataLoading: false });
@@ -41,6 +42,18 @@ class TradeContract extends Component {
         else if(newProps.operInfo.operType === 'HTGET_UPDATE'){//信息获取成功
             this.setState({ rpData: newProps.ext});
             newProps.operInfo.operType = ''
+        }
+    }
+    loadData=()=>{
+        if(JSON.stringify(this.props.ds)!=='{}'){
+            let ds = this.props.ds
+            let rpData = [...this.state.rpData]
+            rpData.fyzId = ds.fyzId
+            rpData.cjrId = ds.cjrId
+            rpData.cjrq = ds.cjrq
+            rpData.cjzj = ds.cjzj
+            rpData.ycjyj = ds.ycjyj
+            this.setState({rpData})
         }
     }
     handleSave = (e) => {
@@ -112,11 +125,7 @@ class TradeContract extends Component {
     }
     //选择成交报备
     chooseReport=()=>{
-        this.cjbbdlg.show()
-    }
-    //
-    onSelf=(e)=>{
-        this.cjbbdlg = e;
+        this.props.onShowCjbbtb()
     }
     render() {
         const { getFieldDecorator } = this.props.form;
@@ -136,7 +145,6 @@ class TradeContract extends Component {
 
         return (
             <Layout>
-                <TradeReportTable onSelf = {this.onSelf}/>
                 <div style={{ marginLeft: 12 }}>
                     <Row>
                         <Col span={12} pull={1}>

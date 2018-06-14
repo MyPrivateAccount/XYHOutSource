@@ -92,3 +92,7 @@ export const factGet = createAction(actionTypes.DEALRP_FACTGET);
 export const factGetGet = createAction(actionTypes.DEALRP_FACTGET_GET_SAVE);
 //付款
 export const factGetPay = createAction(actionTypes.DEALRP_FACTGET_PAY_SAVE);
+//获取商铺详情
+export const getShopDetail = createAction(actionTypes.DEALRP_SHOP_GET);
+//获取楼盘详情
+export const getBuildingDetail = createAction(actionTypes.DEALRP_BUILDING_GET);

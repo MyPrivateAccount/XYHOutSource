@@ -577,6 +577,60 @@ export function* saveRpFKDataAsync(state){
         });
     }
 }
+//根据id获取商铺详情信息
+export function* getShopDataAsync(state){
+    let result = { isOk: false, extension: [], msg: '根据id获取商铺详情信息成功！' };
+    let url = WebApiConfig.rp.shopget+state.payload;
+    try {
+        console.log(url)
+        console.log('getShopDataAsync:', state);
+        let res = yield call(ApiClient.get, url);
+       
+        //console.log(res, '获取参数列表');
+        getApiResult(res, result);
+        if (result.isOk) {
+            yield put({ type: actionUtils.getActionType(actionTypes.DEALRP_SHOP_GET_SUCCESS), payload: result.extension });
+            // yield put({ type: actionUtils.getActionType(actionTypes.SET_SEARCH_LOADING), payload: false });
+        }
+    } catch (e) {
+        result.msg = "根据id获取商铺详情信息接口调用异常！";
+    }
+    if (!result.isOk) {
+        console.log(result.msg)
+        notification.error({
+            message: '提示',
+            description: '根据id获取商铺详情信息失败!',
+            duration: 3
+        });
+    }
+}
+//根据id获取楼盘详情信息
+export function* getBuildingDataAsync(state){
+    let result = { isOk: false, extension: [], msg: '根据id获取楼盘详情信息成功！' };
+    let url = WebApiConfig.rp.buildingget+state.payload;
+    try {
+        console.log(url)
+        console.log('getBuildingDataAsync:', state);
+        let res = yield call(ApiClient.get, url);
+       
+        //console.log(res, '获取参数列表');
+        getApiResult(res, result);
+        if (result.isOk) {
+            yield put({ type: actionUtils.getActionType(actionTypes.DEALRP_BUILDING_GET_SUCCESS), payload: result.extension });
+            // yield put({ type: actionUtils.getActionType(actionTypes.SET_SEARCH_LOADING), payload: false });
+        }
+    } catch (e) {
+        result.msg = "根据id获取楼盘详情信息接口调用异常！";
+    }
+    if (!result.isOk) {
+        console.log(result.msg)
+        notification.error({
+            message: '提示',
+            description: '根据id获取楼盘详情信息失败!',
+            duration: 3
+        });
+    }
+}
 export default function* watchAllRpAsync(){
     yield takeLatest(actionUtils.getActionType(actionTypes.DEALRP_RP_SAVE), saveRpDataAsync);
     yield takeLatest(actionUtils.getActionType(actionTypes.DEALRP_WY_SAVE), saveRpWyDataAsync);
@@ -600,4 +654,7 @@ export default function* watchAllRpAsync(){
     yield takeLatest(actionUtils.getActionType(actionTypes.DEALRP_FACTGET), getFactgetDataAsync);
     yield takeLatest(actionUtils.getActionType(actionTypes.DEALRP_FACTGET_GET_SAVE), saveRpSKDataAsync);
     yield takeLatest(actionUtils.getActionType(actionTypes.DEALRP_FACTGET_PAY_SAVE), saveRpFKDataAsync);
+
+    yield takeLatest(actionUtils.getActionType(actionTypes.DEALRP_BUILDING_GET), getBuildingDataAsync);
+    yield takeLatest(actionUtils.getActionType(actionTypes.DEALRP_SHOP_GET), getShopDataAsync);
 }

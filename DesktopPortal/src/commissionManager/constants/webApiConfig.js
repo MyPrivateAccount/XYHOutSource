@@ -59,6 +59,8 @@ const WebApiConfig = {
         factget:basicDataBaseApiUrl+'yj/factget/',//获取收付信息
         factgetget:basicDataBaseApiUrl+'yj/factget/get',//收款信息
         factgetpay:basicDataBaseApiUrl+'yj/factget/pay',//付款信息
+        shopget:basicDataBaseApiUrl+'shops/',
+        buildingget:basicDataBaseApiUrl+'buildings/'
     },
     fina:{
         searchPPFt:basicDataBaseApiUrl+'yj/ppft/search'

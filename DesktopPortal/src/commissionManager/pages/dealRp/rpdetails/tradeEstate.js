@@ -4,6 +4,7 @@ import React, { Component } from 'react';
 import moment from 'moment'
 import { getDicParList ,dealWySave} from '../../../actions/actionCreator'
 import {DatePicker, notification,Form, Span, Layout, Table, Button, Radio, Popconfirm, Tooltip, Row, Col, Input, Spin, Select, TreeSelect } from 'antd'
+import { getThisProjectIndex } from '../../../../houseResource/actions/actionCreator';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -20,6 +21,10 @@ class TradeEstate extends Component {
         //获取字典项
         this.props.dispatch(getDicParList(['COMMISSION_WY_CQ', 'COMMISSION_WY_PQ', 'COMMISSION_WY_WYLX', 'COMMISSION_WY_KJLX', 'COMMISSION_WY_ZXZK', 'COMMISSION_WY_ZXND', 'COMMISSION_WY_ZXJJ', 'COMMISSION_WY_WYCX','COMMISSION_PAY_TYPE']));
     }
+    componentDidMount=()=>{
+        this.props.onSelf(this,'wyds')
+        this.loadData()
+    }
     componentWillReceiveProps(newProps) {
         this.setState({ isDataLoading: false });
         if(newProps.operInfo.operType === 'WYSAVE_UPDATE'){
@@ -33,6 +38,16 @@ class TradeEstate extends Component {
         else if(newProps.operInfo.operType === 'WYGET_UPDATE'){//信息获取成功
             this.setState({ rpData: newProps.ext});
             newProps.operInfo.operType = ''
+        }
+    }
+    loadData=()=>{
+        if(JSON.stringify(this.props.ds)!=='{}'){
+            let ds = this.props.ds
+            let rpData = [...this.state.rpData]
+            rpData.wyCq = ds.wyCq
+            rpData.wyPq = ds.wyPq
+            rpData.wyMc = ds.wyMc
+            this.setState({rpData})
         }
     }
     handleSave = (e) => {

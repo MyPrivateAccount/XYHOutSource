@@ -10,7 +10,9 @@ const initState = {
     searchCondition:{
         pageIndex:0,
         pageSize:10,
-    }
+    },
+    shopInfo:[],
+    buildingInfo:[]
 };
 let rpReducerMap = {};
 //保存接口反馈
@@ -90,5 +92,13 @@ rpReducerMap[actionTypes.DEALRP_FACTGET_GET_SAVE_SUCCESS] = function (state, act
 rpReducerMap[actionTypes.DEALRP_FACTGET_PAY_SAVE_SUCCESS] = function (state, action) {
     console.log("readucer保存付款信息成功" + JSON.stringify(action.payload));
     return Object.assign({}, state, { ext:action.payload ,operInfo:{operType:'DEALRP_FACTGET_PAY_SAVE_SUCCESS'}});
+}
+rpReducerMap[actionTypes.DEALRP_BUILDING_GET_SUCCESS] = function (state, action) {
+    console.log("readucer获取楼盘详情成功" + JSON.stringify(action.payload));
+    return Object.assign({}, state, { buildingInfo:action.payload ,operInfo:{operType:'DEALRP_BUILDING_GET_SUCCESS'}});
+}
+rpReducerMap[actionTypes.DEALRP_SHOP_GET_SUCCESS] = function (state, action) {
+    console.log("readucer获取商铺详情成功" + JSON.stringify(action.payload));
+    return Object.assign({}, state, { shopInfo:action.payload ,operInfo:{operType:'DEALRP_SHOP_GET_SUCCESS'}});
 }
 export default handleActions(rpReducerMap, initState)

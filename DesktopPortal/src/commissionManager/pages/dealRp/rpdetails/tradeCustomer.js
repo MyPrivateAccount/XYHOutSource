@@ -17,6 +17,10 @@ class TradeCustomer extends Component {
     this.setState({ isDataLoading: true, tip: '信息初始化中...' })
     this.props.dispatch(getDicParList(['COMMISSION_KH_KHXZ', 'COMMISSION_YZ_QHTSC']));
   }
+  componentDidMount=()=>{
+    this.props.onSelf(this,'khds')
+    this.loadData()
+  }
   componentWillReceiveProps(newProps) {
     this.setState({ isDataLoading: false });
     if (newProps.operInfo.operType === 'KHSAVE_UPDATE') {
@@ -30,6 +34,15 @@ class TradeCustomer extends Component {
     else if (newProps.operInfo.operType === 'KHGET_UPDATE') {//信息获取成功
       this.setState({ rpData: newProps.ext});
       newProps.operInfo.operType = ''
+    }
+  }
+  loadData=()=>{
+    if (JSON.stringify(this.props.ds) !== '{}') {
+      let ds = this.props.ds
+      let rpData = [...this.state.rpData]
+      rpData.khMc = ds.khMc
+      rpData.khSj = ds.khSj
+      this.setState({ rpData })
     }
   }
   handleSave = (e) => {

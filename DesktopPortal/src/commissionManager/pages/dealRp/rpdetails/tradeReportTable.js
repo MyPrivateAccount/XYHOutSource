@@ -1,10 +1,10 @@
 //选择成交报备列表页面
 import { connect } from 'react-redux';
 import React, { Component } from 'react';
-import { Table,Spin,Modal} from 'antd'
-import {getTradeReg} from '../../../actions/actionCreator'
+import { Table, Spin, Modal } from 'antd'
+import { getTradeReg} from '../../../actions/actionCreator'
 
-class TradeReportTable extends Component{
+class TradeReportTable extends Component {
     appTableColumns = [
         { title: '业务员', dataIndex: 'userName', key: 'userName' },
         { title: '组织', dataIndex: 'departmentName', key: 'departmentName' },
@@ -17,36 +17,36 @@ class TradeReportTable extends Component{
 
     ];
     state = {
-        isDataLoading:false,
+        isDataLoading: false,
         pagination: {},
-        visible:false
+        visible: false,
     }
     handleSearch = (e) => {
         this.setState({ isDataLoading: true });
         this.props.dispatch(getTradeReg())
     }
     handleTableChange = (pagination, filters, sorter) => {
-        let cd = {pageIndex:0,pageSize:10};
+        let cd = { pageIndex: 0, pageSize: 10 };
         cd.pageIndex = (pagination.current - 1);
         cd.pageSize = pagination.pageSize;
         console.log("table改变，", pagination);
         this.setState({ isDataLoading: true });
         this.handleSearch();
     };
-    handleCancel=(e)=>{
-        this.setState({visible:false})
+    handleCancel = (e) => {
+        this.setState({ visible: false })
     }
-    handleOk=(e)=>{
+    handleOk = (e) => {
 
     }
-    show=(e)=>{
-        this.setState({visible:true})
-    }
-    componentDidMount(){
-        this.props.onSelf(this)
+    show = (e) => {
+        this.setState({ visible: true })
         this.handleSearch()
     }
-    componentWillReceiveProps(newProps){
+    componentDidMount() {
+        this.props.onSelf(this)
+    }
+    componentWillReceiveProps(newProps) {
         console.log("new Props:" + newProps.dataSource)
         this.setState({ isDataLoading: false });
 
@@ -58,12 +58,16 @@ class TradeReportTable extends Component{
         console.log("分页信息：", paginationInfo);
         this.setState({ pagination: paginationInfo });
     }
-    render(){
+    handleDoubleClick=(e)=>{
+        this.props.onHandleChooseCjbb(e)
+        this.setState({ visible: false })
+    }
+    render() {
         return (
             <Modal width={900} title={'成交报备列表'} maskClosable={false} visible={this.state.visible}
                 onOk={this.handleOk} onCancel={this.handleCancel} >
                 <Spin spinning={this.state.isDataLoading}>
-                    <Table columns={this.appTableColumns} dataSource={this.props.rpCJBBResult.extension} pagination={this.state.pagination} onChange={this.handleTableChange} bordered={true}></Table> 
+                    <Table onRowDoubleClick={this.handleDoubleClick} columns={this.appTableColumns} dataSource={this.props.rpCJBBResult.extension} pagination={this.state.pagination} onChange={this.handleTableChange} bordered={true}></Table>
                 </Spin>
             </Modal>
         )
@@ -72,8 +76,9 @@ class TradeReportTable extends Component{
 function MapStateToProps(state) {
 
     return {
-        rpCJBBResult:state.rp.rpCJBBResult,
-        searchCondition:state.rp.searchCondition
+        operInfo:state.rp.operInfo,
+        rpCJBBResult: state.rp.rpCJBBResult,
+        searchCondition: state.rp.searchCondition
     }
 }
 
