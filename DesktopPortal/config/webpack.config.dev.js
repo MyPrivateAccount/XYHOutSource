@@ -269,6 +269,11 @@ module.exports = {
     tls: 'empty',
     child_process: 'empty',
   },
+  externals: [
+    {
+        './cptable': 'var cptable'
+    }
+],
   // Turn off performance hints during development because we don't do any
   // splitting or minification in interest of speed. These warnings become
   // cumbersome.

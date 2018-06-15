@@ -51,6 +51,23 @@ namespace XYHHumanPlugin.Managers
             }
         }
 
+        public async Task<List<MonthFormResponse>> GetMonthForm()
+        {
+            var tf = await GetLastMonth();
+            if (tf != null)
+            {
+                var lst = new List<MonthFormResponse>();
+                var month = await _Store.GetMonthAsync(a => a.Where(b => b.SettleTime.Value.ToString("Y") == tf.SettleTime.Value.ToString("Y")));
+                
+                if (await GetMonthSalaryForm(lst, month.ID))
+                {
+                    await GetMonthAttendanceForm(lst, month.ID);
+                    return lst;
+                }
+            }
+            return null;
+        }
+
         public virtual async Task<SearchMonthInfoResponse> GetAllMonthInfo(XYHHumanPlugin.Dto.Request.MonthRequest req, CancellationToken cancellationToken = default(CancellationToken))
         {
             var list = await _Store.GetListMonthAsync(a => a.Where(b => b.ID != ""), cancellationToken);
@@ -65,8 +82,6 @@ namespace XYHHumanPlugin.Managers
 
             if (list != null)
             {
-                
-
                 SearchMonthInfoResponse result = new SearchMonthInfoResponse();
                 result.extension = _mapper.Map<List<MonthInfoResponse>>(info);
                 result.pageIndex = req.pageIndex;
@@ -86,6 +101,7 @@ namespace XYHHumanPlugin.Managers
             }
             return null;
         }
+
         public virtual async Task<bool> CreateMonth(UserInfo user, DateTime date, CancellationToken cancellationToken = default(CancellationToken))
         {
             List<MonthInfo> monthlist = new List<MonthInfo>();
@@ -108,6 +124,69 @@ namespace XYHHumanPlugin.Managers
                 }
             }
             return false;
+        }
+
+        private async Task<bool> GetMonthSalaryForm(List<MonthFormResponse> lst, string monthid, CancellationToken cle = default(CancellationToken))
+        {
+            var salarylst = await _Store.GetListSalaryFormAsync(a => a.Where(b => b.MonthID == monthid));
+            foreach (var item in salarylst)
+            {
+                var human = await _Store.GetHumanAsync(a => a.Where(b => b.ID == item.HumanID));
+                if (human != null)
+                {
+                    var tf = await _Store.GetStationAsync(a => a.Where(b => b.ID == human.Position));
+                    var sc = await _Store.GetSocialInfoAsync(human.IDCard);
+                    if (tf != null)
+                    {
+                        var it = new MonthFormResponse();
+                        it.A1 = lst.Count;
+                        it.A2 = human.IDCard;
+                        it.A3 = human.ID;
+                        it.A4 = human.Name;
+                        it.A5 = await _Store.GetOrganizationFullName(human.DepartmentId);
+                        it.A6 = tf.PositionName;
+                        it.A8 = human.BaseSalary.GetValueOrDefault();
+                        it.A9 = 0;//暂无
+                        it.A10 = 0;//暂无
+                        it.A11 = human.Subsidy.GetValueOrDefault();//岗位补贴
+                        it.A17 = human.AdministrativeBack.GetValueOrDefault();
+                        it.A18 = human.PortBack.GetValueOrDefault();
+                        it.A20 = 0;////暂无
+                        it.A21 = human.ClothesBack.GetValueOrDefault();
+                        it.A22 = sc.Pension.GetValueOrDefault();
+                        it.A23 = sc.Unemployment.GetValueOrDefault();
+                        it.A24 = sc.Medical.GetValueOrDefault();
+                        it.A25 = sc.WorkInjury.GetValueOrDefault();
+                        it.A26 = 0;////暂无
+
+                        lst.Add(it);
+                    }
+                }
+            }
+
+            return lst.Count > 0;
+        }
+
+        private async Task<bool> GetMonthAttendanceForm(List<MonthFormResponse> lst, string monthid, CancellationToken cle = default(CancellationToken))
+        {
+            var it = new MonthFormResponse();
+
+            foreach (var item in lst)
+            {
+                //it.A7;
+                //it.A12;
+                //it.A13;
+                //it.A14;
+                //it.A15;
+                //it.A16;
+
+                //算总
+                item.A19 = item.A8+ item.A9+ item.A10 + item.A11+item.A12+item.A13 - item.A14- item.A15- item.A16- item.A17- item.A18;
+                item.A27 = item.A19 - item.A20 - item.A21 - item.A22 - item.A23 - item.A24 - item.A25 - item.A26;
+
+            }
+
+            return true;
         }
 
         private async Task<bool> CreateMonthSalaryForm(string monthid, string salaryid, List<HumanInfo> humaninfolist, CancellationToken cle = default(CancellationToken))

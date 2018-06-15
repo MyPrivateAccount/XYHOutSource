@@ -10,6 +10,7 @@ using XYHHumanPlugin.Dto.Response;
 using System.Linq;
 using ApplicationCore.Models;
 using Dapper;
+using ApplicationCore;
 
 namespace XYHHumanPlugin.Stores
 {
@@ -460,7 +461,21 @@ namespace XYHHumanPlugin.Stores
             }
         }
 
-        
+        public async Task<SocialInsurance> GetSocialInfoAsync(string idcard)
+        {
+            return Context.SocialInsurances.AsNoTracking().Where(x => (x.IDCard == idcard)).FirstOrDefault();
+        }
+        public async Task<string> GetOrganizationFullName(string departmentid)
+        {
+            if (string.IsNullOrEmpty(departmentid))
+            {
+                return "未找到相应部门";
+            }
+            
+            var response = Context.OrganizationExpansions.AsNoTracking().Where(x => (x.SonId == departmentid) || (x.OrganizationId == departmentid)).FirstOrDefault();
+            return response == null ? "未找到相应部门" : response.FullName;
+        }
+
         public async Task DeleteListAsync(List<HumanInfo> buildingBaseList, CancellationToken cancellationToken = default(CancellationToken))
         { }
 
@@ -514,7 +529,7 @@ namespace XYHHumanPlugin.Stores
             }
         }
 
-        public Task<TResult> GetAsync<TResult>(Func<IQueryable<HumanInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<TResult> GetHumanAsync<TResult>(Func<IQueryable<HumanInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (query == null)
             {
@@ -641,7 +656,7 @@ namespace XYHHumanPlugin.Stores
         }
         public async Task<ModifyInfo> UpdateExamineStatus(string modifyId, ExamineStatusEnum status, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var modify = GetModifyAsync(a => a.Where(b => b.ID == modifyId));
+            var modify = await GetModifyAsync(a => a.Where(b => b.ID == modifyId));
             if (modify != null)
             {
                 switch (modify.Type)
@@ -663,22 +678,22 @@ namespace XYHHumanPlugin.Stores
                     case BecomeHumanModifyType:
                     {
                         SocialInsurance responinfo = JsonHelper.ToObject<SocialInsurance>(modify.Ext2);
-                        BecomeHuman(responinfo, modify.Ext1, cancellationToken);
+                        await BecomeHuman(responinfo, modify.Ext1, cancellationToken);
                     } break;
 
                     case ChangeHumanModifyType: 
                     {
                         ChangeInfo responinfo = JsonHelper.ToObject<ChangeInfo>(modify.Ext2);
-                        ChangeHuman(responinfo, modify.Ext1, cancellationToken);
+                        await ChangeHuman(responinfo, modify.Ext1, cancellationToken);
                     } break;
 
                     case LeaveHumanModifyType:
                     {
                         LeaveInfo responinfo = JsonHelper.ToObject<LeaveInfo>(modify.Ext2);
-                        LeaveHuman(responinfo, modify.Ext1, cancellationToken);
+                        await LeaveHuman(responinfo, modify.Ext1, cancellationToken);
                     } break;
 
-                    default:
+                    default: break;
                 }
 
                 /////////////////////
@@ -689,7 +704,7 @@ namespace XYHHumanPlugin.Stores
                     ExamineStatus = (int)status,
                 };
                 Context.Attach(mbuildings);
-                var mentry = Context.Entry(buildings);
+                var mentry = Context.Entry(mbuildings);
                 mentry.Property(x => x.ExamineStatus).IsModified = true;
                 mentry.Property(x => x.ExamineTime).IsModified = true;
 

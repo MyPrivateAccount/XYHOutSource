@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { postBlackLst, setHumanInfo, searchConditionType,setSearchLoadingVisible, getHumanImage, setbreadPageIndex, searchHumanType,searchAgeType,searchOrderType, adduserPage } from '../../actions/actionCreator';
+import { postBlackLst, setHumanInfo, searchConditionType,setSearchLoadingVisible, getHumanImage,exportHumanForm, setbreadPageIndex, searchHumanType,searchAgeType,searchOrderType, adduserPage } from '../../actions/actionCreator';
 import React, { Component } from 'react'
 import {Table, Layout, Input, Select, Icon, Button, Row, Col, Checkbox, Tag, Pagination, Spin, notification} from 'antd'
 import '../search.less'
@@ -161,6 +161,15 @@ class Staffinfo extends Component {
         }
     }
 
+    handleExport = () => {
+        this.props.searchInfo.pageIndex=-1;
+        this.props.searchInfo.pageSize=-1;
+        this.props.dispatch(exportHumanForm({
+            data:this.props.searchInfo,
+            tree:this.props.setDepartmentOrgTree
+        }));
+    }
+
     render() {
         let self = this;
         const rowSelection = {
@@ -239,7 +248,7 @@ class Staffinfo extends Component {
                             <Button type="primary" className="statuButton" onClick={(e) => this.handleLeft()}>离职</Button>
                             <Button type="primary" className="statuButton" onClick={(e) => this.handleUploadContract()}>合同上传</Button>
                             <Button type="primary" className="statuButton" onClick={(e) => this.handleAddBlack()}>加入黑名单</Button>
-                            <Button type="primary" className="statuButton" onClick={(e) => this.handleHistory()}>历史信息</Button>
+                            <Button type="primary" className="statuButton" onClick={(e) => this.handleExport()}>导出花名册</Button>
                         </Col>
                     </Row>
                     <p style={{padding: '15px 10px', borderBottom: '1px solid #e0e0e0', fontSize: '1.4rem', fontWeight: 'bold'}}>目前已为你筛选出<b style={{color: '#f36366'}}> {humanList.length || 0} </b>条员工信息</p>
@@ -276,6 +285,7 @@ class Staffinfo extends Component {
 function stafftableMapStateToProps(state) {
     return {
         searchInfo: state.search,
+        setDepartmentOrgTree: state.basicData.searchOrgTree,
         selHumanList: state.basicData.selHumanList,
     }
 }

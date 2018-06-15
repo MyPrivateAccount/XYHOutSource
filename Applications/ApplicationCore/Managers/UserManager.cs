@@ -32,33 +32,18 @@ namespace ApplicationCore.Managers
         public async Task<UserInfo> GetUserAsync(string id)
         {
             string key = $"{CACHE_PREFIX}{id}";
-            var ui = _cache.Get<UserInfo>(key);
-            if (ui == null)
+            var ui =  _cache.Get<UserInfo>(key);
+            if(ui == null)
             {
-                ui = await (from a in _dbContext.Users.AsNoTracking()
-                            join b1 in _dbContext.OrganizationExpansions.AsNoTracking().Where(x => x.OrganizationId == "0") on a.FilialeId equals b1.SonId into temp1
-                            from b in temp1.DefaultIfEmpty()
-                            select new UserInfo
-                            {
-                                Id = a.Id,
-                                OrganizationId = a.OrganizationId,
-                                FilialeId = a.FilialeId,
-                                FilialeName = b.SonName,
-                                UserName = a.UserName,
-                                TureName = a.TrueName
-                            }).FirstOrDefaultAsync(x => x.Id == id);
-                //.FirstOrDefaultAsync(x => x.Id == id);
-                if (ui != null)
+               var user = await _dbContext.Users.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+                if(user !=null)
                 {
-                    //ui = new UserInfo()
-                    //{
-                    //    Id = user.Id,
-                    //    OrganizationId = user.OrganizationId,
-                    //    FilialeId = user.FilialeId,
-                    //    FilialeName =
-                    //    UserName = user.UserName,
-                    //    TureName = user.TrueName
-                    //};
+                    ui = new UserInfo()
+                    {
+                        Id = user.Id,
+                        OrganizationId = user.OrganizationId,
+                        UserName = user.TrueName
+                    };
                     await _cache.SetAsync<UserInfo>(key, ui, new DistributedCacheEntryOptions()
                     {
                         AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5)

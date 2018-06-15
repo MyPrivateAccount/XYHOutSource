@@ -10,7 +10,6 @@ namespace ApplicationCore.Stores
 {
     public interface IUserStore
     {
-        IQueryable<Users> Users { get; set; }
         Task<TResult> GetAsync<TResult>(Func<IQueryable<Users>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken));
         Task<List<TResult>> ListAsync<TResult>(Func<IQueryable<Users>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken));
     }

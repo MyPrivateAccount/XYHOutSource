@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 namespace ApplicationCore.Dto
@@ -20,17 +19,18 @@ namespace ApplicationCore.Dto
                     for (int i = item.Errors.Count - 1; i >= 0; i--)
                     {
                         string msg = item.Errors[i].ErrorMessage;
-                        if (String.IsNullOrEmpty(msg) && item.Errors[i].Exception != null)
+                        if (String.IsNullOrEmpty(msg) && item.Errors[i].Exception!=null)
                         {
-                            msg = item.Errors[i].Exception.Message ?? "";
+                            msg = item.Errors[i].Exception.Message??"";
                         }
-                        sbErrors.AppendLine(msg + ":" + (item.RawValue?.ToString()));
+
+                        sbErrors.AppendLine( item.Errors[i].ErrorMessage + ":" + (item.RawValue?.ToString()));
+                      
                     }
                 }
             }
             return sbErrors.ToString();
 
         }
-
     }
 }

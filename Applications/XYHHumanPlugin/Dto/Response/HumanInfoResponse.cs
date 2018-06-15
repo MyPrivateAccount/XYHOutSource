@@ -33,4 +33,29 @@ namespace XYHHumanPlugin.Dto.Response
         public int? PortBack { get; set; }
         public int? OtherBack { get; set; }
     }
+
+    public class HumanInfoFormResponse
+    {
+        public string ID { get; set; }
+        public string UserID { get; set; }
+        public string Name { get; set; }
+        public string IDCard { get; set; }
+        public int Age { get; set; }
+        public string SexName { get; set; }//转换
+        public string PositionName { get; set; }//转换
+
+        public string DepartmentName { get; set; }//转换
+        public string StaffStatusName { get; set; }//转换
+        public string Contract { get; set; }//转换
+        public DateTime? EntryTime { get; set; }
+        public DateTime? BecomeTime { get; set; }
+        public DateTime? LeaveTime { get; set; }
+        public string SocialInsuranceInfo { get; set; }//转换
+        public int? BaseSalary { get; set; }
+        public int? Subsidy { get; set; }
+        public int? ClothesBack { get; set; }
+        public int? AdministrativeBack { get; set; }
+        public int? PortBack { get; set; }
+        public int? OtherBack { get; set; }
+    }
 }
