@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 import { createStation, getOrgList, getDicParList, setStation, deleteStation, getcreateStation, setSearchLoadingVisible } from '../../actions/actionCreator';
 import React, { Component } from 'react'
 import {Table, Input, Form, Select, Button, Row, Col, Spin} from 'antd'
-import './station.less';
+//import './station.less';
 
 const Option = Select.Option;
 const styles = {
