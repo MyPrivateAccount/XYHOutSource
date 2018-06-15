@@ -155,3 +155,5 @@ export const DEALRP_SYNC_WY = 'DEALRP_SYNC_WY'
 export const DEALRP_SYNC_YZ = 'DEALRP_SYNC_YZ'
 export const DEALRP_SYNC_KH = 'DEALRP_SYNC_KH'
 export const DEALRP_SYNC_FP = 'DEALRP_SYNC_FP'
+//打开成交报告详情页
+export const DEALRP_OPEN_RP_DETAIL = 'DEALRP_OPEN_RP_DETAIL'

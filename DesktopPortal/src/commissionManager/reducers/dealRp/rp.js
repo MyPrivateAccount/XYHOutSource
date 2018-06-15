@@ -23,7 +23,8 @@ const initState = {
     syncKhData:{},
     syncKhOp:{operType:''},
     syncFpData:{},
-    syncFpOp:{operType:''}
+    syncFpOp:{operType:''},
+    rpOpenParam:{}
 };
 let rpReducerMap = {};
 //保存接口反馈
@@ -135,5 +136,9 @@ rpReducerMap[actionTypes.DEALRP_SYNC_KH] = function (state, action) {
 rpReducerMap[actionTypes.DEALRP_SYNC_FP] = function (state, action) {
     console.log("readucer报告分配同步" + JSON.stringify(action.payload));
     return Object.assign({}, state, { syncFpData:action.payload ,syncFpOp:{operType:'DEALRP_SYNC_FP'}});
+}
+rpReducerMap[actionTypes.DEALRP_OPEN_RP_DETAIL] = function (state, action) {
+    console.log("readucer报打开详情页面" + JSON.stringify(action.payload));
+    return Object.assign({}, state, { rpOpenParam:action.payload ,operInfo:{operType:'DEALRP_OPEN_RP_DETAIL'}});
 }
 export default handleActions(rpReducerMap, initState)

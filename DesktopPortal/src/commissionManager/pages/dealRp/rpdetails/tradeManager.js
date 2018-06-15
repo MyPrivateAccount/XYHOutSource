@@ -41,12 +41,13 @@ class TradeManager extends Component {
     componentWillReceiveProps = (newProps) => {
 
         this.setState({ isDataLoading: false })
-
-        if (newProps.vs) {
-            if (this.state.isEdit) {
-                this.loadTabData(this.state.activeTab)
+        this.setState({rpId:newProps.rpId,isEdit:newProps.isEdit},()=>{
+            if (newProps.vs) {
+                if (newProps.isEdit) {
+                    this.loadTabData(this.state.activeTab)
+                }
             }
-        }
+        })
         if (newProps.operInfo.operType === 'DEALRP_BUILDING_GET_SUCCESS') {
             console.log("autoSetCJBBInfo")
             //自动设置成交报备信息
@@ -69,22 +70,22 @@ class TradeManager extends Component {
     loadTabData = (e) => {
         console.log(e)
         if (e === 'jyht' && this.state.isEdit) {
-            this.props.dispatch(dealRpGet(this.props.rpId));
+            this.props.dispatch(dealRpGet(this.state.rpId));
         }
         else if (e === 'cjwy' && this.state.isEdit) {
-            this.props.dispatch(dealWyGet(this.props.rpId));
+            this.props.dispatch(dealWyGet(this.state.rpId));
         }
         else if (e === 'yzxx' && this.state.isEdit) {
-            this.props.dispatch(dealYzGet(this.props.rpId));
+            this.props.dispatch(dealYzGet(this.state.rpId));
         }
         else if (e === 'khxx' && this.state.isEdit) {
-            this.props.dispatch(dealKhGet(this.props.rpId));
+            this.props.dispatch(dealKhGet(this.state.rpId));
         }
         else if (e === 'yjfp' && this.state.isEdit) {
-            this.props.dispatch(dealFpGet(this.props.rpId));
+            this.props.dispatch(dealFpGet(this.state.rpId));
         }
         else if (e === 'ajgh' && this.state.isEdit) {
-            this.props.dispatch(dealGhGet(this.props.rpId));
+            this.props.dispatch(dealGhGet(this.state.rpId));
         }
         else if (e === 'fj' && this.state.isEdit) {
 
@@ -244,9 +245,11 @@ class TradeManager extends Component {
                                 <TabPane tab="按揭过户" key="ajgh">
                                     <TradeTransfer rpId={this.state.rpId} opType={this.state.opType} />
                                 </TabPane>
-                                <TabPane tab="业绩调整" key="yjtz">
+                                {
+                                    this.state.isEdit?(<TabPane tab="业绩调整" key="yjtz">
                                     <TradeAjust rpId={this.state.rpId} opType={this.state.opType} />
-                                </TabPane>
+                                </TabPane>):null
+                                }
                             </Tabs>
                         </Content>
                     </Spin>

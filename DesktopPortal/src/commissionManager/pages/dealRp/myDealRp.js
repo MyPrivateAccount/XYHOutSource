@@ -12,7 +12,9 @@ const Option = Select.Option;
 class MyDealRp extends Component{
     state = {
         isShowManager:false,
-        cd:SearchCondition.rpListCondition
+        cd:SearchCondition.rpListCondition,
+        rpId:'',
+        editReport:false
     }
     handleDelClick = (info) =>{
 
@@ -21,10 +23,11 @@ class MyDealRp extends Component{
 
     }
     handleNew = (info)=>{
-        this.setState({isShowManager:true})
+        this.setState({isShowManager:true,rpId:'',editReport:false})
     }
     handleBack = (e)=>{
         this.setState({isShowManager:false})
+        this.rptb.handleMySearch()
     }
     componentWillMount=()=>{
 
@@ -34,6 +37,10 @@ class MyDealRp extends Component{
     }
     componentWillReceiveProps = (newProps)=>{
 
+        if(newProps.operInfo.operType==='DEALRP_OPEN_RP_DETAIL'){
+            this.setState({isShowManager:true,rpId:newProps.rpOpenParam.id,editReport:true})
+            newProps.operInfo.operType=''
+        }
     }
     onRpTable=(ref)=> {
         this.rptb = ref
@@ -56,7 +63,7 @@ class MyDealRp extends Component{
                 </Tooltip>
                 <DealRpTable SearchCondition={this.state.cd} onRpTable={this.onRpTable}/>
                 </div>
-                <TradeManager vs={this.state.isShowManager}  handleback={this.handleBack}/>
+                <TradeManager vs={this.state.isShowManager}  handleback={this.handleBack} rpId={this.state.rpId} isEdit={this.state.editReport}/>
             </Layout>
         )
     }
@@ -64,6 +71,8 @@ class MyDealRp extends Component{
 function MapStateToProps(state) {
 
     return {
+        operInfo: state.rp.operInfo,
+        rpOpenParam:state.rp.rpOpenParam,
     }
 }
 

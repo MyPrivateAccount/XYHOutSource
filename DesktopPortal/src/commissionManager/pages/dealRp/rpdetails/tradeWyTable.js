@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import React, { Component } from 'react';
 import { Table, Button, Tooltip, Input, Select } from 'antd'
 import { getDicParList} from '../../../actions/actionCreator'
+import EditableCell from './tradeEditCell'
 
 class TradeWyTable extends Component {
     constructor(props) {
@@ -54,7 +55,7 @@ class TradeWyTable extends Component {
             title: '金额', dataIndex: 'money', key: 'money',
             render: (text, recored) => (
                 <span>
-                    <Input style={{ width: 80 }} value={text} />
+                    <EditableCell style={{ width: 80 }} value={text} />
                 </span>
             )
         },

@@ -2,6 +2,7 @@
 import { connect } from 'react-redux';
 import React, { Component } from 'react';
 import { Select, Table, Button, Tooltip, Input } from 'antd'
+import EditableCell from './tradeEditCell'
 
 class TradeNTable extends Component {
     constructor(props) {
@@ -43,7 +44,7 @@ class TradeNTable extends Component {
             title: '金额', dataIndex: 'money', key: 'money',
             render: (text, recored) => (
                 <span>
-                    <Input style={{ width: 80 }} value={text} />
+                    <EditableCell style={{ width: 50 }} value={text} />
                 </span>
             )
         },
@@ -51,7 +52,7 @@ class TradeNTable extends Component {
             title: '比例', dataIndex: 'percent', key: 'percent',
             render: (text, recored) => (
                 <span>
-                    <Input style={{ width: 80 }} value={text} />%
+                    <EditableCell style={{ width: 50 }} value={text} />
             </span>
             )
         },

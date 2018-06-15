@@ -2,7 +2,7 @@
 import { connect } from 'react-redux';
 import React, { Component } from 'react';
 import { Table, Button, Tooltip, Spin, Popconfirm } from 'antd'
-import { myReportGet, searchReport } from '../../actions/actionCreator'
+import { myReportGet, searchReport,openRpDetail } from '../../actions/actionCreator'
 import moment from 'moment'
 
 class DealRpTable extends Component {
@@ -18,7 +18,10 @@ class DealRpTable extends Component {
     appTableColumns = [
         { title: '审批通过日期', dataIndex: 'examinedTime', key: 'examinedTime' },
         {
-            title: '成交编号', dataIndex: 'cjbgbh', key: 'cjbgbh'
+            title: '成交编号', dataIndex: 'cjbgbh', key: 'cjbgbh',
+            render:(text,recored)=>{
+                return <a onClick={() => {this.props.dispatch(openRpDetail(recored))}}>{text}</a>
+            }
         },
         {
             title: '上业绩日期', dataIndex: 'cjrq', key: 'cjrq'
@@ -104,6 +107,10 @@ class DealRpTable extends Component {
         else {
             this.props.dispatch(searchReport(e));
         }
+    }
+    handleMySearch = () => {
+        this.setState({ isDataLoading: true });
+        this.props.dispatch(myReportGet(this.props.SearchCondition));
     }
     handleTableChange = (pagination, filters, sorter) => {
         console.log(pagination, filters, sorter)

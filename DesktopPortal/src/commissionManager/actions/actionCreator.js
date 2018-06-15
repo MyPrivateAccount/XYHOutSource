@@ -104,3 +104,5 @@ export const syncWy = createAction(actionTypes.DEALRP_SYNC_WY);
 export const syncYz = createAction(actionTypes.DEALRP_SYNC_YZ);
 export const syncKh = createAction(actionTypes.DEALRP_SYNC_KH);
 export const syncFp = createAction(actionTypes.DEALRP_SYNC_FP);
+//打开详情页面
+export const openRpDetail = createAction(actionTypes.DEALRP_OPEN_RP_DETAIL)
