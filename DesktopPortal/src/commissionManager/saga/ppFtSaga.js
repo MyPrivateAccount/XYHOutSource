@@ -22,7 +22,7 @@ export function* getPPFTDataListByOrgIdAsyncs(state){
         //console.log(res, '获取参数列表');
         getApiResult(res, result);
         if (result.isOk) {
-            yield put({ type: actionUtils.getActionType(actionTypes.ORG_FT_PARAM_SAVE_SUCCESS), payload: result });
+            yield put({ type: actionUtils.getActionType(actionTypes.ORG_FT_PARAMLIST_UPDATE), payload: result });
             // yield put({ type: actionUtils.getActionType(actionTypes.SET_SEARCH_LOADING), payload: false });
         }
     } catch (e) {

@@ -6,17 +6,14 @@ const SearchCondition = {
         pageIndex: 0,
         pageSize: defaultPageSize,
         keyWords: '',
-        OrganizationId:''
+        OrganizationIds:[]
     },
     orgParamListCondition: {
         branchId:''
     },
     incomeScaleListCondition:{
-        pageIndex: 0,
-        pageSize: defaultPageSize,
-        keyWords: '',
-        OrganizationId:'',//组织id
-        rankPos:''//职位等级
+        branchId:'',
+        code:''
     },
     acmentListCondition:{
         branchId:''

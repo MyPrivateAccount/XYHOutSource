@@ -22,6 +22,7 @@ class InComeScaleEditor extends Component{
             this.setState({visible: true, dialogTitle: '修改',paramInfo:newProps.activeScale});
         } else if (operType === 'add') {
             this.setState({visible: true, dialogTitle: '添加'});
+            this.setState({paramInfo:{branchId:newProps.param.branchId,code:newProps.param.code}})
         } else {
             this.props.form.resetFields();
             this.setState({visible: false});
@@ -64,7 +65,7 @@ class InComeScaleEditor extends Component{
 
                                 initialValue: this.state.paramInfo.orgName,
                             })(
-                                <Input style={{float: 'left',width:300}}></Input>
+                                <Input style={{float: 'left',width:300}} disabled={true}></Input>
                                 )}
                         </FormItem>
                     </Col>
@@ -77,7 +78,7 @@ class InComeScaleEditor extends Component{
                             {getFieldDecorator('code', {
                                 initialValue: this.state.paramInfo.rankPos
                             })(
-                                <Input style={{float: 'left',width:300}}></Input>
+                                <Input style={{float: 'left',width:300}} disabled={true}></Input>
                                 )}
                         </FormItem></Col>
                 </Row>
@@ -131,7 +132,8 @@ function MapStateToProps(state) {
 
     return {
         operInfo:state.scale.operInfo,
-        activeScale:state.scale.activeScale
+        activeScale:state.scale.activeScale,
+        param:state.scale.param
     }
 }
 

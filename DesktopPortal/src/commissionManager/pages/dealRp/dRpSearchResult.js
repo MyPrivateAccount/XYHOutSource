@@ -18,7 +18,19 @@ class DRpSearchResult extends Component {
         this.rptb.handleSearch(cd)
     }
     onOpenDlg=(e)=>{
-        this.props.onOpenDlg(e)
+        if(this.props.onOpenDlg!==null){
+            this.props.onOpenDlg(e)
+        }
+    }
+    onOpenZy=(e)=>{
+        if(this.props.onOpenZy!==null){
+            this.props.onOpenZy(e)
+        }
+    }
+    onOpenTy=(e)=>{
+        if(this.props.onOpenTy!==null){
+            this.props.onOpenTy(e)
+        }
     }
     render() {
         return (
@@ -26,7 +38,7 @@ class DRpSearchResult extends Component {
                 <Tooltip title="导出">
                     <Button type='primary' onClick={this.handleNew} style={{ 'margin': '10' }} >导出</Button>
                 </Tooltip>
-                <DealRpTable SearchCondition={this.props.cd} onRpTable={this.onRpTable} onOpenDlg={this.onOpenDlg}/>
+                <DealRpTable SearchCondition={this.props.cd} onRpTable={this.onRpTable} onOpenDlg={this.onOpenDlg} onOpenZy={this.onOpenZy} onOpenTy={this.onOpenTy}/>
             </div>
         )
     }
