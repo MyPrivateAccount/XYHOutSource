@@ -49,6 +49,7 @@ class TradeContract extends Component {
             this.props.form.setFieldsValue({'cjzj':newdata.cjzj})
             this.props.form.setFieldsValue({'ycjyj':newdata.ycjyj})
             newProps.syncRpOp.operType = ''
+            this.setState({rpData:newdata})
         }
     }
     handleSave = (e) => {

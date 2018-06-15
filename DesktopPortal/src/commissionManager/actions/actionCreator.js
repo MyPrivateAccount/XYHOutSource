@@ -106,3 +106,5 @@ export const syncKh = createAction(actionTypes.DEALRP_SYNC_KH);
 export const syncFp = createAction(actionTypes.DEALRP_SYNC_FP);
 //打开详情页面
 export const openRpDetail = createAction(actionTypes.DEALRP_OPEN_RP_DETAIL)
+//清空页面输入
+export const rpClear = createAction(actionTypes.DEALRP_RP_CLEAR)

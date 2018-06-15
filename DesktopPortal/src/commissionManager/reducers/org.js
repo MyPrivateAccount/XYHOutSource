@@ -56,7 +56,7 @@ treeReducerMap[actionTypes.ORG_GET_PERMISSION_TREE_UPDATE] = function (state, ac
     else if (action.payload.permissionType === "AuthorizationPermission") {
         AddRolePermissionTree = orgTreeSource;
     }
-    return Object.assign({}, state, {permissionOrgTree: {AddUserTree: AddUserTree, AddNormalRoleTree: AddNormalRoleTree, AddPublicRoleTree: AddPublicRoleTree, AddRolePermissionTree: AddRolePermissionTree}});
+    return Object.assign({}, state, {permissionOrgTree: {AddUserTree: AddUserTree, AddNormalRoleTree: AddNormalRoleTree, AddPublicRoleTree: AddPublicRoleTree, AddRolePermissionTree: AddRolePermissionTree},operInfo:{operType:'org_update'}});
 }
 
 function getAllChildrenNode(node, parentId, formatNodeLit) {

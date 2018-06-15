@@ -63,16 +63,28 @@ class TradePerDis extends Component {
         }
         else if (newProps.syncFpOp.operType === 'DEALRP_SYNC_FP') {
             let newdata = newProps.syncFpData
-            this.props.form.setFieldsValue({ 'yjYzys': parseFloat(newdata.yjYzys) })
-            this.props.form.setFieldsValue({ 'yjKhys': 0 })
-            this.props.form.setFieldsValue({ 'yjYzyjdqr': moment(newdata.yjYzyjdqr) })
-            this.props.form.setFieldsValue({ 'yjKhyjdqr': moment(newdata.yjKhyjdqr) })
+            if(JSON.stringify(newdata)==='{}'){
+                newdata.yjYzys = 0
+                newdata.yjKhys = 0
+                newdata.yjYzyjdqr=moment().add(180,'days').format('YYYY-MM-DD')
+                newdata.yjKhyjdqr=moment().add(180,'days').format('YYYY-MM-DD')
+                this.props.form.setFieldsValue({ 'yjYzys': 0})
+                this.props.form.setFieldsValue({ 'yjKhys': 0 })
+                this.props.form.setFieldsValue({ 'yjYzyjdqr': moment(newdata.yjYzyjdqr) })
+                this.props.form.setFieldsValue({ 'yjKhyjdqr': moment(newdata.yjKhyjdqr) })
+                this.setState({ rpData:newdata }, () => this.reCountZyj())
+            }
+            else{
+                let rpData = { ...this.state.rpData }
+                rpData.yjYzys = parseFloat(newdata.yjYzys, 10)
+                rpData.yjKhys = 0
+                this.setState({ rpData }, () => this.reCountZyj())
+                this.props.form.setFieldsValue({ 'yjYzys': parseFloat(newdata.yjYzys) })
+                this.props.form.setFieldsValue({ 'yjKhys': 0 })
+                this.props.form.setFieldsValue({ 'yjYzyjdqr': moment(newdata.yjYzyjdqr) })
+                this.props.form.setFieldsValue({ 'yjKhyjdqr': moment(newdata.yjKhyjdqr) })
+            }
             
-            let rpData = { ...this.state.rpData }
-            rpData.yjYzys = parseFloat(newdata.yjYzys, 10)
-            rpData.yjKhys = 0
-            this.setState({ rpData }, () => this.reCountZyj())
-
             newProps.syncFpOp.operType = ''
         }
         else if (newProps.acmOperInfo.operType === 'ACMENT_PARAM_LIST_UPDATE') {

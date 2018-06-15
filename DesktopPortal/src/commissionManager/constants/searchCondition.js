@@ -12,11 +12,8 @@ const SearchCondition = {
         branchId:''
     },
     incomeScaleListCondition:{
-        pageIndex: 0,
-        pageSize: defaultPageSize,
-        keyWords: '',
-        OrganizationIds:[],//组织id
-        rankPos:''//职位等级
+        branchId:'',
+        code:''
     },
     acmentListCondition:{
         branchId:''

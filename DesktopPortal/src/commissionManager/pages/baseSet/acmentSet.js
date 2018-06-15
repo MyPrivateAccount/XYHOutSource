@@ -10,24 +10,13 @@ class AcmentSet extends Component{
     state = {
         pagination: {},
         isDataLoading:false,
+        orgid:''
     }
     appTableColumns = [
         { title: '分摊项名称', dataIndex: 'name', key: 'name' },
         { title: '分摊类型', dataIndex: 'type', key: 'type' },
         { title: '默认分摊比例', dataIndex: 'percent', key: 'percent' },
         { title: '是否固定比例', dataIndex: 'isfixed', key: 'isfixed' },
-        {
-            title: '操作', dataIndex: 'edit', key: 'edit', render: (text, recored) => (
-                <span>
-                    <Tooltip title="作废">
-                        <Button type='primary' shape='circle' size='small' icon='edit' onClick={(e) => this.handleDelClick(recored)} />
-                    </Tooltip>
-                    <Tooltip title='修改'>
-                        &nbsp;<Button type='primary' shape='circle' size='small' icon='team' onClick={(e) => this.handleModClick(recored)} />
-                    </Tooltip>
-                </span>
-            )
-        }
     ];
     handleDelClick = (info) =>{
         this.props.dispatch(acmentParamDel(info));
@@ -40,6 +29,7 @@ class AcmentSet extends Component{
     }
     handleSearch = (e) => {
         console.log(e)
+        this.setState({orgid:e})
         SearchCondition.acmentListCondition.branchId = e;
         console.log("查询条件", SearchCondition.acmentListCondition);
         this.setState({ isDataLoading: true });
@@ -56,7 +46,7 @@ class AcmentSet extends Component{
         if (this.props.permissionOrgTree.AddUserTree.length == 0) {
             this.props.dispatch(orgGetPermissionTree("UserInfoCreate"));
         }
-        this.handleSearch();
+        this.handleSearch("1")
     }
     componentWillReceiveProps = (newProps)=>{
         this.setState({isDataLoading:false});
@@ -67,6 +57,12 @@ class AcmentSet extends Component{
         };
         console.log("分页信息：", paginationInfo);
         this.setState({ pagination: paginationInfo });
+
+        if(newProps.operInfo.operType==='org_update'){
+            console.log('org_update')
+            this.handleSearch(newProps.permissionOrgTree.AddUserTree[0].key)
+            newProps.operInfo.operType = ''
+        }
     }
     render(){
         return (
@@ -77,8 +73,8 @@ class AcmentSet extends Component{
                                     dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
                                     treeData={this.props.permissionOrgTree.AddUserTree}
                                     placeholder="所属组织"
-                                    defaultValue={this.props.orgid}
                                     onChange={this.handleSearch}
+                                    defaultValue={"1"}
                                     >
                     </TreeSelect>
                 </div>
@@ -86,9 +82,9 @@ class AcmentSet extends Component{
                     <Button type='primary' shape='circle' icon='plus' onClick={this.handleNew} style={{'margin':'10'}}/>
                 </Tooltip>
                 <Spin spinning={this.state.isDataLoading}>
-                 <Table  columns={this.appTableColumns} dataSource={this.props.scaleSearchResult}></Table>
+                 <Table  columns={this.appTableColumns} dataSource={this.props.scaleSearchResult.extension}></Table>
                  </Spin>
-                 <AcmentEditor/>
+                 <AcmentEditor orgid={this.state.orgid}/>
             </Layout>
         )
     }
@@ -97,7 +93,8 @@ function MapStateToProps(state){
     return {
         activeTreeNode:    state.org.activeTreeNode,
         permissionOrgTree: state.org.permissionOrgTree,
-        scaleSearchResult: state.acm.scaleSearchResult
+        scaleSearchResult: state.acm.scaleSearchResult,
+        operInfo:state.org.operInfo
     }
 }
 

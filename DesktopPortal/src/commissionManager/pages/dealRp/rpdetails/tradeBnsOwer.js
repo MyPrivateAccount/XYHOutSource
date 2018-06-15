@@ -39,6 +39,7 @@ class TradeBnsOwner extends Component {
       this.props.form.setFieldsValue({'yzMc':newdata.yzMc })
       this.props.form.setFieldsValue({'yzSj':newdata.yzSj })
       newProps.syncYzOp.operType = ''
+      this.setState({rpData:newdata})
     }
   }
   handleSave = (e) => {

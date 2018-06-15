@@ -157,3 +157,5 @@ export const DEALRP_SYNC_KH = 'DEALRP_SYNC_KH'
 export const DEALRP_SYNC_FP = 'DEALRP_SYNC_FP'
 //打开成交报告详情页
 export const DEALRP_OPEN_RP_DETAIL = 'DEALRP_OPEN_RP_DETAIL'
+//清空界面输入
+export const DEALRP_RP_CLEAR = 'DEALRP_RP_CLEAR'

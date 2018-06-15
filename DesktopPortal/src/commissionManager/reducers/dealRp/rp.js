@@ -141,4 +141,8 @@ rpReducerMap[actionTypes.DEALRP_OPEN_RP_DETAIL] = function (state, action) {
     console.log("readucer报打开详情页面" + JSON.stringify(action.payload));
     return Object.assign({}, state, { rpOpenParam:action.payload ,operInfo:{operType:'DEALRP_OPEN_RP_DETAIL'}});
 }
+rpReducerMap[actionTypes.DEALRP_RP_CLEAR] = function (state, action) {
+    console.log("readucer清空页面" + JSON.stringify(action.payload));
+    return Object.assign({}, state, { rpOpenParam:action.payload ,operInfo:{operType:action.payload}});
+}
 export default handleActions(rpReducerMap, initState)

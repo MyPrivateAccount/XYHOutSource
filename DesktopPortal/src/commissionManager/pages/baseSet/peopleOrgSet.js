@@ -18,18 +18,6 @@ class PeopleSet extends Component{
     appTableColumns = [
         { title: '组织', dataIndex: 'branchId', key: 'branchId' },
         { title: '分摊比例', dataIndex: 'ftbl', key: 'ftbl' },
-        {
-            title: '操作', dataIndex: 'edit', key: 'edit', render: (text, recored) => (
-                <span>
-                    <Tooltip title='编辑'>
-                        &nbsp;<Button type='primary' shape='circle' size='small' icon='team' onClick={(e) => this.handleEditClick(recored)} />
-                    </Tooltip>
-                    <Tooltip title='删除'>
-                        &nbsp;<Button type='primary' shape='circle' size='small' icon='team' onClick={(e) => this.handleDelClick(recored)} />
-                    </Tooltip>
-                </span>
-            )
-        }
     ];
     handleDelClick = (info) =>{
         this.props.dispatch(orgFtParamDelete(info));
@@ -59,7 +47,7 @@ class PeopleSet extends Component{
         if (this.props.permissionOrgTree.AddUserTree.length == 0) {
             this.props.dispatch(orgGetPermissionTree("UserInfoCreate"));
         }
-        this.handleSearch();
+        this.handleSearch("1")
     }
     componentWillReceiveProps = (newProps)=>{
         this.setState({ isDataLoading: false });
@@ -80,7 +68,7 @@ class PeopleSet extends Component{
                                     dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
                                     treeData={this.props.permissionOrgTree.AddUserTree}
                                     placeholder="所属组织"
-                                    defaultValue={this.props.orgid}
+                                    defaultValue="1"
                                     onChange={this.handleSearch}>
                     </TreeSelect>
                 </div>
@@ -88,7 +76,7 @@ class PeopleSet extends Component{
                     <Button type='primary' shape='circle' icon='plus' onClick={this.handleNew} style={{'margin':10}}/>
                 </Tooltip>
                 <Spin spinning={this.state.isDataLoading}>
-                 <Table  columns={this.appTableColumns} dataSource={this.props.ppFtSearchResult.ext}></Table>
+                 <Table  columns={this.appTableColumns} dataSource={this.props.ppFtSearchResult.extension}></Table>
                  </Spin>
                 <PeopleOrgFtEditor/>
             </Layout>

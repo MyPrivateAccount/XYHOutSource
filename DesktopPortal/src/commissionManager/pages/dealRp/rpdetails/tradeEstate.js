@@ -43,6 +43,7 @@ class TradeEstate extends Component {
             this.props.form.setFieldsValue({'wyPq':newdata.wyPq})
             this.props.form.setFieldsValue({'wyMc':newdata.wyMc})
             newProps.syncWyOp.operType = ''
+            this.setState({rpData:newdata})
         }
     }
     handleSave = (e) => {

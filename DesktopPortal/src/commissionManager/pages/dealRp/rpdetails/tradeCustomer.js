@@ -17,7 +17,7 @@ class TradeCustomer extends Component {
     this.setState({ isDataLoading: true, tip: '信息初始化中...' })
     this.props.dispatch(getDicParList(['COMMISSION_KH_KHXZ', 'COMMISSION_YZ_QHTSC']));
   }
-  componentDidMount=()=>{
+  componentDidMount = () => {
   }
   componentWillReceiveProps(newProps) {
     this.setState({ isDataLoading: false });
@@ -30,7 +30,7 @@ class TradeCustomer extends Component {
       newProps.operInfo.operType = ''
     }
     else if (newProps.operInfo.operType === 'KHGET_UPDATE') {//信息获取成功
-      this.setState({ rpData: newProps.ext});
+      this.setState({ rpData: newProps.ext });
       newProps.operInfo.operType = ''
     }
     else if (newProps.syncKhOp.operType === 'DEALRP_SYNC_KH') {
@@ -38,6 +38,11 @@ class TradeCustomer extends Component {
       this.props.form.setFieldsValue({ 'khMc': newdata.khMc })
       this.props.form.setFieldsValue({ 'khSj': newdata.khSj })
       newProps.syncKhOp.operType = ''
+      this.setState({rpData:newdata})
+    }
+    else if (newProps.operInfo.operType === 'DEALRP_RP_CLEAR') {
+      this.setState({ rpData: {} })
+      newProps.operInfo.operType = ''
     }
   }
   handleSave = (e) => {
@@ -75,7 +80,7 @@ class TradeCustomer extends Component {
               <FormItem {...formItemLayout} label={(<span>名称</span>)}>
                 {
                   getFieldDecorator('khMc', {
-                    rules: [{ required: true,message:'请填写客户名称' }],
+                    rules: [{ required: true, message: '请填写客户名称' }],
                     initialValue: this.state.rpData.khMc,
                   })(
                     <Input style={{ width: 200 }}></Input>
@@ -87,7 +92,7 @@ class TradeCustomer extends Component {
               <FormItem {...formItemLayout} label={(<span>身份证</span>)}>
                 {
                   getFieldDecorator('khZjhm', {
-                    rules: [{ required: true,message:'请填写客户身份证' }],
+                    rules: [{ required: true, message: '请填写客户身份证' }],
                     initialValue: this.state.rpData.khZjhm,
                   })(
                     <Input style={{ width: 200 }}></Input>
@@ -273,9 +278,9 @@ function MapStateToProps(state) {
   return {
     basicData: state.base,
     operInfo: state.rp.operInfo,
-    ext:state.rp.ext,
-    syncKhOp:state.rp.syncKhOp,
-    syncKhData:state.rp.syncKhData
+    ext: state.rp.ext,
+    syncKhOp: state.rp.syncKhOp,
+    syncKhData: state.rp.syncKhData
   }
 }
 
