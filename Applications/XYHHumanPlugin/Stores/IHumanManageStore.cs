@@ -47,6 +47,7 @@ namespace XYHHumanPlugin.Stores
         Task ChangeHuman(ChangeInfo info, string huid, CancellationToken cancellationToken = default(CancellationToken));
 
         Task<string> GetOrganizationFullName(string departmentid);
+        Task<List<Organizations>> GetAllOrganization();
 
         Task<SocialInsurance> GetSocialInfoAsync(string idcard);
         Task<TResult> GetHumanAsync<TResult>(Func<IQueryable<HumanInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken));

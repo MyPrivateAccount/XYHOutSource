@@ -461,6 +461,11 @@ namespace XYHHumanPlugin.Stores
             }
         }
 
+        public async Task<List<Organizations>> GetAllOrganization()
+        {
+            return Context.Organizations.Where(a => a.Id != "").ToList();
+        }
+
         public async Task<SocialInsurance> GetSocialInfoAsync(string idcard)
         {
             return Context.SocialInsurances.AsNoTracking().Where(x => (x.IDCard == idcard)).FirstOrDefault();

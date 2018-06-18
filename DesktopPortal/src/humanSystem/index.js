@@ -64,7 +64,7 @@ const homeStyle = {
 
         for (let i in menuDefine) {
             if (menuDefine[i].menuID == e.key) {
-                if (e.key == "menu_organization" || e.key == "menu_statistics" || e.key == "menu_set") {
+                if (e.key == "menu_statistics" || e.key == "menu_set") {
                     notification.error({
                         message: "no page",
                         duration: 3
