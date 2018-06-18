@@ -73,7 +73,7 @@ class SearchBox extends Component{
                 <div className="searchBox">
                     <Row type="flex">
                         <Col span={12}>
-                            <Input placeholder={this.state.searchType === '1' ? '请输入合同名称': ''} 
+                            <Input placeholder={this.state.searchType === '1' ? '可输入合同编号、项目名称、合同名称、甲方名称进行查询': ''} 
                             value = {keyword} onChange = {this.handleKeyChangeWord}/> 
                         </Col>
                         <Col span={8}>

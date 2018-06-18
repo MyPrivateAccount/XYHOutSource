@@ -1,18 +1,20 @@
-import {connect} from 'react-redux';
-import { openComplement, searchStart, saveSearchCondition, setLoadingVisible,
-openAttachMent, openContractRecord, gotoThisContract, openContractRecordNavigator, getAllExportData, endExportAllData, invalidateContract} from '../actions/actionCreator';
-import React, {Component} from 'react';
-import {Button, Row, Col, Table, Modal} from 'antd';
+import { connect } from 'react-redux';
+import {
+    openComplement, searchStart, saveSearchCondition, setLoadingVisible,
+    openAttachMent, openContractRecord, gotoThisContract, openContractRecordNavigator, getAllExportData, endExportAllData, invalidateContract
+} from '../actions/actionCreator';
+import React, { Component } from 'react';
+import { Button, Row, Col, Table, Modal } from 'antd';
 import moment from 'moment';
 import XLSX from 'xlsx';
 
 const buttonDef = [
-    { buttonID:"record", buttonName:"录入", icon:'', type:'primary', size:'small', requirePermission:['RECORD_FUC']},
-    { buttonID:"uploadFile", buttonName:"附件上传", icon:'', type:'primary', size:'small',requirePermission:['UPLOAD_FILE']},
+    { buttonID: "record", buttonName: "录入", icon: '', type: 'primary', size: 'small', requirePermission: ['RECORD_FUC'] },
+    { buttonID: "uploadFile", buttonName: "附件上传", icon: '', type: 'primary', size: 'small', requirePermission: ['UPLOAD_FILE'] },
     //{ buttonID:"export", buttonName:"导出", icon:'', type:'primary', size:'small', requirePermission:['EXPORT_CONTRACT']},
-    { buttonID:"invalidate", buttonName:"作废", icon:'', type:'primary', size:'small', requirePermission:['INVALIDATE_CONTRACT']},
-    { buttonID:"exportAll", buttonName:"导出查询结果", icon:'', type:'primary', size:'small', requirePermission:['EXPORT_ALL_CONTRACT']},
-   
+    { buttonID: "invalidate", buttonName: "作废", icon: '', type: 'primary', size: 'small', requirePermission: ['INVALIDATE_CONTRACT'] },
+    { buttonID: "exportAll", buttonName: "导出查询结果", icon: '', type: 'primary', size: 'small', requirePermission: ['EXPORT_ALL_CONTRACT'] },
+
 ];
 class SearchResult extends Component {
     state = {
@@ -23,34 +25,32 @@ class SearchResult extends Component {
         },
         checkList: []//
     }
-    
+
     componentWillReceiveProps(newProps) {
-       /// console.log("newProps.searchInfo.searchResul", newProps.searchInfo.searchResult);
-        let {pageIndex, pageSize, validityContractCount} = newProps.searchInfo.searchResult;
+        /// console.log("newProps.searchInfo.searchResul", newProps.searchInfo.searchResult);
+        let { pageIndex, pageSize, validityContractCount } = newProps.searchInfo.searchResult;
         console.log("validityContractCount:", validityContractCount);
         if (newProps.searchInfo.searchResult && pageIndex) {
-            this.setState({pagination: {current: pageIndex, pageSize: pageSize, total: validityContractCount}});
+            this.setState({ pagination: { current: pageIndex, pageSize: pageSize, total: validityContractCount } });
         }
-        if(newProps.isBeginExportAllData)
-        {
+        if (newProps.isBeginExportAllData) {
             console.log('newProps.isBeginExportAllData:', newProps.isBeginExportAllData);
             let allExportData = newProps.allExportData;
             this.handleExportAllData(allExportData);
         }
     }
-    
+
     handleExportAllData = (exportData) => {
-        let header = [{v:"序号", position:'A1', key: 'num'}];
+        let header = [{ v: "序号", position: 'A1', key: 'num' }];
         let columns = this.getContractInfoExportColumns();
         let headers = header.concat(this.getHeader(columns));
-        let newHeader = headers.reduce((prev, next) => Object.assign({}, prev, {[next.position]: {v: next.v}}), {});
+        let newHeader = headers.reduce((prev, next) => Object.assign({}, prev, { [next.position]: { v: next.v } }), {});
         let dataList = {};
         let newData = {};
-        for(let i = 0; i < exportData.length ; i++)
-        {
+        for (let i = 0; i < exportData.length; i++) {
             let data = this.getSingleExportData(headers, exportData[i], i + 1);
-            newData = data.reduce((prev, next) => Object.assign({}, prev, {[next.position]: {v: next.v}}), {});
-            Object.assign(dataList, {...newData});
+            newData = data.reduce((prev, next) => Object.assign({}, prev, { [next.position]: { v: next.v } }), {});
+            Object.assign(dataList, { ...newData });
         }
         console.log('datalist:', dataList);
         let output = Object.assign({}, newHeader, dataList);
@@ -82,71 +82,71 @@ class SearchResult extends Component {
         }
         return hasPermission;
     }
-    getCurTitlePosition = (item,  colIndex, row= 1) =>{
+    getCurTitlePosition = (item, colIndex, row = 1) => {
         let obj = {};
 
-        obj = Object.assign({}, {v:item.title, position: String.fromCharCode(colIndex) + row}) ;
-        
-        if(item.children){
+        obj = Object.assign({}, { v: item.title, position: String.fromCharCode(colIndex) + row });
+
+        if (item.children) {
             let nowRow = row + 1;
-            for(let j =0 ; j < item.children.length; j ++){
+            for (let j = 0; j < item.children.length; j++) {
                 let itemCh = item.children[j];
-               this.getCurTitlePosition(itemCh, colIndex + j, nowRow );
+                this.getCurTitlePosition(itemCh, colIndex + j, nowRow);
             }
             // item.children.map((itemCh, i) =>{   
             //     return this.getCurTitlePosition(itemCh, colIndex + i, nowRow );
-             
+
             // })
-           
+
         }
         console.log("obj:", obj);
         return obj;
     }
-    getHeadersFromColums = () =>{
+    getHeadersFromColums = () => {
         let columns = this.getContractInfoColumns();
-        let header = [{v:"序号", position:'A1'}];
+        let header = [{ v: "序号", position: 'A1' }];
         var colIndex = 65;
 
         let sheader = columns.map((item, i) => {
             colIndex = colIndex + 1;
             return this.getCurTitlePosition(item, colIndex);
         });
-        
+
         return header.concat(sheader);
     }
 
 
-    formatContractData = () =>{
+    formatContractData = () => {
         let dataSource = this.props.searchInfo.searchResult.extension;
         let baseInfo = dataSource.baseInfo;
         //
     }
-    getHeader = (columns, colIndex = 65, row= 1, header=[]) =>{
-       
+    getHeader = (columns, colIndex = 65, row = 1, header = []) => {
+
         //let header = [{v:"序号", position:'A1'}];
-   
+
         var newHeader = header;
-        for(let i =0; i < columns.length; i ++){
+        for (let i = 0; i < columns.length; i++) {
             colIndex = colIndex + 1;
             let item = columns[i];
             var obj = {};
-     
-            obj = Object.assign({}, {v:item.title, position: String.fromCharCode(colIndex) + row, key: item.key}) ;    
-      
-            newHeader.push(obj);
-       
-            if(item.children){
 
-                this.getHeader(item.children, colIndex -1, row + 1, newHeader);
-                colIndex = colIndex + item.children.length -1;
+            obj = Object.assign({}, { v: item.title, position: String.fromCharCode(colIndex) + row, key: item.key });
+
+            newHeader.push(obj);
+
+            if (item.children) {
+
+                this.getHeader(item.children, colIndex - 1, row + 1, newHeader);
+                colIndex = colIndex + item.children.length - 1;
             }
-            
+
         }
- 
+
         return newHeader;
     }
     getContractInfoExportColumns() {
- 
+
         let columns = [
             {
                 title: '申请日期',
@@ -163,7 +163,7 @@ class SearchResult extends Component {
             },
             {
                 title: '申请人',
-                dataIndex:'createUser',
+                dataIndex: 'createUser',
                 key: 'createUser',
             },
             {
@@ -183,8 +183,8 @@ class SearchResult extends Component {
                 dataIndex: 'projectType',
                 key: 'projectType',
                 render: this.getNameByType('projectType'),
-            }, 
-    
+            },
+
             {
                 title: '合同名称',
                 // width: 80,
@@ -210,132 +210,132 @@ class SearchResult extends Component {
                 dataIndex: 'principalpepoleA',
                 key: 'principalpepoleA'
             },
-  
+
             {
                 title: '签订起始时间',
-                dataIndex:'startTime',
-                key:'startTime',
+                dataIndex: 'startTime',
+                key: 'startTime',
                 render: this.dateTimeRender,
             },
             {
                 title: '签订止时间',
-                dataIndex:'endTime',
-                key:'endTime',
+                dataIndex: 'endTime',
+                key: 'endTime',
                 render: this.dateTimeRender,
             },
-                
+
             {
                 title: '包销方/开发商',
-                dataIndex:'companyAT',
-                key:'companyAT',
+                dataIndex: 'companyAT',
+                key: 'companyAT',
                 render: this.getNameByType('companyAT'),
             },
             {
                 title: '是否提供关系证明',
-                dataIndex:'isSubmmitRelation',
-                key:'isSubmmitRelation',
+                dataIndex: 'isSubmmitRelation',
+                key: 'isSubmmitRelation',
                 render: this.isTrueOrFalse,
             },
             {
                 title: '是否提供铺号(销控明细)',
-                dataIndex:'isSubmmitShop',
-                key:'isSubmmitShop',
+                dataIndex: 'isSubmmitShop',
+                key: 'isSubmmitShop',
                 render: this.isTrueOrFalse,
             },
             {
                 title: '佣金方案',
-                dataIndex:'commisionType',
-                key:'commisionType',
+                dataIndex: 'commisionType',
+                key: 'commisionType',
                 render: this.getNameByType('commisionType'),
             },
             {
                 title: '结算方式',
-                dataIndex:'settleaccounts',
-                key:'settleaccounts',
+                dataIndex: 'settleaccounts',
+                key: 'settleaccounts',
             },
             {
                 title: '新签/续签',
-                dataIndex:'follow',
-                key:'follow',
+                dataIndex: 'follow',
+                key: 'follow',
             },
             {
                 title: '备注',
-                dataIndex:'remark',
-                key:'remark',
+                dataIndex: 'remark',
+                key: 'remark',
             },
         ];
         return columns;
     };
 
-    getSingleItem = ( pos, key, value,isNum, num) =>{
+    getSingleItem = (pos, key, value, isNum, num) => {
         let obj = {};
-        if(isNum){
+        if (isNum) {
             value = num;
         }
-        else if(value === null){
+        else if (value === null) {
             value = '';
-        }else if(value === true){
+        } else if (value === true) {
             value = '是';
-        }else if(value === false){
+        } else if (value === false) {
             value = '否';
-        }else{
-            if(key === 'type'){
+        } else {
+            if (key === 'type') {
                 value = this.findKeyByValue(this.props.basicData.contractCategories, value);
-            }else if(key === 'projectType'){
+            } else if (key === 'projectType') {
                 value = this.findKeyByValue(this.props.basicData.contractProjectCatogories, value);
-            }else if(key === 'companyAT'){
+            } else if (key === 'companyAT') {
                 value = this.findKeyByValue(this.props.basicData.firstPartyCatogories, value);
-            }else if(key === 'commisionType'){
+            } else if (key === 'commisionType') {
                 value = this.findKeyByValue(this.props.basicData.commissionCatogories, value);
-            }else if(key === 'startTime' || key === 'endTime'){
+            } else if (key === 'startTime' || key === 'endTime') {
                 let newText = value;
                 if (value) {
                     newText = moment(value).format('YYYY-MM-DD');
                 }
-                
+
                 value = newText;
             }
         }
-        obj = Object.assign({}, {v:value,position: pos.substr(0, 1) + (num+1)}) ;  
+        obj = Object.assign({}, { v: value, position: pos.substr(0, 1) + (num + 1) });
         return obj;
     }
-    getSingleExportData = (header, record, num = 1) =>{
+    getSingleExportData = (header, record, num = 1) => {
         let isNum = false;
         let data = [];
-        data = header.map((item, i) =>{
-            item.key === 'num' ? isNum = true: isNum =false;
+        data = header.map((item, i) => {
+            item.key === 'num' ? isNum = true : isNum = false;
             return this.getSingleItem(item.position, item.key, record[item.key], isNum, num);
         })
         return data;
     }
 
-    onClickInvalidate = (record) =>{
+    onClickInvalidate = (record) => {
         //console.log("作废record；", record)
         Modal.confirm({
             title: '是否确定作废此合同!',
             content: `合同名称为${record.name}`,
             onOk() {
-              //console.log('OK');
-              this.props.dispatch(invalidateContract({id:record.id}));
-         
-              let condition = {...this.props.searchInfo.searchCondition};
-              this.props.dispatch(setLoadingVisible(true));
-              this.props.dispatch(searchStart(condition));
+                //console.log('OK');
+                this.props.dispatch(invalidateContract({ id: record.id }));
+
+                let condition = { ...this.props.searchInfo.searchCondition };
+                this.props.dispatch(setLoadingVisible(true));
+                this.props.dispatch(searchStart(condition));
             },
             onCancel() {
-              console.log('取消作废');
+                console.log('取消作废');
             },
-          });
+        });
     }
     //导出
-    onClickExPort = (record) =>{
-        let header = [{v:"序号", position:'A1', key: 'num'}];
+    onClickExPort = (record) => {
+        let header = [{ v: "序号", position: 'A1', key: 'num' }];
         let columns = this.getContractInfoExportColumns();
         let headers = header.concat(this.getHeader(columns));
-        let newHeader = headers.reduce((prev, next) => Object.assign({}, prev, {[next.position]: {v: next.v}}), {});
+        let newHeader = headers.reduce((prev, next) => Object.assign({}, prev, { [next.position]: { v: next.v } }), {});
         let data = this.getSingleExportData(headers, record);
-        let newData = data.reduce((prev, next) => Object.assign({}, prev, {[next.position]: {v: next.v}}), {});
-        console.log(headers,newHeader);
+        let newData = data.reduce((prev, next) => Object.assign({}, prev, { [next.position]: { v: next.v } }), {});
+        console.log(headers, newHeader);
         console.log('newData:', newData);
         let output = Object.assign({}, newHeader, newData);
         // 获取所有单元格的位置
@@ -352,54 +352,54 @@ class SearchResult extends Component {
         XLSX.writeFile(wb, 'output.xlsx');
     }
     //文件上传
-    onClickUploadFile = (record)=>{
+    onClickUploadFile = (record) => {
         //console.log('====record:' , record);
-        this.props.dispatch(openAttachMent({'record':record}));
+        this.props.dispatch(openAttachMent({ 'record': record }));
     }
 
-    onClickContractDetail = (record) =>{
+    onClickContractDetail = (record) => {
         //console.log('record:', record);
-        this.props.dispatch(gotoThisContract({'record':record}));
+        this.props.dispatch(gotoThisContract({ 'record': record }));
     }
     dateTimeRender = (text, record) => {
-        
+
         let newText = text;
         if (text) {
             newText = moment(text).format('YYYY-MM-DD');
         }
-        
+
         return (<span>{newText}</span>);
     }
-    findKeyByValue = (dic, value) =>{
-  
+    findKeyByValue = (dic, value) => {
+
         let key = '';
         dic.forEach(item => {
-            if(item.value === value){
+            if (item.value === value) {
                 key = item.key;
             }
         });
         return key;
     }
-    
-    getNameByType = (curType) =>{
 
-       return  (text, record) =>{
-            if(curType === 'type'){
+    getNameByType = (curType) => {
+
+        return (text, record) => {
+            if (curType === 'type') {
                 return this.findKeyByValue(this.props.basicData.contractCategories, text);
-            }else if(curType === 'projectType'){
+            } else if (curType === 'projectType') {
                 return this.findKeyByValue(this.props.basicData.contractProjectCatogories, text);
-            }else if(curType === 'companyAT'){
+            } else if (curType === 'companyAT') {
                 return this.findKeyByValue(this.props.basicData.firstPartyCatogories, text);
-            }else if(curType === 'commisionType'){
+            } else if (curType === 'commisionType') {
                 return this.findKeyByValue(this.props.basicData.commissionCatogories, text);
-            }else{
+            } else {
                 return '';
             }
         }
     }
     //合同基本信息列
     getContractInfoColumns() {
- 
+
         let columns = [
             {
                 title: '申请日期',
@@ -407,8 +407,8 @@ class SearchResult extends Component {
                 dataIndex: 'createTime',
                 key: 'createTime',
                 render: this.dateTimeRender,
-                sorter: (a, b)=>{
-                    return (moment(a.createTime).isSameOrBefore(moment(b.createTime)) ? -1: 1);
+                sorter: (a, b) => {
+                    return (moment(a.createTime).isSameOrBefore(moment(b.createTime)) ? -1 : 1);
                 },
                 //sortOrder:'ascend',
             },
@@ -440,8 +440,8 @@ class SearchResult extends Component {
                 dataIndex: 'projectType',
                 key: 'projectType',
                 render: this.getNameByType('projectType'),
-            }, 
-    
+            },
+
             {
                 title: '合同名称',
                 // width: 80,
@@ -482,10 +482,10 @@ class SearchResult extends Component {
             //             key:'endTime',
             //             render: this.dateTimeRender,
             //         },
-                    
+
             //     ],
             // },
-            
+
             // {
             //     title: '包销方/开发商',
             //     children: [
@@ -501,7 +501,7 @@ class SearchResult extends Component {
             //             key:'isSubmmitRelation',
             //             render: this.isTrueOrFalse,
             //         },
-                    
+
             //     ],
             // },
             // {
@@ -523,17 +523,17 @@ class SearchResult extends Component {
             // },
             {
                 title: '新签/续签',
-                dataIndex:'isFollow',
-                key:'isFollow',
-                render:(text, record) =>{
+                dataIndex: 'isFollow',
+                key: 'isFollow',
+                render: (text, record) => {
                     return <span>{text ? '续签' : '新签'}</span>
                 }
             },
             {
                 title: '作废',
-                dataIndex:'isInvalid',
-                key:'isInvalid',
-                render:(text, record) =>{
+                dataIndex: 'isInvalid',
+                key: 'isInvalid',
+                render: (text, record) => {
                     return <span>{text ? '是' : '否'}</span>
                 }
             },
@@ -545,17 +545,17 @@ class SearchResult extends Component {
         ];
         return columns;
     };
-    isTrueOrFalse = (text, record) =>{
+    isTrueOrFalse = (text, record) => {
         return <span>{text ? '是' : '否'}</span>
     }
-    getExamineValueByType = (type) =>{
-        switch(type){
+    getExamineValueByType = (type) => {
+        switch (type) {
             case 0: return "未提交";
             case 1: return "审核中";
             case 8: return "审核通过";
             case 16: return "驳回";
-        default:
-            return type;
+            default:
+                return type;
         }
 
     }
@@ -563,24 +563,24 @@ class SearchResult extends Component {
         let columns = {
             title: '审核信息',
             children: [
-            //     {        
-            //     title: '审核人',
-            //     // width: 80,
-            //     dataIndex: 'CheckPeople',
-            //     key: 'CheckPeople'
-            // },
-            {
-                title: '审核状态',
-                // width: 80,
-                dataIndex: 'examineStatus',
-                key: 'examineStatus',
-                render: (status) =>{
-                    let newText = status;
-                    newText = this.getExamineValueByType(status);
-             
-                    return <span>{newText}</span>
-                }
-            }, /*{
+                //     {        
+                //     title: '审核人',
+                //     // width: 80,
+                //     dataIndex: 'CheckPeople',
+                //     key: 'CheckPeople'
+                // },
+                {
+                    title: '审核状态',
+                    // width: 80,
+                    dataIndex: 'examineStatus',
+                    key: 'examineStatus',
+                    render: (status) => {
+                        let newText = status;
+                        newText = this.getExamineValueByType(status);
+
+                        return <span>{newText}</span>
+                    }
+                }, /*{
                 title: '提交审核时间',
                 dataIndex: 'CheckTime',
                 key: 'CheckTime'
@@ -594,26 +594,26 @@ class SearchResult extends Component {
         return columns;
     }
 
-    getPermissonCol = (button,i) =>{
+    getPermissonCol = (button, i) => {
         return {
-            
-                title: button.buttonName,
-                dataIndex: button.buttonID,
-                key: button.buttonID,
-                render: (text, record) => {
-                    let isDisabled = true;
-                    if((button.buttonID === 'invalidate' && ([0,16].includes(record.examineStatus))) || button.buttonID !== 'invalidate' )//可以作废
-                    {
-                        isDisabled = false;
-                    }
-                    return <Button key = {i} id= {button.buttonID}  icon={button.icon} size={button.size} type={button.type} disabled={isDisabled} onClick={button.buttonID === 'invalidate' ? (e) => this.onClickInvalidate(record) : (e) => this.onClickUploadFile(record)}>{button.buttonName}</Button>
+
+            title: button.buttonName,
+            dataIndex: button.buttonID,
+            key: button.buttonID,
+            render: (text, record) => {
+                let isDisabled = true;
+                if ((button.buttonID === 'invalidate' && ([0, 16].includes(record.examineStatus))) || button.buttonID !== 'invalidate')//可以作废
+                {
+                    isDisabled = false;
                 }
-                    
+                return <Button key={i} id={button.buttonID} icon={button.icon} size={button.size} type={button.type} disabled={isDisabled} onClick={button.buttonID === 'invalidate' ? (e) => this.onClickInvalidate(record) : (e) => this.onClickUploadFile(record)}>{button.buttonName}</Button>
+            }
+
         };
     }
     //其他信息列
     getOtherInfoColumns() {
-        let columns ={
+        let columns = {
             title: '其他',
             children: [
                 {
@@ -634,10 +634,13 @@ class SearchResult extends Component {
                 },
             ]
         };
-        buttonDef.map((button, i) =>{
-            return this.hasPermission(button,i)&& button.buttonID != 'record' && button.buttonID != 'exportAll' ? columns.children.push(this.getPermissonCol(button)) : null
+        buttonDef.map((button, i) => {
+            return this.hasPermission(button, i) && button.buttonID != 'record' && button.buttonID != 'exportAll' ? columns.children.push(this.getPermissonCol(button)) : null
         });
-        //console.log('getOtherInfoColumns:', columns);
+        if (this.props.judgePermissions && !this.props.judgePermissions.includes('HT_BCXY') && columns.children.length > 1) {
+            columns.children.splice(1, 1);//增加补充协议权限控制
+        }
+        // console.log('this.props.judgePermissions:', this.props.judgePermissions);
         return columns;
     }
 
@@ -660,7 +663,7 @@ class SearchResult extends Component {
 
     handleChangePage = (pagination) => {
         console.log("分页信息:", pagination);
-        let condition = {...this.props.searchInfo.searchCondition};
+        let condition = { ...this.props.searchInfo.searchCondition };
         condition.pageIndex = pagination.current - 1;
         condition.pageSize = pagination.pageSize;
         this.props.dispatch(setLoadingVisible(true));
@@ -672,8 +675,8 @@ class SearchResult extends Component {
     //     this.props.dispatch(getContractDetail(record));
     // }
 
-    handleMultiExport = () =>{
-        let condition = {...this.props.searchInfo.searchCondition};
+    handleMultiExport = () => {
+        let condition = { ...this.props.searchInfo.searchCondition };
         condition.pageIndex = -1;
         condition.keyWord = this.props.searchInfo.searchKeyWord;
         if (this.props.searchInfo.activeOrg.id !== "0") {
@@ -682,18 +685,17 @@ class SearchResult extends Component {
         console.log('handleMultiExport.....');
         this.props.dispatch(getAllExportData(condition));
     }
-    handleMultiExport1 = () =>{
-        let header = [{v:"序号", position:'A1', key: 'num'}];
+    handleMultiExport1 = () => {
+        let header = [{ v: "序号", position: 'A1', key: 'num' }];
         let columns = this.getContractInfoExportColumns();
         let headers = header.concat(this.getHeader(columns));
-        let newHeader = headers.reduce((prev, next) => Object.assign({}, prev, {[next.position]: {v: next.v}}), {});
+        let newHeader = headers.reduce((prev, next) => Object.assign({}, prev, { [next.position]: { v: next.v } }), {});
         let dataList = {};
         let newData = {};
-        for(let i = 0; i < this.state.checkList.length ; i++)
-        {
+        for (let i = 0; i < this.state.checkList.length; i++) {
             let data = this.getSingleExportData(headers, this.state.checkList[i], i + 1);
-            newData = data.reduce((prev, next) => Object.assign({}, prev, {[next.position]: {v: next.v}}), {});
-            Object.assign(dataList, {...newData});
+            newData = data.reduce((prev, next) => Object.assign({}, prev, { [next.position]: { v: next.v } }), {});
+            Object.assign(dataList, { ...newData });
         }
         console.log('datalist:', dataList);
         let output = Object.assign({}, newHeader, dataList);
@@ -710,17 +712,17 @@ class SearchResult extends Component {
         };
         XLSX.writeFile(wb, 'output.xlsx');
     }
-     onClickRecord = (e) =>{
-         console.log('录入');
-         this.props.dispatch(openContractRecord({record:null}));
-         this.props.dispatch(openContractRecordNavigator({id:0}));
-     }
-     onClickComplement = (record) =>{
-        this.props.dispatch(openComplement({record: record}));
-     }
-    handleClickFucButton = (buttonID) =>{
+    onClickRecord = (e) => {
+        console.log('录入');
+        this.props.dispatch(openContractRecord({ record: null }));
+        this.props.dispatch(openContractRecordNavigator({ id: 0 }));
+    }
+    onClickComplement = (record) => {
+        this.props.dispatch(openComplement({ record: record }));
+    }
+    handleClickFucButton = (buttonID) => {
         //console.log('buttonID:', buttonID);
-        switch(buttonID){
+        switch (buttonID) {
             case 'record':
                 return this.onClickRecord;
             case 'export':
@@ -734,35 +736,35 @@ class SearchResult extends Component {
         }
     }
 
-    getMainButton = (button, i) =>{
-        if(this.hasPermission(button)&& (button.buttonID !='uploadFile' ) && (button.buttonID != 'export') && (button.buttonID != 'invalidate')){
-   
-            return <Button key = {i} id= {button.buttonID} style={{marginBottom: '10px', marginRight: '10px', border:0}}  onClick = {this.handleClickFucButton(button.buttonID)} icon={button.icon} size={button.size} type={button.type}>{button.buttonName}</Button> ;
-        }else{
+    getMainButton = (button, i) => {
+        if (this.hasPermission(button) && (button.buttonID != 'uploadFile') && (button.buttonID != 'export') && (button.buttonID != 'invalidate')) {
+
+            return <Button key={i} id={button.buttonID} style={{ marginBottom: '10px', marginRight: '10px', border: 0 }} onClick={this.handleClickFucButton(button.buttonID)} icon={button.icon} size={button.size} type={button.type}>{button.buttonName}</Button>;
+        } else {
             return null;
         }
     }
     render() {
-        let dataSource = this.props.searchInfo.searchResult.extension ;//(this.props.searchInfo.searchResult.extension || []).sort((a, b) => {return (moment(a.createTime).isSameOrBefore(moment(b.createTime)) ? 1: -1) }) ;
+        let dataSource = this.props.searchInfo.searchResult.extension;//(this.props.searchInfo.searchResult.extension || []).sort((a, b) => {return (moment(a.createTime).isSameOrBefore(moment(b.createTime)) ? 1: -1) }) ;
         const rowSelection = {
             onChange: (selectedRowKeys, selectedRows) => {
                 console.log('checkList:', selectedRows);
-                this.setState({checkList: selectedRows});
+                this.setState({ checkList: selectedRows });
             }
         };
         let showSlection = false;
         if (["menu_index"].includes(this.props.searchInfo.activeMenu)) {
             showSlection = true;
         }
-
+        let operButtons = buttonDef.filter((button) => { return this.hasPermission(button) });
         return (
-  
+
             <div id="searchResult">
-                {    
-                    buttonDef.map(
-                        (button,i) => this.getMainButton(button,i))
+                {
+                    operButtons.map(
+                        (button, i) => this.getMainButton(button, i))
                 }
-                <Table id= {"table"} rowKey={record => record.id} columns={this.getTableColumns()} pagination={this.state.pagination} onChange={this.handleChangePage} dataSource={dataSource} bordered size="middle" rowSelection={showSlection ? rowSelection : null} />
+                <Table id={"table"} rowKey={record => record.id} columns={this.getTableColumns()} pagination={this.state.pagination} onChange={this.handleChangePage} dataSource={dataSource} bordered size="middle" rowSelection={showSlection ? rowSelection : null} />
             </div>
         )
     }
@@ -772,7 +774,7 @@ class SearchResult extends Component {
 function mapStateToProps(state) {
     return {
         isBeginExportAllData: state.search.isBeginExportAllData,
-        allExportData:state.search.allExportData,
+        allExportData: state.search.allExportData,
         searchInfo: state.search,
         basicData: state.basicData,
         judgePermissions: state.judgePermissions

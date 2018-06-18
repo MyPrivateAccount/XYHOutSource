@@ -48,7 +48,7 @@ class ContractManagementIndex extends Component {
     }
     componentWillMount() {
         console.log("当前用户所在部门:", this.props.oidc);
-        this.props.dispatch(getAllOrgList("ContractSearchOrg"));
+        this.props.dispatch(getAllOrgList("HT_SQBM"));//ContractSearchOrg更改为合同申请部门
         
         //this.props.dispatch(getAllOrgList("ContractSetOrg"));
         let userInfo = this.props.oidc.user.profile;

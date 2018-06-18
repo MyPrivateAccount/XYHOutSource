@@ -242,3 +242,54 @@ export function sortShops(shops){
 
     })
 }
+
+export function getOrganizationTree(nodes){
+    let l1 = [];
+
+    nodes.forEach(x=>{
+        if(!x.parentId){
+            l1.push(x);
+        }else{
+            var p = nodes.find(y=>y.id === x.parentId);
+            if(!p){
+                l1.push(x);
+            }
+        }   
+    });
+
+    let treeRoot = [];
+    l1.forEach(item=>{
+        var newItem ={
+            label:item.organizationName,
+            value: item.id,
+            key:item.id,
+            id: item.id,
+            data: item
+        }
+        treeRoot.push(newItem)
+        _getChildren(nodes, newItem);
+    })
+
+    
+    return treeRoot;
+}
+
+function _getChildren(nodes, parent){
+    if(!parent.children){
+        parent.children=[];
+    }
+
+    nodes.forEach(item=>{
+        if(item.parentId == parent.id){
+            var newItem ={
+                label:item.organizationName,
+                value: item.id,
+                key:item.id,
+                id: item.id,
+                data: item
+            }
+            parent.children.push(newItem);
+            _getChildren(nodes, newItem);
+        }
+    })
+}
