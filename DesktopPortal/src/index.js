@@ -31,7 +31,7 @@ export const sagaMiddleware = createSagaMiddleware();
 
 const globalActions = [
     /.*(@@redux-form.*)/,
-    /.*(@@router.*)/
+    /.*(@DIC.*)/
 ];
 export default function configure(initialState) {
     const im = ignoreSubspaceMiddleware(globalActions);

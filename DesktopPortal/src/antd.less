@@ -173,3 +173,71 @@
     }
 
 }
+.back-btn{
+    display: inline-block;
+    padding-right: 1rem;
+    color: #525252c7;
+    cursor: pointer;
+
+    &.hidden{
+        display: none;
+    }
+
+    .b-text{
+        padding-left: 0.5rem;
+    }
+}
+.content-page{
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+
+    .page-title{
+        text-align: center;
+        font-size: 1.5rem;
+        padding-top: 0.5rem;
+    }
+    .page-subtitle{
+        text-align: center;
+        padding-bottom: 1rem;
+        padding-top: 0.5rem;
+        font-size: 1.1rem;
+        color: #898989;
+    }
+
+    .page-btn-bar{
+        display: flex;
+        &.end{
+            justify-content: flex-end;
+        }
+        
+
+        >button{
+            margin-left: 0.5rem;
+        }
+        margin-top: 0.5rem;
+    }
+
+    .page-fill{
+        flex:1;
+        display: flex;
+        margin-top: 0.5rem;
+    }
+}
+
+.form-row{
+    .ant-form-item{
+        display: flex;
+        .ant-form-item-label{
+            width:8rem;
+        }
+        .ant-form-item-control-wrapper{
+            flex:1;
+        }
+    }
+}
