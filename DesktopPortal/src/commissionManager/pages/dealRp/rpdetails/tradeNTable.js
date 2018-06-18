@@ -1,22 +1,9 @@
 //内部分配表格
-//外佣表格组件
 import { connect } from 'react-redux';
 import React, { Component } from 'react';
 import { Select, Table, Button, Tooltip, Input } from 'antd'
+import EditableCell from './tradeEditCell'
 
-
-const testItems = {
-    nbfpItems: [
-        {
-            key: '成交人',
-            percent: 0.3
-        },
-        {
-            key: '其它',
-            percent: 0.5
-        }
-    ]
-}
 class TradeNTable extends Component {
     constructor(props) {
         super(props);
@@ -57,7 +44,7 @@ class TradeNTable extends Component {
             title: '金额', dataIndex: 'money', key: 'money',
             render: (text, recored) => (
                 <span>
-                    <Input style={{ width: 80 }} value={text} />
+                    <EditableCell style={{ width: 50 }} value={text} />
                 </span>
             )
         },
@@ -65,7 +52,7 @@ class TradeNTable extends Component {
             title: '比例', dataIndex: 'percent', key: 'percent',
             render: (text, recored) => (
                 <span>
-                    <Input style={{ width: 80 }} value={text} />%
+                    <EditableCell style={{ width: 50 }} value={text} />
             </span>
             )
         },
@@ -83,7 +70,7 @@ class TradeNTable extends Component {
                 <span>
                     <Select style={{ width: 80 }} onChange={this.onCellChange(recored.key, 'type')}>
                         {
-                            text.map(tp => <Select.Option key={tp.key} value={tp.key}>{tp.key}</Select.Option>)
+                            text.map(tp => <Select.Option key={tp.name} value={tp.name}>{tp.name}</Select.Option>)
                         }
                     </Select>
                 </span>
@@ -94,7 +81,7 @@ class TradeNTable extends Component {
                 <span>
 
                     <Tooltip title='删除'>
-                        &nbsp;<Button type='primary' shape='circle' size='small' icon='team' />
+                        &nbsp;<Button type='primary' shape='circle' size='small' icon='team' onClick={(e) => this.handleDelete(recored)} />
                     </Tooltip>
                 </span>
             )
@@ -104,21 +91,23 @@ class TradeNTable extends Component {
     }
     componentDidMount() {
         this.props.onFpTableRef(this)
-        this.setState({ nbfpItems: testItems.nbfpItems })
     }
     componentWillReceiveProps(newProps) {
 
     }
     getPercent(key) {
-        let items = testItems.nbfpItems;
+        let items = this.state.nbfpItems;
         console.log("getPercent:" + key)
         for (let i = 0; i < items.length; i++) {
-            if (items[i].key === key) {
+            if (items[i].name === key) {
                 console.log(items[i].percent)
                 return items[i].percent
             }
         }
         return 0
+    }
+    setNbfpItems = (items) => {
+        this.setState({ nbfpItems: items })
     }
     //设置总佣金
     setZyj = (yj) => {
@@ -151,7 +140,7 @@ class TradeNTable extends Component {
             percent: 0,
             oddNum: 0,
             type: this.state.nbfpItems,
-            selectType:'',
+            selectType: '',
             edit: ""
         };
         this.setState({
@@ -160,18 +149,27 @@ class TradeNTable extends Component {
         });
         console.log("datasource:" + this.state.dataSource)
     }
+    //删除
+    handleDelete = (info) => {
+        const dataSource = [...this.state.dataSource];
+        const target = dataSource.find(item => item.key === info.key);
+        if (target) {
+            dataSource.splice(target, 1)
+            this.setState({ dataSource });
+        }
+    }
     //获取表格数据
     getData = (id) => {
         var dt = []
         const dataSource = [...this.state.dataSource];
         for (var i = 0; i < dataSource.length; i++) {
-            let temp= {}
+            let temp = {}
             temp.id = id
             temp.sectionName = dataSource[i].sectionName
             temp.username = dataSource[i].username
             temp.workNumber = dataSource[i].workNumber
             temp.money = dataSource[i].money
-            temp.percent = dataSource[i].percent/100
+            temp.percent = dataSource[i].percent / 100
             temp.oddNum = dataSource[i].oddNum
             temp.type = dataSource[i].selectType
 
@@ -182,7 +180,7 @@ class TradeNTable extends Component {
     render() {
         const { dataSource } = this.state
         return (
-            <Table columns={this.appTableColumns} dataSource={dataSource}></Table>
+            <Table bordered columns={this.appTableColumns} dataSource={dataSource}></Table>
         )
     }
 }

@@ -3,9 +3,8 @@
 import { connect } from 'react-redux';
 import React, { Component } from 'react';
 import moment from 'moment'
-import { getDicParList,dealRpSave} from '../../../actions/actionCreator'
+import { getDicParList,dealRpSave,syncYJDate} from '../../../actions/actionCreator'
 import {notification, DatePicker, Form, Span, Layout, Table, Button, Radio, Popconfirm, Tooltip, Row, Col, Input, Spin, Select, TreeSelect,Modal} from 'antd'
-import TradeReportTable from './tradeReportTable'
 import './trade.less'
 
 const RadioGroup = Radio.Group;
@@ -41,6 +40,16 @@ class TradeContract extends Component {
         else if(newProps.operInfo.operType === 'HTGET_UPDATE'){//信息获取成功
             this.setState({ rpData: newProps.ext});
             newProps.operInfo.operType = ''
+        }
+        else if(newProps.syncRpOp.operType === 'DEALRP_SYNC_RP'){
+            let newdata = newProps.syncRpData
+            this.props.form.setFieldsValue({'fyzId':newdata.fyzId})
+            this.props.form.setFieldsValue({'cjrId':newdata.cjrId})
+            this.props.form.setFieldsValue({'cjrq':moment(newdata.cjrq)})
+            this.props.form.setFieldsValue({'cjzj':newdata.cjzj})
+            this.props.form.setFieldsValue({'ycjyj':newdata.ycjyj})
+            newProps.syncRpOp.operType = ''
+            this.setState({rpData:newdata})
         }
     }
     handleSave = (e) => {
@@ -87,6 +96,7 @@ class TradeContract extends Component {
     cjrq_dateChange=(value,dateString)=>{
         console.log(dateString)
         this.setState({cjrq:dateString})
+        this.props.dispatch(syncYJDate(dateString))//同步日期給业绩分配页面
     }
     wqrq_dateChange=(value,dateString)=>{
         console.log(dateString)
@@ -112,11 +122,7 @@ class TradeContract extends Component {
     }
     //选择成交报备
     chooseReport=()=>{
-        this.cjbbdlg.show()
-    }
-    //
-    onSelf=(e)=>{
-        this.cjbbdlg = e;
+        this.props.onShowCjbbtb()
     }
     render() {
         const { getFieldDecorator } = this.props.form;
@@ -136,7 +142,6 @@ class TradeContract extends Component {
 
         return (
             <Layout>
-                <TradeReportTable onSelf = {this.onSelf}/>
                 <div style={{ marginLeft: 12 }}>
                     <Row>
                         <Col span={12} pull={1}>
@@ -547,7 +552,9 @@ function MapStateToProps(state) {
     return {
         basicData: state.base,
         operInfo:state.rp.operInfo,
-        ext:state.rp.ext
+        ext:state.rp.ext,
+        syncRpData:state.rp.syncRpData,
+        syncRpOp:state.rp.syncRpOp
     }
 }
 

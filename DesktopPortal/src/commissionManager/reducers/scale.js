@@ -5,13 +5,14 @@ const initState = {
     showLoading: false,
     operInfo: { operType: ''},
     activeScale:{},
-    scaleSearchResult:[]
+    scaleSearchResult:[],
+    param:{}
 };
 let scaleReducerMap = {};
 
 scaleReducerMap[actionTypes.INCOME_SCALE_ADD] = function (state, action) {
     console.log("readucer新增提成比例" + JSON.stringify(action.payload));
-    return Object.assign({}, state, { operInfo: { operType: 'add', dialogOpen: true } });
+    return Object.assign({}, state, {param:action.payload, operInfo: { operType: 'add', dialogOpen: true } });
 }
 scaleReducerMap[actionTypes.INCOME_SCALE_EDIT] = function (state, action) {
     console.log("readucer修改提成比例" + JSON.stringify(action.payload));

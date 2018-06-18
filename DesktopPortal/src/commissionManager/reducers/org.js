@@ -56,7 +56,7 @@ treeReducerMap[actionTypes.ORG_GET_PERMISSION_TREE_UPDATE] = function (state, ac
     else if (action.payload.permissionType === "AuthorizationPermission") {
         AddRolePermissionTree = orgTreeSource;
     }
-    return Object.assign({}, state, {permissionOrgTree: {AddUserTree: AddUserTree, AddNormalRoleTree: AddNormalRoleTree, AddPublicRoleTree: AddPublicRoleTree, AddRolePermissionTree: AddRolePermissionTree}});
+    return Object.assign({}, state, {permissionOrgTree: {AddUserTree: AddUserTree, AddNormalRoleTree: AddNormalRoleTree, AddPublicRoleTree: AddPublicRoleTree, AddRolePermissionTree: AddRolePermissionTree},operInfo:{operType:'org_update'}});
 }
 
 function getAllChildrenNode(node, parentId, formatNodeLit) {
@@ -69,6 +69,11 @@ function getAllChildrenNode(node, parentId, formatNodeLit) {
     });
     node.children = nodeList;
     return nodeList;
+}
+
+treeReducerMap[actionTypes.EMP_LIST_UPDATE] = function (state, action) {
+    console.log("readucer用户的列表:" + JSON.stringify(action.payload.extension));
+    return Object.assign({}, state, { empList: action.payload.extension });
 }
 
 export default handleActions(treeReducerMap, initState)

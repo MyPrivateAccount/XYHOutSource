@@ -12,21 +12,12 @@ class OrgParamSet extends Component{
     state = {
         pagination: {},
         isDataLoading:false,
+        orgid:''
     }
     appTableColumns = [
         { title: '组织', dataIndex: 'branchId', key: 'branchId' },
         { title: '参数名称', dataIndex: 'parValue', key: 'parValue' },
         { title: '参数值', dataIndex: 'parCode', key: 'parCode' },
-        {
-            title: '操作', dataIndex: 'edit', key: 'edit', render: (text, recored) => (
-                <span>
-
-                    <Tooltip title='修改'>
-                        &nbsp;<Button type='primary' shape='circle' size='small' icon='team' onClick={(e) => this.handleModClick(recored)} />
-                    </Tooltip>
-                </span>
-            )
-        }
     ];
     handleModClick = (info) =>{
         this.props.dispatch(orgParamEdit(info));
@@ -37,6 +28,7 @@ class OrgParamSet extends Component{
     }
     handleSearch = (e) => {
         console.log(e)
+        this.setState({orgid:e})
         SearchCondition.orgParamListCondition.branchId = e;
         console.log("查询条件", SearchCondition.orgParamListCondition);
         this.setState({ isDataLoading: true });
@@ -50,11 +42,8 @@ class OrgParamSet extends Component{
         this.props.dispatch(orgParamListGet(SearchCondition.orgParamListCondition));
     };
     componentDidMount = ()=>{
-
-        if (this.props.permissionOrgTree.AddUserTree.length == 0) {
             this.props.dispatch(orgGetPermissionTree("UserInfoCreate"));
-        }
-        this.handleSearch();
+            this.handleSearch("1")
     }
     componentWillReceiveProps = (newProps)=>{
         this.setState({isDataLoading:false});
@@ -75,7 +64,7 @@ class OrgParamSet extends Component{
                                     dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
                                     treeData={this.props.permissionOrgTree.AddUserTree}
                                     placeholder="所属组织"
-                                    defaultValue={this.props.orgid}
+                                    defaultValue={"1"}
                                     onChange={this.handleSearch}>
                     </TreeSelect>
                 </div>
@@ -83,9 +72,9 @@ class OrgParamSet extends Component{
                     <Button type='primary' shape='circle' icon='plus' onClick={this.handleNew} style={{'margin':'10'}}/>
                 </Tooltip>
                 <Spin spinning={this.state.isDataLoading}>
-                 <Table  columns={this.appTableColumns} dataSource={this.props.orgParamSearchResult} ></Table>
+                 <Table  columns={this.appTableColumns} dataSource={this.props.orgParamSearchResult.extension} ></Table>
                  </Spin>
-                 <OrgParamEditor/>
+                 <OrgParamEditor orgid={this.state.orgid}/>
             </Layout>
         )
     }
