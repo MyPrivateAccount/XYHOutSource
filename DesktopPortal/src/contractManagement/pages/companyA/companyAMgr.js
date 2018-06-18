@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { getDicParList,companyAAdd, companyListGet,companyADelete, companyAEdit, companyAListUpdate, companyACloseDialog } from '../../actions/actionCreator';
+import { getDicParList, companyAAdd, companyListGet, companyADelete, companyAEdit, companyAListUpdate, companyACloseDialog } from '../../actions/actionCreator';
 import React, { Component } from 'react'
 import { Layout, Table, Button, Checkbox, Popconfirm, Tooltip, Row, Col, Input, Spin, Select, TreeSelect } from 'antd'
 import CompanyAEdit from './companyAEdit';
@@ -37,18 +37,20 @@ class CompanyAMgr extends Component {
             )
         },
         { title: '甲方公司名称', dataIndex: 'name', key: 'name' },
-        { title: '类型', dataIndex: 'type', key: 'type', render:  (text, record) =>{ 
-            let key = '';
-            this.props.basicData.firstPartyCatogories.forEach(item => {
-                if(item.value === text){
-                    key = item.key;
-                }
-            });
-            return key; }
+        {
+            title: '类型', dataIndex: 'type', key: 'type', render: (text, record) => {
+                let key = '';
+                this.props.basicData.firstPartyCatogories.forEach(item => {
+                    if (item.value === text) {
+                        key = item.key;
+                    }
+                });
+                return key;
+            }
         },
         { title: '地址', dataIndex: 'address', key: 'address' },
         { title: '联系电话', dataIndex: 'phoneNum', key: 'phoneNum' },
-       // { title: '邮箱', dataIndex: 'email', key: 'email' },
+        // { title: '邮箱', dataIndex: 'email', key: 'email' },
         {
             title: '编辑', dataIndex: 'edit', key: 'edit', render: (text, recored) => (
                 <span>
@@ -169,7 +171,8 @@ class CompanyAMgr extends Component {
         if (this.props.basicData.firstPartyCatogories) {
             this.props.basicData.firstPartyCatogories.map(item => itemOptions.push(<Option key={item.value}>{item.key}</Option>));
         }
-
+        //this.props.judgePermissions.includes('RECORD_FUC')
+        let judgePermissions = this.props.judgePermissions || [];
         return (
             <div className="relative">
                 <Layout>
@@ -190,7 +193,7 @@ class CompanyAMgr extends Component {
                                         </Col>
                                         <Col span={6}>
                                             所在地址:<Input value={this.state.condition.address} style={{ width: '70%', verticalAlign: 'middle' }} onPressEnter={this.handleSearch} onChange={this.handleAddressChange} />
-                                    
+
                                         </Col>
                                         <Col span={6}>
                                             <Button type="primary" icon="search" onClick={this.handleSearch}>查询</Button>
@@ -200,17 +203,21 @@ class CompanyAMgr extends Component {
                             </Col>
                         </Row>
                         <Header style={{ backgroundColor: '#ececec' }}>
-                            甲方列表
-                                &nbsp;<Button type='primary' shape='circle' icon='plus' onClick={this.handleAddClick} />
-                            <Popconfirm title="确认要删除选中甲方?" onConfirm={this.handleCompanyADeleteAll} onCancel={this.cancelDelete} okText="确定" cancelText="取消">
-                                &nbsp;<Button type='primary' shape='circle' icon='delete' disabled={removeBtnDisabled} />
-                            </Popconfirm>
+                            甲方列表&nbsp;
+                            {
+                                judgePermissions.includes('HT_ADD_JF') ? <Button type='primary' shape='circle' icon='plus' onClick={this.handleAddClick} /> : null
+                            }
+                            {
+                                judgePermissions.includes('HT_JF_DELETE') ? <Popconfirm title="确认要删除选中甲方?" onConfirm={this.handleCompanyADeleteAll} onCancel={this.cancelDelete} okText="确定" cancelText="取消">
+                                    &nbsp;<Button type='primary' shape='circle' icon='delete' disabled={removeBtnDisabled} />
+                                </Popconfirm> : null
+                            }
                         </Header>
                         <Spin spinning={this.state.dataLoading}>
                             {<Table rowKey={record => record.id} pagination={this.state.pagination} columns={this.appTableColumns} dataSource={this.props.companySearchResult.extension} onChange={this.handleTableChange} />}
                         </Spin>
                         <CompanyAEdit />
-                        
+
                     </Content>
                 </Layout>
             </div >
@@ -222,9 +229,10 @@ function tableMapStateToProps(state) {
     //console.log("companyAData:" + JSON.stringify(state.companyAData.companySearchResult));
     return {
         operInfo: state.companyAData.operInfo,
-        basicData:state.basicData,
+        basicData: state.basicData,
         companySearchResult: state.companyAData.companySearchResult,
         //permissionOrgTree: state.org.permissionOrgTree,
+        judgePermissions: state.judgePermissions
     }
 }
 
