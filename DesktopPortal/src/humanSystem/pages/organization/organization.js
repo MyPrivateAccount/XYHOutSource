@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { deleteOrgbyId ,upaddOrg, deleteMemOrgbyId, addOrg, updateOrg} from '../../actions/actionCreator';
+import { deleteOrgbyId ,upaddOrg, deleteMemOrgbyId, addOrg, updateOrg, getDicParList} from '../../actions/actionCreator';
 import React, { Component } from 'react';
 import {Table, Input, Form, Select, Button, Row, Col, Tree, Modal} from 'antd';
 import { NewGuid } from '../../../utils/appUtils';
@@ -39,6 +39,7 @@ class Station extends Component {
     }
 
     componentWillMount() {
+        this.props.dispatch(getDicParList([""]));
     }
 
     onExpand = (expandedKeys) => {
@@ -138,6 +139,7 @@ class Station extends Component {
     }
 
     render() {
+        let self = this;
         return (
             <div className="orgBlock">
                 <Row>
@@ -150,19 +152,19 @@ class Station extends Component {
                         onOk={this.handleOk}
                         confirmLoading={this.state.confirmLoading}
                         onCancel={this.handleCancel}>
-                        <Input></Input>
+                        <Input defaultValue={this.state.tempModalItem.name}></Input>
                         <Select>
                             {
-                                (self.props.stationList && self.props.stationList.length > 0) ?
-                                self.props.stationList.map(
+                                (self.props.departmentTypeLst && self.props.departmentTypeLst.length > 0) ?
+                                self.props.departmentTypeLst.map(
                                     function (params) {
                                         return <Option key={params.key} value={params.id}>{params.stationname}</Option>;
                                     }
                                 ):null
                             }
                         </Select>
-                        <Input></Input>
-                        <Input></Input>
+                        <Input defaultValue={this.state.tempModalItem.Original.manager}></Input>
+                        <Input defaultValue={this.state.tempModalItem.Original.leaderManager}></Input>
                 </Modal>
                 {/* <Table className="contentOrg" rowSelection={rowSelection} rowKey={record => record.key} dataSource={this.props.setDepartmentOrgTree} columns={this.ListColums} /> */}
                 <Tree 
@@ -183,6 +185,7 @@ class Station extends Component {
 
 function tableMapStateToProps(state) {
     return {
+        departmentTypeLst: state.basicData.departmentTypeLst,
         setDepartmentOrgTree: state.basicData.searchOrgTree,
     }
 }
