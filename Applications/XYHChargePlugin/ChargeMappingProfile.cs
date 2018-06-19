@@ -3,6 +3,7 @@ using ApplicationCore.Models;
 using AutoMapper;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using XYHChargePlugin.Dto;
 using XYHChargePlugin.Models;
@@ -35,7 +36,18 @@ namespace XYHChargePlugin
                 }
 
             });
-            
+
+
+            CreateMap<FileInfoRequest, FileInfo>();
+            CreateMap<FileScopeRequest, FileScopeInfo>();
+            CreateMap<FileInfo, FileInfoResponse>();
+            CreateMap<FileScopeInfo, FileScopeResponse>().AfterMap((s,t)=>
+            {
+                if(s.FileList!=null && s.FileList.Count > 0)
+                {
+                    t.FileItem = this.ConvertToFileItem(s.FileGuid, s.FileList);
+                }
+            });
 
             CreateMap<CostInfo, CostInfoResponse>();
             CreateMap<CostInfoResponse, CostInfo>();
@@ -77,6 +89,39 @@ namespace XYHChargePlugin
 
             //CreateMap<SalaryInfo, SalaryInfoResponse>();
             //CreateMap<SalaryInfoResponse, SalaryInfo>();
+        }
+
+
+
+        private FileItemResponse ConvertToFileItem(string fileGuid, List<FileInfo> fl)
+        {
+            FileItemResponse fi = new FileItemResponse();
+            fi.FileGuid = fileGuid;
+            fi.Group = fl.FirstOrDefault()?.Group;
+            fi.Icon = fl.FirstOrDefault(x => x.Type == "ICON")?.Uri;
+            fi.Original = fl.FirstOrDefault(x => x.Type == "ORIGINAL")?.Uri;
+            fi.Medium = fl.FirstOrDefault(x => x.Type == "MEDIUM")?.Uri;
+            fi.Small = fl.FirstOrDefault(x => x.Type == "SMALL")?.Uri;
+
+            string fr = ApplicationCore.ApplicationContext.Current.FileServerRoot;
+            fr = (fr ?? "").TrimEnd('/');
+            if (!String.IsNullOrEmpty(fi.Icon))
+            {
+                fi.Icon = fr + "/" + fi.Icon.TrimStart('/');
+            }
+            if (!String.IsNullOrEmpty(fi.Original))
+            {
+                fi.Original = fr + "/" + fi.Original.TrimStart('/');
+            }
+            if (!String.IsNullOrEmpty(fi.Medium))
+            {
+                fi.Medium = fr + "/" + fi.Medium.TrimStart('/');
+            }
+            if (!String.IsNullOrEmpty(fi.Small))
+            {
+                fi.Small = fr + "/" + fi.Small.TrimStart('/');
+            }
+            return fi;
         }
     }
 }

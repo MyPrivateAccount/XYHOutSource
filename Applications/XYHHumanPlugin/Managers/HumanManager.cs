@@ -472,7 +472,7 @@ namespace XYHHumanPlugin.Managers
 
             if (!String.IsNullOrWhiteSpace(keyword))
             {
-                query = query.Where(hr => ( hr.Name.Contains(keyword) || hr.UserID.Contains(keyword) ));
+                query = query.Where(hr => ( hr.Name.Contains(keyword) || hr.UserID.Contains(keyword) || hr.ID==keyword ));
             }
             if(pageSize>0 && pageIndex > 0)
             {

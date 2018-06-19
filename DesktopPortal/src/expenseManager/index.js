@@ -12,6 +12,7 @@ import {ConnectedRouter, push} from 'react-router-redux'
 import {Route, Switch, } from 'react-router'
 import AddCharge from './pages/fylr/AddCharge'
 import ChargeIndex from './pages/fylr'
+import Layer from '../components/Layer'
 
 const {Header, Sider, Content} = Layout;
 const SubMenu = Menu.SubMenu;
@@ -79,6 +80,7 @@ class ExpenseManagerIndex extends Component {
             
             this.setState({showBack: location.pathname!==this.state.activeMenu.path})
         }
+        history.replace(this.state.activeMenu.path, this.state.activeMenu)
     }
 
     componentWillUnmount=()=>{
@@ -217,15 +219,18 @@ class ExpenseManagerIndex extends Component {
                             }
                         </Breadcrumb> */}
                     </Header>
-                    <ConnectedRouter history={history}>
+                    
                     <Content className='content'>
                         {/* {
                             this.getContentPage()
                         } */}
-                        <Route exact path='/' component={ChargeIndex}/>
-                        <Route  path='/dd' component={AddCharge}/>
+                        <ConnectedRouter history={history}>
+                            <Layer>
+                                <Route  path='/' component={ChargeIndex}/>
+                            </Layer>
+                        </ConnectedRouter>
                     </Content>
-                    </ConnectedRouter>
+                   
                 </Layout>
                 
             </Layout>

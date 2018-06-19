@@ -5,7 +5,7 @@ using System.Text;
 
 namespace XYHChargePlugin.Dto
 {
-    public class FileInfoRequest
+    public class FileInfoResponse
     {
         public string FileGuid { get; set; }
         public string Name { get; set; }
@@ -32,5 +32,7 @@ namespace XYHChargePlugin.Dto
         public string Driver { get; set; }
       
         public string Group { get; set; }
+
+        public string Url { get; set; }
     }
 }

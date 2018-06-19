@@ -38,15 +38,15 @@ namespace XYHChargePlugin.Models
     //    public DateTime? CreateTime { get; set; }
     //}
 
-    public class FileScopeInfo
-    {
-        [Key]
-        [MaxLength(127)]
-        public string ReceiptID { get; set; }
+    //public class FileScopeInfo
+    //{
+    //    [Key]
+    //    [MaxLength(127)]
+    //    public string ReceiptID { get; set; }
 
-        [MaxLength(127)]
-        public string FileGuid { get; set; }
-    }
+    //    [MaxLength(127)]
+    //    public string FileGuid { get; set; }
+    //}
 
     public class LimitInfo
     {
