@@ -12,6 +12,8 @@ namespace XYHHumanPlugin.Stores
 {
     public interface IHumanManageStore
     {
+        IQueryable<HumanInfo> SimpleQuery { get; }
+
         IEnumerable<T> DapperSelect<T>(string sql);
         Task<HumanInfo> CreateAsync(SimpleUser userinfo, HumanInfo humaninfo, string modifyid, string checkaction, CancellationToken cancellationToken = default(CancellationToken));
         Task CreateAsync(AnnexInfo humaninfo, CancellationToken cancellationToken = default(CancellationToken));

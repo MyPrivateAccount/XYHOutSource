@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using ApplicationCore.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -20,20 +21,48 @@ namespace XYHChargePlugin.Models
         public DbSet<FileInfo> FileInfos { get; set; }
         public DbSet<FileScopeInfo> FileScopeInfo { get; set; }
 
+        public DbSet<Organizations> Organizations { get; set; }
+
+        public DbSet<OrganizationExpansion> OrganizationExpansions { get; set; }
+        public DbSet<PermissionExpansion> PermissionExpansions { get; set; }
+        public DbSet<OrganizationPar> OrganizationPars { get; set; }
+
+        public DbSet<HumanInfo> HumanInfo { get; set; }
+
+        public DbSet<Users> Users { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<OrganizationExpansion>(b =>
+            {
+                b.HasKey(k => new { k.OrganizationId, k.SonId });
+            });
+            modelBuilder.Entity<PermissionExpansion>(b =>
+            {
+                b.HasKey(k => new { k.UserId, k.PermissionId, k.OrganizationId });
+            });
+            modelBuilder.Entity<Organizations>(b =>
+            {
+                b.HasKey(k => new { k.Id });
+            });
+            modelBuilder.Entity<OrganizationPar>(b =>
+            {
+                b.ToTable("organizationpar");
+                b.HasKey(x => x.Id);
+            });
+
             modelBuilder.Entity<ChargeInfo>(b =>
             {
                 b.ToTable("XYH_CH_CHARGEMANAGE");
                 b.HasKey(k => new { k.ID });
             });
             modelBuilder.Entity<CostInfo>(b => {
-                b.HasKey(k => new { k.ID });
+                b.HasKey(k => new { k.Id });
                 b.ToTable("XYH_CH_COST");
             });
             modelBuilder.Entity<ReceiptInfo>(b => {
-                b.HasKey(k => new { k.ID });
+                b.HasKey(k => new { k.Id });
                 b.ToTable("XYH_CH_RECEIPT");
             });
             modelBuilder.Entity<LimitInfo>(b => {
@@ -51,6 +80,15 @@ namespace XYHChargePlugin.Models
             modelBuilder.Entity<FileScopeInfo>(b => {
                 b.ToTable("XYH_CH_FILESCOPE");
                 b.HasKey(k => new { k.ReceiptID});
+            });
+
+            modelBuilder.Entity<HumanInfo>(b => {
+                b.ToTable("xyh_hu_humanmanage");
+                b.HasKey(k => new { k.ID });
+            });
+            modelBuilder.Entity<Users>(b =>
+            {
+                b.ToTable("identityuser");
             });
         }
 

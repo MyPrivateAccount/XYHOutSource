@@ -1,32 +1,31 @@
-﻿using ApplicationCore.Dto;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace XYHChargePlugin.Dto
 {
-    public class ChargeInfoResponse
+    public class ChargeInfoRequest
     {
+        
         public string ID { get; set; }
 
-
+        
         public string BranchId { get; set; }
 
-
+       
         public string ChargeNo { get; set; }
 
-
+        
         public int Seq { get; set; }
 
         public int Type { get; set; }
 
-
+       
         public string ReimburseDepartment { get; set; }
 
-
+       
         public string ReimburseUser { get; set; }
 
-
+       
         public string Payee { get; set; }
 
         public string Department { get; set; }
@@ -59,16 +58,9 @@ namespace XYHChargePlugin.Dto
         public DateTime? UpdateTime { get; set; }
 
 
-        public List<CostInfoResponse> FeeList { get; set; }
+        public List<CostInfoRequest> FeeList { get; set; }
 
-        public List<ReceiptInfoResponse> BillList { get; set; }
+        public List<ReceiptInfoRequest> BillList { get; set; }
 
-        public UserInfo CreateUserInfo { get; set; }
-
-        public string BranchName { get; set; }
-
-        public string ReimburseDepartmentName { get; set; }
-
-        public UserInfo ReimburseUserInfo { get; set; }
     }
 }

@@ -432,6 +432,24 @@ namespace XYHHumanPlugin.Controllers
             return nwf;
         }
 
+        [HttpGet("simpleSearch")]
+        [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
+        public async Task<PagingResponseMessage<HumanInfoResponse>> SimpleSearch(UserInfo User, string permissionId, string keyword, int pageSize, int pageIndex)
+        {
+            var r = new PagingResponseMessage<HumanInfoResponse>();
+            try
+            {
+                r = await _humanManage.SimpleSearch(User, permissionId, keyword, pageSize, pageIndex);
+            }
+            catch (Exception e)
+            {
+                r.Code = ResponseCodeDefines.ServiceError;
+                r.Message = "服务器错误：" + e.Message;
+                Logger.Error("error");
+            }
+            return r;
+        }
+
         #region Flow
         [HttpPost("audit/updatehumancallback")]
         [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
