@@ -39,7 +39,7 @@ class Station extends Component {
     }
 
     componentWillMount() {
-        this.props.dispatch(getDicParList([""]));
+        this.props.dispatch(getDicParList(["ORGNAZATION_TYPE"]));
     }
 
     onExpand = (expandedKeys) => {
@@ -82,16 +82,34 @@ class Station extends Component {
     //     this.setState({selectedKeys: [item.key], tempText: ""});
     // }
 
-    showModal = (item, e) => {
+    handleOk = () => {
+        this.state.tempModalItem.label = this.state.tempModalItem.name;
+        this.state.tempModalItem.organizationName = this.state.tempModalItem.name;
+        this.state.tempModalItem.isnew = false;
+        if (this.state.tempModalItem.isnew) {
+            this.state.tempModalItem.Original.organizationName = this.state.tempModalItem.name;
+            this.props.dispatch(addOrg(this.state.tempModalItem));
+        } else {
+            this.state.tempModalItem.Original.organizationName = this.state.tempModalItem.name;
+            this.props.dispatch(updateOrg(this.state.tempModalItem));
+        }
+
         this.setState({
-            tempModalItem: item,
-            showModal: true,
+            confirmLoading: false,
+            showModal: false,
+        });
+    }
+
+    handleCancel = () => {
+        this.setState({
+            showModal: false,
+            tempModalItem: null,
         });
     }
 
     edit(item, e) {
         e.stopPropagation();
-       this.setState({selectedKeys: [item.key], tempText: ""});
+        this.setState({selectedKeys: [item.key], tempText: "", tempModalItem: {...item, Original:{...item.Original}}, showModal: true,});
     }
 
     delete(item, e) {
@@ -152,19 +170,36 @@ class Station extends Component {
                         onOk={this.handleOk}
                         confirmLoading={this.state.confirmLoading}
                         onCancel={this.handleCancel}>
-                        <Input defaultValue={this.state.tempModalItem.name}></Input>
-                        <Select>
-                            {
-                                (self.props.departmentTypeLst && self.props.departmentTypeLst.length > 0) ?
-                                self.props.departmentTypeLst.map(
-                                    function (params) {
-                                        return <Option key={params.key} value={params.id}>{params.stationname}</Option>;
+                        <Row style={{ margin: '4px' }}>
+                            <Col span={3}>组织名：</Col>
+                            <Col span={12}><Input onChange={(v)=>{this.state.tempModalItem.name = v.target.value;this.forceUpdate();}} value={this.state.tempModalItem.name}></Input></Col>
+                        </Row>
+                        <Row style={{ margin: '4px' }}>
+                            <Col span={3} >组织类型：</Col>
+                            <Col span={12}> 
+                                <Select onChange={(v)=>{this.state.tempModalItem.Original.type = v;this.forceUpdate();}} 
+                                value={this.state.tempModalItem.Original?this.state.tempModalItem.Original.type:null} style={{width: '100%'}}>
+                                    {
+                                        (self.props.orgnazitionType && self.props.orgnazitionType.length > 0) ?
+                                        self.props.orgnazitionType.map(
+                                            function (params) {
+                                                return <Option key={params.key} value={params.value}>{params.key}</Option>;
+                                            }
+                                        ):null
                                     }
-                                ):null
-                            }
-                        </Select>
-                        <Input defaultValue={this.state.tempModalItem.Original.manager}></Input>
-                        <Input defaultValue={this.state.tempModalItem.Original.leaderManager}></Input>
+                                </Select>
+                            </Col>
+                        </Row>
+                        <Row style={{ margin: '4px' }}>
+                            <Col span={3}>主负责人：</Col>
+                            <Col span={12}><Input onChange={(v)=>{this.state.tempModalItem.Original.leaderManager = v.target.value;this.forceUpdate();}} 
+                            value={this.state.tempModalItem.Original?this.state.tempModalItem.Original.leaderManager:""}></Input></Col>
+                        </Row>
+                        <Row style={{ margin: '4px' }}>
+                            <Col span={3}>负责人：</Col>
+                            <Col span={12}><Input onChange={(v)=>{this.state.tempModalItem.Original.manager = v.target.value;this.forceUpdate();}} 
+                             value={this.state.tempModalItem.Original?this.state.tempModalItem.Original.manager:""}></Input></Col>
+                        </Row>
                 </Modal>
                 {/* <Table className="contentOrg" rowSelection={rowSelection} rowKey={record => record.key} dataSource={this.props.setDepartmentOrgTree} columns={this.ListColums} /> */}
                 <Tree 
@@ -185,6 +220,7 @@ class Station extends Component {
 
 function tableMapStateToProps(state) {
     return {
+        orgnazitionType: state.basicData.orgnazitionType,
         departmentTypeLst: state.basicData.departmentTypeLst,
         setDepartmentOrgTree: state.basicData.searchOrgTree,
     }
