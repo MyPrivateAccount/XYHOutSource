@@ -38,7 +38,11 @@ namespace XYHChargePlugin.Dto
 
         public decimal PaymentAmount { get; set; }
 
+        public DateTime? PaymentTime { get; set; }
+
         public bool IsBackup { get; set; }
+
+        public bool Backuped { get; set; }
 
         public string Memo { get; set; }
 
@@ -59,6 +63,11 @@ namespace XYHChargePlugin.Dto
 
         public DateTime? UpdateTime { get; set; }
 
+        public bool IsDeleted { get; set; }
+
+        public DateTime? DeleteTime { get; set; }
+
+        public String DeleteUser { get; set; }
 
         public List<CostInfoResponse> FeeList { get; set; }
 

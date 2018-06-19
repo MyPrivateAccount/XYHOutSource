@@ -27,6 +27,8 @@ namespace XYHChargePlugin.Dto
         public DateTime? CreateTime { get; set; }
 
         public UserInfo CreateUserInfo { get; set; }
+
+        public List<FileScopeResponse> FileScopes { get; set; }
     }
 
     //public class ReceiptInfoRequest

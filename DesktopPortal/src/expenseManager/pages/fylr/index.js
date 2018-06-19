@@ -5,8 +5,13 @@ import {AuthorUrl, basicDataServiceUrl} from '../../../constants/baseConfig'
 import ApiClient from '../../../utils/apiClient'
 import {getDicPars, getOrganizationTree} from '../../../utils/utils'
 import {getDicParList} from '../../../actions/actionCreators'
+// import FixedTable from '../../../components/FixedTable'
+import Layer, { LayerRouter } from '../../../components/Layer'
+import {Route } from 'react-router'
+import AddCharge from './AddCharge'
 import uuid from 'uuid'
 import moment from 'moment'
+import {chargeStatus} from './const'
 
 const FormItem = Form.Item;
 const ButtonGroup = Button.Group;
@@ -23,6 +28,7 @@ class FylrIndex extends Component{
     componentDidMount=()=>{
         this.props.getDicParList(['CHARGE_COST_TYPE']);
         this.getNodes();
+        
     }
 
     getNodes=async ()=>{
@@ -34,6 +40,10 @@ class FylrIndex extends Component{
         }else{
             notification.error(`获取报销门店失败:${((r||{}).data||{}).message||''}`);
         }
+    }
+
+    gotoDetail = (item, op)=>{
+        this.props.history.push(`${this.props.match.url}/chargeInfo`, {entity: item, op: op||'view'})
     }
 
     clickSearch=()=>{
@@ -79,7 +89,8 @@ class FylrIndex extends Component{
             type:1,
             createTime: new Date()
         }
-        this.props.history.push('/dd', {entity: newFee, op: 'add'})
+      
+        this.props.history.push(`${this.props.match.url}/chargeInfo`, {entity: newFee, op: 'add'})
     }
 
     render(){
@@ -90,7 +101,10 @@ class FylrIndex extends Component{
                 title: '报销单号',
                 dataIndex: 'chargeNo',
                 key: 'chargeNo',
-                width:'16rem'
+                width:'10rem',
+                render: (text, record)=>{
+                    return <a href="javascript:void();" title="点击查看详情" onClick={()=>this.gotoDetail(record)}>{text}</a>
+                }
             },
             {
                 title: '报销门店',
@@ -166,25 +180,41 @@ class FylrIndex extends Component{
                 title: '状态',
                 dataIndex: 'status',
                 key: 'status',
-                width:'5rem'
+                width:'5rem',
+                render:(text,record)=>{
+                    return chargeStatus[record.status]||''
+                }
             },
             {
                 title: '操作',
                 width:'15rem',
                 render: (text,record)=>{
+                 let btns = [];
+                 if(record.status === chargeStatus.UnSubmit){
+                     btns.push(<Button>作废</Button>)
+                 }
+                 if(record.status === chargeStatus.UnSubmit){
+                    btns.push(<Button onClick={()=>this.gotoDetail(record, 'edit')}>修改</Button>)
+                }
+                 if(record.status === chargeStatus.Submit){
+                    btns.push(<Button>确认</Button>)
+                 }
+                 if(record.status >= chargeStatus.Submit && record.isBackup && !record.backuped){
+                     btns.push(<Button>补发票</Button>)
+                 }
+                 if(record.status === chargeStatus.Confirm){
+                    btns.push(<Button>付款</Button>)
+                 }
                   return <span>
                     <ButtonGroup>
-                        <Button>作废</Button>
-                        <Button>确认</Button>
-                        <Button>补发票</Button>
-                        <Button>付款</Button>
+                        {btns}
                     </ButtonGroup>
                     
                   </span>
                 }
             },
         ]
-        return <div className="content-page">
+        return <Layer>
             <div style={{marginTop: '1.5rem'}}>
                 <Form>
                 <Row  className="form-row">
@@ -268,14 +298,17 @@ class FylrIndex extends Component{
                 <Button type="primary" onClick={this.addCharge}>录入报销单</Button>
             </div>
             <div className="page-fill">
-                <Table columns={columns} dataSource={this.state.list} 
+                <Table style={{width:'100%'}} columns={columns} dataSource={this.state.list} 
                     loading={this.state.loading}
                     rowKey="id"
                     pagination={this.state.pagination}
                     onChange={this.handleTableChange}
                     />
             </div>
-        </div>
+            <LayerRouter>
+                <Route path={`${this.props.match.url}/chargeInfo`} component={AddCharge}/>
+            </LayerRouter>
+        </Layer>
     }
 }
 

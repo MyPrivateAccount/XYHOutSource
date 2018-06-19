@@ -1,6 +1,7 @@
 ﻿
 
 using System;
+using System.Collections.Generic;
 
 namespace XYHChargePlugin.Dto
 {
@@ -24,6 +25,8 @@ namespace XYHChargePlugin.Dto
         public string CreateUser { get; set; }
 
         public DateTime? CreateTime { get; set; }
+
+        public List<FileScopeRequest> FileScopes { get; set; }
 
         
     }

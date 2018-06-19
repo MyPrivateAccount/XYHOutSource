@@ -55,6 +55,26 @@ namespace XYHChargePlugin.Controllers
             return r;
         }
 
+        [HttpGet("{id}")]
+        [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
+        public async Task<ResponseMessage<ChargeInfoResponse>> Get(UserInfo User, [FromRoute]string id)
+        {
+            var r = new ResponseMessage<ChargeInfoResponse>();
+
+            try
+            {
+                r.Extension = await _chargeManager.GetDetail(User, id);
+            }
+            catch (Exception e)
+            {
+                r.Code = ResponseCodeDefines.ServiceError;
+                r.Message = "服务器错误：" + e.Message;
+                Logger.Error("获取报销单详情失败：\r\n{0}", e.ToString());
+            }
+            return r;
+        }
+
+
         [HttpPost("search")]
         [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
         public async Task<PagingResponseMessage<ChargeInfoResponse>> Search(UserInfo User, [FromBody]ChargeSearchRequest request)

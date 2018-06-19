@@ -130,7 +130,7 @@ namespace XYHHumanPlugin.Stores
                 throw new ArgumentNullException(nameof(scope));
             }
 
-            scope.ReceiptID = strid;
+            scope.ReceiptId = strid;
             
 
             Context.Add(scope);

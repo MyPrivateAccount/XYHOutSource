@@ -48,9 +48,11 @@ namespace XYHChargePlugin.Models
 
         public decimal PaymentAmount { get; set; }
 
+        public DateTime? PaymentTime { get; set; }
+
         public bool IsBackup { get; set; }
 
-
+        public bool Backuped { get; set; }
 
 
         [MaxLength(255)]
@@ -74,6 +76,12 @@ namespace XYHChargePlugin.Models
         public string UpdateUser { get; set; }
 
         public DateTime? UpdateTime { get; set; }
+
+        public bool IsDeleted { get; set; }
+
+        public DateTime? DeleteTime { get; set; }
+
+        public String DeleteUser { get; set; }
 
         [NotMapped]
         public Organizations BranchInfo { get; set; }

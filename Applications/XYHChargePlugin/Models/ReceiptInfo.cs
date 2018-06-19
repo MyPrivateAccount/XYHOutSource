@@ -31,5 +31,8 @@ namespace XYHChargePlugin.Models
 
         [NotMapped]
         public SimpleUser CreateUserInfo { get; set; }
+
+        [NotMapped]
+        public List<FileScopeInfo> FileScopes { get; set; }
     }
 }
