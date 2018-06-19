@@ -513,7 +513,7 @@ export function* deleteOrgbyid(state) {
     let huResult = { isOk: false, msg: '删除组织失败!', data:{code:0}};
 
     try {
-        //huResult = yield call(ApiClient.post, url);//应该是delete
+        huResult = yield call(ApiClient.post, url, "", "", "DELETE");//应该是delete
         if (huResult.data.code == 0) {
             huResult.data.message = '删除组织成功';
 
@@ -541,7 +541,7 @@ export function* addOrg(state) {
     let huResult = { isOk: false, msg: '添加组织失败!', data:{code:0}};
 
     try {
-        //huResult = yield call(ApiClient.post, url, state.payload.Original);
+        huResult = yield call(ApiClient.post, url, state.payload.Original);
         if (huResult.data.code == 0) {
             huResult.data.message = '添加组织成功';
 
@@ -569,7 +569,7 @@ export function* updateOrg(state) {
     let huResult = { isOk: false, msg: '更新组织失败!', data:{code:0}};
 
     try {
-        //huResult = yield call(ApiClient.post, url, state.payload.Original);
+        huResult = yield call(ApiClient.post, url, state.payload.Original);
         if (huResult.data.code == 0) {
             huResult.data.message = '更新组织成功';
 
