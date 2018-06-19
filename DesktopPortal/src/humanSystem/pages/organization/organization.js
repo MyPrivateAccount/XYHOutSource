@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import { deleteOrgbyId ,upaddOrg, deleteMemOrgbyId, addOrg, updateOrg} from '../../actions/actionCreator';
 import React, { Component } from 'react';
-import {Table, Input, Form, Select, Button, Row, Col, Tree} from 'antd';
+import {Table, Input, Form, Select, Button, Row, Col, Tree, Modal} from 'antd';
 import { NewGuid } from '../../../utils/appUtils';
 import './org.less';
 
@@ -32,6 +32,9 @@ class Station extends Component {
             checkedKeys: [],
             selectedKeys: [],
             tempText: "",
+            tempModalItem: {},
+            showModal: false,
+            confirmLoading: false,
         };
     }
 
@@ -53,38 +56,41 @@ class Station extends Component {
         this.setState({ selectedKeys });
     }
 
+    // save(item, e) {
+    //     item.name = this.state.tempText;
+    //     item.label = this.state.tempText;
+    //     item.organizationName = this.state.tempText;
+    //     if (item.isnew) {
+    //         item.Original = {id:item.key,organizationName:item.name,type:"Group",sort:0,parentId:item.parentId};
+    //         this.props.dispatch(addOrg(item));
+    //     } else {
+    //         item.Original.organizationName = this.state.tempText;
+    //         this.props.dispatch(updateOrg(item));
+    //     }
+
+    //     item.isnew = false;
+    //     e.stopPropagation();
+    //     this.setState({selectedKeys: [item.key], tempText: ""});
+    // }
+
+    // cancle(item, e) {
+    //     if (item.isnew) {
+    //         this.props.dispatch(deleteMemOrgbyId(item.key));    
+    //     }
+    //     e.stopPropagation();
+    //     this.setState({selectedKeys: [item.key], tempText: ""});
+    // }
+
+    showModal = (item, e) => {
+        this.setState({
+            tempModalItem: item,
+            showModal: true,
+        });
+    }
+
     edit(item, e) {
-        item.editable = true;
         e.stopPropagation();
        this.setState({selectedKeys: [item.key], tempText: ""});
-    }
-
-    save(item, e) {
-        item.editable = false;
-
-        item.name = this.state.tempText;
-        item.label = this.state.tempText;
-        item.organizationName = this.state.tempText;
-        if (item.isnew) {
-            item.Original = {id:item.key,organizationName:item.name,type:"Group",sort:0,parentId:item.parentId};
-            this.props.dispatch(addOrg(item));
-        } else {
-            item.Original.organizationName = this.state.tempText;
-            this.props.dispatch(updateOrg(item));
-        }
-
-        item.isnew = false;
-        e.stopPropagation();
-        this.setState({selectedKeys: [item.key], tempText: ""});
-    }
-
-    cancle(item, e) {
-        if (item.isnew) {
-            this.props.dispatch(deleteMemOrgbyId(item.key));    
-        }
-        item.editable = false;
-        e.stopPropagation();
-        this.setState({selectedKeys: [item.key], tempText: ""});
     }
 
     delete(item, e) {
@@ -95,7 +101,7 @@ class Station extends Component {
 
     addsub(item, e) {
         let guid = NewGuid();
-        this.props.dispatch(upaddOrg({key: guid, value: guid, children:[], name:"", label:"", id:guid, organizationName:"", parentId:item.key,editable:true,isnew:true}));
+        this.props.dispatch(upaddOrg({key: guid, value: guid, children:[], name:"", label:"", id:guid, organizationName:"", parentId:item.key, isnew:true}));
         e.stopPropagation();
         this.setState({selectedKeys: [guid], expandedKeys:[item.key, ...this.state.expandedKeys], tempText: ""});
     }
@@ -110,18 +116,9 @@ class Station extends Component {
             if (item.children) {
                 const nodetitle = (
                 <div>
-                    {item.editable
-                        ?
-                        <Input style={{ maxHeight: '18px' ,maxWidth:'56px'}} defaultValue={item.name} onChange={(e) => self.onchange(item, e)} />
-                        :<a>{item.name}&nbsp;&nbsp;</a>}
+                    <a>{item.name}&nbsp;&nbsp;</a>
                     {
-                        (item.key === self.state.selectedKeys[0]||item.editable)?
-                        item.editable?
-                        <span>
-                            <a onClick={(e) =>self.save(item, e)}>保存 </a>
-                            <a onClick={(e) =>self.cancle(item, e)}> 取消</a>
-                        </span>
-                        : 
+                        (item.key === self.state.selectedKeys[0])?
                         <span>
                             <a onClick={(e) =>self.edit(item, e)}>编辑 </a> 
                             <a onClick={(e) =>self.delete(item, e)}> 删除</a> 
@@ -130,7 +127,6 @@ class Station extends Component {
                         :null
                     }
                 </div>);
-
                 return (
                     <TreeNode title={nodetitle} key={item.key} dataRef={item}>
                         {this.renderTreeNodes(item.children)}
@@ -149,6 +145,25 @@ class Station extends Component {
                         <div>组织架构:</div>
                     </Col>
                 </Row>
+                <Modal title="编辑"
+                        visible={this.state.showModal}
+                        onOk={this.handleOk}
+                        confirmLoading={this.state.confirmLoading}
+                        onCancel={this.handleCancel}>
+                        <Input></Input>
+                        <Select>
+                            {
+                                (self.props.stationList && self.props.stationList.length > 0) ?
+                                self.props.stationList.map(
+                                    function (params) {
+                                        return <Option key={params.key} value={params.id}>{params.stationname}</Option>;
+                                    }
+                                ):null
+                            }
+                        </Select>
+                        <Input></Input>
+                        <Input></Input>
+                </Modal>
                 {/* <Table className="contentOrg" rowSelection={rowSelection} rowKey={record => record.key} dataSource={this.props.setDepartmentOrgTree} columns={this.ListColums} /> */}
                 <Tree 
                     onExpand={this.onExpand}

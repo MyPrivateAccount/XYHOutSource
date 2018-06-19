@@ -149,7 +149,6 @@ reducerMap[actionTypes.DIC_GET_ALL_ORG_LIST_COMPLETE] = function(state, action) 
         orgNode.id = node.id;
         orgNode.organizationName = node.organizationName;
         orgNode.parentId = node.parentId;
-        orgNode.editable = false;//为了组织架构专门加的属性
 
         formatNodeList.push(orgNode);
     }
