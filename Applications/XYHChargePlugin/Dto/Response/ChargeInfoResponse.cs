@@ -12,6 +12,7 @@ namespace XYHChargePlugin.Dto
 
         public string BranchId { get; set; }
 
+        public string BranchPrefix { get; set; }
 
         public string ChargeNo { get; set; }
 

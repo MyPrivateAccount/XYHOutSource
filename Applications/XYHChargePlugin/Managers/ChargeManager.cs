@@ -88,8 +88,10 @@ namespace XYHChargePlugin.Managers
                     if (String.IsNullOrWhiteSpace(request.ChargeNo))
                     {
                         string prefix = await _orgUtils.GetBranchPrefix(request.BranchId, "XYH");
-                        int seq = await _Store.GetChargeNo(request.BranchId, DateTime.Now, request.Type);
+                        request.BranchPrefix = prefix;
+                        int seq = await _Store.GetChargeNo(request.BranchId,prefix, DateTime.Now, request.Type);
                         request.Seq = seq;
+                        
                         request.ChargeNo = String.Format("FY{0}{1}{2:D5}", prefix, DateTime.Now.ToString("yyyyMMdd"), seq);
                     }
                     var ci = _mapper.Map<ChargeInfo>(request);

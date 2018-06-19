@@ -17,6 +17,9 @@ namespace XYHChargePlugin.Models
         public string BranchId { get; set; }
 
         [MaxLength(64)]
+        public string BranchPrefix { get; set; }
+
+        [MaxLength(64)]
         [ConcurrencyCheck()]
         public string ChargeNo { get; set; }
 

@@ -12,7 +12,7 @@ namespace XYHChargePlugin.Stores
     {
         IQueryable<ChargeInfo> SimpleQuery { get; }
 
-        Task<int> GetChargeNo(string branchId, DateTime time, int type);
+        Task<int> GetChargeNo(string branchId,string prefix, DateTime time, int type);
 
         Task Save(SimpleUser user, ChargeInfo chargeInfo);
     }

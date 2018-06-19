@@ -103,7 +103,7 @@ namespace XYHChargePlugin.Stores
             }
         }
 
-        public async Task<int> GetChargeNo(string branchId, DateTime time, int type)
+        public async Task<int> GetChargeNo(string branchId, string prefix, DateTime time, int type)
         {
             
             DateTime dt = time.Date;
@@ -112,7 +112,7 @@ namespace XYHChargePlugin.Stores
 
 
             var q = from c in Context.ChargeInfos.AsNoTracking()
-                    where c.BranchId == branchId && c.CreateTime >= dt && c.CreateTime < nextDt && c.Type == type
+                    where c.BranchPrefix == prefix && c.CreateTime >= dt && c.CreateTime < nextDt && c.Type == type
                     orderby c.Seq descending
                     select c.Seq;
 
