@@ -1,9 +1,11 @@
 import { connect } from 'react-redux';
-import { createStation, getOrgList, getDicParList, setStation, deleteStation, getcreateStation, setSearchLoadingVisible } from '../../actions/actionCreator';
-import React, { Component } from 'react'
-import {Table, Input, Form, Select, Button, Row, Col, Spin} from 'antd'
-//import './station.less';
+import { deleteOrgbyId ,upaddOrg, deleteMemOrgbyId, addOrg, updateOrg, getDicParList} from '../../actions/actionCreator';
+import React, { Component } from 'react';
+import {Table, Input, Form, Select, Button, Row, Col, Tree, Modal} from 'antd';
+import { NewGuid } from '../../../utils/appUtils';
+import './org.less';
 
+const TreeNode = Tree.TreeNode;
 const Option = Select.Option;
 const styles = {
     conditionRow: {
@@ -19,184 +21,198 @@ const styles = {
     }
 }
 
-const EditableCell = ({ editable, value, onChange }) => (
-  <div>
-    {editable
-      ? <Input style={{ margin: '-5px 0' }} value={value} onChange={e => onChange(e.target.value)} />
-      : value
-    }
-  </div>
-);
-
-const rowSelection = {
-    onChange: (selectedRowKeys, selectedRows) => {
-      console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-    },
-    getCheckboxProps: record => ({
-      disabled: record.name === 'Disabled User', // Column configuration not to be checked
-      name: record.name,
-    }),
-};
-
-
 class Station extends Component {
     constructor(pros) {
         super(pros);
 
-        this.state = {department: ""};
-        let self = this;
-        this.ListColums = [
-            {
-                title: '部门名称',
-                dataIndex: 'stationname',
-                key: 'stationname',
-                width: '25%',
-                render: (text, record) => this.renderColumns(text, record, 'stationname'),
-            },
-            {
-                title: '操作',
-                dataIndex: 'operation',
-                render: (text, record) => {
-                const { editable } = record;
-                return (
-                  <div className="editable-row-operations">
-                    {
-                      editable ?
-                        <span>
-                          <a onClick={() => this.save(record.key)}>保存</a>
-                          <a onClick={()=>this.cancel(record.key)}>取消</a>
-                        </span>
-                        : <span> <a onClick={() => this.edit(record.key)}>编辑</a> <a onClick={() => this.delete(record.key, record.stationname)}>删除</a> </span>
-                    }
-                  </div>
-                );
-              },
-            },
-        ]
-
-        this.cacheData = this.props.stationList.map(item => ({ ...item }));
-    }
-    
-    renderColumns(text, record, column) {
-        return (
-            <EditableCell
-            editable={record.editable}
-            value={text}
-            onChange={value => this.handleChange(value, record.key, column)}
-            />
-        );
-    }
-
-    selectChange(key, v) {
-        const newData = [...this.props.stationList];
-        const target = newData.filter(item => key === item.key)[0];
-        if (target) {
-            target.positionType = v;
-        }
-    }
-
-    handleChange(value, key, column) {
-        const newData = [...this.props.stationList];
-        const target = newData.filter(item => key === item.key)[0];
-        if (target) {
-            target[column] = value;
-            this.forceUpdate();
-        }
-    }
-
-    edit(key) {
-        const newData = [...this.props.stationList];
-        const target = newData.filter(item => key === item.key)[0];
-        if (target) {
-            target.editable = true;
-            this.forceUpdate();
-        }
-    }
-
-    delete(key, name) {
-        this.props.stationList.splice(this.props.stationList.findIndex(item => key === item.key), 1);
-        this.forceUpdate();
-        this.props.dispatch(deleteStation({positionName: name, parentID:this.state.department}));
-    }
-
-    save(key) {
-        const newData = [...this.props.stationList];
-        const target = newData.filter(item => key === item.key)[0];
-        if (target) {
-            delete target.editable;
-            this.forceUpdate();
-            this.cacheData = newData.map(item => ({ ...item }));
-            this.props.dispatch(setStation({id:target.id,positionName: target.stationname, positionType: target.positionType, parentID:this.state.department}));
-        }
-    }
-
-    cancel(key) {
-        const newData = [...this.props.stationList];
-        const target = newData.filter(item => key === item.key)[0];
-        if (target) {
-            if (target.isnew) {
-                this.props.stationList.splice(this.props.stationList.findIndex(item => key === item.key), 1);
-                this.forceUpdate();
-                return;
-            }
-            Object.assign(target, this.cacheData.filter(item => key === item.key)[0]);
-            delete target.editable;
-            this.forceUpdate();
-        }
+        this.state = {
+            department: "",
+            expandedKeys: [],
+            autoExpandParent: true,
+            checkedKeys: [],
+            selectedKeys: [],
+            tempText: "",
+            tempModalItem: {},
+            showModal: false,
+            confirmLoading: false,
+        };
     }
 
     componentWillMount() {
-        this.props.dispatch(getDicParList(["POSITION_TYPE"]));
-        this.props.dispatch(setSearchLoadingVisible(false));
+        this.props.dispatch(getDicParList(["ORGNAZATION_TYPE"]));
     }
 
-    hasErrors(fieldsError) {
-        return !Object.keys(fieldsError).some(field => fieldsError[field]);
+    onExpand = (expandedKeys) => {
+        this.setState({
+            expandedKeys,
+            autoExpandParent: false,
+          });
     }
 
-    handleSubmit = (e) => {
-        e.preventDefault();
-        this.props.form.validateFields((err, values) => {
-            if (!err) {
-            }
+    onCheck = (checkedKeys) => {
+        this.setState({ checkedKeys });
+    }
+
+    onSelect = (selectedKeys, info) => {
+        this.setState({ selectedKeys });
+    }
+
+    // save(item, e) {
+    //     item.name = this.state.tempText;
+    //     item.label = this.state.tempText;
+    //     item.organizationName = this.state.tempText;
+    //     if (item.isnew) {
+    //         item.Original = {id:item.key,organizationName:item.name,type:"Group",sort:0,parentId:item.parentId};
+    //         this.props.dispatch(addOrg(item));
+    //     } else {
+    //         item.Original.organizationName = this.state.tempText;
+    //         this.props.dispatch(updateOrg(item));
+    //     }
+
+    //     item.isnew = false;
+    //     e.stopPropagation();
+    //     this.setState({selectedKeys: [item.key], tempText: ""});
+    // }
+
+    // cancle(item, e) {
+    //     if (item.isnew) {
+    //         this.props.dispatch(deleteMemOrgbyId(item.key));    
+    //     }
+    //     e.stopPropagation();
+    //     this.setState({selectedKeys: [item.key], tempText: ""});
+    // }
+
+    handleOk = () => {
+        this.state.tempModalItem.label = this.state.tempModalItem.name;
+        this.state.tempModalItem.organizationName = this.state.tempModalItem.name;
+        this.state.tempModalItem.isnew = false;
+        if (this.state.tempModalItem.isnew) {
+            this.state.tempModalItem.Original.organizationName = this.state.tempModalItem.name;
+            this.props.dispatch(addOrg(this.state.tempModalItem));
+        } else {
+            this.state.tempModalItem.Original.organizationName = this.state.tempModalItem.name;
+            this.props.dispatch(updateOrg(this.state.tempModalItem));
+        }
+
+        this.setState({
+            confirmLoading: false,
+            showModal: false,
         });
     }
 
-    handleDepartmentChange = (e) => {
-        if (!e) {
-            this.props.dispatch(setSearchLoadingVisible(true));
-            this.props.dispatch(getcreateStation(this.state.department));
-        }
+    handleCancel = () => {
+        this.setState({
+            showModal: false,
+            tempModalItem: null,
+        });
     }
 
-    handleChooseDepartmentChange = (e) => {
-        this.state.department = e[e.length-1];
+    edit(item, e) {
+        e.stopPropagation();
+        this.setState({selectedKeys: [item.key], tempText: "", tempModalItem: {...item, Original:{...item.Original}}, showModal: true,});
     }
 
-    handleSearchBoxToggle1 = (e) => {
-        let nkey = 1;
-        if (this.props.stationList.length > 0) {
-            nkey = +this.props.stationList[this.props.stationList.length-1].key+2;
-        }
-        
-        this.props.stationList.push({key: nkey+'', stationname: "test", positionType:"", editable: true, isnew: true});
-        this.forceUpdate();
+    delete(item, e) {
+        this.props.dispatch(deleteOrgbyId(item.key));
+        e.stopPropagation();
+        this.setState({selectedKeys: [item.key], tempText: ""});
+    }
+
+    addsub(item, e) {
+        let guid = NewGuid();
+        this.props.dispatch(upaddOrg({key: guid, value: guid, children:[], name:"", label:"", id:guid, organizationName:"", parentId:item.key, isnew:true}));
+        e.stopPropagation();
+        this.setState({selectedKeys: [guid], expandedKeys:[item.key, ...this.state.expandedKeys], tempText: ""});
+    }
+
+    onchange(item, e) {
+        this.state.tempText = e.target.value;
+    }
+
+    renderTreeNodes = (data) => {
+        let self = this;
+        return data.map((item) => {
+            if (item.children) {
+                const nodetitle = (
+                <div>
+                    <a>{item.name}&nbsp;&nbsp;</a>
+                    {
+                        (item.key === self.state.selectedKeys[0])?
+                        <span>
+                            <a onClick={(e) =>self.edit(item, e)}>编辑 </a> 
+                            <a onClick={(e) =>self.delete(item, e)}> 删除</a> 
+                            <a onClick={(e) =>self.addsub(item, e)}> 新増</a> 
+                        </span>
+                        :null
+                    }
+                </div>);
+                return (
+                    <TreeNode title={nodetitle} key={item.key} dataRef={item}>
+                        {this.renderTreeNodes(item.children)}
+                    </TreeNode>
+                );
+            }
+            return <TreeNode {...item} />;
+        });
     }
 
     render() {
+        let self = this;
         return (
-            <div style={{display: "block"}}>
-                <Row className="btnBlock">
-                    <Col span={6}>
-                        <Button type="primary" onClick={this.handleSearchBoxToggle1}>新增</Button>
-                        <Button type="primary" onClick={this.handleSearchBoxToggle1}>修改</Button>
-                        <Button type="primary" onClick={this.handleSearchBoxToggle1}>调整</Button>
-                        <Button type="primary" onClick={this.handleSearchBoxToggle1}>删除</Button>
+            <div className="orgBlock">
+                <Row>
+                    <Col >
+                        <div>组织架构:</div>
                     </Col>
                 </Row>
-                <Spin spinning={this.props.showLoading} delay={200} tip="查询中...">
-                    <Table rowSelection={rowSelection} rowKey={record => record.key} dataSource={this.props.stationList} columns={this.ListColums} onChange={this.handleTableChange} bordered />
-                </Spin>
+                <Modal title="编辑"
+                        visible={this.state.showModal}
+                        onOk={this.handleOk}
+                        confirmLoading={this.state.confirmLoading}
+                        onCancel={this.handleCancel}>
+                        <Row style={{ margin: '4px' }}>
+                            <Col span={3}>组织名：</Col>
+                            <Col span={12}><Input onChange={(v)=>{this.state.tempModalItem.name = v.target.value;this.forceUpdate();}} value={this.state.tempModalItem.name}></Input></Col>
+                        </Row>
+                        <Row style={{ margin: '4px' }}>
+                            <Col span={3} >组织类型：</Col>
+                            <Col span={12}> 
+                                <Select onChange={(v)=>{this.state.tempModalItem.Original.type = v;this.forceUpdate();}} 
+                                value={this.state.tempModalItem.Original?this.state.tempModalItem.Original.type:null} style={{width: '100%'}}>
+                                    {
+                                        (self.props.orgnazitionType && self.props.orgnazitionType.length > 0) ?
+                                        self.props.orgnazitionType.map(
+                                            function (params) {
+                                                return <Option key={params.key} value={params.value}>{params.key}</Option>;
+                                            }
+                                        ):null
+                                    }
+                                </Select>
+                            </Col>
+                        </Row>
+                        <Row style={{ margin: '4px' }}>
+                            <Col span={3}>主负责人：</Col>
+                            <Col span={12}><Input onChange={(v)=>{this.state.tempModalItem.Original.leaderManager = v.target.value;this.forceUpdate();}} 
+                            value={this.state.tempModalItem.Original?this.state.tempModalItem.Original.leaderManager:""}></Input></Col>
+                        </Row>
+                        <Row style={{ margin: '4px' }}>
+                            <Col span={3}>负责人：</Col>
+                            <Col span={12}><Input onChange={(v)=>{this.state.tempModalItem.Original.manager = v.target.value;this.forceUpdate();}} 
+                             value={this.state.tempModalItem.Original?this.state.tempModalItem.Original.manager:""}></Input></Col>
+                        </Row>
+                </Modal>
+                {/* <Table className="contentOrg" rowSelection={rowSelection} rowKey={record => record.key} dataSource={this.props.setDepartmentOrgTree} columns={this.ListColums} /> */}
+                <Tree 
+                    onExpand={this.onExpand}
+                    expandedKeys={this.state.expandedKeys}
+                    autoExpandParent={this.state.autoExpandParent}
+                    onCheck={this.onCheck}
+                    checkedKeys={this.state.checkedKeys}
+                    onSelect={this.onSelect}
+                    selectedKeys={this.state.selectedKeys}
+                    >
+                    {this.renderTreeNodes(this.props.setDepartmentOrgTree)}
+                </Tree>
             </div>
         );
     }
@@ -204,6 +220,9 @@ class Station extends Component {
 
 function tableMapStateToProps(state) {
     return {
+        orgnazitionType: state.basicData.orgnazitionType,
+        departmentTypeLst: state.basicData.departmentTypeLst,
+        setDepartmentOrgTree: state.basicData.searchOrgTree,
     }
 }
 

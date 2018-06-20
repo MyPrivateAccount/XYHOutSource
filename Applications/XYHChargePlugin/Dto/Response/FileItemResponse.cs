@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace XYHChargePlugin.Dto.Response
+namespace XYHChargePlugin.Dto
 {
     public class FileItemResponse
     {

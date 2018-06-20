@@ -508,6 +508,90 @@ export function* exportHumanForm(state) {
     }
 }
 
+export function* deleteOrgbyid(state) {
+    let url = WebApiConfig.auth.deleteOrg+state.payload;
+    let huResult = { isOk: false, msg: '删除组织失败!', data:{code:0}};
+
+    try {
+        huResult = yield call(ApiClient.post, url, "", "", "DELETE");//应该是delete
+        if (huResult.data.code == 0) {
+            huResult.data.message = '删除组织成功';
+
+            yield put({ type: actionUtils.getActionType(actionTypes.UPDATE_DELETE_ORGBYID), payload: state.payload });
+            notification.success({
+                message: huResult.data.message,
+                duration: 3
+            });
+            return;
+        }
+    } catch (e) {
+        huResult.data.message = "删除组织接口调用异常!";
+    }
+    
+    if (huResult.data.code != 0) {
+        notification.error({
+            message: huResult.data.message,
+            duration: 3
+        });
+    }
+}
+
+export function* addOrg(state) {
+    let url = WebApiConfig.auth.addupdateOrg;
+    let huResult = { isOk: false, msg: '添加组织失败!', data:{code:0}};
+
+    try {
+        huResult = yield call(ApiClient.post, url, state.payload.Original);
+        if (huResult.data.code == 0) {
+            huResult.data.message = '添加组织成功';
+
+            yield put({ type: actionUtils.getActionType(actionTypes.UPDATE_UPDATE_ORG), payload: state.payload });
+            notification.success({
+                message: huResult.data.message,
+                duration: 3
+            });
+            return;
+        }
+    } catch (e) {
+        huResult.data.message = "添加组织接口调用异常!";
+    }
+    
+    if (huResult.data.code != 0) {
+        notification.error({
+            message: huResult.data.message,
+            duration: 3
+        });
+    }
+}
+
+export function* updateOrg(state) {
+    let url = WebApiConfig.auth.addupdateOrg+state.payload.id;
+    let huResult = { isOk: false, msg: '更新组织失败!', data:{code:0}};
+
+    try {
+        huResult = yield call(ApiClient.post, url, state.payload.Original);
+        if (huResult.data.code == 0) {
+            huResult.data.message = '更新组织成功';
+
+            yield put({ type: actionUtils.getActionType(actionTypes.UPDATE_UPDATE_ORG), payload: state.payload });
+            notification.success({
+                message: huResult.data.message,
+                duration: 3
+            });
+            return;
+        }
+    } catch (e) {
+        huResult.data.message = "更新组织接口调用异常!";
+    }
+    
+    if (huResult.data.code != 0) {
+        notification.error({
+            message: huResult.data.message,
+            duration: 3
+        });
+    }
+}
+
 export default function* watchDicAllAsync() {
     yield takeLatest(actionUtils.getActionType(actionTypes.POST_HUMANINFO), postHumanInfoAsync);
     yield takeLatest(actionUtils.getActionType(actionTypes.GET_HUMANINFONUMBER), getWorkNumber);
@@ -528,4 +612,8 @@ export default function* watchDicAllAsync() {
     //导表
     yield takeLatest(actionUtils.getActionType(actionTypes.EXPORT_MONTHFORM), exportMonthForm);
     yield takeLatest(actionUtils.getActionType(actionTypes.EXPORT_HUMANFORM), exportHumanForm);
+    //组织
+    yield takeLatest(actionUtils.getActionType(actionTypes.DELETE_ORGBYID), deleteOrgbyid);
+    yield takeLatest(actionUtils.getActionType(actionTypes.ADD_ORG), addOrg);
+    yield takeLatest(actionUtils.getActionType(actionTypes.UPDATE_ORG), updateOrg);
 }

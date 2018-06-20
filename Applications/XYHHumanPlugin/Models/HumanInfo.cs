@@ -1,6 +1,8 @@
-﻿using System;
+﻿using ApplicationCore.Models;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
 namespace XYHHumanPlugin.Models
@@ -45,5 +47,12 @@ namespace XYHHumanPlugin.Models
         public int? AdministrativeBack { get; set; }
         public int? PortBack { get; set; }
         public int? OtherBack { get; set; }
+
+        [NotMapped]
+        public Organizations Organizations { get; set; }
+
+        [NotMapped]
+        public OrganizationExpansion OrganizationExpansion { get; set; }
+
     }
 }

@@ -17,6 +17,7 @@ using SocialInsuranceRequest = XYHHumanPlugin.Dto.Response.SocialInsuranceRespon
 using LeaveInfoRequest = XYHHumanPlugin.Dto.Response.LeaveInfoResponse;
 using ChangeInfoRequest = XYHHumanPlugin.Dto.Response.ChangeInfoResponse;
 using ApplicationCore;
+using Microsoft.EntityFrameworkCore;
 
 namespace XYHHumanPlugin.Managers
 {
@@ -229,6 +230,11 @@ namespace XYHHumanPlugin.Managers
                 sql += connectstr + @"a.`ID`!=''";
                 connectstr = " and ";
             }
+            else if (condition?.KeyWord == null)
+            {
+                sql += connectstr + @"a.`ID`!=''";
+                connectstr = " and ";
+            }
 
             if (condition?.HumanType > 0)//0不限 1未入职 2在职 3离职 4黑名单
             {
@@ -361,13 +367,52 @@ namespace XYHHumanPlugin.Managers
                 List<HumanInfo> query = new List<HumanInfo>();
                 var sqlinfo = _Store.DapperSelect<HumanInfo>(sql).ToList();
 
-                if (!string.IsNullOrEmpty(condition?.Organizate) && condition.LstChildren.Count > 0)
+                if (!string.IsNullOrEmpty(condition?.Organizate))
                 {
-                    foreach (var item in sqlinfo)
+                    if (condition.LstChildren != null && condition.LstChildren.Count > 0)
                     {
-                        if (condition.LstChildren.Contains(item.DepartmentId))
+                        foreach (var item in sqlinfo)
                         {
-                            query.Add(item);
+                            if (condition.LstChildren.Contains(item.DepartmentId))
+                            {
+                                query.Add(item);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        List<string> qtlst = new List<string>() { condition?.Organizate };
+                        int npos = 0;
+
+                        var orglst = await _Store.GetAllOrganization();
+                        string orgparent = condition?.Organizate;
+
+                        while (true)
+                        {
+                            foreach (var item in orglst)
+                            {
+                                if (item.ParentId == orgparent)
+                                {
+                                    qtlst.Add(item.Id);
+                                }
+                            }
+
+                            if (npos < qtlst.Count -1)
+                            {
+                                orgparent = qtlst[++npos];
+                            }
+                            else if (npos >= qtlst.Count-1)
+                            {
+                                break;
+                            }
+                        }
+
+                        foreach (var item in sqlinfo)
+                        {
+                            if (qtlst.Contains(item.DepartmentId))
+                            {
+                                query.Add(item);
+                            }
                         }
                     }
                 }
@@ -416,5 +461,52 @@ namespace XYHHumanPlugin.Managers
             return Response;
         }
         #endregion
+
+        public virtual async Task<PagingResponseMessage<HumanInfoResponse>> SimpleSearch(UserInfo user, string permissionId, string keyword, int pageSize, int pageIndex)
+        {
+            PagingResponseMessage<HumanInfoResponse> r = new PagingResponseMessage<HumanInfRequest>();
+
+            var orgIds = await _permissionExpansionManager.GetOrganizationOfPermission(user.Id, permissionId);
+            var query = _Store.SimpleQuery;
+            query = query.Where(hr => orgIds.Contains(hr.DepartmentId));
+
+            if (!String.IsNullOrWhiteSpace(keyword))
+            {
+                query = query.Where(hr => ( hr.Name.Contains(keyword) || hr.UserID.Contains(keyword) || hr.ID==keyword ));
+            }
+            if(pageSize>0 && pageIndex > 0)
+            {
+                r.TotalCount = await query.CountAsync();
+                r.PageIndex = pageIndex;
+                r.PageSize = pageSize;
+                query = query.Skip((pageIndex - 1) * pageSize).Take(pageSize);
+                
+            }
+            var ul = await query.ToListAsync();
+            r.Extension = new List<HumanInfRequest>();
+            ul.ForEach(u =>
+            {
+                var u2 = _mapper.Map<HumanInfoResponse>(u);
+                if (u.OrganizationExpansion != null && !String.IsNullOrEmpty(u.OrganizationExpansion.FullName))
+                {
+                    u2.OrganizationFullName = u.OrganizationExpansion.FullName;
+                }else if (u.Organizations != null)
+                {
+                    u2.OrganizationFullName = u.Organizations.OrganizationName;
+                }
+                r.Extension.Add(u2);
+            });
+
+            if (r.TotalCount == 0)
+            {
+                r.TotalCount = r.Extension.Count;
+            }
+
+            return r;
+
+
+
+
+        }
     }
 }

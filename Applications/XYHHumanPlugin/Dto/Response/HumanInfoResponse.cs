@@ -32,6 +32,8 @@ namespace XYHHumanPlugin.Dto.Response
         public int? AdministrativeBack { get; set; }
         public int? PortBack { get; set; }
         public int? OtherBack { get; set; }
+
+        public string OrganizationFullName { get; set; }
     }
 
     public class HumanInfoFormResponse

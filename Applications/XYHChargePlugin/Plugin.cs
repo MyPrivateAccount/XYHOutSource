@@ -1,6 +1,7 @@
 ﻿using ApplicationCore;
 using ApplicationCore.Managers;
 using ApplicationCore.Plugin;
+using ApplicationCore.Stores;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -44,6 +45,11 @@ namespace XYHChargePlugin
         {
             //context.Services.AddDbContext<ChargeDbContext>(options => options.UseMySql("Server=server-d01;database=xinyaohang;uid=root;pwd=root;"));
             context.Services.AddDbContext<ChargeDbContext>(options => options.UseMySql(context.ConnectionString), ServiceLifetime.Scoped);
+
+            context.Services.AddScoped<ITransaction<ChargeDbContext>, Transaction<ChargeDbContext>>();
+            context.Services.AddScoped<IChargeInfoStore, ChargeInfoStore>();
+            context.Services.AddScoped<IOrganizationUtils, OrganizationUtils>();
+
             context.Services.AddScoped<ChargeManager>();
             context.Services.AddScoped<PermissionExpansionManager>();
             context.Services.AddScoped<IChargeManageStore, ChargeManageStore>();

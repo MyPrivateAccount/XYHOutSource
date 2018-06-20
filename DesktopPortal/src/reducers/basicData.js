@@ -4,6 +4,8 @@ import {globalAction} from 'redux-subspace';
 
 const initState = {
     orgnazitionType: [],
+    dicList: [],
+    areaList: [],
 
     contractAttachTypes:[],//合同附件分类（字典）
     contractCategories:[],//合同类型分类（字典）
@@ -17,6 +19,8 @@ let reducerMap = {};
 reducerMap[actionTypes.DIC_GET_PARLIST_COMPLETE] = function (state, action) {
     console.log("最外层reducer获取到字典:", action.payload);
     let orgnazitionType = [...state.orgnazitionType];
+    let dicList = [...state.dicList];
+
     let contractAttachTypes = [...state.contractAttachTypes];
     let contractCategories = [...state.contractCategories];
     let firstPartyCatogories = [...state.firstPartyCatogories];
@@ -57,9 +61,13 @@ reducerMap[actionTypes.DIC_GET_PARLIST_COMPLETE] = function (state, action) {
             group.dictionaryDefines = group.dictionaryDefines.sort((aItem, bItem) => aItem.order - bItem.order);
             contractSettleAccountTypes = group.dictionaryDefines;
         }
+        if (!dicList.find(dic => dic.groupId == group.groupId)) {
+            dicList.push({groupId: group.groupId, dicPars: group.dictionaryDefines});
+        }
     });
     return Object.assign({}, state, {
         orgnazitionType: orgnazitionType,
+        dicList: dicList,
         //合同相关
         contractAttachTypes:contractAttachTypes,
         contractCategories:contractCategories,

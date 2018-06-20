@@ -18,6 +18,7 @@ const initState = {
     monthresult: {extension: [{key: '1', last: 'tt', monthtime: 'test', operater: 'hhee'}], pageIndex: 0, pageSize: 10, totalCount: 1},
     monthlast: '2018.5',
     headVisible: true,
+    orgnazitionType: [],
 };
 let reducerMap = {};
 //字典数据
@@ -25,6 +26,7 @@ reducerMap[actionTypes.DIC_GET_PARLIST_COMPLETE] = function (state, action) {
     let stationTypeList = [...state.stationTypeList];
     let changeTypeList = [...state.changeTypeList];
     let changeResonList = [...state.changeResonList];
+    let orgnazitionType = [...state.orgnazitionType];
 
     action.payload.map((group) => {
         if(group.groupId === "POSITION_TYPE") {
@@ -36,10 +38,14 @@ reducerMap[actionTypes.DIC_GET_PARLIST_COMPLETE] = function (state, action) {
         } else if(group.groupId === "HUMAN_CHANGEREASON_TYPE") {
             group.dictionaryDefines = group.dictionaryDefines.sort((aItem, bItem) => aItem.order - bItem.order);
             changeResonList = group.dictionaryDefines;
+        } else if (group.groupId === "ORGNAZATION_TYPE") {
+            group.dictionaryDefines = group.dictionaryDefines.sort((aItem, bItem) => aItem.order - bItem.order);
+            orgnazitionType = group.dictionaryDefines;
         }
 
     });
     return Object.assign({}, state, {
+        orgnazitionType: orgnazitionType,
         stationTypeList: stationTypeList,
         changeTypeList: changeTypeList,
         changeResonList: changeResonList,
@@ -81,6 +87,60 @@ function getAllChildrenNode(node, parentId, formatNodeLit) {
     });
     node.children = nodeList;
     return nodeList;
+}
+
+function findChild(v, i, lst, c) {
+    if (v.id === c) {
+        lst.splice(i, 1);
+        return true;
+    }
+    else if (v.children) {
+        return (v.children.findIndex((tv, i) => findChild(tv, i, v.children, c))!==-1);
+    }
+    return false;
+}
+function findChildadd(v, i, lst, c) {
+    if (v.id === c.parentId) {
+        if (v.children) {
+            v.children.push(c);
+        } else {
+            v.children = [];
+            v.children.push(c);
+        }
+        return true;
+    }
+    else if (v.children) {
+        return (v.children.findIndex((tv, i) => findChildadd(tv, i, v.children, c))!==-1);
+    }
+    return false;
+}
+function findChildupdate(v, i, lst, c) {
+    if (v.id === c.id) {
+        v.name= c.name;
+        v.label = c.label;
+        v.organizationName = c.organizationName;
+        v.Original = c.Original;
+        return true;
+    }
+    else if (v.children) {
+        return (v.children.findIndex((tv, i) => findChildupdate(tv, i, v.children, c))!==-1);
+    }
+    return false;
+}
+
+reducerMap[actionTypes.UPDATE_DELETE_ORGBYID] = function(state, action) {
+    let f = state.searchOrgTree.findIndex((v, i) => findChild(v, i, state.searchOrgTree, action.payload));
+    return Object.assign({}, state, {searchOrgTree: state.searchOrgTree});
+}
+
+reducerMap[actionTypes.UPDATE_ADD_ORG] = function(state, action) {
+    let f = state.searchOrgTree.findIndex((v, i) => findChildadd(v, i, state.searchOrgTree, action.payload));
+    return Object.assign({}, state, {searchOrgTree: state.searchOrgTree});
+}
+
+reducerMap[actionTypes.UPDATE_UPDATE_ORG] = function(state, action) {
+    let f = state.searchOrgTree.findIndex((v, i) => findChildupdate(v, i, state.searchOrgTree, action.payload));
+    return Object.assign({}, state, {searchOrgTree: state.searchOrgTree});
 }
 
 reducerMap[actionTypes.DIC_GET_ALL_ORG_LIST_COMPLETE] = function(state, action) {
