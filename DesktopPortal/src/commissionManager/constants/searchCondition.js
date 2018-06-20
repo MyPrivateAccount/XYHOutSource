@@ -21,6 +21,11 @@ const SearchCondition = {
     rpListCondition:{
         pageIndex: 0,
         pageSize: defaultPageSize,
+    },
+    humanListCondition:{
+        pageIndex: 0,
+        pageSize: defaultPageSize,
+        Organizate:''
     }
 }
 

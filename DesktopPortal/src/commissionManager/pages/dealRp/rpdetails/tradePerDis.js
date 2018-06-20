@@ -2,10 +2,11 @@
 import { connect } from 'react-redux';
 import React, { Component } from 'react';
 import moment from 'moment'
-import { dealFpSave, acmentParamListGet } from '../../../actions/actionCreator'
+import { dealFpSave, acmentParamListGet ,searchHuman} from '../../../actions/actionCreator'
 import { DatePicker, notification, Form, Span, Layout, Table, Button, Radio, Popconfirm, Tooltip, Row, Col, Input, Spin, Select, TreeSelect } from 'antd'
 import TradeWyTable from './tradeWyTable'
 import TradeNTable from './tradeNTable'
+import SearchCondition from '../../../constants/searchCondition'
 
 const FormItem = Form.Item;
 class TradePerDis extends Component {
@@ -21,15 +22,20 @@ class TradePerDis extends Component {
             totalyj: 0,
             yjKhyjdqr: '',
             yjYzyjdqr: '',
-            yjFtItems: []//业绩分摊项
+            yjFtItems: [],//业绩分摊项
+            humanList:[],//员工列表
         }
         this.handleYzchange = this.handleYzchange.bind(this)
         this.handleKhchange = this.handleKhchange.bind(this)
     }
     componentWillMount = () => {
-        this.props.dispatch(acmentParamListGet(this.props.branchId));
     }
     componentDidMount = () => {
+        SearchCondition.acmentListCondition.branchId = this.props.branchId;
+        this.props.dispatch(acmentParamListGet(SearchCondition.acmentListCondition));
+
+        SearchCondition.humanListCondition.Organizate = this.props.branchId;
+        this.props.dispatch(searchHuman(SearchCondition.humanListCondition))
     }
     componentWillReceiveProps(newProps) {
         this.setState({ isDataLoading: false });
@@ -88,7 +94,16 @@ class TradePerDis extends Component {
             newProps.syncFpOp.operType = ''
         }
         else if (newProps.acmOperInfo.operType === 'ACMENT_PARAM_LIST_UPDATE') {
-            this.setState({ yjFtItems: newProps.scaleSearchResult })
+            this.setState({ yjFtItems: newProps.scaleSearchResult.extension},()=>{
+                this.wytb.setKxlxItems(this.getWyItems())
+                this.fptb.setNbfpItems(this.getInnerItems())
+            })
+            newProps.acmOperInfo.operType = ''
+        }
+        else if (newProps.humanOperInfo.operType === 'SEARCH_HUMAN_INFO_SUCCESS') {
+            this.setState({ humanList: newProps.humanList},()=>{
+                this.fptb.setHumanList(newProps.humanList)
+            })
             newProps.acmOperInfo.operType = ''
         }
     }
@@ -123,12 +138,10 @@ class TradePerDis extends Component {
     }
     handleAddWy = (e) => {
         e.preventDefault();
-        this.wytb.setKxlxItems(this.getWyItems())
         this.wytb.handleAdd();
     }
     handleAddNbFp = (e) => {
         e.preventDefault();
-        this.fptb.setNbfpItems(this.getInnerItems())
         this.fptb.handleAdd();
     }
     onWyTableRef = (ref) => {
@@ -153,7 +166,7 @@ class TradePerDis extends Component {
         let allItems = this.state.yjFtItems
         let innerItems = []
         for (let i = 0; i < allItems.length; i++) {
-            if (allItems[i].type === 0) {
+            if (allItems[i].type === 2) {
                 innerItems.push(allItems[i])
             }
         }
@@ -328,7 +341,10 @@ function MapStateToProps(state) {
         acmOperInfo: state.acm.operInfo,
         syncData: state.rp.syncData,
         syncFpOp: state.rp.syncFpOp,
-        syncFpData: state.rp.syncFpData
+        syncFpData: state.rp.syncFpData,
+        scaleSearchResult:state.acm.scaleSearchResult,
+        humanList:state.org.humanList,
+        humanOperInfo:state.org.operInfo
 
     }
 }

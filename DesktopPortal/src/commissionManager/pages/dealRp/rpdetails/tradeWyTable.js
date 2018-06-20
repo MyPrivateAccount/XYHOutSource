@@ -55,7 +55,7 @@ class TradeWyTable extends Component {
             title: '金额', dataIndex: 'money', key: 'money',
             render: (text, recored) => (
                 <span>
-                    <EditableCell style={{ width: 80 }} value={text} />
+                    <Input onChange={this.onMoneyEdit(recored.key,'money')} style={{ width: 80 }} value={text} />
                 </span>
             )
         },
@@ -79,6 +79,19 @@ class TradeWyTable extends Component {
     }
     componentWillReceiveProps(newProps) {
     }
+    //编辑了金额
+    onMoneyEdit = (key, dataIndex)=>{
+        return (value) => {
+            console.log("onMoneyEdit:" + value)
+            const dataSource = [...this.state.dataSource];
+            const target = dataSource.find(item => item.key === key);
+            if (target) {
+                target['money'] = value.target.value;
+                this.setState({ dataSource });
+                this.props.onCountJyj()
+            }
+        };
+    }
     //选择了款项类型
     onCellChange = (key, dataIndex) => {
         return (value) => {
@@ -87,6 +100,8 @@ class TradeWyTable extends Component {
             const dataSource = [...this.state.dataSource];
             const target = dataSource.find(item => item.key === key);
             if (target) {
+                console.log("onCellChange: totalyj>>"+this.state.totalyj)
+                console.log("onCellChange: getPercent>>"+this.getPercent(value))
                 target['money'] = this.getPercent(value) * (this.state.totalyj == null ? 0 : this.state.totalyj);
                 target['selectMoneyType'] = value
                 this.setState({ dataSource });

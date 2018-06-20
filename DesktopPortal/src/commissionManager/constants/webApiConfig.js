@@ -18,6 +18,9 @@ const WebApiConfig = {
         UserRoleRemove: BaseApiUrl + 'UserRoles/RemoveFromRoles/',//用户所属角色删除
         ResetPwd: BaseApiUrl + "user/initpassword",//重置密码
     },
+    human:{
+        List:BaseApiUrl+"humaninfo/searchhumaninfo"
+    },
     application: {
         Base: BaseApiUrl + 'Application',//应用基础地址
         List: BaseApiUrl + 'Application/list',//获取应用列表

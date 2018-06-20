@@ -108,3 +108,5 @@ export const syncFp = createAction(actionTypes.DEALRP_SYNC_FP);
 export const openRpDetail = createAction(actionTypes.DEALRP_OPEN_RP_DETAIL)
 //清空页面输入
 export const rpClear = createAction(actionTypes.DEALRP_RP_CLEAR)
+//搜索员工
+export const searchHuman = createAction(actionTypes.SEARCH_HUMAN_INFO)
