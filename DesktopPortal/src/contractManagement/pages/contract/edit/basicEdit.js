@@ -601,7 +601,7 @@ class BasicEdit extends Component {
                     <Row type="flex" style={{ marginTop: "25px" }}>
                         <Col span={12}>
                             <FormItem {...formItemLayout} label={<span>楼盘归属事业部</span>}>
-                                {getFieldDecorator('region', {
+                                {getFieldDecorator('buildingRegion', {
                                     initialValue: basicInfo.businessDepartment,
                                     // rules: [{ required: true, message: '请选择楼盘归属事业' }] this.props.setContractOrgTree
                                 })(
