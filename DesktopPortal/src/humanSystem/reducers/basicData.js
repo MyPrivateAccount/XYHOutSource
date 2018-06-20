@@ -18,6 +18,7 @@ const initState = {
     monthresult: {extension: [{key: '1', last: 'tt', monthtime: 'test', operater: 'hhee'}], pageIndex: 0, pageSize: 10, totalCount: 1},
     monthlast: '2018.5',
     headVisible: true,
+    orgnazitionType: [],
 };
 let reducerMap = {};
 //字典数据
@@ -25,6 +26,7 @@ reducerMap[actionTypes.DIC_GET_PARLIST_COMPLETE] = function (state, action) {
     let stationTypeList = [...state.stationTypeList];
     let changeTypeList = [...state.changeTypeList];
     let changeResonList = [...state.changeResonList];
+    let orgnazitionType = [...state.orgnazitionType];
 
     action.payload.map((group) => {
         if(group.groupId === "POSITION_TYPE") {
@@ -36,10 +38,14 @@ reducerMap[actionTypes.DIC_GET_PARLIST_COMPLETE] = function (state, action) {
         } else if(group.groupId === "HUMAN_CHANGEREASON_TYPE") {
             group.dictionaryDefines = group.dictionaryDefines.sort((aItem, bItem) => aItem.order - bItem.order);
             changeResonList = group.dictionaryDefines;
+        } else if (group.groupId === "ORGNAZATION_TYPE") {
+            group.dictionaryDefines = group.dictionaryDefines.sort((aItem, bItem) => aItem.order - bItem.order);
+            orgnazitionType = group.dictionaryDefines;
         }
 
     });
     return Object.assign({}, state, {
+        orgnazitionType: orgnazitionType,
         stationTypeList: stationTypeList,
         changeTypeList: changeTypeList,
         changeResonList: changeResonList,

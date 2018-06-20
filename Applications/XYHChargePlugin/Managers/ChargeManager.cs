@@ -64,6 +64,32 @@ namespace XYHChargePlugin.Managers
             }
             request.FeeList.ForEach(item => item.ChargeId = request.ID);
             request.BillList.ForEach(item => item.ChargeId = request.ID);
+            request.BillList.ForEach(item =>
+            {
+                if (item.FileScopes == null)
+                {
+                    item.FileScopes = new List<FileScopeRequest>();
+                }
+                item.FileScopes.ForEach(fs =>
+                {
+                    fs.ReceiptId = item.Id;
+                    if(fs.FileList == null)
+                    {
+                        fs.FileList = new List<FileInfoRequest>();
+                    }
+                    fs.FileList.ForEach(f =>
+                    {
+                        if (String.IsNullOrEmpty(f.FileExt))
+                        {
+                            f.FileExt = System.IO.Path.GetExtension(f.Name ?? "");
+                        }
+                    });
+                });
+            });
+
+            request.ChargeAmount = request.FeeList.Sum(x => x.Amount);
+            request.BillAmount = request.BillList.Sum(x => x.ReceiptMoney);
+            request.BillCount = request.BillList.Count;
 
             using (var t = await _transaction.BeginTransaction())
             {
@@ -175,6 +201,16 @@ namespace XYHChargePlugin.Managers
             }
 
             return r;
+        }
+
+
+        public async Task<ChargeInfoResponse> GetDetail(UserInfo user, string id)
+        {
+            var ci = await _Store.GetDetail(_mapper.Map<SimpleUser>(user), id);
+            if (ci == null)
+                return null;
+
+            return _mapper.Map<ChargeInfoResponse>(ci);
         }
     }
 }

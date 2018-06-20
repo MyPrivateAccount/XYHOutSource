@@ -15,5 +15,7 @@ namespace XYHChargePlugin.Stores
         Task<int> GetChargeNo(string branchId,string prefix, DateTime time, int type);
 
         Task Save(SimpleUser user, ChargeInfo chargeInfo);
+
+        Task<ChargeInfo> GetDetail(SimpleUser user, string id);
     }
 }

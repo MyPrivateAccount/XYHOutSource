@@ -79,7 +79,7 @@ namespace XYHChargePlugin.Models
             });
             modelBuilder.Entity<FileScopeInfo>(b => {
                 b.ToTable("XYH_CH_FILESCOPE");
-                b.HasKey(k => new { k.ReceiptID});
+                b.HasKey(k => new { k.ReceiptId , k.FileGuid});
             });
 
             modelBuilder.Entity<HumanInfo>(b => {

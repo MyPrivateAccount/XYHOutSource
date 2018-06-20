@@ -1,17 +1,21 @@
 import React, {Component} from 'react';
-import {Select, Table, Form, Checkbox, Input,TreeSelect, Row, Col,Button, notification,Spin} from 'antd'
+import {Select,Upload, Modal, Icon, Table, Form, Checkbox, Input,TreeSelect, Row, Col,Button, notification,Spin} from 'antd'
 import {connect} from 'react-redux';
 import FixedTable from '../../../components/FixedTable'
-import {AuthorUrl, basicDataServiceUrl} from '../../../constants/baseConfig'
+import {AuthorUrl, basicDataServiceUrl, UploadUrl} from '../../../constants/baseConfig'
 import ApiClient from '../../../utils/apiClient'
 import {getDicPars, getOrganizationTree} from '../../../utils/utils'
 import {getDicParList} from '../../../actions/actionCreators'
 import validations from '../../../utils/validations'
+import Layer from '../../../components/Layer'
+import {chargeStatus} from './const'
 import moment from 'moment'
 import uuid from 'uuid';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
+
+const formFields = ['chargeNo', 'reimburseDepartment', 'reimburseUser', 'isBackup',  'memo', 'chargeAmount', 'payee', 'billAmount']
 
 const feeValidationRules = {
     type: [[validations.isRequired,'必须选择费用类型']],
@@ -24,6 +28,15 @@ const billValidationRules = {
 
 }
 
+const styles={
+    statusText:{
+        position: 'absolute',
+        right: '1rem',
+        top: '1rem',
+        fontSize:'1.2rem'
+    }
+}
+
 class AddCharge extends Component{
     state={
         nodes:[],
@@ -33,17 +46,88 @@ class AddCharge extends Component{
         fetching:false,
         entity:{},
         op:'',
-        saveing:false
+        saveing:false,
+        previewVisible:false,
+        previewImage:'',
+        loading:false,
+        canEditBase:false,
+        canEditFee:false,
+        canEditBill:false
     }
 
     componentDidMount=()=>{
         let initState= (this.props.location||{}).state;
-        if(initState.entity){
-            this.setState({entity: initState.entity, op: initState.op})
+        if(initState.op==='add'){
+            this.setState({entity: initState.entity, op: initState.op, canEditBase:true, canEditBill:true, canEditFee:true})
+        }else if(initState.entity){
+            let canEditBase=false, canEditBill=false, canEditFee=false;
+            if( initState.op ==='edit'){
+                canEditBase = canEditBill = canEditFee = true;
+            }
+            this.setState({canEditBase,canEditBill, canEditFee})
+            this.setState({op: initState.op})
+            this.getChargeInfo(initState.entity.id);
         }
         console.log(this.props.match);
         this.props.getDicParList(['CHARGE_COST_TYPE']);
         this.getNodes();
+    }
+
+
+    getChargeInfo = async (id)=>{
+        if(!id){
+            notification.error({message:'报销单id为空'})
+            return;
+        }
+        
+        this.setState({loading:true})
+        let url = `${basicDataServiceUrl}/api/chargeinfo/${id}`;
+        try{
+            let r = await ApiClient.get(url);
+            if(r  && r.data && r.data.code==='0'){
+                if(!r.data.extension){
+                    notification.warn({message:'警告',description:'报销单不存在'});
+                }else{
+                    //转换
+                    let entity = r.data.extension;
+                    if(entity.billList){
+                        entity.billList.forEach(item=>{
+
+                            let attachments = [];
+                            if(item.fileScopes){
+                                item.fileScopes.forEach(fs=>{
+                                    if(fs.fileItem && fs.fileList && fs.fileList.length>0){
+                                        let f = fs.fileList[0];
+                                        f.url = fs.fileItem.original;
+                                        f.uid = f.fileGuid;
+                                        attachments.push(f);
+                                    }
+                                })
+                            }
+                            item.attachments = attachments;
+                            item.errors={};
+                        })
+                    }
+                    if(entity.feeList){
+                        entity.feeList.forEach(item=>item.errors={})
+                    }
+                    await this.fetchUser(entity.reimburseUser);
+                    entity.reimburseUser = [{key:entity.reimburseUser}]
+
+                    this.setState({billList: entity.billList, feeList: entity.feeList, entity: entity},()=>{
+                        var initValues = {};
+                        formFields.forEach(k=>{
+                            initValues[k] = entity[k]
+                        })
+
+                        this.props.form.setFieldsValue(initValues);
+                    });
+                }
+            }
+        }catch(e){
+            notification.error({message:'异常',description: e.message})
+        }
+        this.setState({loading:false})
     }
 
     changeRowValue = (record, key, e)=>{
@@ -218,8 +302,29 @@ class AddCharge extends Component{
 
         var entity = {...this.state.entity, ...values};
         entity.feeList = [...fl];
-        entity.billList = [...bl];
+        
         entity.reimburseUser = entity.reimburseUser[0].key;
+        
+        entity.billList=[];
+        bl.forEach(item=>{
+            var bi = {...item};
+            delete bi.attachments;
+            delete bi.errors;
+            bi.fileScopes = [];
+            if(item.attachments){
+                item.attachments.forEach(f=>{
+                    bi.fileScopes.push({
+                        reciptId: item.id,
+                        fileGuid: f.fileGuid,
+                        fileList:[
+                            {...f}
+                        ]
+                    });
+                });
+            }
+            entity.billList.push(bi);
+        });
+
 
         console.log(entity);
         this.setState({saveing:true})
@@ -241,6 +346,105 @@ class AddCharge extends Component{
         this.setState({saveing:false})
     }
 
+    uploadCallback=(record, file)=>{
+        let bl = this.state.billList;
+        let idx=  bl.findIndex(x=>x.id === record.id);
+      
+        if(!record.attachments){
+            record.attachments = [];
+        }
+        let idx2 = record.attachments.findIndex(x=>x.uid === file.uid);
+        if(idx2>=0){
+            record.attachments[idx2] = file;
+        }else{
+            record.attachments.push(file);
+        }
+        
+        bl[idx] = {...record, ...{attachments: [...record.attachments]}}
+        this.setState({billList: [...bl]});
+    }
+    upload=(record, callback, file, fileList)=>{
+        let id = this.state.entity.id;
+        let uploadUrl = `${UploadUrl}/file/upload/${id}`;
+        let fileGuid = uuid.v1();
+        let fd = new FormData();
+        fd.append("fileGuid", fileGuid)
+        fd.append("name", file.name)
+        fd.append("file", file);
+    
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', uploadUrl, true);
+        xhr.send(fd);
+        xhr.onload = function (e) {
+          if (this.status === 200) {
+            let r = JSON.parse(this.response);
+             console.log("返回结果：", this.response);
+            if (r.code === "0") {
+              let uf = {
+                fileGuid: fileGuid,
+                from: 'pc-upload',
+                WXPath: r.extension,
+                sourceId: id,
+                appId: 'ExpenseManagerIndex',
+                localUrl: file.url,
+                url: `${UploadUrl}${r.url}`,
+                driver: r.deviceName,
+                uri: r.path,
+                type:'ORIGINAL',
+                name: file.name,
+                uid: file.uid,
+                fileExt:r.ext
+              }
+              if (callback) {
+                callback(record, uf);
+              }
+            } else {
+              notification.error({
+                message: '上传失败：',
+                duration: 3
+              });
+            }
+          } else {
+            notification.error({
+              message: '图片上传失败!',
+              duration: 3
+            });
+          }
+        }
+        xhr.onerror = function (e) {
+          notification.error({
+            message: '图片上传失败!',
+            duration: 3
+          });
+        }
+        xhr.onabort = function () {
+          notification.error({
+            message: '图片上传异常终止!',
+            duration: 3
+          });
+        }
+    }
+    handleCancel = () => this.setState({ previewVisible: false })
+
+    handlePreview = (file) => {
+        this.setState({
+          previewImage: file.url || file.thumbUrl,
+          previewVisible: true,
+        });
+      }
+
+    handleUploadChange=(record,{fileList})=>{
+        if(!this.state.canEditBill){
+            return;
+        }
+        let bl = this.state.billList;
+        let idx=  bl.indexOf(record);
+        
+        record.attachments=fileList;
+        bl[idx] = {...record, ...{attachments: [...record.attachments]}}
+        this.setState({billList: [...bl]});
+    }
+
     render(){
         const { getFieldDecorator } = this.props.form;
         const lenValidator = [{ max: 120, message: '参数值长度不得大于120个字符' }]
@@ -254,11 +458,12 @@ class AddCharge extends Component{
             render:(text,record)=>(
                 <FormItem hasFeedback validateStatus={record.errors['type']?'error':''}>
                     <Select defaultValue={record.type} 
+                        disabled={!this.state.canEditFee}
                         style={{width:'100%'}}
                         onChange={(e)=>{this.changeRowValue(record, 'type',e)}}>
                         {
                             groupList.map((item)=>{
-                                return <Option key={item.value} value={item.value}>{item.key}</Option>
+                                return <Option key={item.value*1} value={item.value*1}>{item.key}</Option>
                             })
                         }
                     </Select>
@@ -272,7 +477,7 @@ class AddCharge extends Component{
             key: 'memo',
             render:(text,record)=>(
                 <FormItem>
-                <Input value={record.memo} onChange={(e)=>this.changeRowValue(record, 'memo',e)}/>
+                <Input value={record.memo} disabled={!this.state.canEditFee} onChange={(e)=>this.changeRowValue(record, 'memo',e)}/>
                 </FormItem>
             )
           }, {
@@ -282,7 +487,7 @@ class AddCharge extends Component{
             width:'10rem',
             render:(text,record)=>(
                 <FormItem hasFeedback validateStatus={record.errors['amount']?'error':''}>
-                    <Input value={record.amount} onChange={(e)=>this.changeRowValue(record, 'amount',e)}
+                    <Input disabled={!this.state.canEditFee} value={record.amount} onChange={(e)=>this.changeRowValue(record, 'amount',e)}
                         style={{textAlign:'right'}}/>
                 </FormItem>
             )
@@ -292,7 +497,7 @@ class AddCharge extends Component{
             width:'5rem',
             render: (text, record) => (
               <span>
-                <a href="javascript:;" onClick={()=>{this.delItem(record)}}>删除</a>
+                {this.state.canEditFee? <a href="javascript:;" onClick={()=>{this.delItem(record)}}>删除</a>:null}
               </span>
             ),
           }];
@@ -304,7 +509,7 @@ class AddCharge extends Component{
                 width: '20rem',
                 render:(text,record)=>(
                     <FormItem hasFeedback validateStatus={record.errors['receiptNumber']?'error':''}>
-                        <Input value={record.receiptNumber} onChange={(e)=>this.changeBillRowValue(record, 'receiptNumber',e)}
+                        <Input disabled={!this.state.canEditBill} value={record.receiptNumber} onChange={(e)=>this.changeBillRowValue(record, 'receiptNumber',e)}
                             />
                     </FormItem>
                 )
@@ -314,7 +519,7 @@ class AddCharge extends Component{
                 key:'memo',
                 render:(text,record)=>(
                     <FormItem>
-                        <Input value={record.memo} onChange={(e)=>this.changeBillRowValue(record, 'memo',e)}/>
+                        <Input  disabled={!this.state.canEditBill} value={record.memo} onChange={(e)=>this.changeBillRowValue(record, 'memo',e)}/>
                     </FormItem>
                 )
             },
@@ -324,20 +529,39 @@ class AddCharge extends Component{
                 width:'10rem',
                 render:(text,record)=>(
                     <FormItem hasFeedback validateStatus={record.errors['receiptMoney']?'error':''}>
-                        <Input value={record.receiptMoney} onChange={(e)=>this.changeBillRowValue(record, 'receiptMoney',e)}
+                        <Input disabled={!this.state.canEditBill} value={record.receiptMoney} onChange={(e)=>this.changeBillRowValue(record, 'receiptMoney',e)}
                             style={{textAlign:'right'}}/>
                     </FormItem>
                 )
             },{
                 title: '附件',
-                key:''
+                key:'',
+                render:(text,record)=>{
+                    let fl = record.attachments||[]
+                    return <Upload
+                        listType="picture-card"
+                        fileList={fl}
+                        disabled={!this.state.canEditBill}
+                        onPreview={this.handlePreview}
+                        onChange={(...args)=>this.handleUploadChange(record, ...args)}
+                        beforeUpload={(...args)=>this.upload(record,this.uploadCallback,...args)}
+                    >{
+                        this.state.canEditBill?<div>
+                        <Icon type="plus" />
+                        <div className="ant-upload-text">上传</div>
+                      </div>:null
+                    }
+                      
+                    </Upload>
+                }
             }, {
                 title: '操作',
                 key: 'action',
                 width:'5rem',
                 render: (text, record) => (
                   <span>
-                    <a href="javascript:;" onClick={()=>{this.delBill(record)}}>删除</a>
+                      {this.state.canEditBill?<a href="javascript:;"  onClick={()=>{this.delBill(record)}}>删除</a>:null}
+                    
                   </span>
                 ),
               }
@@ -345,16 +569,16 @@ class AddCharge extends Component{
 
         var values = this.props.form.getFieldsValue(["isBackup","reimburseUser"]);
         let ru = values["reimburseUser"];
-        let canAddFeeItem = ru && ru.length>=1 && this.state.op==='add';
+        let canAddFeeItem = ru && ru.length>=1 ;
         let {fetchingUser, userList} = this.state;
 
         
-        let canAddBillItem = (this.state.op==='add' && !(values["isBackup"]||false)) ||
+        let canAddBillItem =  !(values["isBackup"]||false) ||
                 this.state.op === 'backup';
         
-        return <div className="content-page">
+        return <Layer showLoading={this.state.loading} className="content-page">
             <div>
-                <div className="page-title">费用报销单</div>
+                <div className="page-title">费用报销单<div style={styles.statusText}>{chargeStatus[this.state.entity.status]||''}</div></div>
                 <div className="page-subtitle">{moment(this.state.entity.createTime).format('YYYY年MM月DD日')}</div>
             </div>
             <div>
@@ -373,6 +597,7 @@ class AddCharge extends Component{
                                 rules: [{ required: true, message: '必须选择报销门店' }],
                             })(
                                 <TreeSelect
+                                    disabled={!this.state.canEditBase}
                                     style={{ width: 300 }}
                                     dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
                                     treeData={this.state.nodes}
@@ -385,6 +610,7 @@ class AddCharge extends Component{
                         <FormItem label="报销人">
                                 {getFieldDecorator('reimburseUser', {rules:[{required:true, message:'必须选择报销人'}]})(
                                     <Select
+                                        disabled={!this.state.canEditBase}
                                         mode="multiple"
                                         maxTagCount={1}
                                         labelInValue
@@ -406,7 +632,7 @@ class AddCharge extends Component{
                     <Col span={6}>
                         <FormItem label="后补发票">
                                 {getFieldDecorator('isBackup', {})(
-                                    <Checkbox  />
+                                    <Checkbox disabled={!this.state.canEditBase} />
                                     )}
                         </FormItem>
                     </Col>
@@ -414,7 +640,7 @@ class AddCharge extends Component{
                     <Col span={18}>
                         <FormItem  label="说明">
                                 {getFieldDecorator('memo', {rules:[...lenValidator]})(
-                                    <Input  />
+                                    <Input  disabled={!this.state.canEditBase}/>
                                     )}
                         </FormItem>
                     </Col>
@@ -425,14 +651,14 @@ class AddCharge extends Component{
                     <Col span={6}>
                         <FormItem label="报销总额">
                                 {getFieldDecorator('chargeAmount', {})(
-                                    <Input style={{textAlign:'right'}} readOnly disabled />
+                                    <Input  style={{textAlign:'right'}} readOnly disabled />
                                     )}
                         </FormItem>
                     </Col>
                     <Col span={18}>
                         <FormItem  label="收款单位">
                                 {getFieldDecorator('payee', {rules:[...lenValidator]})(
-                                    <Input  />
+                                    <Input  disabled={!this.state.canEditBase}/>
                                     )}
                         </FormItem>
                     </Col>
@@ -441,7 +667,7 @@ class AddCharge extends Component{
             </Form>
             </div>
             <div style={{marginTop:'1rem'}}>
-                <Button disabled={!canAddFeeItem} onClick={this.addItem}>添加费用项</Button>
+                <Button disabled={!(this.state.canEditFee && canAddFeeItem)} onClick={this.addItem}>添加费用项</Button>
             </div>
             <div style={{marginTop:'0.5rem'}}>
             <Form>
@@ -451,7 +677,7 @@ class AddCharge extends Component{
             </div>
             <Row className="form-row" style={{marginTop:'1rem'}}>
                 <Col span={6}>                       
-                    <Button disabled={!canAddBillItem} onClick={this.addBill}>添加发票</Button>
+                    <Button disabled={!(this.state.canEditBill && canAddBillItem)} onClick={this.addBill}>添加发票</Button>
                 </Col>
                 <Col span={12}></Col>
                 <Col span={6}>
@@ -469,9 +695,17 @@ class AddCharge extends Component{
             </Form>               
             </div>
             <div style={{marginTop:'1rem', textAlign:'center'}}>
-                  <Button size="large" loading={this.state.saveing} type="primary" onClick={this.submit}>提交</Button>
+            {
+                (this.state.canEditBase || this.state.canEditBill || this.state.canEditFee)?
+                <Button size="large" loading={this.state.saveing} type="primary" onClick={this.submit}>提交</Button>:null
+            }
+                  
             </div>
-        </div>
+
+            <Modal visible={this.state.previewVisible} footer={null} onCancel={this.handleCancel}>
+                <img alt="example" style={{ width: '100%' }} src={this.state.previewImage} />
+            </Modal>
+        </Layer>
     }
 }
 

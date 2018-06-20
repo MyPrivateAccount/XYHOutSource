@@ -45,11 +45,11 @@ namespace XYHChargePlugin.Models
         public string Group { get; set; }
     }
 
-    public class SimpleList
-    {
-        public int uid { get; set; }
-        public string name { get; set; }
-        public string status { get; set; }
-        public string url { get; set; }
-    }
+    //public class SimpleList
+    //{
+    //    public int uid { get; set; }
+    //    public string name { get; set; }
+    //    public string status { get; set; }
+    //    public string url { get; set; }
+    //}
 }
