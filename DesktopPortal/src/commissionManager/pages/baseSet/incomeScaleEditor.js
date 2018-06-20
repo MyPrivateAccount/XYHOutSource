@@ -11,7 +11,8 @@ class InComeScaleEditor extends Component{
     state = {
         dialogTitle:'',
         visible:false,
-        paramInfo:{}
+        paramInfo:{},
+        isEdit:false,
     }
     componentWillMount(){
 
@@ -19,14 +20,22 @@ class InComeScaleEditor extends Component{
     componentWillReceiveProps(newProps){
         let {operType} = newProps.operInfo;
         if (operType === 'edit') {
-            this.setState({visible: true, dialogTitle: '修改',paramInfo:newProps.activeScale});
+            this.setState({visible: true, isEdit:true, dialogTitle: '修改',paramInfo:newProps.activeScale});
         } else if (operType === 'add') {
-            this.setState({visible: true, dialogTitle: '添加'});
-            this.setState({paramInfo:{branchId:newProps.param.branchId,code:newProps.param.code}})
+            this.clear()
+            this.setState({visible: true,isEdit:false, dialogTitle: '添加'});
+            this.setState({paramInfo:{name:newProps.param.name,jobType:newProps.param.jobType}})
         } else {
             this.props.form.resetFields();
             this.setState({visible: false});
         }
+    }
+    clear=()=>{
+        let paramInfo = {...this.state.paramInfo}
+        paramInfo.startYj = ''
+        paramInfo.endYj = ''
+        paramInfo.percent = ''
+        this.setState({paramInfo})
     }
     handleOk = (e) => {
         e.preventDefault();
@@ -61,9 +70,9 @@ class InComeScaleEditor extends Component{
                                 </span>
                             )}
                             hasFeedback>
-                            {getFieldDecorator('branchId', {
+                            {getFieldDecorator('name', {
 
-                                initialValue: this.state.paramInfo.orgName,
+                                initialValue: this.state.paramInfo.name,
                             })(
                                 <Input style={{float: 'left',width:300}} disabled={true}></Input>
                                 )}
@@ -75,8 +84,8 @@ class InComeScaleEditor extends Component{
                         <FormItem
                             {...formItemLayout}
                             label={(<span>职位类别</span>)}>
-                            {getFieldDecorator('code', {
-                                initialValue: this.state.paramInfo.rankPos
+                            {getFieldDecorator('jobType', {
+                                initialValue: this.state.paramInfo.jobType
                             })(
                                 <Input style={{float: 'left',width:300}} disabled={true}></Input>
                                 )}
@@ -88,7 +97,7 @@ class InComeScaleEditor extends Component{
                             {...formItemLayout}
                             label={(<span>起始业绩</span>)}>
                             {getFieldDecorator('startYj', {
-                                initialValue: this.state.paramInfo.paramStyj,
+                                initialValue: this.state.paramInfo.startYj,
                                 rules: [{required: true, message: '请填写起始业绩!' }]
                             })(
                                 <Input style={{float: 'left',width:300}}/>
@@ -101,7 +110,7 @@ class InComeScaleEditor extends Component{
                             {...formItemLayout}
                             label={(<span>结束业绩</span>)}>
                             {getFieldDecorator('endYj', {
-                                initialValue: this.state.paramInfo.paramEdyj,
+                                initialValue: this.state.paramInfo.endYj,
                                 rules: [{required: true, message: '请填写结束业绩!' }]
                             })(
                                 <Input style={{float: 'left',width:300}}/>
@@ -115,7 +124,7 @@ class InComeScaleEditor extends Component{
                             {...formItemLayout}
                             label={(<span>提成比例</span>)}>
                             {getFieldDecorator('percent', {
-                                initialValue: this.state.paramInfo.paramEdyj,
+                                initialValue: this.state.paramInfo.percent,
                                 rules: [{required: true, message: '请填写提成比例!' }]
                             })(
                                 <Input style={{float: 'left',width:300}}/>

@@ -10,14 +10,32 @@ class AcmentSet extends Component{
     state = {
         pagination: {},
         isDataLoading:false,
-        orgid:''
+        branchId:''
     }
     appTableColumns = [
         { title: '分摊项名称', dataIndex: 'name', key: 'name' },
         { title: '分摊类型', dataIndex: 'type', key: 'type' },
         { title: '默认分摊比例', dataIndex: 'percent', key: 'percent' },
         { title: '是否固定比例', dataIndex: 'isfixed', key: 'isfixed' },
+        {
+            title: '操作', dataIndex: 'edit', key: 'edit', render: (text, recored) => (
+                <span>
+                    <Popconfirm title="是否删除该分摊项?" onConfirm={this.zfconfirm} onCancel={this.zfcancel} okText="确认" cancelText="取消">
+                        <Button type='primary' shape='circle' size='small' icon='delete' />
+                    </Popconfirm>
+                    <Tooltip title='修改'>
+                        <Button type='primary' shape='circle' size='small' icon='edit' onClick={(e) => this.handleModClick(recored)} />
+                    </Tooltip>
+                </span>
+            )
+        }
     ];
+    zfconfirm=(e)=>{
+        this.handleDelClick(e)
+    }
+    zfcancel=(e)=>{
+
+    }
     handleDelClick = (info) =>{
         this.props.dispatch(acmentParamDel(info));
     }
@@ -29,7 +47,7 @@ class AcmentSet extends Component{
     }
     handleSearch = (e) => {
         console.log(e)
-        this.setState({orgid:e})
+        this.setState({branchId:e})
         SearchCondition.acmentListCondition.branchId = e;
         console.log("查询条件", SearchCondition.acmentListCondition);
         this.setState({ isDataLoading: true });
@@ -43,10 +61,8 @@ class AcmentSet extends Component{
         this.props.dispatch(acmentParamListGet(SearchCondition.acmentListCondition));
     };
     componentDidMount = ()=>{
-        if (this.props.permissionOrgTree.AddUserTree.length == 0) {
+            this.setState({isDataLoading:true})
             this.props.dispatch(orgGetPermissionTree("UserInfoCreate"));
-        }
-        this.handleSearch("1")
     }
     componentWillReceiveProps = (newProps)=>{
         this.setState({isDataLoading:false});
@@ -61,12 +77,36 @@ class AcmentSet extends Component{
         if(newProps.operInfo.operType==='org_update'){
             console.log('org_update')
             this.handleSearch(newProps.permissionOrgTree.AddUserTree[0].key)
+            this.setState({branchId:newProps.permissionOrgTree.AddUserTree[0].key})
             newProps.operInfo.operType = ''
         }
+    }
+    getListData=()=>{
+        if(this.props.scaleSearchResult.extension == null){
+            return null
+        }
+        let data = this.props.scaleSearchResult.extension;
+            for(let i=0;i<data.length;i++){
+                if(data[i].isfixed){
+                    data[i].isfixed = '是'
+                }
+                else{
+                    data[i].isfixed = '否'
+                }
+                if(data[i].type === 1){
+                    data[i].type = '外部佣金'
+                }
+                else{
+                    data[i].type = '内部分配项'
+                }
+                data[i].percent = data[i].percent*100+'%'
+            }
+        return data
     }
     render(){
         return (
             <Layout>
+               <Spin spinning={this.state.isDataLoading}>
                 <div style={{'margin':5}}>
                     组织：
                     <TreeSelect style={{ width: 300 }}
@@ -74,17 +114,16 @@ class AcmentSet extends Component{
                                     treeData={this.props.permissionOrgTree.AddUserTree}
                                     placeholder="所属组织"
                                     onChange={this.handleSearch}
-                                    defaultValue={"1"}
+                                    value={this.state.branchId}
                                     >
                     </TreeSelect>
                 </div>
                 <Tooltip title="新增">
                     <Button type='primary' shape='circle' icon='plus' onClick={this.handleNew} style={{'margin':'10'}}/>
                 </Tooltip>
-                <Spin spinning={this.state.isDataLoading}>
-                 <Table  columns={this.appTableColumns} dataSource={this.props.scaleSearchResult.extension}></Table>
+                 <Table  columns={this.appTableColumns} dataSource={this.getListData()}></Table>
+                 <AcmentEditor orgid={this.state.branchId}/>
                  </Spin>
-                 <AcmentEditor orgid={this.state.orgid}/>
             </Layout>
         )
     }
