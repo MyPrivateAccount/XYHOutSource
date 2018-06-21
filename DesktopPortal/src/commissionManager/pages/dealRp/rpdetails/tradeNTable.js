@@ -93,6 +93,26 @@ class TradeNTable extends Component {
     }
     componentDidMount() {
         this.props.onFpTableRef(this)
+        if (this.props.dataSource !== null && this.props.dataSource.length !== 0) {
+            let newList = this.props.dataSource;
+            for (let i = 0; i < newList.length; i++) {
+                const { count, dataSource } = this.state;
+                const newData = {
+                    key: count,
+                    sectionName: newList[i].sectionName,
+                    username: newList[i].username,
+                    workNumber: newList[i].workNumber,
+                    money: newList[i].money,
+                    percent: newList[i].percent,
+                    oddNum: newList[i].oddNum,
+                    type: newList[i].type,
+                };
+                this.setState({
+                    dataSource: [...dataSource, newData],
+                    count: count + 1,
+                });
+            }
+        }
     }
     componentWillReceiveProps(newProps) {
 
@@ -134,9 +154,14 @@ class TradeNTable extends Component {
         };
     }
     //选择了员工，需要自动填充部门和员工id
-    onHumanChange=(key,dataIndex)=>{
-        return (value)=>{
-
+    onHumanChange = (key, dataIndex) => {
+        return (value) => {
+            const dataSource = [...this.state.dataSource];
+            const target = dataSource.find(item => item.key === key);
+            if (target) {
+                target['selectUser'] = value
+                this.setState({ dataSource });
+            }
         }
     }
     //编辑了金额
@@ -171,6 +196,7 @@ class TradeNTable extends Component {
             key: count,
             sectionName: "",
             username: this.state.humanList,
+            selectUser:'',
             workNumber: "",
             money: 0,
             percent: 0,
@@ -202,7 +228,7 @@ class TradeNTable extends Component {
             let temp = {}
             temp.id = id
             temp.sectionName = dataSource[i].sectionName
-            temp.username = dataSource[i].username
+            temp.username = dataSource[i].selectUser
             temp.workNumber = dataSource[i].workNumber
             temp.money = dataSource[i].money
             temp.percent = dataSource[i].percent / 100

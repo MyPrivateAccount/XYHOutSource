@@ -36,7 +36,7 @@ class DealRpQuery extends Component {
         this.tyDlg = e;
     }
     onOpenTy=(e)=>{
-        this.tyDlg.show()
+        this.tyDlg.show(e)
     }
     render() {
         return (

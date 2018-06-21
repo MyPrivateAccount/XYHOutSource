@@ -2,8 +2,7 @@
 import { connect } from 'react-redux';
 import React, { Component } from 'react'
 import { Row, Col, Form, Modal, TreeSelect, Select, Spin, Input, Button } from 'antd'
-import { getEmpList } from '../../actions/actionCreator'
-import SearchCondition from '../../constants/searchCondition'
+import {dealFpGet} from '../../actions/actionCreator'
 import TradeWyTable from '../dealRp/rpdetails/tradeWyTable'
 import TradeNTable from '../dealRp/rpdetails/tradeNTable'
 const FormItem = Form.Item;
@@ -17,7 +16,9 @@ class TYComponet extends Component {
         empList: [],
         rpData: {
             yjYzys: 0,
-            yjKhys: 0
+            yjKhys: 0,
+            reportInsides:[],
+            reportOutsides:[]
         },
         totalyj: 0,
     }
@@ -26,16 +27,15 @@ class TYComponet extends Component {
     }
     componentWillReceiveProps = (newProps) => {
         this.setState({ isDataLoading: false });
-        if (newProps.empList !== null && newProps.empList.length >= 0) {
-            this.setState({ empList: newProps.empList })
+        if (newProps.operInfo.operType === 'FPGET_UPDATE') {//信息获取成功
+            if (JSON.stringify(newProps.ext) !== '[]') {
+                this.setState({ rpData: newProps.ext },()=>{
+                    this.reCountZyj()
+                });
+                
+            }
+            newProps.operInfo.operType = ''
         }
-    }
-    handleOrgChange = (e) => {
-        this.setState({ isDataLoading: true });
-        //组织改变,再查询该组织下面的员工
-        SearchCondition.ppFtListCondition.OrganizationIds = []
-        SearchCondition.ppFtListCondition.OrganizationIds.push(e)
-        this.props.dispatch(getEmpList(SearchCondition.ppFtListCondition))
     }
     handleOk = (e) => {
 
@@ -43,8 +43,11 @@ class TYComponet extends Component {
     handleCancel = (e) => {
         this.setState({ vs: false })
     }
-    show = () => {
-        this.setState({ vs: true })
+    show = (e) => {
+        this.setState({ vs: true,rpId: e.id},()=>{
+            this.setState({isDataLoading:true})
+            this.props.dispatch(dealFpGet(this.state.rpId));
+        })
     }
     handleAddWy = (e) => {
         e.preventDefault();
@@ -114,10 +117,10 @@ class TYComponet extends Component {
             labelCol: { span: 6 },
             wrapperCol: { span: 14 },
         };
-        let empList = this.state.empList
         return (
             <Modal title={'调佣'} width={800} maskClosable={false} visible={this.state.vs}
                 onOk={this.handleOk} onCancel={this.handleCancel} >
+                <Spin spinning={this.state.isDataLoading}>
                 <Row>
                     <Col span={8}>
                         <label>业主佣金:</label>
@@ -133,10 +136,10 @@ class TYComponet extends Component {
                     </Col>
                 </Row>
                 <Row>
-                    <TradeWyTable onWyTableRef={this.onWyTableRef1} />
+                    <TradeWyTable onWyTableRef={this.onWyTableRef1} dataSource={this.state.rpData.reportInsides} isTy={false}/>
                 </Row>
                 <Row>
-                    <TradeNTable onFpTableRef={this.onFpTableRef1} />
+                    <TradeNTable onFpTableRef={this.onFpTableRef1} dataSource={this.state.rpData.reportOutsides} isTy={false}/>
                 </Row>
                 <Row style={{ margin: 10 }}>
                     <Col span={12}>
@@ -213,14 +216,15 @@ class TYComponet extends Component {
                     <Col span={3}><Button type='primary' onClick={this.handleAddWy}>新增外佣</Button></Col>
                 </Row>
                 <Row>
-                    <TradeWyTable onWyTableRef={this.onWyTableRef} totalyj={this.state.yjZcjyj} onCountJyj={this.reCountJyj} />
+                    <TradeWyTable onWyTableRef={this.onWyTableRef} totalyj={this.state.yjZcjyj} onCountJyj={this.reCountJyj} branchId={"1"} dataSource={this.state.rpData.reportInsides} isTy = {true}/>
                 </Row>
                 <Row>
                     <Col span={3}><Button type='primary' onClick={this.handleAddNbFp}>新增内部分配</Button></Col>
                 </Row>
                 <Row>
-                    <TradeNTable onFpTableRef={this.onFpTableRef} />
+                    <TradeNTable onFpTableRef={this.onFpTableRef} branchId={"1"} dataSource={this.state.rpData.reportOutsides} isTy={true}/>
                 </Row>
+                </Spin>
             </Modal>
         )
     }
@@ -229,7 +233,8 @@ function MapStateToProps(state) {
 
     return {
         permissionOrgTree: state.org.permissionOrgTree,
-        empList: state.org.empList
+        operInfo:state.rp.operInfo,
+        ext:state.rp.ext
     }
 }
 

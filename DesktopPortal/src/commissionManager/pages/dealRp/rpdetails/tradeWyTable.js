@@ -76,6 +76,23 @@ class TradeWyTable extends Component {
     }
     componentDidMount() {
         this.props.onWyTableRef(this)
+        if(this.props.dataSource!==null&&this.props.dataSource.length!==0){
+            let newList = this.props.dataSource;
+            for(let i=0;i<newList.length;i++){
+                const { count, dataSource } = this.state;
+                const newData = {
+                    key: count,
+                    moneyType: newList[i].moneyType,
+                    object: newList[i].object,
+                    remark: newList[i].remark,
+                    money: newList[i].money,
+                };
+                this.setState({
+                    dataSource: [...dataSource, newData],
+                    count: count + 1,
+                });
+            }
+        }
     }
     componentWillReceiveProps(newProps) {
     }

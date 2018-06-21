@@ -2,7 +2,7 @@
 import { connect } from 'react-redux';
 import React, { Component } from 'react';
 import { Table, Button, Tooltip, Spin, Popconfirm } from 'antd'
-import { myReportGet, searchReport,openRpDetail } from '../../actions/actionCreator'
+import { myReportGet, searchReport,openRpDetail,dealRpDelete } from '../../actions/actionCreator'
 import moment from 'moment'
 
 class DealRpTable extends Component {
@@ -12,7 +12,7 @@ class DealRpTable extends Component {
             dataSource: [],
             pagination: {},
             isDataLoading: false,
-            type: 'myget'
+            type: this.props.type
         }
     }
     appTableColumns = [
@@ -39,37 +39,44 @@ class DealRpTable extends Component {
         { title: '审批状态', dataIndex: 'examineStatus', key: 'examineStatus' },
         {
             title: '操作', dataIndex: 'edit', key: 'edit', render: (text, recored) => (
-                <span>
-                    <Popconfirm title="请确认是否要作废成交报告?" onConfirm={this.zfconfirm} onCancel={this.zfcancel} okText="确认" cancelText="取消">
-                        <Button type='primary' shape='circle' size='small' icon='team' />
+                this.state.type==='myget'?(<span>
+                <Popconfirm title="是否删除该项?" onConfirm={(e)=>this.zfconfirm(recored)} onCancel={this.zfcancel} okText="确认" cancelText="取消">
+                    <Button type='primary' shape='circle' size='small' icon='delete'/>
+                </Popconfirm>
+                <Tooltip title='修改'>
+                    <Button type='primary' shape='circle' size='small' icon='edit' onClick={(e) => this.props.dispatch(openRpDetail(recored))} />
+                </Tooltip>
+                </span>):(
+                    <span>
+                    <Popconfirm title="请确认是否要作废成交报告?" onConfirm={(e)=>this.zfconfirm(recored)} onCancel={this.zfcancel} okText="确认" cancelText="取消">
+                        <Button type='primary' shape='circle' size='small' icon='delete' />
                     </Popconfirm>
                     <Tooltip title='收款'>
-                        <Button type='primary' shape='circle' size='small' icon='team' onClick={(e) => this.handleSKClick(recored)} />
+                        <Button type='primary' shape='circle' size='small' icon='wallet' onClick={(e) => this.handleSKClick(recored)} />
                     </Tooltip>
                     <Tooltip title='付款'>
-                    <Button type='primary' shape='circle' size='small' icon='team' onClick={(e) => this.handleFKClick(recored)} />
+                    <Button type='primary' shape='circle' size='small' icon='pay-circle-o' onClick={(e) => this.handleFKClick(recored)} />
                     </Tooltip>
                     <Tooltip title='调佣'>
-                    <Button type='primary' shape='circle' size='small' icon='team' onClick={(e) => this.handleTYClick(recored)} />
+                    <Button type='primary' shape='circle' size='small' icon='setting' onClick={(e) => this.handleTYClick(recored)} />
                     </Tooltip>
                     <Tooltip title='转移'>
-                        <Button type='primary' shape='circle' size='small' icon='team' onClick={(e) => this.handleZYClick(recored)} />
+                        <Button type='primary' shape='circle' size='small' icon='swap' onClick={(e) => this.handleZYClick(recored)} />
                     </Tooltip>
                     <Popconfirm title="请确认xxx报告的结佣资料是否已经收齐?" onConfirm={this.jyconfirm} onCancel={this.jycancel} okText="确认" cancelText="取消">
-                        <Button type='primary' shape='circle' size='small' icon='team' />
+                        <Button type='primary' shape='circle' size='small' icon='check' />
                     </Popconfirm>
-                </span>
+                </span>)
+                
             )
         }
     ];
     jyconfirm = (e) => {
-
     }
     jycancel = (e) => {
-
     }
     zfconfirm = (e)=>{
-
+        this.handleDelClick(e)
     }
     zfcancel = (e)=>{
 
@@ -95,6 +102,9 @@ class DealRpTable extends Component {
         if(this.props.onOpenZy!==null){
             this.props.onOpenZy(e)
         }
+    }
+    handleDelClick=(e)=>{
+        this.props.dispatch(dealRpDelete(e.id))
     }
     handleSearch = (e, type) => {
         console.log(e)
@@ -139,6 +149,11 @@ class DealRpTable extends Component {
         console.log("分页信息：", paginationInfo);
         this.setState({ pagination: paginationInfo });
 
+        if(newProps.operInfo.operType === 'DEALRP_RP_DELETE_SUCCESS'){
+            this.handleSearch(this.props.SearchCondition,this.state.type)
+            newProps.operInfo.operType = ''
+        }
+
     }
     render() {
         return (
@@ -151,7 +166,8 @@ class DealRpTable extends Component {
 function MapStateToProps(state) {
 
     return {
-        rpSearchResult: state.rp.rpSearchResult
+        rpSearchResult: state.rp.rpSearchResult,
+        operInfo:state.rp.operInfo,
     }
 }
 

@@ -17,7 +17,10 @@ class TradePerDis extends Component {
             isDataLoading: false,
             rpData: {
                 yjYzys: 0,
-                yjKhys: 0
+                yjKhys: 0,
+                reportInsides:[],
+                reportOutsides:[]
+
             },
             totalyj: 0,
             yjKhyjdqr: '',
@@ -49,8 +52,10 @@ class TradePerDis extends Component {
         }
         else if (newProps.operInfo.operType === 'FPGET_UPDATE') {//信息获取成功
             if (JSON.stringify(newProps.ext) !== '[]') {
-                this.setState({ rpData: newProps.ext });
-                this.reCountZyj()
+                this.setState({ rpData: newProps.ext },()=>{
+                    this.reCountZyj()
+                });
+                
             }
             newProps.operInfo.operType = ''
         }
@@ -301,7 +306,7 @@ class TradePerDis extends Component {
                         <Col span={3}><Button type='primary' onClick={this.handleAddWy}>新增外佣</Button></Col>
                     </Row>
                     <Row>
-                        <TradeWyTable onWyTableRef={this.onWyTableRef} totalyj={this.state.yjZcjyj} onCountJyj={this.reCountJyj} branchId={"1"} />
+                        <TradeWyTable onWyTableRef={this.onWyTableRef} totalyj={this.state.yjZcjyj} onCountJyj={this.reCountJyj} branchId={"1"} dataSource={this.state.rpData.reportInsides}/>
                     </Row>
                     <Row style={{ margin: 10, marginLeft: -30 }}>
                         <Col span={12} pull={1}>
@@ -320,7 +325,7 @@ class TradePerDis extends Component {
                         <Col span={3}><Button type='primary' onClick={this.handleAddNbFp}>新增内部分配</Button></Col>
                     </Row>
                     <Row>
-                        <TradeNTable onFpTableRef={this.onFpTableRef} branchId={"1"} />
+                        <TradeNTable onFpTableRef={this.onFpTableRef} branchId={"1"} dataSource={this.state.rpData.reportOutsides}/>
                     </Row>
                     <Row>
                         <Col span={24} style={{ textAlign: 'center' }}>

@@ -149,6 +149,35 @@ const ApiClient = {
             .then((data) => ({ data }))
             .catch((error) => ({ error }));
     },
+    del(url, body,qs, method = 'DELETE') {
+        const token = store.getState().oidc.user.access_token;
+        const headers = new Headers();
+        headers.append('Content-Type','application/json');
+        headers.append('Accept', 'application/json');
+        headers.append('Authorization', `Bearer ${token}`);
+
+        var postData = undefined;
+        if (body) {
+            postData = JSON.stringify(body);
+        }
+
+        const options = {
+            method: method,
+            headers,
+            mode: 'cors',
+            body: postData
+        };
+
+        const params = new URLSearchParams();
+        if (qs) {
+            Object.keys(qs).forEach(key => params.append(key, qs[key]));
+            url = url + "?" + params.toString();
+        }
+        return fetch(url, options)
+            .then((res) => res.json())
+            .then((data) => ({ data }))
+            .catch((error) => ({ error }));
+    },
 }
 
 
