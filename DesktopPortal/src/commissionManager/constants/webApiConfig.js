@@ -19,7 +19,7 @@ const WebApiConfig = {
         ResetPwd: BaseApiUrl + "user/initpassword",//重置密码
     },
     human:{
-        List:BaseApiUrl+"humaninfo/searchhumaninfo"
+        List:basicDataBaseApiUrl+"humaninfo/searchhumaninfo"
     },
     application: {
         Base: BaseApiUrl + 'Application',//应用基础地址
