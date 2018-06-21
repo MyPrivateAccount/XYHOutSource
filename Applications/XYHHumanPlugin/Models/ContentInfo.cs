@@ -57,13 +57,48 @@ namespace XYHHumanPlugin.Models
         [Key]
         [MaxLength(127)]
         public string ID { get; set; }
-        public DateTime? Time { get; set; }
         [MaxLength(127)]
+        public string UserID { get; set; }
+        public DateTime? Date { get; set; }
+        [MaxLength(32)]
         public string Name { get; set; }
-        [MaxLength(127)]
-        public string IDCard { get; set; }
         [MaxLength(255)]
-        public string History { get; set; }
+        public string Comments { get; set; }
+        public int Normal { get; set; }
+        [MaxLength(400)]
+        public string NormalDate { get; set; }
+        public int Relaxation { get; set; }
+        [MaxLength(400)]
+        public string RelaxationDate { get; set; }
+        public int Matter { get; set; }
+        [MaxLength(400)]
+        public string MatterDate { get; set; }
+        public int Illness { get; set; }
+        [MaxLength(400)]
+        public string IllnessDate { get; set; }
+        public int Annual { get; set; }
+        [MaxLength(400)]
+        public string AnnualDate { get; set; }
+        public int Marry { get; set; }
+        [MaxLength(400)]
+        public string MarryDate { get; set; }
+        public int Funeral { get; set; }
+        [MaxLength(400)]
+        public string FuneralDate { get; set; }
+        public int Late { get; set; }
+        [MaxLength(400)]
+        public string LateDate { get; set; }
+        public int Absent { get; set; }
+        [MaxLength(400)]
+        public string AbsentDate { get; set; }
+    }
+
+    public class AttendanceSettingInfo
+    {
+        [Key]
+        public int Type { get; set; }
+        public int Times { get; set; }
+        public int Money { get; set; }
     }
 
     public class PositionInfo

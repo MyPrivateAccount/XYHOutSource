@@ -374,8 +374,7 @@ namespace XYHHumanPlugin.Controllers
                     _lastNumber = 0;
                     _lastDate = td.Month.ToString() + td.Day.ToString();
                 }
-
-                Response.Extension = $"XYH-{td.Year.ToString()}{td.Month.ToString()}{td.Day.ToString()}-{_lastNumber}";
+                Response.Extension = $"XYH-{td.Year.ToString()}{td.Month.ToString()}{td.Day.ToString()}{string.Format("{0:D3}", _lastNumber)}";
                 Response.Message = $"getjobnumber sucess";
             }
             catch (Exception e)
