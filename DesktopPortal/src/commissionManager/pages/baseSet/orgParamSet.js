@@ -32,11 +32,12 @@ class OrgParamSet extends Component {
         }
     ];
     handleModClick = (info) => {
+        info.branchId = this.state.branchId;
         this.props.dispatch(orgParamEdit(info));
     }
     handleNew = (e) => {
         console.log(e);
-        this.props.dispatch(orgParamAdd());
+        this.props.dispatch(orgParamAdd(this.state.branchId));
     }
     handleSearch = (e) => {
         console.log(e)

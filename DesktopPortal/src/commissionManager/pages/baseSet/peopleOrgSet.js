@@ -21,7 +21,7 @@ class PeopleSet extends Component {
         {
             title: '操作', dataIndex: 'edit', key: 'edit', render: (text, recored) => (
                 <span>
-                    <Popconfirm title="是否删除该分摊项?" onConfirm={this.zfconfirm} onCancel={this.zfcancel} okText="确认" cancelText="取消">
+                    <Popconfirm title="是否删除该分摊项?" onConfirm={(e)=>this.zfconfirm(recored)} onCancel={this.zfcancel} okText="确认" cancelText="取消">
                         <Button type='primary' shape='circle' size='small' icon='delete' />
                     </Popconfirm>
                 </span>
@@ -78,6 +78,11 @@ class PeopleSet extends Component {
             this.handleSearch(newProps.permissionOrgTree.AddUserTree[0].key)
             newProps.operInfo.operType = ''
         }
+        if(newProps.ppftOp.operType === 'ORG_FT_PARAM_DELETE_UPDATE'){
+            this.handleSearch(this.state.branchId)
+            newProps.ppftOp.operType = ''
+        }
+
     }
     getListData=()=>{
         if(this.props.ppFtSearchResult.extension == null){
@@ -123,7 +128,8 @@ function peoMapStateToProps(state) {
         activeTreeNode: state.org.activeTreeNode,
         permissionOrgTree: state.org.permissionOrgTree,
         ppFtSearchResult: state.ppft.ppFtSearchResult,
-        operInfo:state.org.operInfo
+        operInfo:state.org.operInfo,
+        ppftOp:state.ppft.operInfo,
     }
 }
 

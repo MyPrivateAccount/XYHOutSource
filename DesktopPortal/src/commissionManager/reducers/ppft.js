@@ -29,4 +29,8 @@ ppFtReducerMap[actionTypes.ORG_FT_PARAM_SAVE_SUCCESS] = function (state, action)
     console.log("readucer保存成功" + JSON.stringify(action.payload));
     return Object.assign({}, state, { operInfo: { objType: '', operType: 'FT_PARAM_SAVE_SUCCESS'} });
 }
+ppFtReducerMap[actionTypes.ORG_FT_PARAM_DELETE_UPDATE] = function (state, action) {
+    console.log("readucer删除成功" + JSON.stringify(action.payload));
+    return Object.assign({}, state, { operInfo: { objType: '', operType: 'ORG_FT_PARAM_DELETE_UPDATE'} });
+}
 export default handleActions(ppFtReducerMap, initState)

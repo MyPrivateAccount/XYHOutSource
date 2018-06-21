@@ -24,7 +24,7 @@ class InComeScaleEditor extends Component{
         } else if (operType === 'add') {
             this.clear()
             this.setState({visible: true,isEdit:false, dialogTitle: '添加'});
-            this.setState({paramInfo:{name:newProps.param.name,jobType:newProps.param.jobType}})
+            this.setState({paramInfo:{name:newProps.param.name,jobType:newProps.param.jobType,branchId:newProps.param.branchId,code:newProps.param.code}})
         } else {
             this.props.form.resetFields();
             this.setState({visible: false});
@@ -44,6 +44,8 @@ class InComeScaleEditor extends Component{
             if (!err) {
                 console.log('Received values of form: ', values);
                 //调用保存接口，进行数据保存,待续
+                values.branchId = this.state.paramInfo.branchId;
+                values.code = this.state.paramInfo.code;
                 this.props.dispatch(incomeScaleSave(values));
             }
         });

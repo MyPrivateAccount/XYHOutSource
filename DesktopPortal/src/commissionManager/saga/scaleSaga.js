@@ -14,7 +14,7 @@ export function* getScaleDataListAsyncs(state){
     //等待数据接口
     let result = { isOk: false, msg: '获取提成比例列表成功!' };
     console.log(state)
-    let url = WebApiConfig.baseset.incomesave+'/'+state.payload.branchId+'/'+state.payload.code;
+    let url = WebApiConfig.baseset.incomesave+state.payload.branchId+'/'+state.payload.code;
     try {
         console.log(url)
         console.log('getScaleDataListAsyncs:', state);

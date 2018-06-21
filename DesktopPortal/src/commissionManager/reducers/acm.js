@@ -37,4 +37,8 @@ acmReducerMap[actionTypes.ACMENT_PARAM_UPDATE] = function (state, action) {
     console.log("reducer param update" + JSON.stringify(action.payload));
     return Object.assign({}, state, { operInfo: { objType: '', operType: 'paramupdate'} });
 }
+acmReducerMap[actionTypes.ACMENT_PARAM_DEL_UPDATE] = function (state, action) {
+    console.log("reducer del update" + JSON.stringify(action.payload));
+    return Object.assign({}, state, { operInfo: { objType: '', operType: 'ACMENT_PARAM_DEL_UPDATE'} });
+}
 export default handleActions(acmReducerMap, initState)

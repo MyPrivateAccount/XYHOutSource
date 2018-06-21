@@ -20,9 +20,9 @@ class AcmentSet extends Component{
         {
             title: '操作', dataIndex: 'edit', key: 'edit', render: (text, recored) => (
                 <span>
-                    <Popconfirm title="是否删除该分摊项?" onConfirm={this.zfconfirm} onCancel={this.zfcancel} okText="确认" cancelText="取消">
-                        <Button type='primary' shape='circle' size='small' icon='delete' />
-                    </Popconfirm>
+                    <Tooltip title='删除'>
+                    <Button type='primary' shape='circle' size='small' icon='delete' onClick={(e) => this.handleDelClick(recored)}/>
+                    </Tooltip>
                     <Tooltip title='修改'>
                         <Button type='primary' shape='circle' size='small' icon='edit' onClick={(e) => this.handleModClick(recored)} />
                     </Tooltip>
@@ -30,13 +30,8 @@ class AcmentSet extends Component{
             )
         }
     ];
-    zfconfirm=(e)=>{
-        this.handleDelClick(e)
-    }
-    zfcancel=(e)=>{
-
-    }
     handleDelClick = (info) =>{
+        info.branchId = this.state.branchId;
         this.props.dispatch(acmentParamDel(info));
     }
     handleModClick = (info) =>{
@@ -65,20 +60,30 @@ class AcmentSet extends Component{
             this.props.dispatch(orgGetPermissionTree("UserInfoCreate"));
     }
     componentWillReceiveProps = (newProps)=>{
+
         this.setState({isDataLoading:false});
-        let paginationInfo = {
-            pageSize: newProps.scaleSearchResult.pageSize,
-            current: newProps.scaleSearchResult.pageIndex,
-            total: newProps.scaleSearchResult.totalCount
-        };
-        console.log("分页信息：", paginationInfo);
-        this.setState({ pagination: paginationInfo });
+
+        if(newProps.operInfo.operType === 'ACMENT_PARAM_LIST_UPDATE'){
+
+            let paginationInfo = {
+                pageSize: newProps.scaleSearchResult.pageSize,
+                current: newProps.scaleSearchResult.pageIndex,
+                total: newProps.scaleSearchResult.totalCount
+            };
+            console.log("分页信息：", paginationInfo);
+            this.setState({ pagination: paginationInfo });
+            newProps.operInfo.operType = ''
+        }
 
         if(newProps.operInfo.operType==='org_update'){
             console.log('org_update')
             this.handleSearch(newProps.permissionOrgTree.AddUserTree[0].key)
             this.setState({branchId:newProps.permissionOrgTree.AddUserTree[0].key})
             newProps.operInfo.operType = ''
+        }
+        if(newProps.acmOp.operType === 'ACMENT_PARAM_DEL_UPDATE'){
+            this.handleSearch(this.state.branchId)
+            newProps.acmOp.operType = ''
         }
     }
     getListData=()=>{
@@ -133,7 +138,8 @@ function MapStateToProps(state){
         activeTreeNode:    state.org.activeTreeNode,
         permissionOrgTree: state.org.permissionOrgTree,
         scaleSearchResult: state.acm.scaleSearchResult,
-        operInfo:state.org.operInfo
+        operInfo:state.org.operInfo,
+        acmOp:state.acm.operInfo,
     }
 }
 
