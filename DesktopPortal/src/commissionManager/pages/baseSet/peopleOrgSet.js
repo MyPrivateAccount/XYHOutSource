@@ -42,7 +42,7 @@ class PeopleSet extends Component {
     }
     handleNew = (info) => {
         console.log(info);
-        this.props.dispatch(orgFtParamAdd());
+        this.props.dispatch(orgFtParamAdd(this.state.branchId));
     }
     handleSearch = (e) => {
         console.log(e)
@@ -82,6 +82,10 @@ class PeopleSet extends Component {
             this.handleSearch(this.state.branchId)
             newProps.ppftOp.operType = ''
         }
+        if(newProps.ppftOp.operType === 'FT_PARAM_SAVE_SUCCESS'){
+            this.handleSearch(this.state.branchId)
+            newProps.ppftOp.operType = ''
+        }
 
     }
     getListData=()=>{
@@ -89,6 +93,9 @@ class PeopleSet extends Component {
             return null
         }
         let data = this.props.ppFtSearchResult.extension;
+        if(this.props.ppftOp.operType!=='ORG_FT_PARAMLIST_UPDATE'){
+            return data
+        }
             for(let i=0;i<data.length;i++){
                 data[i].ftbl = data[i].ftbl*100+'%'
                 data[i].name = this.getOrgNameById(data[i].branchId)
@@ -118,7 +125,7 @@ class PeopleSet extends Component {
                 <Spin spinning={this.state.isDataLoading}>
                     <Table columns={this.appTableColumns} dataSource={this.getListData()}></Table>
                 </Spin>
-                <PeopleOrgFtEditor />
+                <PeopleOrgFtEditor/>
             </Layout>
         )
     }

@@ -13,7 +13,8 @@ class PeopleOrgFtEditor extends Component{
     state = {
         dialogTitle:'',
         visible:false,
-        ppftInfo:{}
+        ppftInfo:{},
+        branchId:''
     }
     componentWillMount(){
 
@@ -25,10 +26,11 @@ class PeopleOrgFtEditor extends Component{
 
         if (operType == 'edit') {
             this.setState({visible: true, dialogTitle: '修改人数分摊组织',ppftInfo:newProps.activePft});
+            operType = ''
         } else if (operType == 'add') {
-            this.setState({visible: true, dialogTitle: '添加人数分摊组织'});
+            this.setState({visible: true, dialogTitle: '添加人数分摊组织',branchId:newProps.activePft});
+            operType = ''
         } else {
-            this.props.form.resetFields();
             this.setState({visible: false});
         }
     }
@@ -39,6 +41,7 @@ class PeopleOrgFtEditor extends Component{
             if (!err) {
                 console.log('Received values of form: ', values);
                 //调用保存接口，进行数据保存,待续
+                values.branchId = this.state.branchId
                 this.props.dispatch(orgFtParamSave(values))
             }
         });
@@ -72,9 +75,9 @@ class PeopleOrgFtEditor extends Component{
                                 </span>
                             )}
                             hasFeedback>
-                            {getFieldDecorator('branchId', {
+                            {getFieldDecorator('shareId', {
 
-                                initialValue: this.state.ppftInfo.organizationId,
+                                initialValue: this.state.ppftInfo.shareId,
                                 rules: [{ required: true, message: '请选择所属组织!' }]
                             })(
                                 <TreeSelect style={{ width: 300 }}
@@ -93,7 +96,7 @@ class PeopleOrgFtEditor extends Component{
                             {...formItemLayout}
                             label={(<span>分摊比例</span>)}>
                             {getFieldDecorator('ftbl', {
-                                initialValue: this.state.ppftInfo.proportions,
+                                initialValue: this.state.ppftInfo.percent,
                                 rules: [{required: true, message: '请填写分摊比例!' }]
                             })(
                                 <Input style={{float: 'left',width:300}}/>
@@ -111,7 +114,8 @@ function MapStateToProps(state) {
         treeSource: state.org.treeSource,
         activeTreeNode: state.org.activeTreeNode,
         permissionOrgTree: state.org.permissionOrgTree,
-        operInfo:state.ppft.operInfo
+        operInfo:state.ppft.operInfo,
+        activePft:state.ppft.activePft
     }
 }
 

@@ -14,19 +14,26 @@ class AcmentEditor extends Component {
         visible: false,
         iedVisible: false,
         isEdit:false,
-        paramInfo: { id:'',isfixed: true, branchId: '', code: '', type: 1 }
+        paramInfo: { id:'',isfixed: true, branchId: '', code: '', type: 1,percent:'' }
     }
     componentWillMount() {
 
     }
     componentWillReceiveProps(newProps) {
         let { operType } = newProps.operInfo;
+        if(operType === ""){
+            return
+        }
         if (operType === 'edit') {
-            this.setState({ visible: true, dialogTitle: '修改',isEdit:true, paramInfo: newProps.activeScale });
+            let temp = {...newProps.activeScale}
+            temp.isfixed = temp.isfixed==='是'?true:false
+            this.setState({ visible: true, dialogTitle: '修改',isEdit:true, paramInfo: temp });
+            newProps.operInfo.operType = ""
         } else if (operType === 'add') {
             this.clear()
             this.setState({ visible: true, dialogTitle: '添加',isEdit:false });
-        } else {
+            newProps.operInfo.operType = ""
+        } else if(operType === 'ACMENT_PARAM_DLGCLOSE'){
             this.setState({ visible: false });
         }
     }
@@ -37,12 +44,14 @@ class AcmentEditor extends Component {
         paramInfo.code = ''
         paramInfo.name = ''
         paramInfo.type = '外部佣金'
+        paramInfo.percent = ''
         this.setState({paramInfo})
     }
     handleOk = (e) => {
 
         this.props.form.validateFields((err, values) => {
             if (!err) {
+                console.log(this.state.paramInfo)
                 values.branchId = this.props.orgid;
                 values.code = this.state.paramInfo.code;
                 values.percent = parseFloat(values.percent)
@@ -51,6 +60,7 @@ class AcmentEditor extends Component {
                 }
                 console.log(values);
                 this.props.dispatch(acmentParamSave(values))
+                this.props.dispatch(acmentParamDlgClose())
             }
         });
     };
@@ -63,11 +73,11 @@ class AcmentEditor extends Component {
     }
     handleItemValue = (e) => {
         this.setState({ iedVisible: false });
-        let pp = [...this.state.paramInfo]
-        pp.name = e.itemName
-        pp.code = e.itemCode
-        this.setState({ paramInfo: pp });
-        this.props.form.setFieldsValue({'name':pp.name })
+        let paramInfo = {...this.state.paramInfo}
+        paramInfo.name = e.itemName
+        paramInfo.code = e.itemCode
+        this.setState({ paramInfo});
+        this.props.form.setFieldsValue({'name':paramInfo.name })
     }
     handleback = (e) => {
         this.setState({ iedVisible: false });
@@ -81,16 +91,12 @@ class AcmentEditor extends Component {
         pp = parseFloat(pp)/100
         return pp
     }
-    getFixed=(e)=>{
-        if(!this.state.isEdit){
-            return false
-        }
-        if(e === '是'){
-            return true
-        }
-        else{
-            return false
-        }
+    isFixedChange=(e)=>{
+        let paramInfo = {...this.state.paramInfo}
+        paramInfo.isfixed = e.target.checked
+        this.setState({paramInfo},()=>{
+            console.log(this.state.paramInfo)
+        })
     }
     render() {
         const { getFieldDecorator } = this.props.form;
@@ -141,7 +147,7 @@ class AcmentEditor extends Component {
                                 {getFieldDecorator('type', {
                                     initialValue: this.state.paramInfo.type==='外部佣金'?"1":"2",
                                 })(
-                                    <Select defaultValue="1" style={{ width: 200 }} disabled={this.state.isEdit}>
+                                    <Select initialValue="1" style={{ width: 200 }} disabled={this.state.isEdit}>
                                         <Option value="1">外部佣金</Option>
                                         <Option value="2">内部分摊项</Option>
                                     </Select>
@@ -167,9 +173,9 @@ class AcmentEditor extends Component {
                         <Col span={12} push={5}>
                             <FormItem>
                                 {getFieldDecorator('isfixed', {
-                                    initialValue: this.getFixed(this.state.paramInfo.isfixed),
+                                    initialValue:this.state.paramInfo.isfixed
                                 })(
-                                    <Checkbox checked={this.getFixed(this.state.paramInfo.isfixed)}>固定比例</Checkbox>
+                                    <Checkbox onChange={this.isFixedChange} checked={this.state.paramInfo.isfixed}>固定比例</Checkbox>
                                 )}
                             </FormItem></Col>
                     </Row>

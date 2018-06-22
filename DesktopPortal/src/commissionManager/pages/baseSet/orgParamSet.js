@@ -1,7 +1,7 @@
 //组织参数设置
 import { connect } from 'react-redux';
 import React, { Component } from 'react';
-import { orgParamAdd, orgParamEdit, orgParamListGet, orgGetPermissionTree } from '../../actions/actionCreator'
+import { orgParamAdd, orgParamEdit, orgParamListGet, orgGetPermissionTree,orgParamDel } from '../../actions/actionCreator'
 import { Layout, Table, Button, Checkbox, Popconfirm, Tooltip, Row, Col, Input, Spin, Select, TreeSelect } from 'antd'
 import SearchCondition from '../../constants/searchCondition'
 import OrgParamEditor from './orgParamEditor'
@@ -21,7 +21,7 @@ class OrgParamSet extends Component {
         {
             title: '操作', dataIndex: 'edit', key: 'edit', render: (text, recored) => (
                 <span>
-                    <Popconfirm title="是否删除该项?" onConfirm={this.zfconfirm} onCancel={this.zfcancel} okText="确认" cancelText="取消">
+                    <Popconfirm title="是否删除该项?" onConfirm={(e)=>this.zfconfirm(recored)} onCancel={this.zfcancel} okText="确认" cancelText="取消">
                         <Button type='primary' shape='circle' size='small' icon='delete' />
                     </Popconfirm>
                     <Tooltip title='修改'>
@@ -31,6 +31,13 @@ class OrgParamSet extends Component {
             )
         }
     ];
+    zfconfirm=(e)=>{
+        this.handleDelClick(e)
+    }
+    handleDelClick = (info)=>{
+        info.branchId = this.state.branchId
+        this.props.dispatch(orgParamDel(info))
+    }
     handleModClick = (info) => {
         info.branchId = this.state.branchId;
         this.props.dispatch(orgParamEdit(info));
@@ -73,12 +80,20 @@ class OrgParamSet extends Component {
             this.handleSearch(newProps.permissionOrgTree.AddUserTree[0].key)
             newProps.operInfo.operType = ''
         }
+        if(newProps.paramOp.operType ==='ORG_PARAM_DEL_UPDATE'){
+            this.handleSearch(this.state.branchId)
+            newProps.paramOp.operType = ''
+        }
     }
     getListData = () => {
         if (this.props.orgParamSearchResult.extension == null) {
             return null
         }
-        let data = this.props.orgParamSearchResult.extension;
+        let data = []
+        data = Object.assign(data,this.props.orgParamSearchResult.extension)
+        if(this.props.paramOp.operType!=='ORG_PARAMLIST_UPDATE'){
+            return data
+        }
         for (let i = 0; i < data.length; i++) {
             data[i].name = this.getOrgNameById(data[i].branchId)
             }
@@ -117,7 +132,8 @@ function MapStateToProps(state) {
         activeTreeNode: state.org.activeTreeNode,
         permissionOrgTree: state.org.permissionOrgTree,
         orgParamSearchResult: state.orgparam.orgParamSearchResult,
-        operInfo: state.org.operInfo
+        operInfo: state.org.operInfo,
+        paramOp:state.orgparam.operInfo
     }
 }
 

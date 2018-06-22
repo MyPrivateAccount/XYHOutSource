@@ -27,7 +27,7 @@ acmReducerMap[actionTypes.ACMENT_PARAM_LIST_UPDATE] = function (state, action) {
 }
 acmReducerMap[actionTypes.ACMENT_PARAM_DLGCLOSE] = function (state, action) {
     console.log("readucer退出dialog" + JSON.stringify(action.payload));
-    return Object.assign({}, state, { operInfo: { objType: '', operType: ''} });
+    return Object.assign({}, state, { operInfo: { objType: '', operType: 'ACMENT_PARAM_DLGCLOSE'} });
 }
 acmReducerMap[actionTypes.ACMENT_PARAM_ITEM_SAVEUPDATE] = function (state, action) {
     console.log("reducer item update" + JSON.stringify(action.payload));
@@ -35,7 +35,7 @@ acmReducerMap[actionTypes.ACMENT_PARAM_ITEM_SAVEUPDATE] = function (state, actio
 }
 acmReducerMap[actionTypes.ACMENT_PARAM_UPDATE] = function (state, action) {
     console.log("reducer param update" + JSON.stringify(action.payload));
-    return Object.assign({}, state, { operInfo: { objType: '', operType: 'paramupdate'} });
+    return Object.assign({}, state, { operInfo: { objType: '', operType: 'ACMENT_PARAM_UPDATE'} });
 }
 acmReducerMap[actionTypes.ACMENT_PARAM_DEL_UPDATE] = function (state, action) {
     console.log("reducer del update" + JSON.stringify(action.payload));

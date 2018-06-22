@@ -71,7 +71,7 @@ export function* delPPFTDataAsync(state){
     //等待数据接口
     let result = { isOk: false, msg: '删除人数分摊组织列表数据成功!' };
     console.log(state)
-    let url = WebApiConfig.baseset.ppftsave+state.payload.branchId;
+    let url = WebApiConfig.baseset.ppftsave+state.payload.branchId+'/'+state.payload.shareId;
     try {
         console.log(url)
         console.log('delAcmentDataAsync:', state);

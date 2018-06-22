@@ -2,7 +2,7 @@
 import { connect } from 'react-redux';
 import React, { Component } from 'react';
 import { Layout, Table, Button, Checkbox, Popconfirm, Tooltip, Row, Col, Input, Spin, Select, TreeSelect } from 'antd'
-import { incomeScaleAdd, incomeScaleEdit, incomeScaleDel, incomeScaleListGet, orgGetPermissionTree,getDicParList } from '../../actions/actionCreator'
+import { incomeScaleAdd, incomeScaleEdit, incomeScaleDel, incomeScaleListGet, orgGetPermissionTree, getDicParList } from '../../actions/actionCreator'
 import SearchCondition from '../../constants/searchCondition'
 import InComeScaleEditor from './incomeScaleEditor'
 
@@ -12,7 +12,7 @@ class InComeScaleSet extends Component {
     state = {
         pagination: {},
         isDataLoading: false,
-        params: { name: "测试", jobType: "测试" ,branchId:'',code:''}
+        params: { name: "测试", jobType: "测试", branchId: '', code: '' }
     }
     appTableColumns = [
         { title: '组织', dataIndex: 'name', key: 'name' },
@@ -23,7 +23,7 @@ class InComeScaleSet extends Component {
         {
             title: '操作', dataIndex: 'edit', key: 'edit', render: (text, recored) => (
                 <span>
-                    <Popconfirm title="是否删除该项?" onConfirm={this.zfconfirm} onCancel={this.zfcancel} okText="确认" cancelText="取消">
+                    <Popconfirm title="是否删除该项?" onConfirm={(e) => this.zfconfirm(recored)} onCancel={this.zfcancel} okText="确认" cancelText="取消">
                         <Button type='primary' shape='circle' size='small' icon='delete' />
                     </Popconfirm>
                     <Tooltip title='修改'>
@@ -33,10 +33,10 @@ class InComeScaleSet extends Component {
             )
         }
     ];
-    zfconfirm=(e)=>{
+    zfconfirm = (e) => {
         this.handleDelClick(e)
     }
-    zfcancel=(e)=>{
+    zfcancel = (e) => {
 
     }
     handleDelClick = (info) => {
@@ -63,7 +63,7 @@ class InComeScaleSet extends Component {
         this.setState({ isDataLoading: true });
         this.props.dispatch(incomeScaleListGet(SearchCondition.incomeScaleListCondition));
     };
-    componentWillMount=()=>{
+    componentWillMount = () => {
     }
     componentDidMount = () => {
         this.setState({ isDataLoading: true })
@@ -84,24 +84,28 @@ class InComeScaleSet extends Component {
             console.log('org_update')
             let params = { ...this.state.params }
             params.branchId = newProps.permissionOrgTree.AddUserTree[0].key
-            this.setState({ params },()=>{
-                if(this.state.params.branchId!==''&&this.state.params.code!==''){
-                    this.setState({isDataLoading:true})
+            this.setState({ params }, () => {
+                if (this.state.params.branchId !== '' && this.state.params.code !== '') {
+                    this.setState({ isDataLoading: true })
                     this.handleSearch()
                 }
             })
             newProps.operInfo.operType = ''
         }
-        if(newProps.basicOper.operType === 'DIC_GET_PARLIST_COMPLETE'){
+        if (newProps.basicOper.operType === 'DIC_GET_PARLIST_COMPLETE') {
             let params = { ...this.state.params }
             params.code = newProps.basicData.zwTypes[0].value
-            this.setState({ params },()=>{
-                if(this.state.params.branchId!==''&&this.state.params.code!==''){
-                    this.setState({isDataLoading:true})
+            this.setState({ params }, () => {
+                if (this.state.params.branchId !== '' && this.state.params.code !== '') {
+                    this.setState({ isDataLoading: true })
                     this.handleSearch()
                 }
             })
             newProps.basicOper.operType = ''
+        }
+        if (newProps.incomeOp.operType === 'INCOME_SCALE_DEL_UPDATE') {
+            this.handleSearch()
+            newProps.incomeOp.operType = ''
         }
     }
     treeChange = (e) => {
@@ -114,21 +118,26 @@ class InComeScaleSet extends Component {
         params.code = e
         this.setState({ params })
     }
-    getListData=()=>{
-        if(this.props.scaleSearchResult.extension == null){
+    getListData = () => {
+        if (this.props.scaleSearchResult.extension == null) {
             return null
         }
         let data = this.props.scaleSearchResult.extension;
-            for(let i=0;i<data.length;i++){
-                data[i].name = this.getOrgName(data[i].branchId)
-                data[i].jobType = this.getLevel(data[i].code)
-            }
+
+        if(this.props.incomeOp.operType!=='INCOME_SCALE_LIST_UPDATE'){
+            return data
+        }
+
+        for (let i = 0; i < data.length; i++) {
+            data[i].name = this.getOrgName(data[i].branchId)
+            data[i].jobType = this.getLevel(data[i].code)
+        }
         return data
     }
-    getOrgName=(branchId)=>{
+    getOrgName = (branchId) => {
         return '测试'
     }
-    getLevel=(code)=>{
+    getLevel = (code) => {
         return '测试'
     }
     render() {
@@ -147,10 +156,10 @@ class InComeScaleSet extends Component {
                     >
                     </TreeSelect>
                     <span style={{ 'margin-left': 10 }}>职位类别：</span>
-                    <Select value={this.state.params.code}  style={{ width: 120 }} onChange={this.zwlbChange}>
-                    {
-                        zwTypes.map(tp => <Option key={tp.key} value={tp.value}>{tp.key}</Option>)
-                    }
+                    <Select value={this.state.params.code} style={{ width: 120 }} onChange={this.zwlbChange}>
+                        {
+                            zwTypes.map(tp => <Option key={tp.key} value={tp.value}>{tp.key}</Option>)
+                        }
                     </Select>
                     <Button style={{ 'width': 80, 'margin-left': 10 }} onClick={this.handleSearch.bind(this)}>查询</Button>
                 </div>
@@ -173,7 +182,8 @@ function MapStateToProps(state) {
         scaleSearchResult: state.scale.scaleSearchResult,
         operInfo: state.org.operInfo,
         basicData: state.base,
-        basicOper:state.base.operInfo
+        basicOper: state.base.operInfo,
+        incomeOp: state.scale.operInfo
     }
 }
 
