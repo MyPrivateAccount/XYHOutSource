@@ -25,6 +25,8 @@ namespace XYHContractPlugin.Dto.Request
         /// 创建时间结束
         /// </summary>
         public DateTime? CreateDateEnd { get; set; }
+        public List<string> ProjectTypes { get; set; }
+        public List<string> ContractTypes { get; set; }
         public int OrderRule { get; set; }
         public int pageIndex { get; set; }
         public int pageSize { get; set; }

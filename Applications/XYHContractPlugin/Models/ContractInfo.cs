@@ -61,7 +61,7 @@ namespace XYHContractPlugin.Models
         public DateTime? StartTime { get; set; }
         public DateTime? EndTime { get; set; }
         public int? Count { get; set; }
-        public bool ReturnOrigin { get; set; } 
+        public bool ReturnOrigin { get; set; }
 
         //[Key]
         [MaxLength(64)]
@@ -82,5 +82,10 @@ namespace XYHContractPlugin.Models
         public string Ext1 { get; set; }
         [MaxLength(256)]
         public string Ext2 { get; set; }
+        /// <summary>
+        /// 楼盘所属大区
+        /// </summary>
+        [MaxLength(255)]
+        public string BuildingRegion { get; set; }
     }
 }

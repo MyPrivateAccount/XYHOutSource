@@ -17,6 +17,7 @@ using SocialInsuranceRequest = XYHHumanPlugin.Dto.Response.SocialInsuranceRespon
 using LeaveInfoRequest = XYHHumanPlugin.Dto.Response.LeaveInfoResponse;
 using ChangeInfoRequest = XYHHumanPlugin.Dto.Response.ChangeInfoResponse;
 using ApplicationCore;
+using ApplicationCore.Stores;
 
 namespace XYHHumanPlugin.Managers
 {
