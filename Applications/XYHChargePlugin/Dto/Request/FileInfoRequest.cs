@@ -3,30 +3,34 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 
-namespace XYHChargePlugin.Dto.Request
+namespace XYHChargePlugin.Dto
 {
     public class FileInfoRequest
     {
-        [StringLength(127)]
         public string FileGuid { get; set; }
-        [StringLength(255)]
-        public string From { get; set; }
-        [StringLength(255)]
-        public string WXPath { get; set; }
-        [StringLength(255)]
-        public string Source { get; set; }
-        [StringLength(127)]
-        public string SourceId { get; set; }
-        [StringLength(127)]
-        public string AppId { get; set; }
-        [StringLength(255)]
         public string Name { get; set; }
-        [StringLength(255)]
-        public string FileExt { get; set; }
 
-        [StringLength(64)]
+      
+        public string Type { get; set; }
+
+        
+        public string FileExt { get; set; }
+        public double Size { get; set; }
+        public int Width { get; set; }
+        public int Height { get; set; }
+        
+        public string Uri { get; set; }
+        public string Summary { get; set; }
+       
+        public string Ext1 { get; set; }
+      
+        public string Ext2 { get; set; }
+
+        public bool IsDeleted { get; set; }
+
+        
         public string Driver { get; set; }
-        [StringLength(255)]
+      
         public string Group { get; set; }
     }
 }

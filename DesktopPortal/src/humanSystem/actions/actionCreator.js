@@ -89,3 +89,12 @@ export const postChangeHuman = createAction(actionTypes.POST_CHANGEHUMAN);
 
 //导表
 export const exportMonthForm = createAction(actionTypes.EXPORT_MONTHFORM);
+export const exportHumanForm = createAction(actionTypes.EXPORT_HUMANFORM);
+
+//组织架构
+export const deleteOrgbyId = createAction(actionTypes.DELETE_ORGBYID);
+export const deleteMemOrgbyId = createAction(actionTypes.UPDATE_DELETE_ORGBYID);
+export const upaddOrg = createAction(actionTypes.UPDATE_ADD_ORG);
+
+export const addOrg = createAction(actionTypes.ADD_ORG);
+export const updateOrg = createAction(actionTypes.UPDATE_ORG);

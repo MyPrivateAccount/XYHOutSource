@@ -13,7 +13,8 @@ const initState = {
         AddPublicRoleTree: [],//添加公共角色时
         AddRolePermissionTree: []//角色授权时
     },
-    areaList: []
+    areaList: [],
+    humanList:[]
 };
 let treeReducerMap = {};
 
@@ -56,7 +57,7 @@ treeReducerMap[actionTypes.ORG_GET_PERMISSION_TREE_UPDATE] = function (state, ac
     else if (action.payload.permissionType === "AuthorizationPermission") {
         AddRolePermissionTree = orgTreeSource;
     }
-    return Object.assign({}, state, {permissionOrgTree: {AddUserTree: AddUserTree, AddNormalRoleTree: AddNormalRoleTree, AddPublicRoleTree: AddPublicRoleTree, AddRolePermissionTree: AddRolePermissionTree}});
+    return Object.assign({}, state, {permissionOrgTree: {AddUserTree: AddUserTree, AddNormalRoleTree: AddNormalRoleTree, AddPublicRoleTree: AddPublicRoleTree, AddRolePermissionTree: AddRolePermissionTree},operInfo:{operType:'org_update'}});
 }
 
 function getAllChildrenNode(node, parentId, formatNodeLit) {
@@ -69,6 +70,15 @@ function getAllChildrenNode(node, parentId, formatNodeLit) {
     });
     node.children = nodeList;
     return nodeList;
+}
+
+treeReducerMap[actionTypes.EMP_LIST_UPDATE] = function (state, action) {
+    console.log("readucer用户的列表:" + JSON.stringify(action.payload.extension));
+    return Object.assign({}, state, { empList: action.payload.extension,operInfo:{operType:'EMP_LIST_UPDATE'}});
+}
+treeReducerMap[actionTypes.SEARCH_HUMAN_INFO_SUCCESS] = function (state, action) {
+    console.log("readucer员工列表:" + JSON.stringify(action.payload.extension));
+    return Object.assign({}, state, { humanList: action.payload.extension ,operInfo:{operType:'SEARCH_HUMAN_INFO_SUCCESS'}});
 }
 
 export default handleActions(treeReducerMap, initState)

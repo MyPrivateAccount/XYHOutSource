@@ -108,9 +108,9 @@ namespace XYHHumanPlugin.Controllers
 
         [HttpGet("humanformdata")]
         [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
-        public async Task<ResponseMessage<List<MonthFormResponse>>> GetHumanFormData(UserInfo User)
+        public async Task<ResponseMessage<List<HumanInfoFormResponse>>> GetHumanFormData(UserInfo User)
         {
-            var Response = new ResponseMessage<List<MonthFormResponse>>();
+            var Response = new ResponseMessage<List<HumanInfoFormResponse>>();
             if (!ModelState.IsValid)
             {
                 Response.Code = ResponseCodeDefines.ModelStateInvalid;
@@ -374,8 +374,7 @@ namespace XYHHumanPlugin.Controllers
                     _lastNumber = 0;
                     _lastDate = td.Month.ToString() + td.Day.ToString();
                 }
-
-                Response.Extension = $"XYH-{td.Year.ToString()}{td.Month.ToString()}{td.Day.ToString()}-{_lastNumber}";
+                Response.Extension = $"XYH-{td.Year.ToString()}{td.Month.ToString()}{td.Day.ToString()}{string.Format("{0:D3}", _lastNumber)}";
                 Response.Message = $"getjobnumber sucess";
             }
             catch (Exception e)
@@ -430,6 +429,24 @@ namespace XYHHumanPlugin.Controllers
 
             nwf.BodyInfo.FileInfo.Add(fileInfoType);
             return nwf;
+        }
+
+        [HttpGet("simpleSearch")]
+        [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
+        public async Task<PagingResponseMessage<HumanInfoResponse>> SimpleSearch(UserInfo User, string permissionId, string keyword, int pageSize, int pageIndex)
+        {
+            var r = new PagingResponseMessage<HumanInfoResponse>();
+            try
+            {
+                r = await _humanManage.SimpleSearch(User, permissionId, keyword, pageSize, pageIndex);
+            }
+            catch (Exception e)
+            {
+                r.Code = ResponseCodeDefines.ServiceError;
+                r.Message = "服务器错误：" + e.Message;
+                Logger.Error("error");
+            }
+            return r;
         }
 
         #region Flow

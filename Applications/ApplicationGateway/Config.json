@@ -12,7 +12,7 @@
   },
   "Redis": {
     "InstanceName": "AC",
-    "Configuration": "127.0.0.1:6379"
+    "Configuration": "127.0.0.1:6379,password=xyh@2017"
   },
   "AuthUrl": "https://testauth.xinyaohangdc.com",
   "ClientID": "apigateway",

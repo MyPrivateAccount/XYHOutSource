@@ -7,6 +7,7 @@ export const getDicParList = createAction(actionTypes.DIC_GET_PARLIST);
 
 //部门组织树
 export const orgGetPermissionTree = createAction(actionTypes.ORG_GET_PERMISSION_TREE);
+export const getEmpList = createAction(actionTypes.EMP_GET_LIST);
 //添加 
 export const orgFtParamAdd = createAction(actionTypes.ORG_FT_PARAM_ADD);
 //修改
@@ -85,3 +86,29 @@ export const searchfyxqReport= createAction(actionTypes.FINA_QUERY_FYXQB);
 export const searchYjtzhz = createAction(actionTypes.FINA_QUERY_YJTZHZ);
 //查询调佣详情表
 export const searchTyxq = createAction(actionTypes.FINA_QUERY_TYXQ);
+//收付
+export const factGet = createAction(actionTypes.DEALRP_FACTGET);
+//收款
+export const factGetGet = createAction(actionTypes.DEALRP_FACTGET_GET_SAVE);
+//付款
+export const factGetPay = createAction(actionTypes.DEALRP_FACTGET_PAY_SAVE);
+//获取商铺详情
+export const getShopDetail = createAction(actionTypes.DEALRP_SHOP_GET);
+//获取楼盘详情
+export const getBuildingDetail = createAction(actionTypes.DEALRP_BUILDING_GET);
+//同步日期
+export const syncYJDate = createAction(actionTypes.DEALRP_SYNC_DATE);
+//同步报告基础信息
+export const syncRp = createAction(actionTypes.DEALRP_SYNC_RP);
+export const syncWy = createAction(actionTypes.DEALRP_SYNC_WY);
+export const syncYz = createAction(actionTypes.DEALRP_SYNC_YZ);
+export const syncKh = createAction(actionTypes.DEALRP_SYNC_KH);
+export const syncFp = createAction(actionTypes.DEALRP_SYNC_FP);
+//打开详情页面
+export const openRpDetail = createAction(actionTypes.DEALRP_OPEN_RP_DETAIL)
+//清空页面输入
+export const rpClear = createAction(actionTypes.DEALRP_RP_CLEAR)
+//搜索员工
+export const searchHuman = createAction(actionTypes.SEARCH_HUMAN_INFO)
+//删除报告
+export const dealRpDelete = createAction(actionTypes.DEALRP_RP_DELETE)

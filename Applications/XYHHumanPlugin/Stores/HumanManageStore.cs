@@ -37,6 +37,40 @@ namespace XYHHumanPlugin.Stores
 
         protected HumanDbContext Context { get; }
 
+        public IQueryable<HumanInfo> SimpleQuery
+        {
+            get
+            {
+                var q = from hr in Context.HumanInfos.AsNoTracking()
+                        join oe1 in Context.OrganizationExpansions.AsNoTracking() on new { hr.DepartmentId, Type = "Region" } equals new { DepartmentId = oe1.SonId, Type = oe1.Type } into oe2
+                        from oe in oe2.DefaultIfEmpty()
+                        join o1 in Context.Organizations.AsNoTracking() on hr.DepartmentId equals o1.Id into o2
+                        from o in o2.DefaultIfEmpty()
+                        select new HumanInfo()
+                        {
+                            ID = hr.ID,
+                            UserID = hr.UserID,
+                            Name = hr.Name,
+                            Position = hr.Position,
+                            DepartmentId = hr.DepartmentId,
+                            Organizations = new Organizations()
+                            {
+                                Id = o.Id,
+                                OrganizationName = o.OrganizationName,
+                                Type = o.Type
+                            },
+                            OrganizationExpansion = new OrganizationExpansion()
+                            {
+                                OrganizationId = oe.OrganizationId,
+                                SonId = oe.SonId,
+                                FullName = oe.FullName
+                            }
+                        };
+                return q;
+            }
+        }
+
+
         public IEnumerable<T> DapperSelect<T>(string sql)
         {
             return Context.Database.GetDbConnection().Query<T>(sql);
@@ -459,6 +493,11 @@ namespace XYHHumanPlugin.Stores
             {
                 throw;
             }
+        }
+
+        public async Task<List<Organizations>> GetAllOrganization()
+        {
+            return Context.Organizations.Where(a => a.Id != "").ToList();
         }
 
         public async Task<SocialInsurance> GetSocialInfoAsync(string idcard)

@@ -1,48 +1,52 @@
 //人数分摊组织设置页面
 import { connect } from 'react-redux';
-import React,{Component} from 'react';
+import React, { Component } from 'react';
 import { Layout, Table, Button, Checkbox, Popconfirm, Tooltip, Row, Col, Input, Spin, Select, TreeSelect } from 'antd'
-import {orgFtParamAdd, orgFtParamUpdate, orgFtParamSave, orgFtDialogClose,orgGetPermissionTree, orgFtParamDelete,orgFtParamListGet} from '../../actions/actionCreator'
+import { orgFtParamAdd, orgFtParamUpdate, orgFtParamSave, orgFtDialogClose, orgGetPermissionTree, orgFtParamDelete, orgFtParamListGet } from '../../actions/actionCreator'
 import PeopleOrgFtEditor from './peopleOrgFtEditor'
 import SearchCondition from '../../constants/searchCondition'
 
 const { Header, Content } = Layout;
 const Option = Select.Option;
 
-class PeopleSet extends Component{
+class PeopleSet extends Component {
     state = {
         pagination: {},
-        isDataLoading:false,
-        orgid:''
+        isDataLoading: false,
+        branchId: ''
     }
     appTableColumns = [
-        { title: '组织', dataIndex: 'branchId', key: 'branchId' },
+        { title: '组织', dataIndex: 'name', key: 'name' },
         { title: '分摊比例', dataIndex: 'ftbl', key: 'ftbl' },
         {
             title: '操作', dataIndex: 'edit', key: 'edit', render: (text, recored) => (
                 <span>
-                    <Tooltip title='编辑'>
-                        &nbsp;<Button type='primary' shape='circle' size='small' icon='team' onClick={(e) => this.handleEditClick(recored)} />
-                    </Tooltip>
-                    <Tooltip title='删除'>
-                        &nbsp;<Button type='primary' shape='circle' size='small' icon='team' onClick={(e) => this.handleDelClick(recored)} />
-                    </Tooltip>
+                    <Popconfirm title="是否删除该分摊项?" onConfirm={this.zfconfirm} onCancel={this.zfcancel} okText="确认" cancelText="取消">
+                        <Button type='primary' shape='circle' size='small' icon='delete' />
+                    </Popconfirm>
                 </span>
             )
         }
     ];
-    handleDelClick = (info) =>{
+    zfconfirm=(e)=>{
+        this.handleDelClick(e)
+    }
+    zfcancel=(e)=>{
+
+    }
+    handleDelClick = (info) => {
         this.props.dispatch(orgFtParamDelete(info));
     }
-    handleEditClick = (info) =>{
+    handleEditClick = (info) => {
         this.props.dispatch(orgFtParamUpdate(info));
     }
-    handleNew = (info)=>{
+    handleNew = (info) => {
         console.log(info);
         this.props.dispatch(orgFtParamAdd());
     }
     handleSearch = (e) => {
         console.log(e)
+        this.setState({branchId:e})
         SearchCondition.ppFtListCondition.branchId = e;
         console.log("查询条件", SearchCondition);
         this.setState({ isDataLoading: true });
@@ -55,13 +59,11 @@ class PeopleSet extends Component{
         this.setState({ isDataLoading: true });
         this.props.dispatch(orgFtParamListGet(SearchCondition.empSearchCondition));
     };
-    componentDidMount = ()=>{
-        if (this.props.permissionOrgTree.AddUserTree.length == 0) {
-            this.props.dispatch(orgGetPermissionTree("UserInfoCreate"));
-        }
-        this.handleSearch();
+    componentDidMount = () => {
+        this.setState({isDataLoading:true})
+        this.props.dispatch(orgGetPermissionTree("UserInfoCreate"));
     }
-    componentWillReceiveProps = (newProps)=>{
+    componentWillReceiveProps = (newProps) => {
         this.setState({ isDataLoading: false });
         let paginationInfo = {
             pageSize: newProps.ppFtSearchResult.pageSize,
@@ -70,36 +72,58 @@ class PeopleSet extends Component{
         };
         console.log("分页信息：", paginationInfo);
         this.setState({ pagination: paginationInfo });
+        if (newProps.operInfo.operType === 'org_update') {
+            console.log('org_update')
+            this.setState({isDataLoading: true ,branchId:newProps.permissionOrgTree.AddUserTree[0].key})
+            this.handleSearch(newProps.permissionOrgTree.AddUserTree[0].key)
+            newProps.operInfo.operType = ''
+        }
     }
-    render(){
+    getListData=()=>{
+        if(this.props.ppFtSearchResult.extension == null){
+            return null
+        }
+        let data = this.props.ppFtSearchResult.extension;
+            for(let i=0;i<data.length;i++){
+                data[i].ftbl = data[i].ftbl*100+'%'
+                data[i].name = this.getOrgNameById(data[i].branchId)
+            }
+        return data
+    }
+    //根据组织id获取组织名称
+    getOrgNameById=(branchId)=>{
+        return '测试'
+    }
+    render() {
         return (
             <Layout>
-                <div style={{'margin':5}}>
+                <div style={{ 'margin': 5 }}>
                     组织：
                     <TreeSelect style={{ width: 300 }}
-                                    dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-                                    treeData={this.props.permissionOrgTree.AddUserTree}
-                                    placeholder="所属组织"
-                                    defaultValue={this.props.orgid}
-                                    onChange={this.handleSearch}>
+                        dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+                        treeData={this.props.permissionOrgTree.AddUserTree}
+                        placeholder="所属组织"
+                        value = {this.state.branchId}
+                        onChange={this.handleSearch}>
                     </TreeSelect>
                 </div>
                 <Tooltip title="新增">
-                    <Button type='primary' shape='circle' icon='plus' onClick={this.handleNew} style={{'margin':10}}/>
+                    <Button type='primary' shape='circle' icon='plus' onClick={this.handleNew} style={{ 'margin': 10 }} />
                 </Tooltip>
                 <Spin spinning={this.state.isDataLoading}>
-                 <Table  columns={this.appTableColumns} dataSource={this.props.ppFtSearchResult.ext}></Table>
-                 </Spin>
-                <PeopleOrgFtEditor/>
+                    <Table columns={this.appTableColumns} dataSource={this.getListData()}></Table>
+                </Spin>
+                <PeopleOrgFtEditor />
             </Layout>
         )
     }
 }
-function peoMapStateToProps(state){
+function peoMapStateToProps(state) {
     return {
         activeTreeNode: state.org.activeTreeNode,
         permissionOrgTree: state.org.permissionOrgTree,
-        ppFtSearchResult:state.ppft.ppFtSearchResult
+        ppFtSearchResult: state.ppft.ppFtSearchResult,
+        operInfo:state.org.operInfo
     }
 }
 

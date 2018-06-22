@@ -11,11 +11,14 @@ const Option = Select.Option;
 class TradeBnsOwner extends Component {
   state = {
     isDataLoading: false,
-    rpData:[]
+    rpData: []
   }
   componentWillMount = () => {
     this.setState({ isDataLoading: true, tip: '信息初始化中' })
     this.props.dispatch(getDicParList(['COMMISSION_YZ_QHTSC']));
+  }
+  componentDidMount = () => {
+    
   }
   componentWillReceiveProps(newProps) {
     this.setState({ isDataLoading: false });
@@ -28,8 +31,15 @@ class TradeBnsOwner extends Component {
       newProps.operInfo.operType = ''
     }
     else if (newProps.operInfo.operType === 'YZGET_UPDATE') {//信息获取成功
-      this.setState({ rpData: newProps.ext});
+      this.setState({ rpData: newProps.ext });
       newProps.operInfo.operType = ''
+    }
+    else if (newProps.syncYzOp.operType === 'DEALRP_SYNC_YZ') {
+      let newdata = newProps.syncYzData
+      this.props.form.setFieldsValue({'yzMc':newdata.yzMc })
+      this.props.form.setFieldsValue({'yzSj':newdata.yzSj })
+      newProps.syncYzOp.operType = ''
+      this.setState({rpData:newdata})
     }
   }
   handleSave = (e) => {
@@ -66,7 +76,7 @@ class TradeBnsOwner extends Component {
               <FormItem {...formItemLayout} label={(<span>名称</span>)}>
                 {
                   getFieldDecorator('yzMc', {
-                    rules: [{ required: true,message:'请填写业主名称' }],
+                    rules: [{ required: true, message: '请填写业主名称' }],
                     initialValue: this.state.rpData.yzMc,
                   })(
                     <Input style={{ width: 200 }}></Input>
@@ -222,7 +232,9 @@ function MapStateToProps(state) {
   return {
     basicData: state.base,
     operInfo: state.rp.operInfo,
-    ext:state.rp.ext
+    ext: state.rp.ext,
+    syncYzOp:state.rp.syncYzOp,
+    syncYzData:state.rp.syncYzData
   }
 }
 

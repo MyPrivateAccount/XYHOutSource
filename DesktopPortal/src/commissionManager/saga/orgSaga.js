@@ -31,7 +31,57 @@ export function* getPermissionOrgAsync(state) {
         });
     }
 }
+//获取用户列表
+export function* getEmpListAsync(state) {
+    let result = { isOk: false, extension: [], msg: '用户列表获取失败' };
+    let url = WebApiConfig.user.List;
+    console.log(`url:${url},body:${JSON.stringify(state.payload)}`);
+    try {
+        const empResult = yield call(ApiClient.post, url, state.payload);
+        getApiResult(empResult, result);
+        ///yield put({ type: actionUtils.getActionType(actionTypes.SET_SEARCH_LOADING), payload: false });
+    } catch (e) {
+        result.msg = '用户列表获取接口调用失败！';
+    }
+    if (result.isOk) {
+            console.log("获取用户列表成功:"+result)
+            yield put({ type: actionUtils.getActionType(actionTypes.EMP_LIST_UPDATE), payload: result });
+    } else {
+        notification.error({
+            message: '员工',
+            description: result.msg,
+            duration: 3
+        });
+    }
+
+}
+//根据分公司的id获取分公司的员工列表
+export function* getHumanListAsync(state) {
+    let result = { isOk: false, extension: [], msg: '员工列表获取失败' };
+    let url = WebApiConfig.human.List;
+    console.log(`url:${url},body:${JSON.stringify(state.payload)}`);
+    try {
+        const humanResult = yield call(ApiClient.post, url, state.payload);
+        getApiResult(humanResult, result);
+        ///yield put({ type: actionUtils.getActionType(actionTypes.SET_SEARCH_LOADING), payload: false });
+    } catch (e) {
+        result.msg = '员工列表获取接口调用失败！';
+    }
+    if (result.isOk) {
+            console.log("获取员工列表成功:"+result)
+            yield put({ type: actionUtils.getActionType(actionTypes.SEARCH_HUMAN_INFO_SUCCESS), payload: result });
+    } else {
+        notification.error({
+            message: '员工',
+            description: result.msg,
+            duration: 3
+        });
+    }
+
+}
 
 export default function* watchAllOrgAsync() {
     yield takeLatest(actionUtils.getActionType(actionTypes.ORG_GET_PERMISSION_TREE), getPermissionOrgAsync);
+    yield takeLatest(actionUtils.getActionType(actionTypes.EMP_GET_LIST), getEmpListAsync);
+    yield takeLatest(actionUtils.getActionType(actionTypes.SEARCH_HUMAN_INFO), getHumanListAsync);
 }

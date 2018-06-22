@@ -3,9 +3,8 @@
 import { connect } from 'react-redux';
 import React, { Component } from 'react';
 import moment from 'moment'
-import { getDicParList,dealRpSave} from '../../../actions/actionCreator'
+import { getDicParList,dealRpSave,syncYJDate} from '../../../actions/actionCreator'
 import {notification, DatePicker, Form, Span, Layout, Table, Button, Radio, Popconfirm, Tooltip, Row, Col, Input, Spin, Select, TreeSelect,Modal} from 'antd'
-import TradeReportTable from './tradeReportTable'
 import './trade.less'
 
 const RadioGroup = Radio.Group;
@@ -42,13 +41,23 @@ class TradeContract extends Component {
             this.setState({ rpData: newProps.ext});
             newProps.operInfo.operType = ''
         }
+        else if(newProps.syncRpOp.operType === 'DEALRP_SYNC_RP'){
+            let newdata = newProps.syncRpData
+            this.props.form.setFieldsValue({'fyzId':newdata.fyzId})
+            this.props.form.setFieldsValue({'cjrId':newdata.cjrId})
+            this.props.form.setFieldsValue({'cjrq':moment(newdata.cjrq)})
+            this.props.form.setFieldsValue({'cjzj':newdata.cjzj})
+            this.props.form.setFieldsValue({'ycjyj':newdata.ycjyj})
+            newProps.syncRpOp.operType = ''
+            this.setState({rpData:newdata})
+        }
     }
     handleSave = (e) => {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (!err) {
                 values.id = this.props.rpId;
-                if(this.state.cjrq!==''){
+                /*if(this.state.cjrq!==''){
                     values.cjrq = this.state.cjrq;
                 }
                 else{
@@ -77,7 +86,13 @@ class TradeContract extends Component {
                 }
                 else{
                     values.htqyrq = this.state.rpData.htqyrq;
-                }
+                }*/
+                values.cjrq = values.cjrq.format('YYYY-MM-DD')
+                values.yxsqyrq = values.yxsqyrq.format('YYYY-MM-DD')
+                values.yjfksj = values.yjfksj.format('YYYY-MM-DD')
+                values.kflfrq = values.kflfrq.format('YYYY-MM-DD')
+                values.htqyrq = values.htqyrq.format('YYYY-MM-DD')
+                
                 console.log(values);
                 this.setState({isDataLoading:true,tip:'保存信息中...'})
                 this.props.dispatch(dealRpSave(values));
@@ -87,6 +102,7 @@ class TradeContract extends Component {
     cjrq_dateChange=(value,dateString)=>{
         console.log(dateString)
         this.setState({cjrq:dateString})
+        this.props.dispatch(syncYJDate(dateString))//同步日期給业绩分配页面
     }
     wqrq_dateChange=(value,dateString)=>{
         console.log(dateString)
@@ -112,11 +128,7 @@ class TradeContract extends Component {
     }
     //选择成交报备
     chooseReport=()=>{
-        this.cjbbdlg.show()
-    }
-    //
-    onSelf=(e)=>{
-        this.cjbbdlg = e;
+        this.props.onShowCjbbtb()
     }
     render() {
         const { getFieldDecorator } = this.props.form;
@@ -136,7 +148,6 @@ class TradeContract extends Component {
 
         return (
             <Layout>
-                <TradeReportTable onSelf = {this.onSelf}/>
                 <div style={{ marginLeft: 12 }}>
                     <Row>
                         <Col span={12} pull={1}>
@@ -547,7 +558,9 @@ function MapStateToProps(state) {
     return {
         basicData: state.base,
         operInfo:state.rp.operInfo,
-        ext:state.rp.ext
+        ext:state.rp.ext,
+        syncRpData:state.rp.syncRpData,
+        syncRpOp:state.rp.syncRpOp
     }
 }
 

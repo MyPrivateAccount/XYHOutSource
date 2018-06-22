@@ -11,7 +11,9 @@ class OrgParamEditor extends Component{
     state = {
         dialogTitle:'',
         visible:false,
-        paramInfo:{}
+        paramInfo:{
+        },
+        isEdit:false
     }
     componentWillMount(){
 
@@ -19,13 +21,21 @@ class OrgParamEditor extends Component{
     componentWillReceiveProps(newProps){
         let {operType} = newProps.operInfo;
         if (operType === 'edit') {
-            this.setState({visible: true, dialogTitle: '修改组织参数',paramInfo:newProps.activeOrgParam});
+            this.setState({visible: true, isEdit:true, dialogTitle: '修改组织参数',paramInfo:newProps.activeOrgParam});
         } else if (operType === 'add') {
-            this.setState({visible: true, dialogTitle: '添加组织参数'});
+            this.clear()
+            this.setState({visible: true,isEdit:false, dialogTitle: '添加组织参数'});
+            
         } else {
             this.props.form.resetFields();
             this.setState({visible: false});
         }
+    }
+    clear=()=>{
+        let paramInfo = {...this.state.paramInfo}
+        paramInfo.parCode = ''
+        paramInfo.parValue = ''
+        this.setState({paramInfo})
     }
     handleOk = (e) => {
         e.preventDefault();
@@ -60,11 +70,11 @@ class OrgParamEditor extends Component{
                                 </span>
                             )}
                             hasFeedback>
-                            {getFieldDecorator('branchId', {
+                            {getFieldDecorator('name', {
 
-                                initialValue: this.state.paramInfo.orgName,
+                                initialValue: this.state.paramInfo.name,
                             })(
-                                <Input style={{float: 'left',width:300}}></Input>
+                                <Input style={{float: 'left',width:300}} disabled={true}></Input>
                                 )}
                         </FormItem>
                     </Col>
@@ -75,14 +85,10 @@ class OrgParamEditor extends Component{
                             {...formItemLayout}
                             label={(<span>参数名称</span>)}>
                             {getFieldDecorator('parCode', {
-                                initialValue: this.state.paramInfo.paramName
+                                initialValue: this.state.paramInfo.parCode,
+                                rules: [{required: true, message: '请填写参数名称!' }]
                             })(
-                                <Select defaultValue="lucy" style={{ width: 120 }}>
-                                    <Option value="jack">Jack</Option>
-                                    <Option value="lucy">Lucy</Option>
-                                    <Option value="disabled" disabled>Disabled</Option>
-                                    <Option value="Yiminghe">yiminghe</Option>
-                                </Select>
+                                <Input style={{float: 'left',width:300}}></Input>
                                 )}
                         </FormItem></Col>
                 </Row>
@@ -92,7 +98,7 @@ class OrgParamEditor extends Component{
                             {...formItemLayout}
                             label={(<span>参数值</span>)}>
                             {getFieldDecorator('parValue', {
-                                initialValue: this.state.paramInfo.paramVal,
+                                initialValue: this.state.paramInfo.parValue,
                                 rules: [{required: true, message: '请填写参数值!' }]
                             })(
                                 <Input style={{float: 'left',width:300}}/>

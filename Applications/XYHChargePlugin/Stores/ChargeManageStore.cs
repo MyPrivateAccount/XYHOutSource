@@ -31,7 +31,7 @@ namespace XYHHumanPlugin.Stores
 
         public int? CostSum(string id)
         {
-            return Context.CostInfos.Where(a => a.ChargeID == id).Sum(b=>b.Cost);
+            return (int)Context.CostInfos.Where(a => a.ChargeId == id).Sum(b=>b.Amount);
         }
 
         public async Task<ChargeInfo> CreateChargeAsync(SimpleUser userinfo, ChargeInfo chargeinfo, string modifyid, string checkaction, CancellationToken cancellationToken = default(CancellationToken))
@@ -62,10 +62,10 @@ namespace XYHHumanPlugin.Stores
             modify.ModifyCheck = checkaction;
 
             chargeinfo.CreateUser = userinfo.Id;
-            chargeinfo.CreateUserName = userinfo.UserName;
+         //   chargeinfo.CreateUserName = userinfo.UserName;
             chargeinfo.Department = userinfo.OrganizationId;
             chargeinfo.CreateTime = DateTime.Now;
-            chargeinfo.CurrentModify = modifyid;
+        //    chargeinfo.CurrentModify = modifyid;
 
             Context.Add(modify);
             Context.Add(chargeinfo);
@@ -82,10 +82,10 @@ namespace XYHHumanPlugin.Stores
 
             foreach (var item in costinfo)
             {
-                if (string.IsNullOrEmpty(item.ID))
-                {
-                    item.ID = Guid.NewGuid().ToString();
-                }
+                //if (string.IsNullOrEmpty(item.ID))
+                //{
+                //    item.ID = Guid.NewGuid().ToString();
+                //}
             }
 
             Context.AddRange(costinfo);
@@ -101,10 +101,10 @@ namespace XYHHumanPlugin.Stores
 
             foreach (var item in costinfo)
             {
-                if (string.IsNullOrEmpty(item.ID))
-                {
-                    item.ID = Guid.NewGuid().ToString();
-                }
+                //if (string.IsNullOrEmpty(item.ID))
+                //{
+                //    item.ID = Guid.NewGuid().ToString();
+                //}
                 item.CreateTime = DateTime.Now;
                 item.CreateUser = user.Id;
             }
@@ -130,7 +130,7 @@ namespace XYHHumanPlugin.Stores
                 throw new ArgumentNullException(nameof(scope));
             }
 
-            scope.ReceiptID = strid;
+            scope.ReceiptId = strid;
             
 
             Context.Add(scope);
@@ -181,14 +181,14 @@ namespace XYHHumanPlugin.Stores
             ChargeInfo info = new ChargeInfo()
             {
                 ID = chargeid,
-                PostTime = DateTime.Now,
-                PostDepartment = department
+              //  PostTime = DateTime.Now,
+             //   PostDepartment = department
             };
 
             Context.Attach(info);
             var entry = Context.Entry(info);
-            entry.Property(x => x.PostTime).IsModified = true;
-            entry.Property(x => x.PostDepartment).IsModified = true;
+          // entry.Property(x => x.PostTime).IsModified = true;
+          //  entry.Property(x => x.PostDepartment).IsModified = true;
             await Context.SaveChangesAsync(cancellationToken);
         }
 
@@ -196,15 +196,15 @@ namespace XYHHumanPlugin.Stores
         {
             foreach (var item in lst)
             {
-                if (Context.ReceiptInfos.Any(x=>x.ID == item.ID))
-                {
-                    Context.Attach(item);
-                    Context.Update(item);
-                }
-                else
-                {
-                    Context.Add(item);
-                }
+                //if (Context.ReceiptInfos.Any(x=>x.ID == item.ID))
+                //{
+                //    Context.Attach(item);
+                //    Context.Update(item);
+                //}
+                //else
+                //{
+                //    Context.Add(item);
+                //}
             }
 
             await Context.SaveChangesAsync(cancellationToken);

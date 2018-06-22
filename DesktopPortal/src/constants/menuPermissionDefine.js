@@ -34,6 +34,9 @@ const ToolMenuPermissionDefine = [
             {id:'EXPORT_ALL_CONTRACT',name: '全部导出'},
             {id:'COMPANYA_MANAGE', name: '甲方管理'},
             {id:'INVALIDATE_CONTRACT', name: '合同作废'},
+            {id:'HT_BCXY', name: '补充协议'},
+            {id:'HT_ADD_JF', name: '新增甲方'},
+            {id:'HT_JF_DELETE', name: '删除甲方'},
         ]
     }
 ]

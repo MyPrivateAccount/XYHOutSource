@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { postBlackLst, setHumanInfo, searchConditionType,setSearchLoadingVisible, getHumanImage, setbreadPageIndex, searchHumanType,searchAgeType,searchOrderType, adduserPage } from '../../actions/actionCreator';
+import { postBlackLst, setHumanInfo, searchConditionType,setSearchLoadingVisible, getHumanImage,exportHumanForm, setbreadPageIndex, searchHumanType,searchAgeType,searchOrderType, adduserPage } from '../../actions/actionCreator';
 import React, { Component } from 'react'
 import {Table, Layout, Input, Select, Icon, Button, Row, Col, Checkbox, Tag, Pagination, Spin, notification} from 'antd'
 import '../search.less'
@@ -162,6 +162,12 @@ class Staffinfo extends Component {
     }
 
     handleExport = () => {
+        this.props.searchInfo.pageIndex=-1;
+        this.props.searchInfo.pageSize=-1;
+        this.props.dispatch(exportHumanForm({
+            data:this.props.searchInfo,
+            tree:this.props.setDepartmentOrgTree
+        }));
     }
 
     render() {
@@ -279,6 +285,7 @@ class Staffinfo extends Component {
 function stafftableMapStateToProps(state) {
     return {
         searchInfo: state.search,
+        setDepartmentOrgTree: state.basicData.searchOrgTree,
         selHumanList: state.basicData.selHumanList,
     }
 }

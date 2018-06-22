@@ -10,7 +10,21 @@ const initState = {
     searchCondition:{
         pageIndex:0,
         pageSize:10,
-    }
+    },
+    shopInfo:[],
+    buildingInfo:[],
+    syncData:'',
+    syncRpData:{},
+    syncRpOp:{operType:''},
+    syncWyData:{},
+    syncWyOp:{operType:''},
+    syncYzData:{},
+    syncYzOp:{operType:''},
+    syncKhData:{},
+    syncKhOp:{operType:''},
+    syncFpData:{},
+    syncFpOp:{operType:''},
+    rpOpenParam:{}
 };
 let rpReducerMap = {};
 //保存接口反馈
@@ -78,5 +92,61 @@ rpReducerMap[actionTypes.DEALRP_ATTACT_UPLOAD_COMPLETE] = function (state, actio
 rpReducerMap[actionTypes.DEALRP_CJBB_LISTUPDATE] = function (state, action) {
     console.log("readucer获取成交报备列表成功" + JSON.stringify(action.payload));
     return Object.assign({}, state, { rpCJBBResult:action.payload ,operInfo:{operType:'DEALRP_CJBB_LISTUPDATE'}});
+}
+rpReducerMap[actionTypes.DEALRP_FACTGET_SUCCESS] = function (state, action) {
+    console.log("readucer获取收付信息成功" + JSON.stringify(action.payload));
+    return Object.assign({}, state, { ext:action.payload ,operInfo:{operType:'DEALRP_FACTGET_SUCCESS'}});
+}
+rpReducerMap[actionTypes.DEALRP_FACTGET_GET_SAVE_SUCCESS] = function (state, action) {
+    console.log("readucer保存收款信息成功" + JSON.stringify(action.payload));
+    return Object.assign({}, state, { ext:action.payload ,operInfo:{operType:'DEALRP_FACTGET_GET_SAVE_SUCCESS'}});
+}
+rpReducerMap[actionTypes.DEALRP_FACTGET_PAY_SAVE_SUCCESS] = function (state, action) {
+    console.log("readucer保存付款信息成功" + JSON.stringify(action.payload));
+    return Object.assign({}, state, { ext:action.payload ,operInfo:{operType:'DEALRP_FACTGET_PAY_SAVE_SUCCESS'}});
+}
+rpReducerMap[actionTypes.DEALRP_BUILDING_GET_SUCCESS] = function (state, action) {
+    console.log("readucer获取楼盘详情成功" + JSON.stringify(action.payload));
+    return Object.assign({}, state, { buildingInfo:action.payload ,operInfo:{operType:'DEALRP_BUILDING_GET_SUCCESS'}});
+}
+rpReducerMap[actionTypes.DEALRP_SHOP_GET_SUCCESS] = function (state, action) {
+    console.log("readucer获取商铺详情成功" + JSON.stringify(action.payload));
+    return Object.assign({}, state, { shopInfo:action.payload ,operInfo:{operType:'DEALRP_SHOP_GET_SUCCESS'}});
+}
+rpReducerMap[actionTypes.DEALRP_SYNC_DATE] = function (state, action) {
+    console.log("readucer日期同步成功" + JSON.stringify(action.payload));
+    return Object.assign({}, state, { syncData:action.payload ,operInfo:{operType:'DEALRP_SYNC_DATE'}});
+}
+rpReducerMap[actionTypes.DEALRP_SYNC_RP] = function (state, action) {
+    console.log("readucer报告基础同步" + JSON.stringify(action.payload));
+    return Object.assign({}, state, { syncRpData:action.payload ,syncRpOp:{operType:'DEALRP_SYNC_RP'}});
+}
+rpReducerMap[actionTypes.DEALRP_SYNC_WY] = function (state, action) {
+    console.log("readucer报告物业同步" + JSON.stringify(action.payload));
+    return Object.assign({}, state, { syncWyData:action.payload ,syncWyOp:{operType:'DEALRP_SYNC_WY'}});
+}
+rpReducerMap[actionTypes.DEALRP_SYNC_YZ] = function (state, action) {
+    console.log("readucer报告业主同步" + JSON.stringify(action.payload));
+    return Object.assign({}, state, { syncYzData:action.payload ,syncYzOp:{operType:'DEALRP_SYNC_YZ'}});
+}
+rpReducerMap[actionTypes.DEALRP_SYNC_KH] = function (state, action) {
+    console.log("readucer报告客户同步" + JSON.stringify(action.payload));
+    return Object.assign({}, state, { syncKhData:action.payload ,syncKhOp:{operType:'DEALRP_SYNC_KH'}});
+}
+rpReducerMap[actionTypes.DEALRP_SYNC_FP] = function (state, action) {
+    console.log("readucer报告分配同步" + JSON.stringify(action.payload));
+    return Object.assign({}, state, { syncFpData:action.payload ,syncFpOp:{operType:'DEALRP_SYNC_FP'}});
+}
+rpReducerMap[actionTypes.DEALRP_OPEN_RP_DETAIL] = function (state, action) {
+    console.log("readucer报打开详情页面" + JSON.stringify(action.payload));
+    return Object.assign({}, state, { rpOpenParam:action.payload ,operInfo:{operType:'DEALRP_OPEN_RP_DETAIL'}});
+}
+rpReducerMap[actionTypes.DEALRP_RP_CLEAR] = function (state, action) {
+    console.log("readucer清空页面" + JSON.stringify(action.payload));
+    return Object.assign({}, state, { rpOpenParam:action.payload ,operInfo:{operType:action.payload}});
+}
+rpReducerMap[actionTypes.DEALRP_RP_DELETE_SUCCESS] = function (state, action) {
+    console.log("readucer删除数据" + JSON.stringify(action.payload));
+    return Object.assign({}, state, { ext:action.payload ,operInfo:{operType:'DEALRP_RP_DELETE_SUCCESS'}});
 }
 export default handleActions(rpReducerMap, initState)
