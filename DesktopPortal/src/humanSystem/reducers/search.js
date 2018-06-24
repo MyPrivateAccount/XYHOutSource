@@ -4,6 +4,7 @@ import moment from 'moment';
 
 const initState = {
     attendanceList: {extension: [{key: "1", time: "tt", name: "tt", idcard: "tta", signed: "today"}], pageIndex: 0, pageSize: 10, totalCount: 1},
+    attendanceSettingList: [],
     achievementList: {extension: [], pageIndex: 0, pageSize: 10, totalCount: 1},
     stationList: [],//选中的部门职位
     orgstationList: [],//选中的部门职位
@@ -148,7 +149,9 @@ reducerMap[actionTypes.UPDATE_SALARYINFO] = function(state, action) {
 reducerMap[actionTypes.SET_SEARCH_LOADING] = function(state, action) {
     return Object.assign({}, state, {showLoading: action.payload} );
 }
-
+reducerMap[actionTypes.UPDATE_ATTENDANCESETTINGLST] = function(state, action) {
+    return Object.assign({}, state, {attendanceSettingList: action.payload} );
+}
 
 
 export default handleActions(reducerMap, initState);

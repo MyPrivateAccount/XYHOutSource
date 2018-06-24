@@ -1,42 +1,67 @@
 import { connect } from 'react-redux';
-import { setSearchLoadingVisible, adduserPage } from '../../actions/actionCreator';
+import { setSearchLoadingVisible, adduserPage, getAttendenceSettingList, postSetAttendenceSettingList } from '../../actions/actionCreator';
 import React, { Component } from 'react';
-import { Input, Spin, Checkbox, Button, notification } from 'antd';
+import { Input, Spin, Upload, Checkbox, Button, notification, Modal, Row, Col, InputNumber} from 'antd';
+import { exceltoobj } from '../../constants/import';
 //import {getDicParList} from '../actions/actionCreator';
 import SearchCondition from './searchCondition';
 import SearchResult from './searchResult';
 import './search.less';
 
 const buttonDef = [
-    { buttonID:"import", buttonName:"导入", icon:'', type:'primary', size:'large',},
+    { buttonID:"import", buttonName:"导入", icon:'', isupload: true, type:'primary', size:'large',},
     { buttonID:"setting", buttonName:"配置", icon:'', type:'primary', size:'large',},
-    { buttonID:"modify", buttonName:"修改", icon:'', type:'primary', size:'large',},
+    // { buttonID:"modify", buttonName:"修改", icon:'', type:'primary', size:'large',},
     { buttonID:"delete", buttonName:"删除", icon:'', type:'primary', size:'large',},
 ];
 
+const typeDic = [//对应服务器列表
+    "",
+    "调休",
+    "事假",
+    "病假",
+    "年假",
+    "婚假",
+    "丧假",
+    "迟到",
+    "旷工",
+]
 
 class MainIndex extends Component {
     state = {
+        attendanceList:[]//用来当临时表
     }
 
     componentWillMount() {
-        this.props.dispatch(setSearchLoadingVisible(false));//测试
+        this.props.dispatch(getAttendenceSettingList());//测试
+    }
+
+    handleOk = () => {
+       this.props.dispatch(postSetAttendenceSettingList(this.state.attendanceList));
+    }
+
+    handleCancel = () => {
+        this.setState({
+            showModal: false,
+            attendanceList: [],
+        });
+    }
+
+    importExcel= (file) => {
+        let self = this;
+        let reader = new FileReader();
+        reader.onload  = function (e) {
+            exceltoobj(e.target.result);
+        }
+        reader.readAsArrayBuffer(file);
     }
 
     handleClickFucButton = (e) => {
-        if (e.target.id === "addnew") {
-            //this.props.dispatch(adduserPage({id: 11, menuID: 'menu_blackaddnew', displayName: '新建黑名单', type:'item'}));
-        } else if (e.target.id === "modify") {
-             if (this.props.selBlacklist.length > 0){
-                 //this.props.dispatch(adduserPage({id: 12, menuID: 'menu_blackmodify', displayName: '修改黑名单', type:'item'}));
-             }
-             else {
-                notification.error({
-                    message: '未选择指定考勤',
-                    description: "请选择指定考勤",
-                    duration: 3
-                });
-             }
+        if (e.target.id === "import") {
+            
+        } else if (e.target.id === "setting") {
+            this.setState({attendanceList: this.props.attendanceSettingList.slice(), showModal: true,});
+            
         } else if (e.target.id === "delete") {
             if (this.props.selBlacklist.length > 0) {
                 //this.props.dispatch(adduserPage({menuID: 'costcharge', disname: '删除黑名单', type:'item'}));//删除要个jb啊
@@ -71,15 +96,54 @@ class MainIndex extends Component {
         return (
             <div >
                 <Spin spinning={showLoading}>
+                    <Modal title="考勤金额设定"
+                            visible={this.state.showModal}
+                            onOk={this.handleOk}
+                            onCancel={this.handleCancel}>
+                            {
+                                this.state.attendanceList.map(
+                                    function(dv, i) {
+                                        return (
+                                            <Row style={{ margin: '6px' }}>
+                                                <Col span={3}>typeDic[v.type]</Col>
+                                                <Col span={12}>
+                                                    <InputNumber 
+                                                        onChange={(v)=>{dv.times = v.target.value;this.forceUpdate();}} 
+                                                        value={dv.times}>
+                                                    </InputNumber>
+                                                </Col>
+                                                <Col span={12}>
+                                                    <InputNumber 
+                                                        onChange={(v)=>{dv.money = v.target.value;this.forceUpdate();}} 
+                                                        value={dv.money}>
+                                                    </InputNumber>
+                                                </Col>
+                                            </Row>
+                                        );
+                                    }
+                                )
+                            }
+                    </Modal>
                     <SearchCondition />
                     {
                         buttonDef.map(
                             (button, i)=>this.hasPermission(button) ?
-                             <Button key = {i} id= {button.buttonID} style={{marginTop: '10px', marginBottom: '10px', marginRight: '10px', border:0}}
-                             onClick={this.handleClickFucButton} 
-                             icon={button.icon} size={button.size} type={button.type}>{button.buttonName}</Button> : null
+                            button.isupload?
+                            <div key = {i} style={{display:"inline-block", marginTop:"10px",marginBottom: '10px', marginRight: '10px', border:0}}>
+                            <Upload showUploadList={false} beforeUpload={this.importExcel} style={{border:0}} >
+                            <Button  id= {button.buttonID} style={{ border:0}}
+                            onClick={this.handleClickFucButton} 
+                            icon={button.icon} size={button.size} type={button.type}>{button.buttonName}</Button></Upload>
+                            </div>
+                            :
+                            <div key = {i} style={{display:"inline-block",position:"relative", marginTop:"10px",marginBottom: '10px', marginRight: '10px', border:0}}>
+                            <Button  id= {button.buttonID}
+                            onClick={this.handleClickFucButton} 
+                            icon={button.icon} size={button.size} type={button.type}>{button.buttonName}</Button></div>
+                            : null
                         )
                     }
+                    
                     <SearchResult />
                 </Spin>
             </div>
@@ -89,6 +153,7 @@ class MainIndex extends Component {
 
 function mapStateToProps(state) {
     return {
+        attendanceSettingList: state.search.attendanceSettingList,
         showLoading: state.search.showLoading,
     }
 }

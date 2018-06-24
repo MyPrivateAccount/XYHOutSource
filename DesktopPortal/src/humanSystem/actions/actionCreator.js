@@ -98,3 +98,7 @@ export const upaddOrg = createAction(actionTypes.UPDATE_ADD_ORG);
 
 export const addOrg = createAction(actionTypes.ADD_ORG);
 export const updateOrg = createAction(actionTypes.UPDATE_ORG);
+
+//考勤
+export const getAttendenceSettingList = createAction(actionTypes.GET_ATTENDANCESETTINGLST);
+export const postSetAttendenceSettingList = createAction(actionTypes.POST_ATTENDANCESETTINGLST);
