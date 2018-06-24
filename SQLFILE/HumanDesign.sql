@@ -130,11 +130,37 @@ CREATE TABLE `XYH_HU_LEAVEINFO` (
 DROP TABLE IF EXISTS `XYH_HU_ATTENDANCE`;/*考勤*/
 CREATE TABLE `XYH_HU_ATTENDANCE` (
   `ID` varchar(127) NOT NULL DEFAULT '',
-  `Time` datetime NOT NULL, /*考勤时间*/
+  `UserID` varchar(127) NOT NULL DEFAULT '',/*工号*/
+  `Date` datetime NOT NULL, /*考勤日期*/
   `Name` varchar(32) NOT NULL DEFAULT '',/*姓名*/
-  `IDCard` varchar(127) NOT NULL DEFAULT '',/*身份*/
-  `History` varchar(255) NOT NULL DEFAULT '',/*签到记录*/
+  `Comments` varchar(255) DEFAULT '',/*备注*/
+  `Normal` int(11) DEFAULT 0,/*正常出勤天数*/
+  `NormalDate` varchar(400) DEFAULT '',/*json字符串，记录详细日期*/
+  `Relaxation` int(11) DEFAULT 0,/*调休天数*/
+  `RelaxationDate` varchar(400) DEFAULT '',/*json字符串，记录详细日期*/
+  `Matter` int(11) DEFAULT 0,/*事假天数*/
+  `MatterDate` varchar(400) DEFAULT '',/*json字符串，记录详细日期*/
+  `Illness` int(11) DEFAULT 0,/*病假天数*/
+  `IllnessDate` varchar(400) DEFAULT '',/*json字符串，记录详细日期*/
+  `Annual` int(11) DEFAULT 0,/*年假天数*/
+  `AnnualDate` varchar(400) DEFAULT '',/*json字符串，记录详细日期*/
+  `Marry` int(11) DEFAULT 0,/*婚假天数*/
+  `MarryDate` varchar(400) DEFAULT '',/*json字符串，记录详细日期*/
+  `Funeral` int(11) DEFAULT 0,/*丧假天数*/
+  `FuneralDate` varchar(400) DEFAULT '',/*json字符串，记录详细日期*/
+  `Late` int(11) DEFAULT 0,/*迟到天数*/
+  `LateDate` varchar(400) DEFAULT '',/*json字符串，记录详细日期*/
+  `Absent` int(11) DEFAULT 0,/*旷工天数*/
+  `AbsentDate` varchar(400) DEFAULT '',/*json字符串，记录详细日期*/
   PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `XYH_HU_ATTENDANCESETTING`;/*考勤设置表*/
+CREATE TABLE `XYH_HU_ATTENDANCESETTING` (
+  `Type` int(11) DEFAULT 0,/*限定类型*/
+  `Times` int(11) DEFAULT 0,/*次数*/
+  `Money` int(11) DEFAULT 0,
+  PRIMARY KEY (`Type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `XYH_HU_POSITION`;/*职位管理*/

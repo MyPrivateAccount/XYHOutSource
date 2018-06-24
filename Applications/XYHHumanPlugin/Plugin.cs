@@ -43,7 +43,6 @@ namespace XYHHumanPlugin
             //context.Services.AddDbContext<BaseDataDbContext>(options => options.UseMySql("Server=server-d01;database=xinyaohang;uid=root;pwd=root;"));
             context.Services.AddDbContext<HumanDbContext>(options => options.UseMySql(context.ConnectionString), ServiceLifetime.Scoped);
             context.Services.AddScoped<IHumanManageStore, HumanManageStore>();
-            context.Services.AddScoped<IOrganizationExpansionStore, OrganizationExpansionStore>();
             context.Services.AddScoped<HumanManager>();
             context.Services.AddScoped<MonthManager>();
             context.Services.AddScoped<StationManager>();

@@ -22,6 +22,11 @@ export function* getPPFTDataListByOrgIdAsyncs(state){
         //console.log(res, '获取参数列表');
         getApiResult(res, result);
         if (result.isOk) {
+            let temp=[]//临时修改
+            if(result.extension !== null && result.extension!==undefined){
+                temp.push(result.extension)
+            }
+            result.extension = temp
             yield put({ type: actionUtils.getActionType(actionTypes.ORG_FT_PARAMLIST_UPDATE), payload: result });
             // yield put({ type: actionUtils.getActionType(actionTypes.SET_SEARCH_LOADING), payload: false });
         }

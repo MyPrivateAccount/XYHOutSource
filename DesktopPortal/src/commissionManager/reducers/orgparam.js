@@ -15,7 +15,7 @@ orgParamReducerMap[actionTypes.ORG_PARAM_ADD] = function (state, action) {
 }
 orgParamReducerMap[actionTypes.ORG_PARAM_EDIT] = function (state, action) {
     console.log("readucer修改组织参数" + JSON.stringify(action.payload));
-    return Object.assign({}, state, { operInfo: { operType: 'edit', dialogOpen: true },activeOrgParam:state.payload});
+    return Object.assign({}, state, { operInfo: { operType: 'edit', dialogOpen: true },activeOrgParam:action.payload});
 }
 orgParamReducerMap[actionTypes.ORG_PARAMLIST_UPDATE] = function (state, action) {
     console.log("更新组织参数列表" + JSON.stringify(action.payload));

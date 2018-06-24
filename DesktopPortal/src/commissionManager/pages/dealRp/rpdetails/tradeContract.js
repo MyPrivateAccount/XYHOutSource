@@ -57,7 +57,7 @@ class TradeContract extends Component {
         this.props.form.validateFields((err, values) => {
             if (!err) {
                 values.id = this.props.rpId;
-                if(this.state.cjrq!==''){
+                /*if(this.state.cjrq!==''){
                     values.cjrq = this.state.cjrq;
                 }
                 else{
@@ -86,7 +86,13 @@ class TradeContract extends Component {
                 }
                 else{
                     values.htqyrq = this.state.rpData.htqyrq;
-                }
+                }*/
+                values.cjrq = values.cjrq.format('YYYY-MM-DD')
+                values.yxsqyrq = values.yxsqyrq.format('YYYY-MM-DD')
+                values.yjfksj = values.yjfksj.format('YYYY-MM-DD')
+                values.kflfrq = values.kflfrq.format('YYYY-MM-DD')
+                values.htqyrq = values.htqyrq.format('YYYY-MM-DD')
+                
                 console.log(values);
                 this.setState({isDataLoading:true,tip:'保存信息中...'})
                 this.props.dispatch(dealRpSave(values));

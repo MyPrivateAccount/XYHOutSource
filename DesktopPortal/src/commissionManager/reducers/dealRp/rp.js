@@ -145,4 +145,8 @@ rpReducerMap[actionTypes.DEALRP_RP_CLEAR] = function (state, action) {
     console.log("readucer清空页面" + JSON.stringify(action.payload));
     return Object.assign({}, state, { rpOpenParam:action.payload ,operInfo:{operType:action.payload}});
 }
+rpReducerMap[actionTypes.DEALRP_RP_DELETE_SUCCESS] = function (state, action) {
+    console.log("readucer删除数据" + JSON.stringify(action.payload));
+    return Object.assign({}, state, { ext:action.payload ,operInfo:{operType:'DEALRP_RP_DELETE_SUCCESS'}});
+}
 export default handleActions(rpReducerMap, initState)

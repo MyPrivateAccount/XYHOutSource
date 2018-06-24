@@ -1,36 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
 namespace XYHHumanPlugin.Models
 {
     /// <summary>
-    /// 文件表
+    /// 人事附件信息
     /// </summary>
-    public class FileInfo
+    public class HumanFileScope
     {
         [MaxLength(127)]
+        public string HumanId { get; set; }
+        [MaxLength(127)]
         public string FileGuid { get; set; }
-        public string Name { get; set; }
-
         [MaxLength(255)]
-        public string Type { get; set; }
-
+        public string From { get; set; }
         [MaxLength(255)]
-        public string FileExt { get; set; }
-        public double Size { get; set; }
-        public int Width { get; set; }
-        public int Height { get; set; }
-        [MaxLength(1000)]
-        public string Uri { get; set; }
-        public string Summary { get; set; }
-        [MaxLength(1000)]
-        public string Ext1 { get; set; }
-        [MaxLength(1000)]
-        public string Ext2 { get; set; }
-
+        public string Group { get; set; }
+        public int? ExamineStatus { get; set; }
         [MaxLength(127)]
         public string CreateUser { get; set; }
         public DateTime? CreateTime { get; set; }
@@ -42,9 +30,5 @@ namespace XYHHumanPlugin.Models
         public string DeleteUser { get; set; }
         public DateTime? DeleteTime { get; set; }
 
-        [MaxLength(64)]
-        public string Driver { get; set; }
-        [NotMapped]
-        public string Group { get; set; }
     }
 }

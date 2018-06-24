@@ -7,20 +7,9 @@ namespace XYHHumanPlugin.Models
 {
     public class ContentInfo
     {
+
     }
 
-    public class ContractInfo
-    {
-        [Key]
-        [MaxLength(127)]
-        public string ID { get; set; }
-        [MaxLength(127)]
-        public string HumanID { get; set; }
-        [MaxLength(255)]
-        public string ContentPath { get; set; }
-        [MaxLength(255)]
-        public string ContentInfo { get; set; }
-    }
 
     public class AnnexInfo
     {
@@ -41,6 +30,9 @@ namespace XYHHumanPlugin.Models
         public DateTime? UpdateTime { get; set; }
     }
 
+    /// <summary>
+    /// 黑名单
+    /// </summary>
     public class BlackInfo
     {
         [Key]
@@ -52,19 +44,58 @@ namespace XYHHumanPlugin.Models
         public string Reason { get; set; }
     }
 
+    /// <summary>
+    /// 考勤信息
+    /// </summary>
     public class AttendanceInfo
     {
         [Key]
         [MaxLength(127)]
         public string ID { get; set; }
-        public DateTime? Time { get; set; }
         [MaxLength(127)]
+        public string UserID { get; set; }
+        public DateTime? Date { get; set; }
+        [MaxLength(32)]
         public string Name { get; set; }
-        [MaxLength(127)]
-        public string IDCard { get; set; }
         [MaxLength(255)]
-        public string History { get; set; }
+        public string Comments { get; set; }
+        public int Normal { get; set; }
+        [MaxLength(400)]
+        public string NormalDate { get; set; }
+        public int Relaxation { get; set; }
+        [MaxLength(400)]
+        public string RelaxationDate { get; set; }
+        public int Matter { get; set; }
+        [MaxLength(400)]
+        public string MatterDate { get; set; }
+        public int Illness { get; set; }
+        [MaxLength(400)]
+        public string IllnessDate { get; set; }
+        public int Annual { get; set; }
+        [MaxLength(400)]
+        public string AnnualDate { get; set; }
+        public int Marry { get; set; }
+        [MaxLength(400)]
+        public string MarryDate { get; set; }
+        public int Funeral { get; set; }
+        [MaxLength(400)]
+        public string FuneralDate { get; set; }
+        public int Late { get; set; }
+        [MaxLength(400)]
+        public string LateDate { get; set; }
+        public int Absent { get; set; }
+        [MaxLength(400)]
+        public string AbsentDate { get; set; }
     }
+
+    public class AttendanceSettingInfo
+    {
+        [Key]
+        public int Type { get; set; }
+        public int Times { get; set; }
+        public int Money { get; set; }
+    }
+
 
     public class PositionInfo
     {
@@ -75,7 +106,7 @@ namespace XYHHumanPlugin.Models
         public string PositionName { get; set; }
         [MaxLength(127)]
         public string PositionType { get; set; }
-        
+
         [MaxLength(255)]
         public string ParentID { get; set; }
     }
@@ -98,6 +129,7 @@ namespace XYHHumanPlugin.Models
         public int? PortBack { get; set; }
         public int? OtherBack { get; set; }
     }
+
 
     public class MonthInfo
     {

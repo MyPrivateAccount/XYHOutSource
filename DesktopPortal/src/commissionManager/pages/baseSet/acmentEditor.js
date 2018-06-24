@@ -13,7 +13,8 @@ class AcmentEditor extends Component {
         dialogTitle: '',
         visible: false,
         iedVisible: false,
-        paramInfo: { isCheck: true, branchId: '', code: '', type: 1 }
+        isEdit:false,
+        paramInfo: { id:'',isfixed: true, branchId: '', code: '', type: 1 }
     }
     componentWillMount() {
 
@@ -21,12 +22,22 @@ class AcmentEditor extends Component {
     componentWillReceiveProps(newProps) {
         let { operType } = newProps.operInfo;
         if (operType === 'edit') {
-            this.setState({ visible: true, dialogTitle: '修改', paramInfo: newProps.activeScale });
+            this.setState({ visible: true, dialogTitle: '修改',isEdit:true, paramInfo: newProps.activeScale });
         } else if (operType === 'add') {
-            this.setState({ visible: true, dialogTitle: '添加' });
+            this.clear()
+            this.setState({ visible: true, dialogTitle: '添加',isEdit:false });
         } else {
             this.setState({ visible: false });
         }
+    }
+    clear=()=>{
+        let paramInfo = {...this.state.paramInfo}
+        paramInfo.id = ''
+        paramInfo.isfixed = true
+        paramInfo.code = ''
+        paramInfo.name = ''
+        paramInfo.type = '外部佣金'
+        this.setState({paramInfo})
     }
     handleOk = (e) => {
 
@@ -35,6 +46,9 @@ class AcmentEditor extends Component {
                 values.branchId = this.props.orgid;
                 values.code = this.state.paramInfo.code;
                 values.percent = parseFloat(values.percent)
+                if(this.state.isEdit){
+                    values.id = this.state.paramInfo.id
+                }
                 console.log(values);
                 this.props.dispatch(acmentParamSave(values))
             }
@@ -57,6 +71,26 @@ class AcmentEditor extends Component {
     }
     handleback = (e) => {
         this.setState({ iedVisible: false });
+    }
+    getPercent=(e)=>{
+        if(!this.state.isEdit){
+            return ''
+        }
+        let pp = e
+        pp = pp.substr(0,pp.length-1)
+        pp = parseFloat(pp)/100
+        return pp
+    }
+    getFixed=(e)=>{
+        if(!this.state.isEdit){
+            return false
+        }
+        if(e === '是'){
+            return true
+        }
+        else{
+            return false
+        }
     }
     render() {
         const { getFieldDecorator } = this.props.form;
@@ -82,14 +116,16 @@ class AcmentEditor extends Component {
 
                                     initialValue: this.state.paramInfo.name,
                                 })(
-                                    <Input style={{ float: 'left', width: 200 }}></Input>
+                                    <Input style={{ float: 'left', width: 200 }} disabled={this.state.isEdit}></Input>
                                 )}
                             </FormItem>
                         </Col>
                         <Col span={12} push={2}>
-                            <Tooltip title="新增">
-                                <Button type='primary' shape='circle' icon='plus' onClick={this.handleNewItem} />
-                            </Tooltip>
+                        {
+                            !this.state.isEdit?(<Tooltip title="新增">
+                            <Button type='primary' shape='circle' icon='plus' onClick={this.handleNewItem} />
+                        </Tooltip>):null
+                        }
                         </Col>
                     </Row>
                     <Row>
@@ -103,11 +139,10 @@ class AcmentEditor extends Component {
                                 )}
                                 hasFeedback>
                                 {getFieldDecorator('type', {
-
-                                    initialValue: this.state.paramInfo.name,
+                                    initialValue: this.state.paramInfo.type==='外部佣金'?"1":"2",
                                 })(
-                                    <Select defaultValue="1" style={{ width: 200 }}>
-                                        <Option value="1">外部分摊项</Option>
+                                    <Select defaultValue="1" style={{ width: 200 }} disabled={this.state.isEdit}>
+                                        <Option value="1">外部佣金</Option>
                                         <Option value="2">内部分摊项</Option>
                                     </Select>
                                 )}
@@ -120,7 +155,7 @@ class AcmentEditor extends Component {
                                 {...formItemLayout}
                                 label={(<span>默认分摊比例</span>)}>
                                 {getFieldDecorator('percent', {
-                                    initialValue: this.state.paramInfo.percent,
+                                    initialValue: this.getPercent(this.state.paramInfo.percent),
                                     rules: [{ required: true, message: '请填写默认分摊比例!' }]
                                 })(
                                     <Input style={{ float: 'left', width: 200 }}></Input>
@@ -132,9 +167,9 @@ class AcmentEditor extends Component {
                         <Col span={12} push={5}>
                             <FormItem>
                                 {getFieldDecorator('isfixed', {
-                                    initialValue: this.state.paramInfo.isCheck,
+                                    initialValue: this.getFixed(this.state.paramInfo.isfixed),
                                 })(
-                                    <Checkbox defaultChecked={this.state.paramInfo.isCheck}>固定比例</Checkbox>
+                                    <Checkbox checked={this.getFixed(this.state.paramInfo.isfixed)}>固定比例</Checkbox>
                                 )}
                             </FormItem></Col>
                     </Row>

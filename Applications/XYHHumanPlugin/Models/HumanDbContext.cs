@@ -15,7 +15,7 @@ namespace XYHHumanPlugin.Models
             : base(opt) { }
 
         public DbSet<HumanInfo> HumanInfos { get; set; }
-        public DbSet<ContractInfo> ContractInfos { get; set; }
+        public DbSet<HumanContractInfo> HumanContractInfos { get; set; }
         public DbSet<BlackInfo> BlackInfos { get; set; }
         public DbSet<AttendanceInfo> AttendanceInfos { get; set; }
         public DbSet<PositionInfo> PositionInfos { get; set; }
@@ -42,65 +42,79 @@ namespace XYHHumanPlugin.Models
             {
                 b.ToTable("XYH_HU_HUMANMANAGE");
                 b.HasKey(k => new { k.ID });
-                
+
             });
-            modelBuilder.Entity<ContractInfo>(b => {
+            modelBuilder.Entity<HumanContractInfo>(b =>
+            {
                 b.HasKey(k => new { k.ID });
                 b.ToTable("XYH_HU_CONTRACT");
             });
-            modelBuilder.Entity<BlackInfo>(b => {
+            modelBuilder.Entity<BlackInfo>(b =>
+            {
                 b.HasKey(k => new { k.IDCard });
                 b.ToTable("XYH_HU_BLACKLIST");
             });
-            modelBuilder.Entity<AttendanceInfo>(b => {
+            modelBuilder.Entity<AttendanceInfo>(b =>
+            {
                 b.HasKey(k => new { k.ID });
                 b.ToTable("XYH_HU_ATTENDANCE");
             });
-            modelBuilder.Entity<PositionInfo>(b => {
+            modelBuilder.Entity<PositionInfo>(b =>
+            {
                 b.HasKey(k => new { k.ID });
                 b.ToTable("XYH_HU_POSITION");
             });
-            modelBuilder.Entity<SalaryInfo>(b => {
+            modelBuilder.Entity<SalaryInfo>(b =>
+            {
                 b.HasKey(k => new { k.ID });
                 b.ToTable("XYH_HU_SALARY");
             });
-            modelBuilder.Entity<MonthInfo>(b => {
+            modelBuilder.Entity<MonthInfo>(b =>
+            {
                 b.HasKey(k => new { k.ID });
                 b.ToTable("XYH_HU_MONTH");
             });
-            modelBuilder.Entity<SalaryFormInfo>(b => {
+            modelBuilder.Entity<SalaryFormInfo>(b =>
+            {
                 b.HasKey(k => new { k.ID });
                 b.ToTable("XYH_HU_SALARYFORM");
             });
-            modelBuilder.Entity<AttendanceFormInfo>(b => {
+            modelBuilder.Entity<AttendanceFormInfo>(b =>
+            {
                 b.HasKey(k => new { k.ID });
                 b.ToTable("XYH_HU_ATTENDANCEFORM");
             });
-            modelBuilder.Entity<ModifyInfo>(b => {
+            modelBuilder.Entity<ModifyInfo>(b =>
+            {
                 b.HasKey(k => new { k.ID });
                 b.ToTable("XYH_HU_MODIFY");
             });
-            
-            modelBuilder.Entity<FileInfo>(b => {
+
+            modelBuilder.Entity<FileInfo>(b =>
+            {
                 b.ToTable("XYH_HU_FILEINFOS");
                 b.HasKey(k => new { k.FileGuid, k.FileExt, k.Type });
             });
 
-            modelBuilder.Entity<AnnexInfo>(b => {
+            modelBuilder.Entity<AnnexInfo>(b =>
+            {
                 b.HasKey(k => new { k.ID });
                 b.ToTable("XYH_HU_ANNEX");
             });
 
-            modelBuilder.Entity<SocialInsurance>(b => {
+            modelBuilder.Entity<SocialInsurance>(b =>
+            {
                 b.HasKey(k => new { k.IDCard });
                 b.ToTable("XYH_HU_SOCIALINSURANCE");
             });
-            modelBuilder.Entity<LeaveInfo>(b => {
+            modelBuilder.Entity<LeaveInfo>(b =>
+            {
                 b.HasKey(k => new { k.IDCard });
                 b.ToTable("XYH_HU_LEAVEINFO");
             });
 
-            modelBuilder.Entity<ChangeInfo>(b => {
+            modelBuilder.Entity<ChangeInfo>(b =>
+            {
                 b.HasKey(k => new { k.IDCard });
                 b.ToTable("XYH_HU_CHANGE");
             });
