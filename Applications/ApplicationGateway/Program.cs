@@ -17,7 +17,7 @@ namespace ApplicationGateway
         private static XYH.Core.Log.ILogger CrashLogger = null;
         public static void Main(string[] args)
         {
-            var configuration = new ConfigurationBuilder()
+             var configuration = new ConfigurationBuilder()
                 .AddJsonFile("config.json")
                 .AddEnvironmentVariables()
                 .AddCommandLine(args)

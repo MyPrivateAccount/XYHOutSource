@@ -18,6 +18,7 @@ namespace XYHHumanPlugin.Models
         public DbSet<HumanContractInfo> HumanContractInfos { get; set; }
         public DbSet<BlackInfo> BlackInfos { get; set; }
         public DbSet<AttendanceInfo> AttendanceInfos { get; set; }
+        public DbSet<AttendanceSettingInfo> AttendanceSettingInfos { get; set; }
         public DbSet<PositionInfo> PositionInfos { get; set; }
         public DbSet<SalaryInfo> SalaryInfos { get; set; }
         public DbSet<MonthInfo> MonthInfos { get; set; }
@@ -58,6 +59,11 @@ namespace XYHHumanPlugin.Models
             {
                 b.HasKey(k => new { k.ID });
                 b.ToTable("XYH_HU_ATTENDANCE");
+            });
+            modelBuilder.Entity<AttendanceSettingInfo>(b =>
+            {
+                b.HasKey(k => new { k.Type });
+                b.ToTable("XYH_HU_ATTENDANCESETTING");
             });
             modelBuilder.Entity<PositionInfo>(b =>
             {

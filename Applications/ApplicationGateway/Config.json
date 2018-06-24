@@ -1,7 +1,8 @@
 ﻿{
   "Data": {
     "DefaultConnection": {
-      "ConnectionString": "Server=120.77.152.254;database=xyhdb;uid=root;pwd=root;"
+      "ConnectionString": "Server=120.77.152.254;database=xyhdb;uid=root;pwd=root;Pooling=true;ConnectionReset=false;maxpoolsize=20"
+      //"ConnectionString": "Server=localhost;database=xyhdb;uid=xyhadmin;pwd=xyhdb@2017;Pooling=true;ConnectionReset=false;maxpoolsize=20"
     }
   },
   "Port": 7000,
@@ -12,16 +13,23 @@
   },
   "Redis": {
     "InstanceName": "AC",
-    "Configuration": "127.0.0.1:6379,password=xyh@2017"
+    "Configuration": "server-t01:6379,password=xyh@2017"
   },
   "AuthUrl": "https://testauth.xinyaohangdc.com",
+  //"AuthUrl": "http://localhost:5000",
   "ClientID": "apigateway",
   "ClientSecret": "123456",
-  "NWFUrl": "http://120.77.152.254:7100/api/task/nwf",
-  "MessageServerUrl": "http://120.77.152.254:9000",
-  "FileServerRoot": "https://testfile.xinyaohangdc.com/image/",
-  "ExamineUrl": "http://120.77.152.254:7000/api/examines/submit",
-  "NWFExamineCallbackUrl": "http://120.77.152.254:7100/examine/callback/ExamineCallback",
-  "BuildingExamineCallbackUrl": "http://120.77.152.254:7000/api/buildings/audit/examinecallback",
-  "UpdateExamineCallbackUrl": ""
+  "NWFUrl": "http://172.16.24.92:7100/api/task/nwf",
+  "MessageServerUrl": "http://server-d01:9000",
+  "FileServerRoot": "http://server-t01:5100/image",
+  "ExamineCenterUrl": "http://localhost:6000/api/examines/submit",
+  "NWFExamineCallbackUrl": "http://server-t01:7100/examine/callback/ExamineCallback",
+  "AppGatewayUrl": "http://172.16.24.92:7000",
+  "OwnerBuildingRule": {
+    "EffectiveType": 1,
+    "validityDay": 1,
+    "beltProtectType": 1,
+    "beltProtectDay": 30,
+    "isCompletenessPhone": 0
+  }
 }

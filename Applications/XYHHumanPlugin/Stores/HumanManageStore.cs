@@ -257,6 +257,26 @@ namespace XYHHumanPlugin.Stores
             await Context.SaveChangesAsync(cancellationToken);
         }
 
+        public async Task SetAttendanceSettingAsync(AttendanceSettingInfo atteninfo, CancellationToken cle = default(CancellationToken))
+        {
+            if (atteninfo == null)
+            {
+                throw new ArgumentNullException(nameof(atteninfo));
+            }
+
+            if (Context.AttendanceSettingInfos.Any(x => x.Type == atteninfo.Type))
+            {
+                Context.Attach(atteninfo);
+                Context.Update(atteninfo);
+            }
+            else
+            {
+                Context.Add(atteninfo);
+            }
+
+            await Context.SaveChangesAsync(cle);
+        }
+
         public async Task PreBecomeHuman(SimpleUser userinfo, string modifyid, string huid, string info, string idcard, string checkaction, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (string.IsNullOrEmpty(modifyid))
@@ -639,6 +659,12 @@ namespace XYHHumanPlugin.Stores
             return query.Invoke(Context.HumanInfos.AsNoTracking()).ToListAsync(cancellationToken);
         }
 
+        public Task<List<AttendanceSettingInfo>> GetListAttendanceSettingAsync(CancellationToken cancellationToken = default(CancellationToken))
+        {
+          
+            return Context.AttendanceSettingInfos.ToListAsync(cancellationToken);
+        }
+
         public Task<List<TResult>> GetListSalaryFormAsync<TResult>(Func<IQueryable<SalaryFormInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (query == null)
@@ -693,6 +719,7 @@ namespace XYHHumanPlugin.Stores
         {
             
         }
+        
         public async Task<ModifyInfo> UpdateExamineStatus(string modifyId, ExamineStatusEnum status, CancellationToken cancellationToken = default(CancellationToken))
         {
             var modify = await GetModifyAsync(a => a.Where(b => b.ID == modifyId));
