@@ -10,5 +10,6 @@ namespace XYHHumanPlugin.Dto.Response
         public string PositionName { get; set; }
         public string PositionType { get; set; }
         public string ParentID { get; set; }
+
     }
 }

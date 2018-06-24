@@ -67,6 +67,12 @@ namespace XYHChargePlugin.Dto
 
         public String DeleteUser { get; set; }
 
+        public string ChargeId { get; set; }
+
+        public DateTime? ExpectedPaymentDate { get; set; }
+
+        public decimal? ReimbursedAmount { get; set; }
+
         public List<CostInfoRequest> FeeList { get; set; }
 
         public List<ReceiptInfoRequest> BillList { get; set; }

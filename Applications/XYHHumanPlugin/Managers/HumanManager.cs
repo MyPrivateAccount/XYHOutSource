@@ -413,5 +413,58 @@ namespace XYHHumanPlugin.Managers
             return Response;
         }
         #endregion
+
+        public virtual async Task<PagingResponseMessage<HumanInfoResponse>> SimpleSearch(UserInfo user, string permissionId, string keyword,string branchId, int pageSize, int pageIndex)
+        {
+            PagingResponseMessage<HumanInfoResponse> r = new PagingResponseMessage<HumanInfRequest>();
+
+            var orgIds = await _permissionExpansionManager.GetOrganizationOfPermission(user.Id, permissionId);
+            if (!String.IsNullOrEmpty(branchId))
+            {
+                var lids = await _permissionExpansionManager.GetLowerDepartments(branchId);
+                orgIds = lids.Where(x => orgIds.Contains(x)).ToList();
+            }
+
+            var query = _Store.SimpleQuery;
+            query = query.Where(hr => orgIds.Contains(hr.DepartmentId));
+
+            if (!String.IsNullOrWhiteSpace(keyword))
+            {
+                query = query.Where(hr => ( hr.Name.Contains(keyword) || hr.UserID.Contains(keyword) || hr.ID==keyword ));
+            }
+            if(pageSize>0 && pageIndex > 0)
+            {
+                r.TotalCount = await query.CountAsync();
+                r.PageIndex = pageIndex;
+                r.PageSize = pageSize;
+                query = query.Skip((pageIndex - 1) * pageSize).Take(pageSize);
+                
+            }
+            var ul = await query.ToListAsync();
+            r.Extension = new List<HumanInfRequest>();
+            ul.ForEach(u =>
+            {
+                var u2 = _mapper.Map<HumanInfoResponse>(u);
+                if (u.OrganizationExpansion != null && !String.IsNullOrEmpty(u.OrganizationExpansion.FullName))
+                {
+                    u2.OrganizationFullName = u.OrganizationExpansion.FullName;
+                }else if (u.Organizations != null)
+                {
+                    u2.OrganizationFullName = u.Organizations.OrganizationName;
+                }
+                r.Extension.Add(u2);
+            });
+
+            if (r.TotalCount == 0)
+            {
+                r.TotalCount = r.Extension.Count;
+            }
+
+            return r;
+
+
+
+
+        }
     }
 }

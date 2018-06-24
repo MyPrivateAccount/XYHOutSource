@@ -46,6 +46,8 @@ namespace XYHHumanPlugin.Stores
                         from oe in oe2.DefaultIfEmpty()
                         join o1 in Context.Organizations.AsNoTracking() on hr.DepartmentId equals o1.Id into o2
                         from o in o2.DefaultIfEmpty()
+                        join p1 in Context.PositionInfos.AsNoTracking() on hr.Position equals p1.ID into p2
+                        from p in p2.DefaultIfEmpty()
                         select new HumanInfo()
                         {
                             ID = hr.ID,
@@ -53,6 +55,12 @@ namespace XYHHumanPlugin.Stores
                             Name = hr.Name,
                             Position = hr.Position,
                             DepartmentId = hr.DepartmentId,
+                            PositionInfo = new PositionInfo()
+                            {
+                                ID = p.ID,
+                                PositionName = p.PositionName,
+                                PositionType = p.PositionType
+                            },
                             Organizations = new Organizations()
                             {
                                 Id = o.Id,

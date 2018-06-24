@@ -434,12 +434,12 @@ namespace XYHHumanPlugin.Controllers
 
         [HttpGet("simpleSearch")]
         [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
-        public async Task<PagingResponseMessage<HumanInfoResponse>> SimpleSearch(UserInfo User, string permissionId, string keyword, int pageSize, int pageIndex)
+        public async Task<PagingResponseMessage<HumanInfoResponse>> SimpleSearch(UserInfo User, string permissionId, string keyword, string branchId, int pageSize, int pageIndex)
         {
             var r = new PagingResponseMessage<HumanInfoResponse>();
             try
             {
-                r = await _humanManage.SimpleSearch(User, permissionId, keyword, pageSize, pageIndex);
+                r = await _humanManage.SimpleSearch(User, permissionId, keyword,branchId, pageSize, pageIndex);
             }
             catch (Exception e)
             {
