@@ -54,5 +54,8 @@ namespace XYHHumanPlugin.Models
         [NotMapped]
         public OrganizationExpansion OrganizationExpansion { get; set; }
 
+        [NotMapped]
+        public PositionInfo PositionInfo { get; set; }
+
     }
 }

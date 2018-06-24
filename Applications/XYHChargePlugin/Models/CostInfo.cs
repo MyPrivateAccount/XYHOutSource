@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
 namespace XYHChargePlugin.Models
@@ -19,5 +20,14 @@ namespace XYHChargePlugin.Models
         public decimal Amount { get; set; }
 
         public string Memo { get; set; }
+
+        [NotMapped]
+        public DictionaryDefine TypeInfo { get; set; }
+
+        [NotMapped]
+        public ChargeInfo ChargeInfo { get; set; }
+
+        [NotMapped]
+        public string TypeName { get; set; }
     }
 }

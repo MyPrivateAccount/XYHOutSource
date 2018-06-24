@@ -31,6 +31,13 @@ namespace XYHChargePlugin.Models
 
         public DbSet<Users> Users { get; set; }
 
+        public DbSet<PaymentInfo> PaymentInfo { get; set; }
+
+        public DbSet<PositionInfo> PositionInfo { get; set; }
+
+        public DbSet<DictionaryDefine> DictionaryDefine { get; set; }
+
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -66,11 +73,11 @@ namespace XYHChargePlugin.Models
                 b.ToTable("XYH_CH_RECEIPT");
             });
             modelBuilder.Entity<LimitInfo>(b => {
-                b.HasKey(k => new { k.UserID });
+                b.HasKey(k => new { k.UserId });
                 b.ToTable("XYH_CH_LIMIT");
             });
             modelBuilder.Entity<ModifyInfo>(b => {
-                b.HasKey(k => new { k.ID });
+                b.HasKey(k => new { k.Id });
                 b.ToTable("XYH_CH_MODIFY");
             });
             modelBuilder.Entity<FileInfo>(b => {
@@ -86,9 +93,22 @@ namespace XYHChargePlugin.Models
                 b.ToTable("xyh_hu_humanmanage");
                 b.HasKey(k => new { k.ID });
             });
+            modelBuilder.Entity<PaymentInfo>(b => {
+                b.ToTable("xyh_ch_payment");
+                b.HasKey(k => new { k.Id });
+            });
             modelBuilder.Entity<Users>(b =>
             {
                 b.ToTable("identityuser");
+            });
+            modelBuilder.Entity<PositionInfo>(b =>
+            {
+                b.ToTable("xyh_hu_position");
+            });
+            modelBuilder.Entity<DictionaryDefine>(b =>
+            {
+                b.ToTable("xyh_base_dictionarydefines");
+                b.HasKey(k => new { k.GroupId, k.Value });
             });
         }
 

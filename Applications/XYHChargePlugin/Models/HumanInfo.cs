@@ -18,6 +18,10 @@ namespace XYHChargePlugin.Models
         public string Name { get; set; }
         
         public string DepartmentId { get; set; }
-       
+
+        public string Position { get; set; }
+
+        [NotMapped]
+       public PositionInfo PositionInfo { get; set; }
     }
 }

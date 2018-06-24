@@ -462,11 +462,17 @@ namespace XYHHumanPlugin.Managers
         }
         #endregion
 
-        public virtual async Task<PagingResponseMessage<HumanInfoResponse>> SimpleSearch(UserInfo user, string permissionId, string keyword, int pageSize, int pageIndex)
+        public virtual async Task<PagingResponseMessage<HumanInfoResponse>> SimpleSearch(UserInfo user, string permissionId, string keyword,string branchId, int pageSize, int pageIndex)
         {
             PagingResponseMessage<HumanInfoResponse> r = new PagingResponseMessage<HumanInfRequest>();
 
             var orgIds = await _permissionExpansionManager.GetOrganizationOfPermission(user.Id, permissionId);
+            if (!String.IsNullOrEmpty(branchId))
+            {
+                var lids = await _permissionExpansionManager.GetLowerDepartments(branchId);
+                orgIds = lids.Where(x => orgIds.Contains(x)).ToList();
+            }
+
             var query = _Store.SimpleQuery;
             query = query.Where(hr => orgIds.Contains(hr.DepartmentId));
 

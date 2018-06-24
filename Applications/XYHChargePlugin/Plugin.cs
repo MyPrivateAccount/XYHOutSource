@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using XYHChargePlugin.Managers;
 using XYHChargePlugin.Models;
 using XYHChargePlugin.Stores;
-using XYHHumanPlugin.Stores;
 
 namespace XYHChargePlugin
 {
@@ -49,10 +48,13 @@ namespace XYHChargePlugin
             context.Services.AddScoped<ITransaction<ChargeDbContext>, Transaction<ChargeDbContext>>();
             context.Services.AddScoped<IChargeInfoStore, ChargeInfoStore>();
             context.Services.AddScoped<IOrganizationUtils, OrganizationUtils>();
+            context.Services.AddScoped<ILimitInfoStore, LimitInfoStore>();
+            context.Services.AddScoped<IBorrowingStore, BorrowingStore>();
 
             context.Services.AddScoped<ChargeManager>();
+            context.Services.AddScoped<LimitManager>();
+            context.Services.AddScoped<BorrowingManager>();
             context.Services.AddScoped<PermissionExpansionManager>();
-            context.Services.AddScoped<IChargeManageStore, ChargeManageStore>();
 
             return base.Init(context);
         }
