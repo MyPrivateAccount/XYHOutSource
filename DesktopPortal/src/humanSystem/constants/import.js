@@ -23,7 +23,7 @@ const Letter = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K",
 "AA", "AB", "AC", "AD", "AE", "AF", "AG", "AH", "AI", "AJ", "AK", "AL", "AM",
 "AN", "AO", "AP", "AQ", "AR", "AS", "AT","AU", "AV", "AW", "AX", "AY"];
 
-export function exceltoobj(result, startrow) {
+export function exceltoobj(result, startrow) {//月份还没写
     var redata = [];
     var binary = "";
     var bytes = new Uint8Array(result);

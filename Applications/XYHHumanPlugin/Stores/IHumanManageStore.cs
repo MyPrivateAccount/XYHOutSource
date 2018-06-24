@@ -22,6 +22,7 @@ namespace XYHHumanPlugin.Stores
         Task SetSalaryAsync(SalaryInfo salaryinfo, CancellationToken cle = default(CancellationToken));
         Task SetBlackAsync(BlackInfo salaryinfo, string id = null, CancellationToken cle = default(CancellationToken));
         Task SetAttendanceSettingAsync(AttendanceSettingInfo atteninfo, CancellationToken cle = default(CancellationToken));
+        Task AddAttendanceAsync(List<AttendanceInfo> atteninfo, CancellationToken cle = default(CancellationToken));
 
 
         Task CreateMonthAsync(SimpleUser userinfo, MonthInfo monthinf, CancellationToken cancellationToken = default(CancellationToken));

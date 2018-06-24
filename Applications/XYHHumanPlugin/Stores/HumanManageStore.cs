@@ -285,6 +285,19 @@ namespace XYHHumanPlugin.Stores
             await Context.SaveChangesAsync(cle);
         }
 
+        public async Task AddAttendanceAsync(List<AttendanceInfo> atteninfo, CancellationToken cle = default(CancellationToken))
+        {
+            if (atteninfo == null)
+            {
+                throw new ArgumentNullException(nameof(atteninfo));
+            }
+
+            Context.AddRange(atteninfo);
+
+            await Context.SaveChangesAsync(cle);
+        }
+
+
         public async Task PreBecomeHuman(SimpleUser userinfo, string modifyid, string huid, string info, string idcard, string checkaction, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (string.IsNullOrEmpty(modifyid))
