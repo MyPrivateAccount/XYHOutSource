@@ -2,7 +2,7 @@
 import { connect } from 'react-redux';
 import { acmentParamSave, acmentParamDlgClose, acmentParamItemAdd } from '../../actions/actionCreator'
 import React, { Component } from 'react'
-import { Button, Modal, Row, Col, Form, Input, Select, Checkbox, Tooltip } from 'antd'
+import { Button, Modal, Row, Col, Form, Input, Select, Checkbox, Tooltip,InputNumber} from 'antd'
 import AcmentItemEditor from './acmentItemEditor'
 
 const FormItem = Form.Item;
@@ -164,7 +164,7 @@ class AcmentEditor extends Component {
                                     initialValue: this.getPercent(this.state.paramInfo.percent),
                                     rules: [{ required: true, message: '请填写默认分摊比例!' }]
                                 })(
-                                    <Input style={{ float: 'left', width: 200 }}></Input>
+                                    <Input step="0.01" type="number"  max="1.00" style={{ float: 'left', width: 200 }}></Input>
                                 )}
                             </FormItem>
                         </Col>

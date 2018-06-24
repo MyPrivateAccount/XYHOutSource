@@ -57,6 +57,8 @@ class AcmentSet extends Component {
     };
     componentDidMount = () => {
         this.setState({ isDataLoading: true })
+        console.log("AcmentSet dispatch user info:")
+        console.log(this.props.user)
         this.props.dispatch(orgGetPermissionTree("UserInfoCreate"));
     }
     componentWillReceiveProps = (newProps) => {

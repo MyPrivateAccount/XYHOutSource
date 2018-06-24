@@ -99,7 +99,7 @@ class PeopleOrgFtEditor extends Component{
                                 initialValue: this.state.ppftInfo.percent,
                                 rules: [{required: true, message: '请填写分摊比例!' }]
                             })(
-                                <Input style={{float: 'left',width:300}}/>
+                                <Input type="number" step="0.01" style={{float: 'left',width:300}}/>
                                 )}
                         </FormItem></Col>
                 </Row>

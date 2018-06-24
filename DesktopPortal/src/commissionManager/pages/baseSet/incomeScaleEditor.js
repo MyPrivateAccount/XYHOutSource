@@ -102,7 +102,7 @@ class InComeScaleEditor extends Component{
                                 initialValue: this.state.paramInfo.startYj,
                                 rules: [{required: true, message: '请填写起始业绩!' }]
                             })(
-                                <Input style={{float: 'left',width:300}}/>
+                                <Input type="number" step="0.01" style={{float: 'left',width:300}}/>
                                 )}
                         </FormItem></Col>
                 </Row>
@@ -115,7 +115,7 @@ class InComeScaleEditor extends Component{
                                 initialValue: this.state.paramInfo.endYj,
                                 rules: [{required: true, message: '请填写结束业绩!' }]
                             })(
-                                <Input style={{float: 'left',width:300}}/>
+                                <Input type="number" step="0.01" style={{float: 'left',width:300}}/>
                                 )}
                         </FormItem>
                     </Col>
@@ -129,7 +129,7 @@ class InComeScaleEditor extends Component{
                                 initialValue: this.state.paramInfo.percent,
                                 rules: [{required: true, message: '请填写提成比例!' }]
                             })(
-                                <Input style={{float: 'left',width:300}}/>
+                                <Input type="number" step="0.01" style={{float: 'left',width:300}}/>
                                 )}
                         </FormItem>
                     </Col>
