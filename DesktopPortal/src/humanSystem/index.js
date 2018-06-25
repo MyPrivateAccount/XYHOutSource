@@ -23,7 +23,7 @@ const menuDefine = [
     {id: 24, menuID: "menu_achievement", displayName: "薪酬管理", menuIcon: 'database'},
     {id: 25, menuID: "menu_attendance", displayName: "考勤信息", menuIcon: 'pushpin-o'},
     {id: 26, menuID: "menu_organization", displayName: "组织架构管理", menuIcon: 'layout'},
-    {id: 27, menuID: "menu_statistics", displayName: "统计报表", menuIcon: 'global'},
+    {id: 27, menuID: "menu_awpu", displayName: "行政奖惩", menuIcon: 'global'},
     {id: 28, menuID: "menu_set", displayName: "设置", menuIcon: 'setting'},
     //{menuID: "menu_app", displayName: "应用管理", menuIcon: 'appstore', requirePermission: ['ApplicationCreate']}
 ];

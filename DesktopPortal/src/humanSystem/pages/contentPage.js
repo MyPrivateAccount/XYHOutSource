@@ -67,6 +67,10 @@ const LoadablePartTimeJob = Loadable({
     loader: () => import('./staffinfo/partTimeJob'),
     loading: () => <LoadableLoading />,
 });
+const LoadableRewardPunishment = Loadable({
+    loader: () => import('./rewardpunishment/rewardpunishment'),
+    loading: () => <LoadableLoading />,
+});
 
 function ContentPage(props) {
     const {curMenuID} = props;
@@ -126,6 +130,9 @@ function ContentPage(props) {
     }
     else if (curMenuID === 'partTimeJob') {
         return <LoadablePartTimeJob />
+    }
+    else if (curMenuID === "menu_awpu") {
+        return <LoadableRewardPunishment />;
     }
     else {
         return <LoadableStaffPage />;
