@@ -29,6 +29,7 @@ export const searchHumanType = createAction(actionTypes.SEARCH_HUMANTYPE);
 export const searchAgeType = createAction(actionTypes.SEARCH_AGETYPE);
 export const searchOrderType = createAction(actionTypes.SEARCH_ORDERTYPE);
 export const searchConditionType = createAction(actionTypes.SEARCH_CONDITION);
+export const searchIndex = createAction(actionTypes.SET_SEARCHINDEX);
 
 export const saveSearchCondition = createAction(actionTypes.SAVE_SEARCH_CONDITION);
 export const expandSearchbox = createAction(actionTypes.SEARCH_BOX_EXPAND);
@@ -102,3 +103,8 @@ export const updateOrg = createAction(actionTypes.UPDATE_ORG);
 //考勤
 export const getAttendenceSettingList = createAction(actionTypes.GET_ATTENDANCESETTINGLST);
 export const postSetAttendenceSettingList = createAction(actionTypes.POST_ATTENDANCESETTINGLST);
+
+export const importAttendenceList = createAction(actionType.IMPORT_ATTENDANCELST);
+export const searchAttendenceList = createAction(actionType.SEARCH_ATTENDANCELST);
+export const deleteAttendenceItem = createAction(actionType.DELETE_ATTENDANCEITEM);
+export const selAttendenceList = createAction(actionType.SEL_ATTENDANCELIST);

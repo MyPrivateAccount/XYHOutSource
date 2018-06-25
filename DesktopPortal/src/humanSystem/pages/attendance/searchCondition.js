@@ -1,5 +1,5 @@
 import {connect} from 'react-redux';
-import { setLoadingVisible, postSearchCondition, updateSearchStatu, updateChargePrice} from '../../actions/actionCreator';
+import { setLoadingVisible, postSearchCondition, updateSearchStatu, updateChargePrice, searchAttendenceList} from '../../actions/actionCreator';
 import React, {Component} from 'react'
 import {Input, InputNumber, Select, Icon, Button, Row, Col, Checkbox, Tag, Spin} from 'antd'
 import './search.less';
@@ -18,12 +18,6 @@ const styles = {
         padding: '0px, 5px',
     }
 }
-export const PriceRanges = [
-    {key:0, value: 1, label: '不限'}, 
-    {key:1, value: 1000, label: '1000以上'},
-    {key:2, value: 2000, label: '2000以上'},
-    {key:3, value: 3000, label: '3000以上'}
-]
 
 class SearchCondition extends Component {
     state = {
@@ -32,6 +26,15 @@ class SearchCondition extends Component {
 
     componentWillMount() {
         //this.props.dispatch(postSearchCondition(this.props.searchInfo));
+        this.props.dispatch(searchAttendenceList(this.props.searchInfo));
+    }
+
+    handleKeyChangeWord = (e) => {
+        this.props.searchInfo.keyWord = e.target.value;
+    }
+
+    handleSearch = () => {
+        this.props.dispatch(searchAttendenceList(this.props.searchInfo));
     }
 
     render() {
@@ -56,6 +59,7 @@ class SearchCondition extends Component {
 
 function mapStateToProps(state) {
     return {
+        searchInfo: state.search,
     }
 }
 

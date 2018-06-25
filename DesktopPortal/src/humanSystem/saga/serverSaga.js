@@ -510,7 +510,7 @@ export function* exportHumanForm(state) {
 
 export function* deleteOrgbyid(state) {
     let url = WebApiConfig.auth.deleteOrg+state.payload;
-    let huResult = { isOk: false, msg: '删除组织失败!', data:{code:0}};
+    let huResult = { isOk: false, msg: '删除组织失败!'};
 
     try {
         huResult = yield call(ApiClient.post, url, "", "", "DELETE");//应该是delete
@@ -538,7 +538,7 @@ export function* deleteOrgbyid(state) {
 
 export function* addOrg(state) {
     let url = WebApiConfig.auth.addupdateOrg;
-    let huResult = { isOk: false, msg: '添加组织失败!', data:{code:0}};
+    let huResult = { isOk: false, msg: '添加组织失败!'};
 
     try {
         huResult = yield call(ApiClient.post, url, state.payload.Original);
@@ -566,7 +566,7 @@ export function* addOrg(state) {
 
 export function* updateOrg(state) {
     let url = WebApiConfig.auth.addupdateOrg+state.payload.id;
-    let huResult = { isOk: false, msg: '更新组织失败!', data:{code:0}};
+    let huResult = { isOk: false, msg: '更新组织失败!'};
 
     try {
         huResult = yield call(ApiClient.post, url, state.payload.Original);
@@ -582,6 +582,88 @@ export function* updateOrg(state) {
         }
     } catch (e) {
         huResult.data.message = "更新组织接口调用异常!";
+    }
+    
+    if (huResult.data.code != 0) {
+        notification.error({
+            message: huResult.data.message,
+            duration: 3
+        });
+    }
+}
+
+export function* importAttendenceLst(state) {
+    let url = WebApiConfig.server.importAttendenceList
+    let huResult = { isOk: false, msg: '导入考勤失败!'};
+
+    try {
+        huResult = yield call(ApiClient.post, url, state.payload);
+        if (huResult.data.code == 0) {
+            huResult.data.message = '导入考勤成功';
+
+            notification.success({
+                message: huResult.data.message,
+                duration: 3
+            });
+            return;
+        }
+    } catch (e) {
+        huResult.data.message = "导入考勤接口调用异常!";
+    }
+    
+    if (huResult.data.code != 0) {
+        notification.error({
+            message: huResult.data.message,
+            duration: 3
+        });
+    }
+}
+
+export function* searchtAttendenceLst(state) {
+    let url = WebApiConfig.search.getAttendenceList
+    let huResult = { isOk: false, msg: '查询考勤列表失败!'};
+
+    try {
+        huResult = yield call(ApiClient.post, url, state.payload);
+        if (huResult.data.code == 0) {
+            huResult.data.message = '查询考勤列表成功';
+
+            yield put({ type: actionUtils.getActionType(actionTypes.UPDATE_ATTENDANCELST), payload: huResult.data.extension });
+            notification.success({
+                message: huResult.data.message,
+                duration: 3
+            });
+            return;
+        }
+    } catch (e) {
+        huResult.data.message = "查询考勤列表接口调用异常!";
+    }
+    
+    if (huResult.data.code != 0) {
+        notification.error({
+            message: huResult.data.message,
+            duration: 3
+        });
+    }
+}
+
+export function* deleteAttendenceItem(state) {
+    let url = WebApiConfig.server.deleteAttendenceList+"/"+state.payload;
+    let huResult = { isOk: false, msg: '删除考勤信息失败!'};
+
+    try {
+        huResult = yield call(ApiClient.post, url);
+        if (huResult.data.code == 0) {
+            huResult.data.message = '删除考勤信息成功';
+
+            notification.success({
+                message: huResult.data.message,
+                duration: 3
+            });
+            return;
+        }
+    } catch (e) {
+        huResult.data.message = "删除考勤信息接口调用异常!";
     }
     
     if (huResult.data.code != 0) {
@@ -616,4 +698,8 @@ export default function* watchDicAllAsync() {
     yield takeLatest(actionUtils.getActionType(actionTypes.DELETE_ORGBYID), deleteOrgbyid);
     yield takeLatest(actionUtils.getActionType(actionTypes.ADD_ORG), addOrg);
     yield takeLatest(actionUtils.getActionType(actionTypes.UPDATE_ORG), updateOrg);
+    //考勤
+    yield takeLatest(actionUtils.getActionType(actionType.IMPORT_ATTENDANCELST), importAttendenceLst);
+    yield takeLatest(actionUtils.getActionType(actionType.SEARCH_ATTENDANCELST), searchtAttendenceLst);
+    yield takeLatest(actionUtils.getActionType(actionType.DELETE_ATTENDANCEITEM), deleteAttendenceItem);
 }

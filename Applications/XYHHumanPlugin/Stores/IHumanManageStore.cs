@@ -36,6 +36,7 @@ namespace XYHHumanPlugin.Stores
         Task DeleteStationAsync(PositionInfo monthinfo, CancellationToken cancellationToken = default(CancellationToken));
         Task DeleteSalaryAsync(SalaryInfo monthinfo, CancellationToken cancellationToken = default(CancellationToken));
         Task DeleteBlackAsync(BlackInfo monthinfo, CancellationToken cancellationToken = default(CancellationToken));
+        Task DeleteAttendenceAsync(AttendanceInfo monthinfo, CancellationToken cancellationToken = default(CancellationToken));
 
         Task DeleteListAsync(List<HumanInfo> buildingBaseList, CancellationToken cancellationToken = default(CancellationToken));
         Task DeleteListAsync(List<MonthInfo> monthList, CancellationToken cancellationToken = default(CancellationToken));

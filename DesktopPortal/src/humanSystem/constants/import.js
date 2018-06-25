@@ -1,4 +1,5 @@
 import XLSX from "xlsx-style";
+import { NewGuid } from '../../utils/appUtils';
 
 const AttendenceHead = {
     A: "key",//是否循环
@@ -23,7 +24,16 @@ const Letter = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K",
 "AA", "AB", "AC", "AD", "AE", "AF", "AG", "AH", "AI", "AJ", "AK", "AL", "AM",
 "AN", "AO", "AP", "AQ", "AR", "AS", "AT","AU", "AV", "AW", "AX", "AY"];
 
-export function exceltoobj(result, startrow) {//月份还没写
+function createMonth(str) {
+    let f = str.split("年");
+    let date = new Date();
+    date.setFullYear(f[0]);
+    f = f.split("月");
+    date.setMonth(+f[0]-1);
+    return date;
+}
+
+export function exceltoattendenceobj(result, startrow) {//月份还没写
     var redata = [];
     var binary = "";
     var bytes = new Uint8Array(result);
@@ -34,6 +44,7 @@ export function exceltoobj(result, startrow) {//月份还没写
     var obj = XLSX.read(binary, {type: 'binary', cellDates:true, cellStyles:true});
     if (obj) {
         let sheet = obj.Sheets[obj.SheetNames[0]];
+        let datev = createMonth(sheet.K1.v);
 
         while(true) {
             let item = {};
@@ -49,6 +60,8 @@ export function exceltoobj(result, startrow) {//月份还没写
                         bf = true;
                         break;
                     }
+                    item.id = NewGuid();
+                    item.date = datev;
                 } else if (j === 1) {
                     item.userID = sheet[Letter[j]+i].v;
                 } else if (j === 2) {
@@ -125,9 +138,18 @@ export function exceltoobj(result, startrow) {//月份还没写
                     }
                 }
                 j++;
-                if (item) {
-                    redata.push(item);
-                }
+            }
+            if (item) {
+                item.normalDate = JSON.stringify(item.normalDate);
+                item.relaxationDate = JSON.stringify(item.relaxationDate);
+                item.matterDate = JSON.stringify(item.matterDate);
+                item.illnessDate = JSON.stringify(item.illnessDate);
+                item.annualDate = JSON.stringify(item.annualDate);
+                item.marryDate = JSON.stringify(item.marryDate);
+                item.funeralDate = JSON.stringify(item.funeralDate);
+                item.lateDate = JSON.stringify(item.lateDate);
+                item.absentDate = JSON.stringify(item.absentDate);
+                redata.push(item);
             }
             
             i++;

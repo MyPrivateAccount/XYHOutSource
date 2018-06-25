@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { setSearchLoadingVisible, adduserPage, getAttendenceSettingList, postSetAttendenceSettingList } from '../../actions/actionCreator';
+import { setSearchLoadingVisible, adduserPage, getAttendenceSettingList, postSetAttendenceSettingList, importAttendenceList,searchAttendenceList ,deleteAttendenceItem} from '../../actions/actionCreator';
 import React, { Component } from 'react';
 import { Input, Spin, Upload, Checkbox, Button, notification, Modal, Row, Col, InputNumber} from 'antd';
 import { exceltoobj } from '../../constants/import';
@@ -33,7 +33,7 @@ class MainIndex extends Component {
     }
 
     componentWillMount() {
-        this.props.dispatch(getAttendenceSettingList());//测试
+        this.props.dispatch(getAttendenceSettingList());//
     }
 
     handleOk = () => {
@@ -51,31 +51,29 @@ class MainIndex extends Component {
         let self = this;
         let reader = new FileReader();
         reader.onload  = function (e) {
-            exceltoobj(e.target.result);
+            this.props.dispatch(importAttendenceList(exceltoattendenceobj(e.target.result)));
         }
         reader.readAsArrayBuffer(file);
     }
 
     handleClickFucButton = (e) => {
-        if (e.target.id === "import") {
-            
-        } else if (e.target.id === "setting") {
+        if (e.target.id === "setting") {
             this.setState({attendanceList: this.props.attendanceSettingList.slice(), showModal: true,});
-            
         } else if (e.target.id === "delete") {
-            if (this.props.selBlacklist.length > 0) {
-                //this.props.dispatch(adduserPage({menuID: 'costcharge', disname: '删除黑名单', type:'item'}));//删除要个jb啊
+            if (this.props.selAttendanceList.length > 0) {
+                this.props.dispatch(deleteAttendenceItem(this.props.selAttendanceList[this.props.selAttendanceList.length-1].id));
             }
-             else {
+            else {
                 notification.error({
                     message: '未选择指定考勤',
                     description: "请选择指定考勤",
                     duration: 3
                 });
-             }
+            }
         }
     }
-       //是否有权限
+
+    //是否有权限
     hasPermission(buttonInfo) {
         let hasPermission = false;
         if (this.props.judgePermissions && buttonInfo.requirePermission) {
@@ -153,6 +151,8 @@ class MainIndex extends Component {
 
 function mapStateToProps(state) {
     return {
+        selAttendanceList: state.basicData.selAttendanceList,
+        attendanceList: state.search.attendanceList,
         attendanceSettingList: state.search.attendanceSettingList,
         showLoading: state.search.showLoading,
     }

@@ -102,6 +102,17 @@ reducerMap[actionTypes.UPDATE_STATIONLIST] = function (state, action) {
     return Object.assign({}, state, {stationList: f, showLoading: false});
 }
 
+reducerMap[actionTypes.UPDATE_ATTENDANCELST] = function (state, action) {
+    let f = action.payload.map(function(v, i) {
+        return {key: i+"", ...v};
+    });
+    return Object.assign({}, state, {attendanceList: f, showLoading: false});
+}
+
+reducerMap[actionTypes.SET_SEARCHINDEX] = function (state, action) {
+    return Object.assign({}, state, {pageIndex: action.payload});
+}
+
 reducerMap[actionTypes.UPDATE_ORGSTATIONLIST] = function (state, action) {
     let f = action.payload.map(function(v, i) {
         return {key: i+"", stationname: v.positionName, isnew: false, positionType:v.positionType, id: v.id};

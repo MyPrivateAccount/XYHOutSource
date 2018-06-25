@@ -58,7 +58,7 @@ namespace XYHHumanPlugin.Managers
             }
         }
 
-        public virtual async Task SetAttendence(List<AttendanceInfoResponse> lst, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual async Task AddAttendence(List<AttendanceInfoRequest> lst, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (lst == null || lst.Count < 1)
             {
@@ -68,20 +68,25 @@ namespace XYHHumanPlugin.Managers
             await _Store.AddAttendanceAsync(_mapper.Map<List<AttendanceInfo>>(lst), cancellationToken);
         }
 
-        public virtual async Task<HumanSearchResponse<HumanInfoResponse>> SearchAttendenceInfo(UserInfo user, HumanSearchRequest condition, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual async Task DeleteAttendence(string id, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (string.IsNullOrEmpty(id))
+            {
+                throw new ArgumentNullException(nameof(lst));
+            }
+
+            await _Store.DeleteAttendenceAsync(new AttendanceInfo() {ID = id}, cancellationToken);
+        }
+
+        public virtual async Task<HumanSearchResponse<AttendanceInfoResponse>> SearchAttendenceInfo(UserInfo user, AttendenceSearchRequest condition, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (condition == null)
             {
                 throw new ArgumentNullException(nameof(condition));
             }
 
-            var Response = new HumanSearchResponse<HumanInfoResponse>();
-            var sql = @"SELECT a.* from XYH_HU_HUMANMANAGE as a where";
-
-            if (condition?.CheckStatu > 0)
-            {
-                sql = @"SELECT a.* from XYH_HU_HUMANMANAGE as a LEFT JOIN XYH_HU_MODIFY as b ON a.`RecentModify`=b.`ID` where";
-            }
+            var Response = new HumanSearchResponse<AttendanceInfoResponse>();
+            var sql = @"SELECT a.* from XYH_HU_ATTENDANCE as a where";
 
             string connectstr = " ";
             if (!string.IsNullOrEmpty(condition?.KeyWord))
@@ -89,59 +94,37 @@ namespace XYHHumanPlugin.Managers
                 sql += connectstr + @"LOCATE('" + condition.KeyWord + "', a.`Name`)>0";
                 connectstr = " and ";
             }
-            else if (condition?.KeyWord != null)
+            else
             {
                 sql += connectstr + @"a.`ID`!=''";
                 connectstr = " and ";
-            }
+            }importattendancelsImtI
 
+            if (condition?.CreateDate)
+            {
+                sql += connectstr + @"(a.`CreateTime`='" + condition.CreateDate.Value + "'";
+                connectstr = " and ";
+            }
            
             try
             {
-                List<HumanInfo> query = new List<HumanInfo>();
-                var sqlinfo = _Store.DapperSelect<HumanInfo>(sql).ToList();
-
-                if (!string.IsNullOrEmpty(condition?.Organizate) && condition.LstChildren.Count > 0)
-                {
-                    foreach (var item in sqlinfo)
-                    {
-                        if (condition.LstChildren.Contains(item.DepartmentId))
-                        {
-                            query.Add(item);
-                        }
-                    }
-                }
-                else
-                {
-                    query = sqlinfo;
-                }
+                var query = _Store.DapperSelect<AttendanceInfo>(sql).ToList();
 
                 Response.ValidityContractCount = query.Count;
                 Response.TotalCount = query.Count;
 
-                List<HumanInfo> result = new List<HumanInfo>();
+                List<AttendanceInfo> result = new List<AttendanceInfo>();
                 var begin = (condition.pageIndex) * condition.pageSize;
                 var end = (begin + condition.pageSize) > query.Count ? query.Count : (begin + condition.pageSize);
 
                 for (; begin < end; begin++)
                 {
-
                     result.Add(query.ElementAt(begin));
                 }
 
                 Response.PageIndex = condition.pageIndex;
                 Response.PageSize = condition.pageSize;
-                Response.Extension = _mapper.Map<List<HumanInfoResponse>>(result);
-
-                foreach (var item in Response.Extension)
-                {
-                    var tf = await _Store.GetStationAsync(a => a.Where(b => b.ID == item.Position));
-                    if (tf != null)
-                    {
-                        item.PositionName = tf.PositionName;
-                    }
-
-                }
+                Response.Extension = _mapper.Map<List<AttendanceInfoResponse>>(result);
             }
             catch (Exception e)
             {

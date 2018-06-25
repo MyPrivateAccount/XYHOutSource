@@ -505,6 +505,17 @@ namespace XYHHumanPlugin.Stores
             await Context.SaveChangesAsync(cancellationToken);
         }
 
+        public async Task DeleteAttendenceAsync(AttendanceInfo monthinfo, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (monthinfo == null)
+            {
+                throw new ArgumentNullException(nameof(monthinfo));
+            }
+            Context.Remove(monthinfo);
+
+            await Context.SaveChangesAsync(cancellationToken);
+        }
+
         public async Task DeleteBlackAsync(BlackInfo monthinfo, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (monthinfo == null)
