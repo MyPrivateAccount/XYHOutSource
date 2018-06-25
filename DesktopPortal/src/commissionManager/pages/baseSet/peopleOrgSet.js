@@ -61,7 +61,7 @@ class PeopleSet extends Component {
     };
     componentDidMount = () => {
         this.setState({isDataLoading:true})
-        this.props.dispatch(orgGetPermissionTree("UserInfoCreate"));
+        this.props.dispatch(orgGetPermissionTree("BaseSet"));
     }
     componentWillReceiveProps = (newProps) => {
         this.setState({ isDataLoading: false });
@@ -74,8 +74,8 @@ class PeopleSet extends Component {
         this.setState({ pagination: paginationInfo });
         if (newProps.operInfo.operType === 'org_update') {
             console.log('org_update')
-            this.setState({isDataLoading: true ,branchId:newProps.permissionOrgTree.AddUserTree[0].key})
-            this.handleSearch(newProps.permissionOrgTree.AddUserTree[0].key)
+            this.setState({isDataLoading: true ,branchId:newProps.permissionOrgTree.BaseSetOrgTree[0].key})
+            this.handleSearch(newProps.permissionOrgTree.BaseSetOrgTree[0].key)
             newProps.operInfo.operType = ''
         }
         if(newProps.ppftOp.operType === 'ORG_FT_PARAM_DELETE_UPDATE'){
@@ -113,7 +113,7 @@ class PeopleSet extends Component {
                     组织：
                     <TreeSelect style={{ width: 300 }}
                         dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-                        treeData={this.props.permissionOrgTree.AddUserTree}
+                        treeData={this.props.permissionOrgTree.BaseSetOrgTree}
                         placeholder="所属组织"
                         value = {this.state.branchId}
                         onChange={this.handleSearch}>

@@ -10,7 +10,8 @@ class AcmentSet extends Component {
     state = {
         pagination: {},
         isDataLoading: false,
-        branchId: ''
+        branchId: '',
+        orgList:[]
     }
     appTableColumns = [
         { title: '分摊项名称', dataIndex: 'name', key: 'name' },
@@ -59,7 +60,7 @@ class AcmentSet extends Component {
         this.setState({ isDataLoading: true })
         console.log("AcmentSet dispatch user info:")
         console.log(this.props.user)
-        this.props.dispatch(orgGetPermissionTree("UserInfoCreate"));
+        this.props.dispatch(orgGetPermissionTree("BaseSet"));
     }
     componentWillReceiveProps = (newProps) => {
 
@@ -79,8 +80,8 @@ class AcmentSet extends Component {
 
         if (newProps.operInfo.operType === 'org_update') {
             console.log('org_update')
-            this.handleSearch(newProps.permissionOrgTree.AddUserTree[0].key)
-            this.setState({ branchId: newProps.permissionOrgTree.AddUserTree[0].key })
+            this.handleSearch(newProps.permissionOrgTree.BaseSetOrgTree[0].key)
+            this.setState({ branchId: newProps.permissionOrgTree.BaseSetOrgTree[0].key })
             newProps.operInfo.operType = ''
         }
         if (newProps.acmOp.operType === 'ACMENT_PARAM_DEL_UPDATE'||
@@ -122,7 +123,7 @@ class AcmentSet extends Component {
                         组织：
                     <TreeSelect style={{ width: 300 }}
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-                            treeData={this.props.permissionOrgTree.AddUserTree}
+                            treeData={this.props.permissionOrgTree.BaseSetOrgTree}
                             placeholder="所属组织"
                             onChange={this.handleSearch}
                             value={this.state.branchId}

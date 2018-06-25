@@ -67,8 +67,8 @@ class InComeScaleSet extends Component {
     }
     componentDidMount = () => {
         this.setState({ isDataLoading: true })
-        this.props.dispatch(orgGetPermissionTree("UserInfoCreate"));
-        this.props.dispatch(getDicParList(['COMMISSION_ZW_LEVEL']));
+        this.props.dispatch(orgGetPermissionTree("BaseSet"));
+        this.props.dispatch(getDicParList(['POSITION_TYPE']));
     }
     componentWillReceiveProps = (newProps) => {
         this.setState({ isDataLoading: false });
@@ -83,7 +83,7 @@ class InComeScaleSet extends Component {
         if (newProps.operInfo.operType === 'org_update') {
             console.log('org_update')
             let params = { ...this.state.params }
-            params.branchId = newProps.permissionOrgTree.AddUserTree[0].key
+            params.branchId = newProps.permissionOrgTree.BaseSetOrgTree[0].key
             this.setState({ params }, () => {
                 if (this.state.params.branchId !== '' && this.state.params.code !== '') {
                     this.setState({ isDataLoading: true })
@@ -149,7 +149,7 @@ class InComeScaleSet extends Component {
                     组织：
                     <TreeSelect style={{ width: 300 }}
                         dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-                        treeData={this.props.permissionOrgTree.AddUserTree}
+                        treeData={this.props.permissionOrgTree.BaseSetOrgTree}
                         placeholder="所属组织"
                         value={this.state.params.branchId}
                         onChange={this.treeChange}
