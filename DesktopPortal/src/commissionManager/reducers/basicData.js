@@ -188,7 +188,7 @@ reducerMap[actionTypes.DIC_GET_PARLIST_COMPLETE] = function (state, action) {
             group.dictionaryDefines = group.dictionaryDefines.sort((aItem, bItem) => aItem.order - bItem.order);
             spTypes = group.dictionaryDefines;
         }
-        else if(group.groupId === 'COMMISSION_ZW_LEVEL'){
+        else if(group.groupId === 'POSITION_TYPE'){
             group.dictionaryDefines = group.dictionaryDefines.sort((aItem, bItem) => aItem.order - bItem.order);
             zwTypes = group.dictionaryDefines;
         }

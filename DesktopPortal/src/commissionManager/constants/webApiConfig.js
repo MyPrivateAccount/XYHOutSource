@@ -81,7 +81,7 @@ const WebApiConfig = {
         acmentsave:basicDataBaseApiUrl+'yj/allocationsettings/',
         orgsave:basicDataBaseApiUrl+'yj/branchsettings/',
         ppftsave:basicDataBaseApiUrl+'yj/brandsharesetting/',
-        incomesave:basicDataBaseApiUrl+'yj/rules'
+        incomesave:basicDataBaseApiUrl+'yj/rules/'
     }
 
 }

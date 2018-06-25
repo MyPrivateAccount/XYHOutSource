@@ -26,6 +26,7 @@ export const orgParamEdit = createAction(actionTypes.ORG_PARAM_EDIT);
 export const orgParamSave = createAction(actionTypes.ORG_PARAM_SAVE);
 export const orgParamListGet = createAction(actionTypes.ORG_PARAMLIST_GET);
 export const orgParamDlgClose = createAction(actionTypes.ORG_PARAM_DIALOG_CLOSE);
+export const orgParamDel = createAction(actionTypes.ORG_PARAM_DEL)
 //提成比例设置页面action
 export const incomeScaleAdd = createAction(actionTypes.INCOME_SCALE_ADD);
 export const incomeScaleEdit = createAction(actionTypes.INCOME_SCALE_EDIT);

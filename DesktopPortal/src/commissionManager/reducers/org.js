@@ -1,5 +1,6 @@
 import {handleActions} from 'redux-actions';
 import * as actionTypes from '../constants/actionType';
+import { sagaMiddleware } from '../..';
 
 const initState = {
     activeTreeNode: {},
@@ -11,7 +12,8 @@ const initState = {
         AddUserTree: [],//添加用户时
         AddNormalRoleTree: [],//添加普通角色时
         AddPublicRoleTree: [],//添加公共角色时
-        AddRolePermissionTree: []//角色授权时
+        AddRolePermissionTree: [],//角色授权时
+        BaseSetOrgTree:[]
     },
     areaList: [],
     humanList:[]
@@ -22,6 +24,7 @@ let treeReducerMap = {};
 treeReducerMap[actionTypes.ORG_GET_PERMISSION_TREE_UPDATE] = function (state, action) {
     let AddUserTree = state.permissionOrgTree.AddUserTree, AddNormalRoleTree = state.permissionOrgTree.AddNormalRoleTree;
     let AddPublicRoleTree = state.permissionOrgTree.AddPublicRoleTree, AddRolePermissionTree = state.permissionOrgTree.AddRolePermissionTree;
+    let BaseSetOrgTree = state.permissionOrgTree.BaseSetOrgTree
     let formatNodeList = [];
     for (var i in action.payload.extension) {
         var node = action.payload.extension[i];
@@ -57,7 +60,45 @@ treeReducerMap[actionTypes.ORG_GET_PERMISSION_TREE_UPDATE] = function (state, ac
     else if (action.payload.permissionType === "AuthorizationPermission") {
         AddRolePermissionTree = orgTreeSource;
     }
-    return Object.assign({}, state, {permissionOrgTree: {AddUserTree: AddUserTree, AddNormalRoleTree: AddNormalRoleTree, AddPublicRoleTree: AddPublicRoleTree, AddRolePermissionTree: AddRolePermissionTree},operInfo:{operType:'org_update'}});
+    else if(action.payload.permissionType === "BaseSet"){
+        BaseSetOrgTree = getContractOrg(orgTreeSource,null)
+    }
+    return Object.assign({}, state, {permissionOrgTree: {AddUserTree: AddUserTree, AddNormalRoleTree: AddNormalRoleTree, AddPublicRoleTree: AddPublicRoleTree, AddRolePermissionTree: AddRolePermissionTree,BaseSetOrgTree:BaseSetOrgTree},operInfo:{operType:'org_update'}});
+}
+function getContractOrg(orgTree,sArray) {
+    if(sArray === null){
+        sArray = []
+    }
+    if (orgTree && orgTree.length > 0) {
+        for (let i = 0; i < orgTree.length; i++) {
+            if (orgTree[i].Original.type == 'Subsidiary') {
+                sArray.push(orgTree[i])
+                if(orgTree[i].children.length>0){
+                    let children = []//拷贝副本
+                    for(let k=0;k<orgTree[i].children.length;k++){
+                        children.push(orgTree[i].children[k])
+                    }
+                    orgTree[i].children = []
+                    getContractOrg(children,orgTree[i].children)//递归找出子级是否符合条件
+                }
+            }
+            else if(orgTree[i].Original.type == 'Filiale'){
+                sArray.push(orgTree[i])
+                if(orgTree[i].children.length>0){
+                    let children = []//拷贝副本
+                    for(let k=0;k<orgTree[i].children.length;k++){
+                        children.push(orgTree[i].children[k])
+                    }
+                    orgTree[i].children = []
+                    getContractOrg(children,orgTree[i].children)//递归找出子级是否符合条件
+                }
+            }
+            else if(orgTree[i].children.length>0){
+                getContractOrg(orgTree[i].children,sArray)//递归找出子级是否符合条件
+            }
+        }
+    }
+    return sArray;
 }
 
 function getAllChildrenNode(node, parentId, formatNodeLit) {

@@ -12,7 +12,6 @@ import rpReducerMap from './dealRp/rp'
 import finaReducerMap from './fina/fina'
 export default combineReducers({
     router: routerReducer,
-    oidc: oidcReducer,
     ppft: ppFtReducer,
     org:  treeReducer,
     orgparam: orgParamReducer,
