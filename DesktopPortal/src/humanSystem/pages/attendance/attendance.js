@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 import { setSearchLoadingVisible, adduserPage, getAttendenceSettingList, postSetAttendenceSettingList, importAttendenceList,searchAttendenceList ,deleteAttendenceItem} from '../../actions/actionCreator';
 import React, { Component } from 'react';
 import { Input, Spin, Upload, Checkbox, Button, notification, Modal, Row, Col, InputNumber} from 'antd';
-import { exceltoobj } from '../../constants/import';
+import { exceltoattendenceobj } from '../../constants/import';
 //import {getDicParList} from '../actions/actionCreator';
 import SearchCondition from './searchCondition';
 import SearchResult from './searchResult';

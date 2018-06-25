@@ -699,7 +699,7 @@ export default function* watchDicAllAsync() {
     yield takeLatest(actionUtils.getActionType(actionTypes.ADD_ORG), addOrg);
     yield takeLatest(actionUtils.getActionType(actionTypes.UPDATE_ORG), updateOrg);
     //考勤
-    yield takeLatest(actionUtils.getActionType(actionType.IMPORT_ATTENDANCELST), importAttendenceLst);
-    yield takeLatest(actionUtils.getActionType(actionType.SEARCH_ATTENDANCELST), searchtAttendenceLst);
-    yield takeLatest(actionUtils.getActionType(actionType.DELETE_ATTENDANCEITEM), deleteAttendenceItem);
+    yield takeLatest(actionUtils.getActionType(actionTypes.IMPORT_ATTENDANCELST), importAttendenceLst);
+    yield takeLatest(actionUtils.getActionType(actionTypes.SEARCH_ATTENDANCELST), searchtAttendenceLst);
+    yield takeLatest(actionUtils.getActionType(actionTypes.DELETE_ATTENDANCEITEM), deleteAttendenceItem);
 }

@@ -104,7 +104,7 @@ export const updateOrg = createAction(actionTypes.UPDATE_ORG);
 export const getAttendenceSettingList = createAction(actionTypes.GET_ATTENDANCESETTINGLST);
 export const postSetAttendenceSettingList = createAction(actionTypes.POST_ATTENDANCESETTINGLST);
 
-export const importAttendenceList = createAction(actionType.IMPORT_ATTENDANCELST);
-export const searchAttendenceList = createAction(actionType.SEARCH_ATTENDANCELST);
-export const deleteAttendenceItem = createAction(actionType.DELETE_ATTENDANCEITEM);
-export const selAttendenceList = createAction(actionType.SEL_ATTENDANCELIST);
+export const importAttendenceList = createAction(actionTypes.IMPORT_ATTENDANCELST);
+export const searchAttendenceList = createAction(actionTypes.SEARCH_ATTENDANCELST);
+export const deleteAttendenceItem = createAction(actionTypes.DELETE_ATTENDANCEITEM);
+export const selAttendenceList = createAction(actionTypes.SEL_ATTENDANCELIST);
