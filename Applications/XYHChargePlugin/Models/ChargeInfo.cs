@@ -83,6 +83,24 @@ namespace XYHChargePlugin.Models
 
         public String DeleteUser { get; set; }
 
+        public string SubmitUser { get; set; }
+
+        public DateTime? SubmitTime { get; set; }
+
+        public string ConfirmMessage { get; set; }
+
+        public string ConfirmBillMessage { get; set; }
+
+        public string ChargeId { get; set; }
+
+        public DateTime? ExpectedPaymentDate { get; set; }
+
+        public decimal? ReimbursedAmount { get; set; }
+
+        public bool? IsReimbursed { get; set; }
+
+        public DateTime? LastReimbursedTime { get; set; }
+
         [NotMapped]
         public Organizations BranchInfo { get; set; }
 
@@ -103,6 +121,9 @@ namespace XYHChargePlugin.Models
 
         [NotMapped]
         public HumanInfo ReimburseUserInfo { get; set; }
+
+        [NotMapped]
+        public List<ModifyInfo> History { get; set; }
         //public DateTime? PostTime { get; set; }
         //[MaxLength(127)]
         // public string PostDepartment { get; set; }

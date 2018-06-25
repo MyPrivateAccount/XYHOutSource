@@ -7,7 +7,8 @@ import ContentPage from './pages/contentPage';
 import {sagaMiddleware} from '../';
 import rootSaga from './saga/rootSaga';
 import {getOrgList, setSearchLoadingVisible, searchConditionType, setbreadPageItem, setVisibleHead, setbreadPageItemIndex} from './actions/actionCreator';
-//import OrgSelect from './orgSelect';
+import {getDicParList} from '../actions/actionCreators';
+import {globalAction} from 'redux-subspace';
 sagaMiddleware.run(rootSaga);
 
 const {SubMenu} = Menu;
@@ -22,7 +23,7 @@ const menuDefine = [
     {id: 24, menuID: "menu_achievement", displayName: "薪酬管理", menuIcon: 'database'},
     {id: 25, menuID: "menu_attendance", displayName: "考勤信息", menuIcon: 'pushpin-o'},
     {id: 26, menuID: "menu_organization", displayName: "组织架构管理", menuIcon: 'layout'},
-    {id: 27, menuID: "menu_statistics", displayName: "统计报表", menuIcon: 'global'},
+    {id: 27, menuID: "menu_awpu", displayName: "行政奖惩", menuIcon: 'global'},
     {id: 28, menuID: "menu_set", displayName: "设置", menuIcon: 'setting'},
     //{menuID: "menu_app", displayName: "应用管理", menuIcon: 'appstore', requirePermission: ['ApplicationCreate']}
 ];
@@ -36,19 +37,23 @@ const homeStyle = {
         marginRight: '10px',
 
     },
-    curOrgStype:{
+    curOrgStype: {
         marginLeft: '10px',
-        overflow: 'hidden', 
+        overflow: 'hidden',
         textOverflow: 'ellipsis'
     }
 }
 
- class HumanIndex extends Component {
-    
+class HumanIndex extends Component {
+
     state = {
         activeOrg: {},
         collapsed: false,
         activeMenu: menuDefine[0],
+    }
+    componentDidMount() {
+        const dicArray = ['HUMEN_Nation', 'HUMEN_HOUSE_REGISTER', 'HUMEN_EDUCATION', 'HUMENT_HEALTH', 'HUMEN_POLITICS', 'CONTRACT_CATEGORIES', 'HUMEN_DEGREE'];
+        this.props.dispatch(globalAction(getDicParList([...dicArray])));
     }
 
     toggle = () => {
@@ -69,7 +74,7 @@ const homeStyle = {
                         message: "no page",
                         duration: 3
                     });
-                    return ;
+                    return;
                 }
                 this.state.activeMenu = menuDefine[i];
                 this.props.dispatch(setbreadPageItem(menuDefine[i]));
@@ -98,19 +103,19 @@ const homeStyle = {
     getContentPage() {
         let navigator = this.props.basicData.navigator;
         if (navigator.length > 0) {
-            return <ContentPage curMenuID={navigator[navigator.length-1].menuID} />
+            return <ContentPage curMenuID={navigator[navigator.length - 1].menuID} />
         }
         return <ContentPage curMenuID={this.state.activeMenu.menuID} />;
     }
 
     handleNavClick(i, itm) {
         let navigator = this.props.basicData.navigator;
-        if(navigator.length > 0) {
+        if (navigator.length > 0) {
             this.props.dispatch(setbreadPageItemIndex(i));
         }
     }
 
-    componentWillMount () {
+    componentWillMount() {
         this.props.dispatch(getOrgList("PublicRoleOper"));
     }
 
@@ -118,7 +123,7 @@ const homeStyle = {
         let org = null;
         if (orgList && orgList.length > 0) {
             for (let i = 0; i < orgList.length; i++) {
-                if (orgList[i].id === orgId ) {
+                if (orgList[i].id === orgId) {
                     org = orgList[i];
                     break;
                 } else {
@@ -161,7 +166,7 @@ const homeStyle = {
 
     getChildrenID(orgInfo) {
         if (orgInfo) {
-            if (!orgInfo.children||orgInfo.children.length === 0) {
+            if (!orgInfo.children || orgInfo.children.length === 0) {
                 this.props.search.lstChildren.push(orgInfo.id);
             } else {
                 this.props.search.lstChildren.push(orgInfo.id);
@@ -172,10 +177,10 @@ const homeStyle = {
 
     handleOrgChecked = (f, e) => {
         if (e.target.checked) {
-            this.state.activeOrg = {id:f.id, parentId:f.parentId, organizationName: f.organizationName};
+            this.state.activeOrg = {id: f.id, parentId: f.parentId, organizationName: f.organizationName};
             //this.props.dispatch(setVisibleHead({headVisible: false, activeOrg: {id:f.id, parentId:f.parentId}}));
             this.props.dispatch(setSearchLoadingVisible(true));
-        
+
             this.props.search.organizate = f.id;
             this.props.search.lstChildren = [f.id];
             if (f.children instanceof Array) {
@@ -187,12 +192,12 @@ const homeStyle = {
 
     getChildOrg(orgInfo) {
         if (orgInfo) {
-            if (!orgInfo.children||orgInfo.children.length === 0) {
+            if (!orgInfo.children || orgInfo.children.length === 0) {
                 return (<Menu.Item key={orgInfo.id} >
                     <Checkbox onChange={(e) => this.handleOrgChecked(orgInfo, e)} >{orgInfo.organizationName}</Checkbox>
                 </Menu.Item>)
             } else {
-                return (<SubMenu key={orgInfo.id} title={<span><Checkbox onChange={(e) => this.handleOrgChecked(orgInfo, e)}></Checkbox>&nbsp;&nbsp;{"  "+orgInfo.organizationName}</span>}>
+                return (<SubMenu key={orgInfo.id} title={<span><Checkbox onChange={(e) => this.handleOrgChecked(orgInfo, e)}></Checkbox>&nbsp;&nbsp;{"  " + orgInfo.organizationName}</span>}>
                     {
                         orgInfo.children.map(org => this.getChildOrg(org))
                     }
@@ -205,19 +210,19 @@ const homeStyle = {
         let navigator = this.props.basicData.navigator;
 
         let orgTree = this.props.basicData.searchOrgTree.slice();
-        orgTree.unshift({id: "ff", key: "ff", label: "不限", name: "不限", organizationName:"不限", parentId: "ff", value: "ff"});
+        orgTree.unshift({id: "ff", key: "ff", label: "不限", name: "不限", organizationName: "不限", parentId: "ff", value: "ff"});
         let fullPath = this.getActiveOrgFullPath(orgTree);
-        return(
-            <Layout className = "page">
+        return (
+            <Layout className="page">
                 <Sider
                     collapsible
                     collapsed={this.state.collapsed}
                     onCollapse={this.toggle}>
                     <div className="logo" />
                     <Menu
-                         theme="dark" key='menu_org_select' mode="vertical" style={{borderBottom: '1px solid #fff'}}>
-                        <SubMenu title={"当前部门："+fullPath}>
-                            {orgTree.map(org =>this.getChildOrg(org))}
+                        theme="dark" key='menu_org_select' mode="vertical" style={{borderBottom: '1px solid #fff'}}>
+                        <SubMenu title={"当前部门：" + fullPath}>
+                            {orgTree.map(org => this.getChildOrg(org))}
                         </SubMenu>
                     </Menu>
                     <Menu mode="inline"
@@ -226,24 +231,24 @@ const homeStyle = {
                         inlineCollapsed={this.state.collapsed}
                         selectedKeys={[this.state.activeMenu.menuID]}
                         defaultSelectedKeys={["menu_user_mgr"]}>
-                            {menuDefine.map((menu, index)=>
-                                this.hasPermission(menu) ? <Menu.Item key={menu.menuID}>
-                                    <Icon type={menu.menuIcon}/>
-                                    <span>{menu.displayName}</span>
-                                </Menu.Item> : null
-                            )}
+                        {menuDefine.map((menu, index) =>
+                            this.hasPermission(menu) ? <Menu.Item key={menu.menuID}>
+                                <Icon type={menu.menuIcon} />
+                                <span>{menu.displayName}</span>
+                            </Menu.Item> : null
+                        )}
                     </Menu>
                 </Sider>
                 {
                     <Layout>
                         <Header>
-                        <Breadcrumb separator='>' style= {{fontSize:'0.8rem'}}> 
-                            {
-                                navigator.map((item, i) =>{
-                                    return <Breadcrumb.Item key={i}  style={homeStyle.navigator} onClick={(e) =>this.handleNavClick(i, item)} >{item.displayName}</Breadcrumb.Item>
-                                })
-                            }
-                        </Breadcrumb>
+                            <Breadcrumb separator='>' style={{fontSize: '0.8rem'}}>
+                                {
+                                    navigator.map((item, i) => {
+                                        return <Breadcrumb.Item key={i} style={homeStyle.navigator} onClick={(e) => this.handleNavClick(i, item)} >{item.displayName}</Breadcrumb.Item>
+                                    })
+                                }
+                            </Breadcrumb>
                         </Header>
                         <Content className='content'>
                             {
@@ -266,4 +271,4 @@ function mapStateToProps(state, props) {
         basicData: state.basicData
     }
 }
-export default withReducer(reducers, 'HumanIndex', {mapExtraState: (state, rootState) => ({oidc: rootState.oidc})})(connect(mapStateToProps)(HumanIndex));
+export default withReducer(reducers, 'HumanIndex', {mapExtraState: (state, rootState) => ({oidc: rootState.oidc, judgePermissions: rootState.app.judgePermissions, rootBasicData: rootState.basicData})})(connect(mapStateToProps)(HumanIndex));

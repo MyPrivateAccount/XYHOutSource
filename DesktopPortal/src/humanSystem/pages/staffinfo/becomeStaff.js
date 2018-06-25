@@ -1,16 +1,16 @@
 import React, {Component} from 'react';
-import {Form, Input, InputNumber, DatePicker, Select,  Button, Row, Col, Checkbox,} from 'antd'
+import {Form, Input, InputNumber, DatePicker, Select, Button, Row, Col, Checkbox, } from 'antd'
 import {connect} from 'react-redux';
 import moment from 'moment';
-import { getworkNumbar, postHumanInfo, setSocialEN} from '../../actions/actionCreator';
+import {getworkNumbar, postHumanInfo, setSocialEN} from '../../actions/actionCreator';
 import './staff.less';
-
+import SocialSecurity from './form/socialSecurity'
 const Option = Select.Option;
 const FormItem = Form.Item;
 
 const formItemLayout1 = {
-    labelCol:{ span:6},
-    wrapperCol:{ span:6 },
+    labelCol: {span: 6},
+    wrapperCol: {span: 6},
 };
 
 class OnBoarding extends Component {
@@ -19,8 +19,8 @@ class OnBoarding extends Component {
     }
 
     componentWillMount() {
-        this.state.id = this.props.selHumanList[this.props.selHumanList.length-1].id;
-        this.state.idCard = this.props.selHumanList[this.props.selHumanList.length-1].idcard;
+        this.state.id = this.props.selHumanList[this.props.selHumanList.length - 1].id;
+        this.state.idCard = this.props.selHumanList[this.props.selHumanList.length - 1].idcard;
     }
 
     componentDidMount() {
@@ -65,12 +65,24 @@ class OnBoarding extends Component {
     render() {
         return (
             <div className="insureBlock">
-                <Row type="flex">
-                    <Col span={6}>
-                        <label>转正实际生效时间 </label><DatePicker onChange={this.onChangeTime} format='YYYY-MM-DD' style={{width: '70%'}} />
+                <Row>
+                    <Col span={7}>员工编号:<Input style={{width: '200px'}} disabled /></Col>
+                    <Col span={7}>姓名:<Input style={{width: '200px'}} disabled /></Col>
+                    <Col span={10}>
+                        转正实际生效时间:<DatePicker style={{width: '200px'}} onChange={this.onChangeTime} format='YYYY-MM-DD' />
                     </Col>
                 </Row>
-                <Row>
+                <div className="noinsureItem">
+                    <Row>
+                        <Col>
+                            <SocialSecurity />
+                        </Col>
+                        <Col style={{textAlign: 'center'}}>
+                            <Button type="primary" htmlType="submit" onClick={this.onHandleSubmit} >提交</Button>
+                        </Col>
+                    </Row>
+                </div>
+                {/* <Row>
                     <Col span={8}>
                         <Checkbox onChange={this.onChangeInsure} >是否参加社保</Checkbox>
                     </Col>
@@ -86,8 +98,7 @@ class OnBoarding extends Component {
                         <div className="insureItem"><label >生育保险&nbsp;&nbsp;</label><InputNumber onChange={this.onChangeFertility} disabled={!this.state.isSocial} placeholder="请输入生育保险" style={{width: '70%'}} /></div>
                     </Col>
                 </Row>
-                <div className="noinsureItem">
-                    <Row>
+                 <Row>
                         <Col offset={2} span={8}>
                             <Checkbox onChange={this.onChangeGiveup} disabled={this.state.isSocial} >放弃购买</Checkbox>
                         </Col>
@@ -97,8 +108,7 @@ class OnBoarding extends Component {
                             <Checkbox onChange={this.onChangeGiveupSign} disabled={this.state.isSocial} >放弃购买是否签订承诺书</Checkbox>
                         </Col>
                     </Row>
-                    <Button type="primary" htmlType="submit" onClick={this.onHandleSubmit} >提交</Button>
-                </div>
+                */}
             </div>
         );
     }

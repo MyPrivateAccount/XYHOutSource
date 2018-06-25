@@ -1,22 +1,114 @@
 ﻿[
   {
-    "Code": "Filiale",
-    "Name": "分公司",
-    "Value": 3
+    "FilialeName": "重庆新耀行",
+    "Enable": true,
+    "Settings": [
+      {
+        "Code": "Filiale",
+        "Name": "分公司",
+        "ValueItems": [
+          {
+            "Item": "default",
+            "Value": 5
+          }
+        ]
+      },
+      {
+        "Code": "Region",
+        "Name": "大区",
+        "ValueItems": [
+          {
+            "Item": "default",
+            "Value": 3
+          }
+        ]
+      },
+      {
+        "Code": "Area",
+        "Name": "片区",
+        "ValueItems": [
+          {
+            "Item": "default",
+            "Value": 7
+          }
+        ]
+      },
+      {
+        "Code": "Group",
+        "Name": "小组",
+        "ValueItems": [
+          {
+            "Item": "default",
+            "Value": 0
+          }
+        ]
+      },
+      {
+        "Code": "AssistantPushDay",
+        "Name": "小助手提前推送日期设置",
+        "ValueItems": [
+          {
+            "Item": "default",
+            "Value": 2
+          }
+        ]
+      }
+    ]
   },
   {
-    "Code": "Region",
-    "Name": "大区",
-    "Value": 10
-  },
-  {
-    "Code": "Area",
-    "Name": "片区",
-    "Value": 0
-  },
-  {
-    "Code": "Group",
-    "Name": "小组",
-    "Value": 0
+    "FilialeName": "成都新耀行",
+    "Enable": false,
+    "Settings": [
+      {
+        "Code": "Filiale",
+        "Name": "分公司",
+        "ValueItems": [
+          {
+            "Item": "default",
+            "Value": 5
+          }
+        ]
+      },
+      {
+        "Code": "Region",
+        "Name": "大区",
+        "ValueItems": [
+          {
+            "Item": "default",
+            "Value": 3
+          }
+        ]
+      },
+      {
+        "Code": "Area",
+        "Name": "片区",
+        "ValueItems": [
+          {
+            "Item": "default",
+            "Value": 7
+          }
+        ]
+      },
+      {
+        "Code": "Group",
+        "Name": "小组",
+        "ValueItems": [
+          {
+            "Item": "default",
+            "Value": 0
+          }
+        ]
+      },
+      {
+        "Code": "AssistantPushDay",
+        "Name": "小助手提前推送日期设置",
+        "ValueItems": [
+          {
+            "Item": "default",
+            "Value": 2
+          }
+        ]
+      }
+    ]
   }
 ]

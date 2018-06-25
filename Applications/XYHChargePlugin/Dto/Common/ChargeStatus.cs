@@ -8,7 +8,8 @@ namespace XYHChargePlugin.Dto
     {
         UnSubmit=0,//未提交
         Submit = 4, //已提交
-        Confirm = 8 //已确认
+        Confirm = 8, //已确认
+        Reject = 16, //驳回
 
     }
 }

@@ -232,7 +232,54 @@ export function* getSalaryItemAsync(state) {
     }
 }
 
+export function* getAttendenceSettingAsync(state) {
+    let result = {isOk: false, extension: {}, msg: '获取考勤金额设置信息失败'};
+    let url = WebApiConfig.search.getAttendenceSettingList;
 
+    try {
+        let res = yield call(ApiClient.get, url);
+        if (res.data.code == 0) {
+            result.isOk = true;
+            yield put ({type: actionUtils.getActionType(actionTypes.UPDATE_ATTENDANCESETTINGLST), payload: res.data.extension});
+        }
+    } catch (e) {
+        result.msg = '获取考勤金额设置信息失败';
+    }
+
+    if (!result.isOk) {
+        notification.error({
+            description: result.msg,
+            duration: 3
+        });
+    }
+}
+
+export function* postAttendeceSettingAsync(state) {
+    let result = {isOk: false, extension: {}, msg: '设置考勤金额设置信息失败！'};
+    let url = WebApiConfig.server.postAttendenceSettingList;
+
+    try {
+        let res = yield call(ApiClient.post, url, state.payload);
+        if (res.data.code == 0) {
+            result.isOk = true;
+            yield put ({type: actionUtils.getActionType(actionTypes.UPDATE_ATTENDANCESETTINGLST), payload: res.data.extension});
+
+            notification.success({
+                description: "设置考勤金额设置信息成功",
+                duration: 3
+            });
+        }
+    } catch (e) {
+        result.msg = '设置考勤金额设置信息异常';
+    }
+
+    if (!result.isOk) {
+        notification.error({
+            description: result.msg,
+            duration: 3
+        });
+    }
+}
 
 export default function* watchAllSearchAsync() {
     yield takeLatest(actionUtils.getActionType(actionTypes.SEARCH_CUSTOMER), getCustomerListAsync);
@@ -242,4 +289,6 @@ export default function* watchAllSearchAsync() {
     yield takeLatest(actionUtils.getActionType(actionTypes.GET_BLACKLST), getBlackListAsync);
     yield takeLatest(actionUtils.getActionType(actionTypes.GET_SALARYLIST), getSalaryListAsync);
     yield takeLatest(actionUtils.getActionType(actionTypes.GET_SALARYITEM), getSalaryItemAsync);
+    yield takeLatest(actionUtils.getActionType(actionTypes.GET_ATTENDANCESETTINGLST), getAttendenceSettingAsync);
+    yield takeLatest(actionUtils.getActionType(actionTypes.POST_ATTENDANCESETTINGLST), postAttendeceSettingAsync);
 }

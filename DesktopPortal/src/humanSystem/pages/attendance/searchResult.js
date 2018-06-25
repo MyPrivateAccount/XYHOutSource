@@ -1,14 +1,23 @@
 import {connect} from 'react-redux';
-import {setLoadingVisible, selBlackList} from '../../actions/actionCreator';
+import {setLoadingVisible, selAttendenceList, searchIndex} from '../../actions/actionCreator';
 import React, {Component} from 'react';
 import {Button, Row, Col, Table} from 'antd';
 
 //{key: "1", time: "tt", name: "tt", idcard: "tta", signed: "today"}
 const columns = [
-    {title: '日期',dataIndex: 'time',key: 'time',},
-    {title: '姓名',dataIndex: 'name',key: 'name'},
+    {title: '工号',dataIndex: 'userID',key: 'userID',},
+    {title: '考勤月份',dataIndex: 'date',key: 'date'},
     {title: '身份证号',dataIndex: 'idcard',key: 'idcard'},
-    {title: '签到记录',dataIndex: 'signed',key: 'signed'},
+    {title: '姓名',dataIndex: 'name',key: 'name'},
+    {title: '正常出勤',dataIndex: 'normal',key: 'normal'},
+    {title: '调休',dataIndex: 'relaxation',key: 'relaxation'},
+    {title: '事假',dataIndex: 'matter',key: 'matter'},
+    {title: '病假',dataIndex: 'illness',key: 'illness'},
+    {title: '年假',dataIndex: 'annual',key: 'annual'},
+    {title: '婚假',dataIndex: 'marry',key: 'marry'},
+    {title: '丧假',dataIndex: 'funeral',key: 'funeral'},
+    {title: '迟到',dataIndex: 'late',key: 'late'},
+    {title: '旷工',dataIndex: 'absent',key: 'absent'},
 ];
 
 
@@ -32,15 +41,16 @@ class SearchResult extends Component {
         //this.props.dispatch(clearCharge());
     }
     
-    handleChangePage = (pagination) => {
-
-    }
+    handleTableChange = (pagination, filters, sorter) => {
+        this.props.dispatch(searchIndex(pagination.current - 1));
+        //this.props.searchInfo.pageIndex = ();
+    };
 
     render() {
         let self = this;
         const rowSelection = {
             onChange: (selectedRowKeys, selectedRows) => {
-                self.props.dispatch(selBlackList(selectedRows));
+                self.props.dispatch(selAttendenceList(selectedRows));
             }
         };
         
@@ -48,7 +58,7 @@ class SearchResult extends Component {
             <div>
                 {<p style={{marginBottom: '10px'}}>目前已为你筛选出<b>{this.props.searchInfoResult.attendanceList.extension.length}</b>条考勤信息</p>}
                 <div id="searchResult">
-                    <Table id= {"table"} rowKey={record => record.idcard} 
+                    <Table id= {"table"} rowKey={record => record.key} 
                     columns={columns} 
                     pagination={this.props.searchInfoResult} 
                     onChange={this.handleChangePage} 
@@ -63,7 +73,6 @@ class SearchResult extends Component {
 function mapStateToProps(state) {
     return {
         searchInfoResult: state.search,
-        showLoading: state.basicData.showLoading
     }
 }
 

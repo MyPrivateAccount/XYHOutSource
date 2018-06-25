@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import Loadable from 'react-loadable';
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 import LoadableLoading from '../../components/LoadableLoading';
 
 const LoadableStaffPage = Loadable({
@@ -63,9 +63,17 @@ const LoadableSetPage = Loadable({
     loader: () => import('./set/set'),
     loading: () => <LoadableLoading />,
 });
+const LoadablePartTimeJob = Loadable({
+    loader: () => import('./staffinfo/partTimeJob'),
+    loading: () => <LoadableLoading />,
+});
+const LoadableRewardPunishment = Loadable({
+    loader: () => import('./rewardpunishment/rewardpunishment'),
+    loading: () => <LoadableLoading />,
+});
 
 function ContentPage(props) {
-    const { curMenuID } = props;
+    const {curMenuID} = props;
     if (curMenuID === "menu_user_mgr") {
         return <LoadableStaffPage />;
     }
@@ -93,10 +101,10 @@ function ContentPage(props) {
     else if (curMenuID === "menu_achievement") {
         return <LoadableAchievementPage />;
     }
-    else if(curMenuID === "menu_achievementnew") {
+    else if (curMenuID === "menu_achievementnew") {
         return <LoadableAddAchievementPage ismodify="0" />;
     }
-    else if(curMenuID === "menu_achievementmodify") {
+    else if (curMenuID === "menu_achievementmodify") {
         return <LoadableAddAchievementPage ismodify="1" />;
     }
     else if (curMenuID === "menu_organization") {
@@ -119,6 +127,12 @@ function ContentPage(props) {
     }
     else if (curMenuID === "leftstation") {
         return <LoadableLeftdPage />;
+    }
+    else if (curMenuID === 'partTimeJob') {
+        return <LoadablePartTimeJob />
+    }
+    else if (curMenuID === "menu_awpu") {
+        return <LoadableRewardPunishment />;
     }
     else {
         return <LoadableStaffPage />;

@@ -64,6 +64,9 @@ class Layer extends Component {
         return (
             <div className={`xyh-layer ${this.props.className||''}`} >
                 <div className="rel"  ref={this.bindContentPanel}>
+                {
+                    this.props.fixedPanel
+                }
                     <div className="panel">
                       
                         {children}
