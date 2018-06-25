@@ -1,7 +1,7 @@
 import {connect} from 'react-redux';
 import {createStation, getOrgList, leavePosition} from '../../actions/actionCreator';
 import React, {Component} from 'react'
-import {Select, Input, Form, Cascader, Button, Row, Col, Checkbox, DatePicker, Spin} from 'antd'
+import {Select, Input, Form, Cascader, Button, Row, Col, Checkbox, DatePicker, Spin, Table} from 'antd'
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -10,17 +10,52 @@ const formItemLayout = {
     wrapperCol: {span: 17},
 };
 
+const formerCompanyColumns = [{
+    title: '兼职部门',
+    dataIndex: 'company',
+    key: 'company',
+}, {
+    title: '岗位',
+    dataIndex: '兼职职位',
+    key: 'position',
+}, {
+    title: '开始时间',
+    dataIndex: 'startTime',
+    key: 'startTime',
+}, {
+    title: '结束时间',
+    dataIndex: 'endTime',
+    key: 'endTime',
+}];
 
-class Left extends Component {
+
+class PartTimeJob extends Component {
     state = {
-        department: ''
+        department: '',
+        columns: []
     }
 
     componentWillMount() {
+        let operColumn = {
+            title: '操作',
+            dataIndex: 'proveMan',
+            render: (text, record) => {
+                return (
+                    <div>
+                        <Button type="primary" size='small' style={{marginRight: '5px'}} onClick={() => this.Invalid(record)} >失效</Button>
+                    </div>
+                )
+            },
+            key: 'proveMan',
+        }
+        this.setState({columns: formerCompanyColumns.concat(operColumn)});
     }
-
     hasErrors(fieldsError) {
         return !Object.keys(fieldsError).some(field => fieldsError[field]);
+    }
+    //兼职失效
+    Invalid = (record) => {
+
     }
 
     handleSubmit = (e) => {
@@ -36,11 +71,12 @@ class Left extends Component {
 
     render() {
         const {getFieldDecorator, getFieldsError, getFieldsValue, isFieldTouched} = this.props.form;
+        let tableColumns = this.state.columns || [];
         return (
             <div>
                 <Form onSubmit={this.handleSubmit}>
                     <Row style={{marginTop: '10px'}}>
-                        <Col span={7}>
+                        <Col span={6}>
                             <FormItem {...formItemLayout} label="员工编号">
                                 {getFieldDecorator('id', {
                                     reules: [{
@@ -51,7 +87,7 @@ class Left extends Component {
                                 )}
                             </FormItem>
                         </Col>
-                        <Col span={7}>
+                        <Col span={6}>
                             <FormItem {...formItemLayout} label="姓名">
                                 {getFieldDecorator('name', {
                                     reules: [{
@@ -62,7 +98,7 @@ class Left extends Component {
                                 )}
                             </FormItem>
                         </Col>
-                        <Col span={7}>
+                        <Col span={6}>
                             <FormItem {...formItemLayout} label="部门">
                                 {getFieldDecorator('orgDepartmentId', {
                                     reules: [{
@@ -74,79 +110,30 @@ class Left extends Component {
                                 )}
                             </FormItem>
                         </Col>
-                    </Row>
-                    <Row>
-                        <Col span={7}>
-                            <FormItem {...formItemLayout} label="离职日期">
-                                {getFieldDecorator('leaveTime', {
+                        <Col span={6}>
+                            <FormItem {...formItemLayout} label="职位">
+                                {getFieldDecorator('orgStation', {
                                     reules: [{
                                         required: true, message: 'please entry',
-                                    }]
+                                    }],
+                                    initialValue: null
                                 })(
-                                    <DatePicker format='YYYY-MM-DD' style={{width: '100%'}} />
-                                )}
-                            </FormItem>
-                        </Col>
-                        <Col span={7}>
-                            <FormItem {...formItemLayout} label="交接人">
-                                {getFieldDecorator('handover', {
-                                    rules: [{
-                                        required: true, message: '请选择交接人',
-                                    }]
-                                })(
-                                    <Select disabled={this.props.ismodify == 1} placeholder="请选择交接人">
+                                    <Select disabled={true} onChange={this.handleSelectChange} placeholder="选择职位">
 
                                     </Select>
                                 )}
                             </FormItem>
                         </Col>
-                        <Col span={7}>
-                            <FormItem {...formItemLayout} colon={false} label=" ">
-                                {getFieldDecorator('isFormalities', {
-                                    reules: [{
-                                        required: true, message: 'please entry',
-                                    }]
-                                })(
-                                    <Checkbox >是否办理手续</Checkbox>
-                                )}
-                            </FormItem>
-                        </Col>
                     </Row>
+
+                    <Table dataSource={[]} columns={tableColumns} />
+
                     <Row>
-                        <Col span={20} style={{textAlign: 'center'}}>
+                        <Col span={20} style={{textAlign: 'center', marginTop: '10px'}}>
                             <Button type="primary" htmlType="submit" disabled={this.hasErrors(getFieldsValue())} >提交</Button>
                         </Col>
                     </Row>
-                    {/* <FormItem {...formItemLayout1} label="离职办理时间">
-                        {getFieldDecorator('leaveTime', {
-                            reules: [{
-                                required:true, message: 'please entry',
-                            }]
-                        })(
-                            <DatePicker format='YYYY-MM-DD' style={{width: '100%'}} />
-                        )}
-                    </FormItem>
-                    <FormItem {...formItemLayout1} colon={false} label=" ">
-                        {getFieldDecorator('isFormalities', {
-                            reules: [{
-                                required:true, message: 'please entry',
-                            }]
-                        })(
-                            <Checkbox >是否办理手续</Checkbox>
-                        )}
-                    </FormItem>
-                    <FormItem {...formItemLayout1} colon={false} label=" ">
-                        {getFieldDecorator('isReduceSocialEnsure', {
-                            reules: [{
-                                required:true, message: 'please entry',
-                            }]
-                        })(
-                            <Checkbox >社保是否减少</Checkbox>
-                        )}
-                    </FormItem>
-                    <FormItem wrapperCol={{ span: 12, offset: 6 }}>
-                        <Col span={6}><Button type="primary" htmlType="submit" disabled={this.hasErrors(getFieldsValue())} >提交</Button></Col>
-                    </FormItem> */}
+
                 </Form>
             </div >
 
@@ -165,4 +152,4 @@ function tableMapDispatchToProps(dispatch) {
         dispatch
     };
 }
-export default connect(tableMapStateToProps, tableMapDispatchToProps)(Form.create()(Left));
+export default connect(tableMapStateToProps, tableMapDispatchToProps)(Form.create()(PartTimeJob));
