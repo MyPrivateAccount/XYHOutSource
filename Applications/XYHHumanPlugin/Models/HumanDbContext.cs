@@ -30,6 +30,7 @@ namespace XYHHumanPlugin.Models
         public DbSet<Users> Users { get; set; }
         public DbSet<LeaveInfo> LeaveInfos { get; set; }
         public DbSet<ChangeInfo> ChangeInfos { get; set; }
+        public DbSet<RewardPunishment> RewardPunishments { get; set; }
 
         public DbSet<SocialInsurance> SocialInsurances { get; set; }
         public DbSet<Organizations> Organizations { get; set; }
@@ -123,6 +124,12 @@ namespace XYHHumanPlugin.Models
             {
                 b.HasKey(k => new { k.IDCard });
                 b.ToTable("XYH_HU_CHANGE");
+            });
+
+            modelBuilder.Entity<RewardPunishment>(b =>
+            {
+                b.HasKey(k => new { k.ID });
+                b.ToTable("XYH_HU_REWARDPUNISHMENT");
             });
 
             modelBuilder.Entity<Users>(b =>
