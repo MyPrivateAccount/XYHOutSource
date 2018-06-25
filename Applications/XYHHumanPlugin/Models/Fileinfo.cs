@@ -6,6 +6,9 @@ using System.Text;
 
 namespace XYHHumanPlugin.Models
 {
+    /// <summary>
+    /// 文件表
+    /// </summary>
     public class FileInfo
     {
         [MaxLength(127)]

@@ -3,6 +3,7 @@ import * as actionTypes from '../constants/actionType';
 import appAction from '../../utils/appUtils';
 
 const initState = {
+    operInfo: {objType: '', operType: '', snackbar: ''},
     //成交报告基础信息
     bswyTypes:[],//报数物业分类（字典）
     cjbgTypes:[],//成交报告分类（字典）
@@ -38,7 +39,9 @@ const initState = {
     //客户来源
     khTypes:[],
     //成交报告审核状态
-    spTypes:[]
+    spTypes:[],
+    //职位等级
+    zwTypes:[]
 };
 let reducerMap = {};
 //字典数据
@@ -76,6 +79,8 @@ reducerMap[actionTypes.DIC_GET_PARLIST_COMPLETE] = function (state, action) {
     let ghTypes = [...state.ghTypes];
     let khTypes = [...state.khTypes];
     let spTypes = [...state.spTypes];
+
+    let zwTypes = [...state.zwTypes];
     
     console.log('字典数据：', action.payload);
     action.payload.map((group) => {
@@ -183,10 +188,15 @@ reducerMap[actionTypes.DIC_GET_PARLIST_COMPLETE] = function (state, action) {
             group.dictionaryDefines = group.dictionaryDefines.sort((aItem, bItem) => aItem.order - bItem.order);
             spTypes = group.dictionaryDefines;
         }
+        else if(group.groupId === 'COMMISSION_ZW_LEVEL'){
+            group.dictionaryDefines = group.dictionaryDefines.sort((aItem, bItem) => aItem.order - bItem.order);
+            zwTypes = group.dictionaryDefines;
+        }
   
 
     });
     return Object.assign({}, state, {
+        operInfo:{operType:'DIC_GET_PARLIST_COMPLETE'},
         bswyTypes:bswyTypes,
         cjbgTypes:cjbgTypes,
         tradeTypes:tradeTypes,
@@ -212,7 +222,8 @@ reducerMap[actionTypes.DIC_GET_PARLIST_COMPLETE] = function (state, action) {
         cjTypes:cjTypes,
         khTypes:khTypes,
         ghTypes:ghTypes,
-        spTypes:spTypes
+        spTypes:spTypes,
+        zwTypes:zwTypes
     });
 }
 

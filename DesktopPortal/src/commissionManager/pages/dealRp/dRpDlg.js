@@ -5,7 +5,7 @@ import { Row, Col, Form, Input, Tooltip, Button, Modal, Layout, Tabs, Spin } fro
 import FKCp from './fKComponet'
 import SKCp from './sKComponet'
 import SJCp from './sJComponet'
-import Avatar from './rpdetails/tradeUpload'
+import SKAttact from './sKAttact'
 import { factGet, factGetGet, factGetPay } from '../../actions/actionCreator'
 
 const TabPane = Tabs.TabPane;
@@ -16,7 +16,8 @@ class DRpDlg extends Component {
         isDataLoading: false,
         type: 'sk',
         sfkinfo: {},//收付款信息
-        isSjcpInit: false
+        isSjcpInit: false,
+        fileList:[]
     }
     handleOk = (e) => {
         let data = {}
@@ -135,7 +136,7 @@ class DRpDlg extends Component {
                                         <SJCp onSJCp={this.onSJCp} sfkinfo={this.state.sfkinfo} />
                                     </TabPane>
                                     <TabPane tab="附件" key="fj">
-
+                                       <SKAttact type={this.state.type} fileList={this.state.fileList}/>
                                     </TabPane>
                                 </Tabs>
                             </Col>

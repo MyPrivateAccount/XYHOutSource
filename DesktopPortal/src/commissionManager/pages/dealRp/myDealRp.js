@@ -71,7 +71,7 @@ class MyDealRp extends Component {
                     <Tooltip title="新增">
                         <Button type='primary' shape='circle' icon='plus' onClick={this.handleNew} style={{ 'margin': '10' }} />
                     </Tooltip>
-                    <DealRpTable SearchCondition={this.state.cd} onRpTable={this.onRpTable} />
+                    <DealRpTable SearchCondition={this.state.cd} onRpTable={this.onRpTable} type={'myget'}/>
                 </div>
                 <TradeManager vs={this.state.isShowManager} handleback={this.handleBack} rpId={this.state.rpId} isEdit={this.state.editReport} />
             </Layout>

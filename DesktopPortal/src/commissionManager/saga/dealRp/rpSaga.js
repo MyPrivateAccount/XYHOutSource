@@ -9,6 +9,34 @@ import { notification } from 'antd'
 
 const actionUtils = appAction(actionTypes.ACTION_ROUTE);
 
+//删除报告
+export function* delRpDataAsync(state){
+    let result = { isOk: false, extension: [], msg: '删除报告信息成功！' };
+    let url = WebApiConfig.rp.rpDel+state.payload;
+    try {
+        console.log(url)
+        console.log('delRpDataAsync:', state);
+        let res = yield call(ApiClient.del, url, state.payload);
+       
+        //console.log(res, '获取参数列表');
+        getApiResult(res, result);
+        if (result.isOk) {
+            yield put({ type: actionUtils.getActionType(actionTypes.DEALRP_RP_DELETE_SUCCESS), payload: result.extension });
+            // yield put({ type: actionUtils.getActionType(actionTypes.SET_SEARCH_LOADING), payload: false });
+        }
+    } catch (e) {
+        result.msg = "删除报告接口调用异常！";
+    }
+    if (!result.isOk) {
+        console.log(result.msg)
+        notification.error({
+            message: '提示',
+            description: '删除报告信息失败!',
+            duration: 3
+        });
+    }
+}
+
 //保存报告基础信息
 export function* saveRpDataAsync(state){
     let result = { isOk: false, extension: [], msg: '保存成交报告交易合同失败！' };
@@ -657,4 +685,5 @@ export default function* watchAllRpAsync(){
 
     yield takeLatest(actionUtils.getActionType(actionTypes.DEALRP_BUILDING_GET), getBuildingDataAsync);
     yield takeLatest(actionUtils.getActionType(actionTypes.DEALRP_SHOP_GET), getShopDataAsync);
+    yield takeLatest(actionUtils.getActionType(actionTypes.DEALRP_RP_DELETE), delRpDataAsync);
 }

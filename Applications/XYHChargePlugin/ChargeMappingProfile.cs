@@ -37,6 +37,21 @@ namespace XYHChargePlugin
 
             });
 
+            CreateMap<ModifyInfo, ModifyInfoResponse>().AfterMap((s, t) =>
+            {
+                if (s.OrganizationExpansion != null && !String.IsNullOrEmpty(s.OrganizationExpansion.FullName))
+                {
+                    t.DepartmentName = s.OrganizationExpansion.FullName;
+                }
+                else if (s.Organizations != null)
+                {
+                    t.DepartmentName = s.Organizations.OrganizationName;
+                }
+
+
+            });
+            CreateMap<PaymentInfo, PaymentInfoResponse>();
+            CreateMap<PaymentInfoRequest, PaymentInfo>();
 
             CreateMap<FileInfoRequest, FileInfo>();
             CreateMap<FileScopeRequest, FileScopeInfo>();
@@ -52,8 +67,6 @@ namespace XYHChargePlugin
             CreateMap<CostInfo, CostInfoResponse>();
             CreateMap<CostInfoResponse, CostInfo>();
 
-            //CreateMap<CostInfo, CostInfoResponseEx>();
-            //CreateMap<CostInfoResponseEx, CostInfo>();
 
             CreateMap<ReceiptInfo, ReceiptInfoResponse>();
             CreateMap<ReceiptInfoResponse, ReceiptInfo>();
@@ -65,30 +78,22 @@ namespace XYHChargePlugin
                  .ForPath(x=>x.OrganizationId, y=>y.MapFrom(x=>x.DepartmentId));
             CreateMap<SimpleUser, UserInfo>();
 
-            //CreateMap<FileInfoRequest, FileScopeInfo>();
-            //CreateMap<FileScopeInfo, FileInfoRequest>();
+            CreateMap<PositionInfo, PositionInfoResponse>();
+            CreateMap<HumanInfo, HumanInfoResponse>();
+            CreateMap<LimitInfo, LimitInfoResponse>().AfterMap((s, t) =>
+            {
+                if (s.OrganizationExpansion != null && !String.IsNullOrEmpty(s.OrganizationExpansion.FullName))
+                {
+                    t.DepartmentName = s.OrganizationExpansion.FullName;
+                }
+                else if (s.Organizations != null)
+                {
+                    t.DepartmentName = s.Organizations.OrganizationName;
+                }
+            });
+            CreateMap<LimitInfoRequest, LimitInfo>();
+            CreateMap<LimitTipInfo, LimitTipResponse>();
 
-            //CreateMap<LimitInfo, LimitInfoResponse>();
-            //CreateMap<LimitInfoResponse, LimitInfo>();
-
-            //CreateMap<FileInfoCallbackRequest, FileInfo>();
-            //CreateMap<FileInfo, FileInfoCallbackRequest>();
-
-           
-            //CreateMap<MonthInfo, MonthInfoResponse>();
-            //CreateMap<MonthInfoResponse, MonthInfo>();
-
-            //CreateMap<BlackInfo, BlackInfoResponse>();
-            //CreateMap<BlackInfoResponse, BlackInfo>();
-
-            //CreateMap<AttendanceInfo, AttendanceInfoResponse>();
-            //CreateMap<AttendanceInfoResponse, AttendanceInfo>();
-
-            //CreateMap<PositionInfo, PositionInfoResponse>();
-            //CreateMap<PositionInfoResponse, PositionInfo>();
-
-            //CreateMap<SalaryInfo, SalaryInfoResponse>();
-            //CreateMap<SalaryInfoResponse, SalaryInfo>();
         }
 
 

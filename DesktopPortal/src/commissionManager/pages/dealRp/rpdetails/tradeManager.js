@@ -41,13 +41,15 @@ class TradeManager extends Component {
     componentWillReceiveProps = (newProps) => {
 
         this.setState({ isDataLoading: false })
-        this.setState({rpId:newProps.rpId,isEdit:newProps.isEdit},()=>{
-            if (newProps.vs) {
-                if (newProps.isEdit) {
-                    this.loadTabData(this.state.activeTab)
+        if(this.state.rpId!==newProps.rpId){
+            this.setState({rpId:newProps.rpId,isEdit:newProps.isEdit},()=>{
+                if (newProps.vs) {
+                    if (newProps.isEdit) {
+                        this.loadTabData(this.state.activeTab)
+                    }
                 }
-            }
-        })
+            })
+        }
         if (newProps.operInfo.operType === 'DEALRP_BUILDING_GET_SUCCESS') {
             console.log("autoSetCJBBInfo")
             //自动设置成交报备信息

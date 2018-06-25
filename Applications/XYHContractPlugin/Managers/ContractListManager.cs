@@ -42,14 +42,14 @@ namespace XYHContractPlugin.Managers
                 throw new ArgumentNullException(nameof(condition));
             }
             var pagingResponse = new ContractSearchResponse<ContractInfoResponse>();
-            var query = _icontractInfoStore.ContractInfoAll().Where(a =>  true);
+            var query = _icontractInfoStore.ContractInfoAll().Where(a => true);
             query = SearchConditionFiltration(condition, query);
             var organsPer = await _permissionExpansionManager.GetOrganizationOfPermission(user.Id, "ContractSearchOrg");
             //查询部门
             if (!string.IsNullOrEmpty(condition.Organizate))
             {
-              
-                if(organsPer.Contains(condition.Organizate))//包含在此权限的范围内
+
+                if (organsPer.Contains(condition.Organizate))//包含在此权限的范围内
                 {
                     var organs = await _permissionExpansionManager.GetLowerDepartments(condition.Organizate);
                     query = query.Where(x => organs.Contains(x.OrganizateID));
@@ -58,7 +58,7 @@ namespace XYHContractPlugin.Managers
                 {
                     query = query.Where(x => organsPer.Contains(x.OrganizateID));
                 }
-  
+
             }
             else
             {
@@ -69,25 +69,25 @@ namespace XYHContractPlugin.Managers
             if (condition.CheckStatu > 0)
             {
                 int nCheckState = 0;
-//                 if ((condition.CheckStatu & 0x01) > 0)//1 2 4 8 未提交 审核中 通过 驳回
-//                 {
-//                     nCheckState = (condition.CheckStatu & 0x01);
-//                 }
-//                 if ((condition.CheckStatu & 0x02) > 0)
-//                 {
-//                     nCheckState = (condition.CheckStatu & 0x02);
-//                 }
-//                 if ((condition.CheckStatu & 0x04) > 0)
-//                 {
-//                     nCheckState = (condition.CheckStatu & 0x04);
-//                 }
-//                 if ((condition.CheckStatu & 0x08) > 0)
-//                 {
-//                     nCheckState = (condition.CheckStatu & 0x08);
-//                 }
+                //                 if ((condition.CheckStatu & 0x01) > 0)//1 2 4 8 未提交 审核中 通过 驳回
+                //                 {
+                //                     nCheckState = (condition.CheckStatu & 0x01);
+                //                 }
+                //                 if ((condition.CheckStatu & 0x02) > 0)
+                //                 {
+                //                     nCheckState = (condition.CheckStatu & 0x02);
+                //                 }
+                //                 if ((condition.CheckStatu & 0x04) > 0)
+                //                 {
+                //                     nCheckState = (condition.CheckStatu & 0x04);
+                //                 }
+                //                 if ((condition.CheckStatu & 0x08) > 0)
+                //                 {
+                //                     nCheckState = (condition.CheckStatu & 0x08);
+                //                 }
                 query = query.Where(x => (x.ExamineStatus.Value & condition.CheckStatu) > 0);
             }
-            
+
             if (condition.pageIndex == -1)
             {
                 var qlist = await query.ToListAsync(cancellationToken);
@@ -111,7 +111,7 @@ namespace XYHContractPlugin.Managers
                 pagingResponse.ValidityContractCount = pagingResponse.TotalCount;
                 //需要加上排序
                 var qlist = await query.Skip(condition.pageIndex * condition.pageSize).Take(condition.pageSize).ToListAsync(cancellationToken);
-                foreach(var item in qlist)
+                foreach (var item in qlist)
                 {
                     item.Organizate = _iorganizationExpansionStore.GetFullName(item.OrganizateID).Replace("默认顶级-", "");
                     item.CreateDepartment = _iorganizationExpansionStore.GetFullName(item.OrganizateID).Replace("默认顶级-", "");
@@ -142,9 +142,19 @@ namespace XYHContractPlugin.Managers
             //查询主键信息
             if (!string.IsNullOrEmpty(condition.KeyWord))
             {
-               query = query.Where(x => x.Name.Contains(condition.KeyWord) || x.Num.Contains(condition.KeyWord) );
+                query = query.Where(x => x.Name.Contains(condition.KeyWord)
+                || x.Num.Contains(condition.KeyWord)
+                || x.ProjectName.Contains(condition.KeyWord)
+                );
             }
-
+            if (condition?.ProjectTypes?.Count > 0)
+            {
+                query = query.Where(x => condition.ProjectTypes.Contains(x.ProjectType));
+            }
+            if (condition?.ProjectTypes?.Count > 0)
+            {
+                query = query.Where(x => condition.ContractTypes.Contains(x.Type));
+            }
             if (condition.CheckStatu > 0)
             {
                 //query = from 
@@ -161,12 +171,12 @@ namespace XYHContractPlugin.Managers
             }
             if (condition?.CreateDateStart != null)
             {
-     
-                query = query.Where(x => (x.CreateTime >= condition.CreateDateStart.Value ));
+
+                query = query.Where(x => (x.CreateTime >= condition.CreateDateStart.Value));
             }
-            if(condition?.CreateDateEnd != null)
+            if (condition?.CreateDateEnd != null)
             {
-                query = query.Where(x => ( x.EndTime >= x.CreateTime.Value));
+                query = query.Where(x => (x.EndTime >= x.CreateTime.Value));
             }
             if (condition.Follow == 1)
             {
@@ -198,7 +208,7 @@ namespace XYHContractPlugin.Managers
                 sql = @"SELECT a.* from XYH_DT_CONTRACTINFO as a LEFT JOIN XYH_DT_MODIFY as b ON a.`CurrentModify`=b.`ID` where";
             }
 
-            string connectstr=" ";
+            string connectstr = " ";
             if (!string.IsNullOrEmpty(condition?.KeyWord))
             {
                 sql += connectstr + @"LOCATE('" + condition.KeyWord + "', a.`Name`)>0";
@@ -223,9 +233,9 @@ namespace XYHContractPlugin.Managers
             }
             else if (condition?.CreateDateStart != null && condition?.CreateDateEnd != null)
             {
-                sql += connectstr + @"(a.`StartTime`<='" + condition.CreateDateStart.Value+"'";
+                sql += connectstr + @"(a.`StartTime`<='" + condition.CreateDateStart.Value + "'";
                 connectstr = " and ";
-                sql += connectstr + @"a.`EndTime`>='" + condition.CreateDateEnd.Value+"')";
+                sql += connectstr + @"a.`EndTime`>='" + condition.CreateDateEnd.Value + "')";
             }
 
             if (condition?.Follow == 1)
@@ -236,7 +246,7 @@ namespace XYHContractPlugin.Managers
 
             if (condition?.CheckStatu > 0)
             {
-                string head = "(", tail=")";
+                string head = "(", tail = ")";
                 if ((condition?.CheckStatu & 0x01) > 0)//1 2 4 8 未提交 审核中 通过 驳回
                 {
                     sql += connectstr + head + @"b.`ExamineStatus`=0";
@@ -288,13 +298,13 @@ namespace XYHContractPlugin.Managers
 
             List<ContractInfo> result = new List<ContractInfo>();
             var begin = (condition.pageIndex) * condition.pageSize;
-            var end = (begin + condition.pageSize)>query.Count ? query.Count: (begin+condition.pageSize);
+            var end = (begin + condition.pageSize) > query.Count ? query.Count : (begin + condition.pageSize);
 
             for (; begin < end; begin++)
             {
                 result.Add(query.ElementAt(begin));
             }
-            
+
             Response.PageIndex = condition.pageIndex;
             Response.PageSize = condition.pageSize;
             Response.Extension = _mapper.Map<List<ContractInfoResponse>>(result);

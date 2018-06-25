@@ -18,6 +18,9 @@ const WebApiConfig = {
         UserRoleRemove: BaseApiUrl + 'UserRoles/RemoveFromRoles/',//用户所属角色删除
         ResetPwd: BaseApiUrl + "user/initpassword",//重置密码
     },
+    human:{
+        List:basicDataBaseApiUrl+"humaninfo/searchhumaninfo"
+    },
     application: {
         Base: BaseApiUrl + 'Application',//应用基础地址
         List: BaseApiUrl + 'Application/list',//获取应用列表
@@ -60,7 +63,8 @@ const WebApiConfig = {
         factgetget:basicDataBaseApiUrl+'yj/factget/get',//收款信息
         factgetpay:basicDataBaseApiUrl+'yj/factget/pay',//付款信息
         shopget:basicDataBaseApiUrl+'shops/',
-        buildingget:basicDataBaseApiUrl+'buildings/'
+        buildingget:basicDataBaseApiUrl+'buildings/',
+        rpDel:basicDataBaseApiUrl+'yj/report/',
     },
     fina:{
         searchPPFt:basicDataBaseApiUrl+'yj/ppft/search'

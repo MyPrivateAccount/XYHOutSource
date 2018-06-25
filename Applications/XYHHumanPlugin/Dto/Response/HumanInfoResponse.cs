@@ -34,6 +34,8 @@ namespace XYHHumanPlugin.Dto.Response
         public int? OtherBack { get; set; }
 
         public string OrganizationFullName { get; set; }
+
+        public PositionInfoResponse PositionInfo { get; set; }
     }
 
     public class HumanInfoFormResponse

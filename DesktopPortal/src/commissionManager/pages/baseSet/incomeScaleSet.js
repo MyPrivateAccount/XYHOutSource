@@ -2,7 +2,7 @@
 import { connect } from 'react-redux';
 import React, { Component } from 'react';
 import { Layout, Table, Button, Checkbox, Popconfirm, Tooltip, Row, Col, Input, Spin, Select, TreeSelect } from 'antd'
-import { incomeScaleAdd, incomeScaleEdit, incomeScaleDel, incomeScaleListGet, orgGetPermissionTree } from '../../actions/actionCreator'
+import { incomeScaleAdd, incomeScaleEdit, incomeScaleDel, incomeScaleListGet, orgGetPermissionTree,getDicParList } from '../../actions/actionCreator'
 import SearchCondition from '../../constants/searchCondition'
 import InComeScaleEditor from './incomeScaleEditor'
 
@@ -12,7 +12,7 @@ class InComeScaleSet extends Component {
     state = {
         pagination: {},
         isDataLoading: false,
-        params: { name: "测试", jobType: "测试" }
+        params: { name: "测试", jobType: "测试" ,branchId:'',code:''}
     }
     appTableColumns = [
         { title: '组织', dataIndex: 'name', key: 'name' },
@@ -20,7 +20,25 @@ class InComeScaleSet extends Component {
         { title: '起始业绩', dataIndex: 'startYj', key: 'startYj' },
         { title: '结束业绩', dataIndex: 'endYj', key: 'endYj' },
         { title: '提成比例', dataIndex: 'percent', key: 'percent' },
+        {
+            title: '操作', dataIndex: 'edit', key: 'edit', render: (text, recored) => (
+                <span>
+                    <Popconfirm title="是否删除该项?" onConfirm={this.zfconfirm} onCancel={this.zfcancel} okText="确认" cancelText="取消">
+                        <Button type='primary' shape='circle' size='small' icon='delete' />
+                    </Popconfirm>
+                    <Tooltip title='修改'>
+                        <Button type='primary' shape='circle' size='small' icon='edit' onClick={(e) => this.handleModClick(recored)} />
+                    </Tooltip>
+                </span>
+            )
+        }
     ];
+    zfconfirm=(e)=>{
+        this.handleDelClick(e)
+    }
+    zfcancel=(e)=>{
+
+    }
     handleDelClick = (info) => {
         this.props.dispatch(incomeScaleDel(info));
     }
@@ -45,9 +63,12 @@ class InComeScaleSet extends Component {
         this.setState({ isDataLoading: true });
         this.props.dispatch(incomeScaleListGet(SearchCondition.incomeScaleListCondition));
     };
+    componentWillMount=()=>{
+    }
     componentDidMount = () => {
         this.setState({ isDataLoading: true })
         this.props.dispatch(orgGetPermissionTree("UserInfoCreate"));
+        this.props.dispatch(getDicParList(['COMMISSION_ZW_LEVEL']));
     }
     componentWillReceiveProps = (newProps) => {
         this.setState({ isDataLoading: false });
@@ -61,13 +82,26 @@ class InComeScaleSet extends Component {
 
         if (newProps.operInfo.operType === 'org_update') {
             console.log('org_update')
-            this.handleSearch(newProps.permissionOrgTree.AddUserTree[0].key)
             let params = { ...this.state.params }
             params.branchId = newProps.permissionOrgTree.AddUserTree[0].key
-            this.setState({ params })
+            this.setState({ params },()=>{
+                if(this.state.params.branchId!==''&&this.state.params.code!==''){
+                    this.setState({isDataLoading:true})
+                    this.handleSearch()
+                }
+            })
             newProps.operInfo.operType = ''
-            this.setState({ isDataLoading: true });
-            this.handleSearch()
+        }
+        if(newProps.basicOper.operType === 'DIC_GET_PARLIST_COMPLETE'){
+            let params = { ...this.state.params }
+            params.code = newProps.basicData.zwTypes[0].value
+            this.setState({ params },()=>{
+                if(this.state.params.branchId!==''&&this.state.params.code!==''){
+                    this.setState({isDataLoading:true})
+                    this.handleSearch()
+                }
+            })
+            newProps.basicOper.operType = ''
         }
     }
     treeChange = (e) => {
@@ -98,6 +132,8 @@ class InComeScaleSet extends Component {
         return '测试'
     }
     render() {
+        let zwTypes = this.props.basicData.zwTypes;
+
         return (
             <Layout>
                 <div style={{ 'margin': 5 }}>
@@ -111,9 +147,10 @@ class InComeScaleSet extends Component {
                     >
                     </TreeSelect>
                     <span style={{ 'margin-left': 10 }}>职位类别：</span>
-                    <Select defaultValue="1" style={{ width: 120 }} onChange={this.zwlbChange}>
-                        <Option value="1">部门经理</Option>
-                        <Option value="2">副总</Option>
+                    <Select value={this.state.params.code}  style={{ width: 120 }} onChange={this.zwlbChange}>
+                    {
+                        zwTypes.map(tp => <Option key={tp.key} value={tp.value}>{tp.key}</Option>)
+                    }
                     </Select>
                     <Button style={{ 'width': 80, 'margin-left': 10 }} onClick={this.handleSearch.bind(this)}>查询</Button>
                 </div>
@@ -135,6 +172,8 @@ function MapStateToProps(state) {
         permissionOrgTree: state.org.permissionOrgTree,
         scaleSearchResult: state.scale.scaleSearchResult,
         operInfo: state.org.operInfo,
+        basicData: state.base,
+        basicOper:state.base.operInfo
     }
 }
 

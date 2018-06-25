@@ -27,6 +27,9 @@ const WebApiConfig = {
         getHumanImage: basicDataBaseApiUrl + "humanfile/getfileinfo",
         setSocialInsure: basicDataBaseApiUrl + "humaninfo/becomehuman",
         leavePositon: basicDataBaseApiUrl + "humaninfo/leavehuman",
+        postAttendenceSettingList: basicDataBaseApiUrl + 'humanattendance/setattendancesetting',
+        importAttendenceList: basicDataBaseApiUrl + 'humanattendance/importattendancelst',
+        deleteAttendenceList: basicDataBaseApiUrl + 'humanattendance/deleteattendanceitem',
     },
     search: {
         searchHumanList: basicDataBaseApiUrl + 'humaninfo/searchhumaninfo',
@@ -39,6 +42,8 @@ const WebApiConfig = {
         getStationList: basicDataBaseApiUrl + 'humanstation/stationlist',
         getSalaryList: basicDataBaseApiUrl + 'humansalary/salarylist',
         getSalaryItem: basicDataBaseApiUrl + 'humansalary/salaryitem',
+        getAttendenceSettingList: basicDataBaseApiUrl + 'humanattendance/attendancesetting',
+        getAttendenceList: basicDataBaseApiUrl + 'humanattendance/searchattendancelst',
     },
     attach: {
         uploadUrl: `${UploadUrl}/file/upload/`,

@@ -21,6 +21,11 @@ namespace XYHChargePlugin.Dto
         public int PageSize { get; set; }
 
         public int PageIndex { get; set; }
+
+        public List<int> Status { get; set; }
+
+        public List<int> BillStatus { get; set; }
+
         ///// <summary>
         ///// 用户条件
         ///// </summary>

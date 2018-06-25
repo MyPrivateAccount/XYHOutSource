@@ -46,6 +46,8 @@ namespace XYHHumanPlugin.Stores
                         from oe in oe2.DefaultIfEmpty()
                         join o1 in Context.Organizations.AsNoTracking() on hr.DepartmentId equals o1.Id into o2
                         from o in o2.DefaultIfEmpty()
+                        join p1 in Context.PositionInfos.AsNoTracking() on hr.Position equals p1.ID into p2
+                        from p in p2.DefaultIfEmpty()
                         select new HumanInfo()
                         {
                             ID = hr.ID,
@@ -53,6 +55,12 @@ namespace XYHHumanPlugin.Stores
                             Name = hr.Name,
                             Position = hr.Position,
                             DepartmentId = hr.DepartmentId,
+                            PositionInfo = new PositionInfo()
+                            {
+                                ID = p.ID,
+                                PositionName = p.PositionName,
+                                PositionType = p.PositionType
+                            },
                             Organizations = new Organizations()
                             {
                                 Id = o.Id,
@@ -256,6 +264,39 @@ namespace XYHHumanPlugin.Stores
 
             await Context.SaveChangesAsync(cancellationToken);
         }
+
+        public async Task SetAttendanceSettingAsync(AttendanceSettingInfo atteninfo, CancellationToken cle = default(CancellationToken))
+        {
+            if (atteninfo == null)
+            {
+                throw new ArgumentNullException(nameof(atteninfo));
+            }
+
+            if (Context.AttendanceSettingInfos.Any(x => x.Type == atteninfo.Type))
+            {
+                Context.Attach(atteninfo);
+                Context.Update(atteninfo);
+            }
+            else
+            {
+                Context.Add(atteninfo);
+            }
+
+            await Context.SaveChangesAsync(cle);
+        }
+
+        public async Task AddAttendanceAsync(List<AttendanceInfo> atteninfo, CancellationToken cle = default(CancellationToken))
+        {
+            if (atteninfo == null)
+            {
+                throw new ArgumentNullException(nameof(atteninfo));
+            }
+
+            Context.AddRange(atteninfo);
+
+            await Context.SaveChangesAsync(cle);
+        }
+
 
         public async Task PreBecomeHuman(SimpleUser userinfo, string modifyid, string huid, string info, string idcard, string checkaction, CancellationToken cancellationToken = default(CancellationToken))
         {
@@ -464,6 +505,17 @@ namespace XYHHumanPlugin.Stores
             await Context.SaveChangesAsync(cancellationToken);
         }
 
+        public async Task DeleteAttendenceAsync(AttendanceInfo monthinfo, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (monthinfo == null)
+            {
+                throw new ArgumentNullException(nameof(monthinfo));
+            }
+            Context.Remove(monthinfo);
+
+            await Context.SaveChangesAsync(cancellationToken);
+        }
+
         public async Task DeleteBlackAsync(BlackInfo monthinfo, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (monthinfo == null)
@@ -639,6 +691,12 @@ namespace XYHHumanPlugin.Stores
             return query.Invoke(Context.HumanInfos.AsNoTracking()).ToListAsync(cancellationToken);
         }
 
+        public Task<List<AttendanceSettingInfo>> GetListAttendanceSettingAsync(CancellationToken cancellationToken = default(CancellationToken))
+        {
+          
+            return Context.AttendanceSettingInfos.ToListAsync(cancellationToken);
+        }
+
         public Task<List<TResult>> GetListSalaryFormAsync<TResult>(Func<IQueryable<SalaryFormInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (query == null)
@@ -693,6 +751,7 @@ namespace XYHHumanPlugin.Stores
         {
             
         }
+        
         public async Task<ModifyInfo> UpdateExamineStatus(string modifyId, ExamineStatusEnum status, CancellationToken cancellationToken = default(CancellationToken))
         {
             var modify = await GetModifyAsync(a => a.Where(b => b.ID == modifyId));

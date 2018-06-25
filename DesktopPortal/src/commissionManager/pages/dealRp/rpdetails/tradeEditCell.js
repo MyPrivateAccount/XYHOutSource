@@ -7,8 +7,12 @@ class EditableCell extends Component {
     editable: false,
   }
   handleChange = (e) => {
+    console.log("editablecell handle change:"+e.target.value)
     const value = e.target.value;
     this.setState({ value });
+    if (this.props.onChange) {
+      this.props.onChange(value);
+    }
   }
   check = () => {
     this.setState({ editable: false });

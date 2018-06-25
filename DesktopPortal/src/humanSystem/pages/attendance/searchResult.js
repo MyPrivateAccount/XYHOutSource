@@ -1,5 +1,5 @@
 import {connect} from 'react-redux';
-import {setLoadingVisible, selBlackList} from '../../actions/actionCreator';
+import {setLoadingVisible, selAttendenceList, searchIndex} from '../../actions/actionCreator';
 import React, {Component} from 'react';
 import {Button, Row, Col, Table} from 'antd';
 
@@ -32,15 +32,16 @@ class SearchResult extends Component {
         //this.props.dispatch(clearCharge());
     }
     
-    handleChangePage = (pagination) => {
-
-    }
+    handleTableChange = (pagination, filters, sorter) => {
+        this.props.dispatch(searchIndex(pagination.current - 1));
+        //this.props.searchInfo.pageIndex = ();
+    };
 
     render() {
         let self = this;
         const rowSelection = {
             onChange: (selectedRowKeys, selectedRows) => {
-                self.props.dispatch(selBlackList(selectedRows));
+                self.props.dispatch(selAttendenceList(selectedRows));
             }
         };
         
@@ -48,7 +49,7 @@ class SearchResult extends Component {
             <div>
                 {<p style={{marginBottom: '10px'}}>目前已为你筛选出<b>{this.props.searchInfoResult.attendanceList.extension.length}</b>条考勤信息</p>}
                 <div id="searchResult">
-                    <Table id= {"table"} rowKey={record => record.idcard} 
+                    <Table id= {"table"} rowKey={record => record.key} 
                     columns={columns} 
                     pagination={this.props.searchInfoResult} 
                     onChange={this.handleChangePage} 
@@ -63,7 +64,6 @@ class SearchResult extends Component {
 function mapStateToProps(state) {
     return {
         searchInfoResult: state.search,
-        showLoading: state.basicData.showLoading
     }
 }
 

@@ -2,7 +2,6 @@
 import { connect } from 'react-redux';
 import React, { Component } from 'react';
 import { Select, Table, Button, Tooltip, Input } from 'antd'
-import EditableCell from './tradeEditCell'
 
 class TradeNTable extends Component {
     constructor(props) {
@@ -11,7 +10,8 @@ class TradeNTable extends Component {
             dataSource: [],
             count: 0,
             nbfpItems: [],
-            totalyj: 0
+            totalyj: 0,
+            humanList: []
         }
         this.onCellChange = this.onCellChange.bind(this)
     }
@@ -27,9 +27,11 @@ class TradeNTable extends Component {
         {
             title: '员工', dataIndex: 'username', key: 'username',
             render: (text, recored) => (
-                <span>
-                    <Input style={{ width: 80 }} />
-                </span>
+                <Select style={{ width: 80 }} onChange={this.onHumanChange(recored.key, 'username')}>
+                    {
+                        text.map(tp => <Select.Option key={tp.name} value={tp.name}>{tp.name}</Select.Option>)
+                    }
+                </Select>
             )
         },
         {
@@ -44,7 +46,7 @@ class TradeNTable extends Component {
             title: '金额', dataIndex: 'money', key: 'money',
             render: (text, recored) => (
                 <span>
-                    <EditableCell style={{ width: 50 }} value={text} />
+                    <Input style={{ width: 50 }} value={text} onChange={this.onMoneyEdit(recored.key, 'money')} />
                 </span>
             )
         },
@@ -52,8 +54,8 @@ class TradeNTable extends Component {
             title: '比例', dataIndex: 'percent', key: 'percent',
             render: (text, recored) => (
                 <span>
-                    <EditableCell style={{ width: 50 }} value={text} />
-            </span>
+                    <Input style={{ width: 50 }} value={text} onChange={this.onPerEdit(recored.key, 'percent')} />%
+                </span>
             )
         },
         {
@@ -91,6 +93,26 @@ class TradeNTable extends Component {
     }
     componentDidMount() {
         this.props.onFpTableRef(this)
+        if (this.props.dataSource !== null && this.props.dataSource.length !== 0) {
+            let newList = this.props.dataSource;
+            for (let i = 0; i < newList.length; i++) {
+                const { count, dataSource } = this.state;
+                const newData = {
+                    key: count,
+                    sectionName: newList[i].sectionName,
+                    username: newList[i].username,
+                    workNumber: newList[i].workNumber,
+                    money: newList[i].money,
+                    percent: newList[i].percent,
+                    oddNum: newList[i].oddNum,
+                    type: newList[i].type,
+                };
+                this.setState({
+                    dataSource: [...dataSource, newData],
+                    count: count + 1,
+                });
+            }
+        }
     }
     componentWillReceiveProps(newProps) {
 
@@ -108,6 +130,9 @@ class TradeNTable extends Component {
     }
     setNbfpItems = (items) => {
         this.setState({ nbfpItems: items })
+    }
+    setHumanList = (items) => {
+        this.setState({ humanList: items })
     }
     //设置总佣金
     setZyj = (yj) => {
@@ -128,13 +153,50 @@ class TradeNTable extends Component {
             }
         };
     }
+    //选择了员工，需要自动填充部门和员工id
+    onHumanChange = (key, dataIndex) => {
+        return (value) => {
+            const dataSource = [...this.state.dataSource];
+            const target = dataSource.find(item => item.key === key);
+            if (target) {
+                target['selectUser'] = value
+                this.setState({ dataSource });
+            }
+        }
+    }
+    //编辑了金额
+    onMoneyEdit = (key, dataIndex) => {
+        return (value) => {
+            console.log("onMoneyEdit:" + value)
+            const dataSource = [...this.state.dataSource];
+            const target = dataSource.find(item => item.key === key);
+            if (target) {
+                target['money'] = value.target.value;
+                this.setState({ dataSource });
+            }
+        };
+    }
+    //编辑了比例
+    onPerEdit = (key, dataIndex) => {
+        return (value) => {
+            console.log("onPerEdit:" + value)
+            const dataSource = [...this.state.dataSource];
+            const target = dataSource.find(item => item.key === key);
+            if (target) {
+                target['percent'] = value.target.value;
+                target['money'] = ((value.target.value) / 100) * (this.state.totalyj == null ? 0 : this.state.totalyj);
+                this.setState({ dataSource });
+            }
+        };
+    }
     //新增
     handleAdd = () => {
         const { count, dataSource } = this.state;
         const newData = {
             key: count,
             sectionName: "",
-            username: "",
+            username: this.state.humanList,
+            selectUser:'',
             workNumber: "",
             money: 0,
             percent: 0,
@@ -166,7 +228,7 @@ class TradeNTable extends Component {
             let temp = {}
             temp.id = id
             temp.sectionName = dataSource[i].sectionName
-            temp.username = dataSource[i].username
+            temp.username = dataSource[i].selectUser
             temp.workNumber = dataSource[i].workNumber
             temp.money = dataSource[i].money
             temp.percent = dataSource[i].percent / 100

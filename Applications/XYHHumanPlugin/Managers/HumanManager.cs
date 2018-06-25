@@ -17,7 +17,7 @@ using SocialInsuranceRequest = XYHHumanPlugin.Dto.Response.SocialInsuranceRespon
 using LeaveInfoRequest = XYHHumanPlugin.Dto.Response.LeaveInfoResponse;
 using ChangeInfoRequest = XYHHumanPlugin.Dto.Response.ChangeInfoResponse;
 using ApplicationCore;
-using Microsoft.EntityFrameworkCore;
+using ApplicationCore.Stores;
 
 namespace XYHHumanPlugin.Managers
 {
@@ -230,11 +230,6 @@ namespace XYHHumanPlugin.Managers
                 sql += connectstr + @"a.`ID`!=''";
                 connectstr = " and ";
             }
-            else if (condition?.KeyWord == null)
-            {
-                sql += connectstr + @"a.`ID`!=''";
-                connectstr = " and ";
-            }
 
             if (condition?.HumanType > 0)//0不限 1未入职 2在职 3离职 4黑名单
             {
@@ -367,52 +362,13 @@ namespace XYHHumanPlugin.Managers
                 List<HumanInfo> query = new List<HumanInfo>();
                 var sqlinfo = _Store.DapperSelect<HumanInfo>(sql).ToList();
 
-                if (!string.IsNullOrEmpty(condition?.Organizate))
+                if (!string.IsNullOrEmpty(condition?.Organizate) && condition.LstChildren.Count > 0)
                 {
-                    if (condition.LstChildren != null && condition.LstChildren.Count > 0)
+                    foreach (var item in sqlinfo)
                     {
-                        foreach (var item in sqlinfo)
+                        if (condition.LstChildren.Contains(item.DepartmentId))
                         {
-                            if (condition.LstChildren.Contains(item.DepartmentId))
-                            {
-                                query.Add(item);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        List<string> qtlst = new List<string>() { condition?.Organizate };
-                        int npos = 0;
-
-                        var orglst = await _Store.GetAllOrganization();
-                        string orgparent = condition?.Organizate;
-
-                        while (true)
-                        {
-                            foreach (var item in orglst)
-                            {
-                                if (item.ParentId == orgparent)
-                                {
-                                    qtlst.Add(item.Id);
-                                }
-                            }
-
-                            if (npos < qtlst.Count -1)
-                            {
-                                orgparent = qtlst[++npos];
-                            }
-                            else if (npos >= qtlst.Count-1)
-                            {
-                                break;
-                            }
-                        }
-
-                        foreach (var item in sqlinfo)
-                        {
-                            if (qtlst.Contains(item.DepartmentId))
-                            {
-                                query.Add(item);
-                            }
+                            query.Add(item);
                         }
                     }
                 }
@@ -425,18 +381,13 @@ namespace XYHHumanPlugin.Managers
                 Response.TotalCount = query.Count;
 
                 List<HumanInfo> result = new List<HumanInfo>();
-                if (condition.pageIndex == -1 && condition.pageSize == -1)
+                var begin = (condition.pageIndex) * condition.pageSize;
+                var end = (begin + condition.pageSize) > query.Count ? query.Count : (begin + condition.pageSize);
+
+                for (; begin < end; begin++)
                 {
-                    result = query;
-                }
-                else
-                {
-                    var begin = (condition.pageIndex) * condition.pageSize;
-                    var end = (begin + condition.pageSize) > query.Count ? query.Count : (begin + condition.pageSize);
-                    for (; begin < end; begin++)
-                    {
-                        result.Add(query.ElementAt(begin));
-                    }
+                    
+                    result.Add(query.ElementAt(begin));
                 }
 
                 Response.PageIndex = condition.pageIndex;
@@ -450,6 +401,7 @@ namespace XYHHumanPlugin.Managers
                     {
                         item.PositionName = tf.PositionName;
                     }
+                    
                 }
             }
             catch (Exception e)
@@ -462,11 +414,17 @@ namespace XYHHumanPlugin.Managers
         }
         #endregion
 
-        public virtual async Task<PagingResponseMessage<HumanInfoResponse>> SimpleSearch(UserInfo user, string permissionId, string keyword, int pageSize, int pageIndex)
+        public virtual async Task<PagingResponseMessage<HumanInfoResponse>> SimpleSearch(UserInfo user, string permissionId, string keyword,string branchId, int pageSize, int pageIndex)
         {
             PagingResponseMessage<HumanInfoResponse> r = new PagingResponseMessage<HumanInfRequest>();
 
             var orgIds = await _permissionExpansionManager.GetOrganizationOfPermission(user.Id, permissionId);
+            if (!String.IsNullOrEmpty(branchId))
+            {
+                var lids = await _permissionExpansionManager.GetLowerDepartments(branchId);
+                orgIds = lids.Where(x => orgIds.Contains(x)).ToList();
+            }
+
             var query = _Store.SimpleQuery;
             query = query.Where(hr => orgIds.Contains(hr.DepartmentId));
 

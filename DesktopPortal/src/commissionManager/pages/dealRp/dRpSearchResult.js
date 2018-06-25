@@ -38,7 +38,7 @@ class DRpSearchResult extends Component {
                 <Tooltip title="导出">
                     <Button type='primary' onClick={this.handleNew} style={{ 'margin': '10' }} >导出</Button>
                 </Tooltip>
-                <DealRpTable SearchCondition={this.props.cd} onRpTable={this.onRpTable} onOpenDlg={this.onOpenDlg} onOpenZy={this.onOpenZy} onOpenTy={this.onOpenTy}/>
+                <DealRpTable SearchCondition={this.props.cd} onRpTable={this.onRpTable} onOpenDlg={this.onOpenDlg} onOpenZy={this.onOpenZy} onOpenTy={this.onOpenTy} type='query'/>
             </div>
         )
     }

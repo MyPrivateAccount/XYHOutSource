@@ -96,12 +96,14 @@ namespace ApplicationGateway
 
             applicationContext.ConnectionString = configuration["Data:DefaultConnection:ConnectionString"];
             applicationContext.NWFUrl = configuration["NWFUrl"];
-            applicationContext.ExamineUrl = configuration["ExamineUrl"];
+            applicationContext.ExamineCenterUrl = configuration["ExamineCenterUrl"];
             applicationContext.FileServerRoot = configuration["FileServerRoot"];
-            applicationContext.BuildingExamineCallbackUrl = configuration["BuildingExamineCallbackUrl"];
+            applicationContext.AppGatewayUrl = configuration["AppGatewayUrl"];
             applicationContext.NWFExamineCallbackUrl = configuration["NWFExamineCallbackUrl"];
-            applicationContext.UpdateExamineCallbackUrl = configuration["UpdateExamineCallbackUrl"];
             applicationContext.MessageServerUrl = configuration["MessageServerUrl"];
+            applicationContext.AuthUrl = configuration["AuthUrl"];
+            applicationContext.ClientID = configuration["ClientID"];
+            applicationContext.ClientSecret = configuration["ClientSecret"];
 
             var environment = services.FirstOrDefault(x => x.ServiceType == typeof(IHostingEnvironment))?.ImplementationInstance;
             var apppart = services.FirstOrDefault(x => x.ServiceType == typeof(ApplicationPartManager))?.ImplementationInstance;
@@ -144,18 +146,20 @@ namespace ApplicationGateway
                 });
                 //Set the comments path for the swagger json and ui.
                 var basePath = PlatformServices.Default.Application.ApplicationBasePath;
-                var xmlPath = Path.Combine(basePath, "Plugin", "XYHCustomerPlugin.xml");
-                var xmlPath2 = Path.Combine(basePath, "Plugin", "XYHShopsPlugin.xml");
-                var xmlPath3 = Path.Combine(basePath, "Plugin", "XYHBaseDataPlugin.xml");
-                var xmlPath4 = Path.Combine(basePath, "Plugin", "ExamineCenterPlugin.xml");
-                var xmlPath5 = Path.Combine(basePath, "Plugin", "MessageServerPlugin.xml");
-                var xmlPath6 = Path.Combine(basePath, "Plugin", "XYHStatisticalPlugin.xml");
-                c.IncludeXmlComments(xmlPath);
-                c.IncludeXmlComments(xmlPath2);
-                c.IncludeXmlComments(xmlPath3);
-                c.IncludeXmlComments(xmlPath4);
-                c.IncludeXmlComments(xmlPath5);
-                c.IncludeXmlComments(xmlPath6);
+                //var xmlPath = Path.Combine(basePath, "Plugin", "XYHCustomerPlugin.xml");
+                //var xmlPath2 = Path.Combine(basePath, "Plugin", "XYHShopsPlugin.xml");
+                //var xmlPath3 = Path.Combine(basePath, "Plugin", "XYHBaseDataPlugin.xml");
+                //var xmlPath4 = Path.Combine(basePath, "Plugin", "ExamineCenterPlugin.xml");
+                //var xmlPath5 = Path.Combine(basePath, "Plugin", "MessageServerPlugin.xml");
+                //var xmlPath6 = Path.Combine(basePath, "Plugin", "XYHStatisticalPlugin.xml");
+                //var xmlPath7 = Path.Combine(basePath, "Plugin", "CommissionManagePlugin.xml");
+                //c.IncludeXmlComments(xmlPath);
+                //c.IncludeXmlComments(xmlPath2);
+                //c.IncludeXmlComments(xmlPath3);
+                //c.IncludeXmlComments(xmlPath4);
+                //c.IncludeXmlComments(xmlPath5);
+                //c.IncludeXmlComments(xmlPath6);
+                //c.IncludeXmlComments(xmlPath7);
                 c.OperationFilter<HttpHeaderOperation>(); // 添加httpHeader参数
             });
             services.ConfigureSwaggerGen(options =>
@@ -183,16 +187,16 @@ namespace ApplicationGateway
                 options.AllowAnyOrigin();
                 options.AllowCredentials();
             });
-            if (env.IsDevelopment())
+            //if (env.IsDevelopment())
+            //{
+            app.UseSwagger();
+            // Enable middleware to serve swagger-ui (HTML, JS, CSS etc.), specifying the Swagger JSON endpoint.
+            app.UseSwaggerUI(c =>
             {
-                app.UseSwagger();
-                // Enable middleware to serve swagger-ui (HTML, JS, CSS etc.), specifying the Swagger JSON endpoint.
-                app.UseSwaggerUI(c =>
-                {
-                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "ApplicationGateway API V1");
-                    c.ShowRequestHeaders();
-                });
-            }
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "ApplicationGateway API V1");
+                c.ShowRequestHeaders();
+            });
+            //}
             app.UseMvc();
 
             app.UseStaticFiles();
@@ -201,16 +205,21 @@ namespace ApplicationGateway
 
             app.UseMvcWithDefaultRoute();
 
+            if (applicationContext != null)
+            {
+                applicationContext.ApplicationBuilder = app;
+            }
+
             InitializeAsync(app.ApplicationServices, CancellationToken.None).GetAwaiter().GetResult();
         }
 
         private async Task InitializeAsync(IServiceProvider services, CancellationToken cancellationToken)
         {
+            applicationContext.ServiceProvider = services;
             // Create a new service scope to ensure the database context is correctly disposed when this methods returns.
             using (var scope = services.GetRequiredService<IServiceScopeFactory>().CreateScope())
             {
                 applicationContext.Provider = scope.ServiceProvider;
-
                 //var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
                 //var pluginFactory = scope.ServiceProvider.GetRequiredService<IPluginFactory>();
 

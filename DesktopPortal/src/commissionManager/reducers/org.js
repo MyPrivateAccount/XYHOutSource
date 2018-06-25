@@ -13,7 +13,8 @@ const initState = {
         AddPublicRoleTree: [],//添加公共角色时
         AddRolePermissionTree: []//角色授权时
     },
-    areaList: []
+    areaList: [],
+    humanList:[]
 };
 let treeReducerMap = {};
 
@@ -73,7 +74,11 @@ function getAllChildrenNode(node, parentId, formatNodeLit) {
 
 treeReducerMap[actionTypes.EMP_LIST_UPDATE] = function (state, action) {
     console.log("readucer用户的列表:" + JSON.stringify(action.payload.extension));
-    return Object.assign({}, state, { empList: action.payload.extension });
+    return Object.assign({}, state, { empList: action.payload.extension,operInfo:{operType:'EMP_LIST_UPDATE'}});
+}
+treeReducerMap[actionTypes.SEARCH_HUMAN_INFO_SUCCESS] = function (state, action) {
+    console.log("readucer员工列表:" + JSON.stringify(action.payload.extension));
+    return Object.assign({}, state, { humanList: action.payload.extension ,operInfo:{operType:'SEARCH_HUMAN_INFO_SUCCESS'}});
 }
 
 export default handleActions(treeReducerMap, initState)
