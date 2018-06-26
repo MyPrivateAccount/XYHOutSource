@@ -4,7 +4,7 @@ using System.Text;
 using XYHHumanPlugin.Stores;
 using System.Threading.Tasks;
 using ApplicationCore.Dto;
-using HumanInfRequest = XYHHumanPlugin.Dto.Response.HumanInfoResponse;
+using HumanInfRequest = XYHHumanPlugin.Dto.Response.HumanInfoResponse1;
 using AutoMapper;
 using ApplicationCore.Models;
 using XYHHumanPlugin.Models;
@@ -204,14 +204,14 @@ namespace XYHHumanPlugin.Managers
         }
 
         #region 检索
-        public virtual async Task<HumanSearchResponse<HumanInfoResponse>> SearchHumanInfo(UserInfo user, HumanSearchRequest condition, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual async Task<HumanSearchResponse<HumanInfoResponse1>> SearchHumanInfo(UserInfo user, HumanSearchRequest condition, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (condition == null)
             {
                 throw new ArgumentNullException(nameof(condition));
             }
 
-            var Response = new HumanSearchResponse<HumanInfoResponse>();
+            var Response = new HumanSearchResponse<HumanInfoResponse1>();
             var sql = @"SELECT a.* from XYH_HU_HUMANMANAGE as a where";
 
             if (condition?.CheckStatu > 0)
@@ -392,7 +392,7 @@ namespace XYHHumanPlugin.Managers
 
                 Response.PageIndex = condition.pageIndex;
                 Response.PageSize = condition.pageSize;
-                Response.Extension = _mapper.Map<List<HumanInfoResponse>>(result);
+                Response.Extension = _mapper.Map<List<HumanInfoResponse1>>(result);
 
                 foreach (var item in Response.Extension)
                 {
@@ -416,7 +416,7 @@ namespace XYHHumanPlugin.Managers
 
         public virtual async Task<PagingResponseMessage<HumanInfoResponse>> SimpleSearch(UserInfo user, string permissionId, string keyword,string branchId, int pageSize, int pageIndex)
         {
-            PagingResponseMessage<HumanInfoResponse> r = new PagingResponseMessage<HumanInfRequest>();
+            PagingResponseMessage<HumanInfoResponse> r = new PagingResponseMessage<HumanInfoResponse>();
 
             var orgIds = await _permissionExpansionManager.GetOrganizationOfPermission(user.Id, permissionId);
             if (!String.IsNullOrEmpty(branchId))
@@ -430,30 +430,30 @@ namespace XYHHumanPlugin.Managers
 
             if (!String.IsNullOrWhiteSpace(keyword))
             {
-                query = query.Where(hr => ( hr.Name.Contains(keyword) || hr.UserID.Contains(keyword) || hr.ID==keyword ));
+                //query = query.Where(hr => ( hr.Name.Contains(keyword) || hr.UserID.Contains(keyword) || hr.ID==keyword ));
             }
             if(pageSize>0 && pageIndex > 0)
             {
-                r.TotalCount = await query.CountAsync();
+                //r.TotalCount = await query.CountAsync();
                 r.PageIndex = pageIndex;
                 r.PageSize = pageSize;
                 query = query.Skip((pageIndex - 1) * pageSize).Take(pageSize);
                 
             }
-            var ul = await query.ToListAsync();
-            r.Extension = new List<HumanInfRequest>();
-            ul.ForEach(u =>
-            {
-                var u2 = _mapper.Map<HumanInfoResponse>(u);
-                if (u.OrganizationExpansion != null && !String.IsNullOrEmpty(u.OrganizationExpansion.FullName))
-                {
-                    u2.OrganizationFullName = u.OrganizationExpansion.FullName;
-                }else if (u.Organizations != null)
-                {
-                    u2.OrganizationFullName = u.Organizations.OrganizationName;
-                }
-                r.Extension.Add(u2);
-            });
+            //var ul = await query.ToListAsync();
+            //r.Extension = new List<HumanInfRequest>();
+            //ul.ForEach(u =>
+            //{
+            //    var u2 = _mapper.Map<HumanInfoResponse>(u);
+            //    if (u.OrganizationExpansion != null && !String.IsNullOrEmpty(u.OrganizationExpansion.FullName))
+            //    {
+                    //u2.OrganizationFullName = u.OrganizationExpansion.FullName;
+                //}else if (u.Organizations != null)
+                //{
+                    //u2.OrganizationFullName = u.Organizations.OrganizationName;
+                //}
+            //    r.Extension.Add(u2);
+            //});
 
             if (r.TotalCount == 0)
             {

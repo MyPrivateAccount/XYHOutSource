@@ -115,7 +115,7 @@ namespace XYHHumanPlugin.Managers
             await _Store.CreateMonthAsync(_mapper.Map<SimpleUser>(user), month, cancellationToken);
 
 
-            List<HumanInfo> humanlist = await _Store.GetHumanListAsync(a => a.Where(b => b.StaffStatus > 1 && b.ID != ""));//入职员工
+            List<HumanInfo> humanlist = await _Store.GetHumanListAsync(a => a.Where(b => b.StaffStatus == StaffStatus.Regular && b.Id != ""));//入职员工
             if (await CreateMonthSalaryForm(month.ID, month.SalaryForm, humanlist))
             {
                 if (await CreateMonthAttendanceForm(month.ID, month.AttendanceForm, humanlist))
@@ -131,7 +131,7 @@ namespace XYHHumanPlugin.Managers
             var salarylst = await _Store.GetListSalaryFormAsync(a => a.Where(b => b.MonthID == monthid));
             foreach (var item in salarylst)
             {
-                var human = await _Store.GetHumanAsync(a => a.Where(b => b.ID == item.HumanID));
+                var human = await _Store.GetHumanAsync(a => a.Where(b => b.Id == item.HumanID));
                 if (human != null)
                 {
                     var tf = await _Store.GetStationAsync(a => a.Where(b => b.ID == human.Position));
@@ -141,14 +141,14 @@ namespace XYHHumanPlugin.Managers
                         var it = new MonthFormResponse();
                         it.A1 = lst.Count;
                         it.A2 = human.IDCard;
-                        it.A3 = human.ID;
+                        it.A3 = human.Id;
                         it.A4 = human.Name;
                         it.A5 = await _Store.GetOrganizationFullName(human.DepartmentId);
                         it.A6 = tf.PositionName;
-                        it.A8 = human.BaseSalary.GetValueOrDefault();
+                        //it.A8 = human.BaseSalary.GetValueOrDefault();
                         it.A9 = 0;//暂无
                         it.A10 = 0;//暂无
-                        it.A11 = human.Subsidy.GetValueOrDefault();//岗位补贴
+                        //it.A11 = human.Subsidy.GetValueOrDefault();//岗位补贴
                         it.A17 = human.AdministrativeBack.GetValueOrDefault();
                         it.A18 = human.PortBack.GetValueOrDefault();
                         it.A20 = 0;////暂无
@@ -198,9 +198,9 @@ namespace XYHHumanPlugin.Managers
                     SalaryFormInfo salary = new SalaryFormInfo();
                     salary.ID = salaryid;
                     salary.MonthID = monthid;
-                    salary.HumanID = item.ID;
-                    salary.BaseSalary = item.BaseSalary;
-                    salary.Subsidy = item.Subsidy;
+                    salary.HumanID = item.Id;
+                    //salary.BaseSalary = item.BaseSalary;
+                    //salary.Subsidy = item.Subsidy;
                     salary.ClothesBack = item.ClothesBack;
                     salary.AdministrativeBack = item.AdministrativeBack;
                     salary.PortBack = item.PortBack;

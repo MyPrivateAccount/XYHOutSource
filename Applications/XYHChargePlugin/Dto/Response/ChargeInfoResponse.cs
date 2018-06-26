@@ -87,6 +87,8 @@ namespace XYHChargePlugin.Dto
 
         public DateTime? LastReimbursedTime { get; set; }
 
+        public int RecordingStatus { get; set; }
+
         public List<CostInfoResponse> FeeList { get; set; }
 
         public List<ReceiptInfoResponse> BillList { get; set; }
@@ -101,5 +103,7 @@ namespace XYHChargePlugin.Dto
         public string ReimburseDepartmentName { get; set; }
 
         public UserInfo ReimburseUserInfo { get; set; }
+
+        public List<ChargeInfoResponse> ChargeList { get; set; }
     }
 }

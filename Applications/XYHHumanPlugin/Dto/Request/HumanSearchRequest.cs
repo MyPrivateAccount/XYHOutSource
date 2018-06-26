@@ -33,9 +33,9 @@ namespace XYHHumanPlugin.Dto.Request
         public int pageSize { get; set; }
     }
 
-    public class HumanInfoRequest
-    {
-        public HumanInfoResponse humaninfo { get; set; }
-        public FileInfoRequest fileinfo { get; set; }
-    }
+    //public class HumanInfoRequest
+    //{
+    //    public HumanInfoResponse1 humaninfo { get; set; }
+    //    public FileInfoRequest fileinfo { get; set; }
+    //}
 }

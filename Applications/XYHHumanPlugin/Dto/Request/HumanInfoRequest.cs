@@ -1,28 +1,21 @@
-﻿using ApplicationCore.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
-using XYHHumanPlugin.Models;
 
-namespace XYHHumanPlugin.Dto.Response
+namespace XYHHumanPlugin.Dto.Request
 {
-    public class HumanInfoResponse
+    public class HumanInfoRequest
     {
-        /// <summary>
-        /// 主键Id
-        /// </summary>
-        public string ID { get; set; }
-        /// <summary>
-        /// 工号
-        /// </summary>
-        public string UserID { get; set; }
         /// <summary>
         /// 姓名
         /// </summary>
+        [StringLength(127)]
         public string Name { get; set; }
         /// <summary>
         /// 身份证号码
         /// </summary>
+        [StringLength(127)]
         public string IDCard { get; set; }
         /// <summary>
         /// 性别
@@ -32,26 +25,31 @@ namespace XYHHumanPlugin.Dto.Response
         /// <summary>
         /// 公司
         /// </summary>
+        [StringLength(255)]
         public string Company { get; set; }
 
         /// <summary>
         /// 名族
         /// </summary>
+        [StringLength(255)]
         public string Nationality { get; set; }
 
         /// <summary>
         /// 户籍类型
         /// </summary>
+        [StringLength(255)]
         public string HouseholdType { get; set; }
 
         /// <summary>
         /// 最高学历
         /// </summary>
+        [StringLength(255)]
         public string HighestEducation { get; set; }
 
         /// <summary>
         /// 健康状况
         /// </summary>
+        [StringLength(255)]
         public string HealthCondition { get; set; }
 
         /// <summary>
@@ -62,11 +60,13 @@ namespace XYHHumanPlugin.Dto.Response
         /// <summary>
         /// 家庭住址
         /// </summary>
+        [StringLength(255)]
         public string FamilyAddress { get; set; }
 
         /// <summary>
         /// 职位名称
         /// </summary>
+        [StringLength(255)]
         public string Position { get; set; }
 
         /// <summary>
@@ -97,6 +97,7 @@ namespace XYHHumanPlugin.Dto.Response
         /// <summary>
         /// 邮件地址
         /// </summary>
+        [StringLength(50)]
         public string EmailAddress { get; set; }
 
         /// <summary>
@@ -112,53 +113,35 @@ namespace XYHHumanPlugin.Dto.Response
         /// <summary>
         /// 所属部门Id
         /// </summary>
+        [StringLength(127)]
         public string DepartmentId { get; set; }
-
-        /// <summary>
-        /// 创建人
-        /// </summary>
-        public string CreateUser { get; set; }
 
         /// <summary>
         /// 备注
         /// </summary>
         public string Desc { get; set; }
 
-        public int? Modify { get; set; }
-
         /// <summary>
         /// 头像
         /// </summary>
+        [StringLength(127)]
         public string Picture { get; set; }
-
-        public string OrganizationFullName { get; set; }
-
-        public PositionInfoResponse PositionInfo { get; set; }
-
-
-        /// <summary>
-        /// 状态
-        /// </summary>
-        public StaffStatus StaffStatus { get; set; }
 
         /// <summary>
         /// 入职日期
         /// </summary>
         public DateTime EntryTime { get; set; }
 
-        /// <summary>
-        /// 创建时间
-        /// </summary>
-        public DateTime CreateTime { get; set; }
 
-        public Organizations Organizations { get; set; }
+        public HumanSalaryStructureRequest HumanSalaryStructure { get; set; }
 
-        public OrganizationExpansion OrganizationExpansion { get; set; }
+        public HumanSocialSecurityRequest HumanSocialSecurity { get; set; }
 
+        public HumanContractInfoRequest HumanContractInfo { get; set; }
 
+        public List<HumanTitleInfoRequest> HumanTitleInfos { get; set; }
+        public List<HumanWorkHistoryRequest> HumanWorkHistories { get; set; }
 
-
-
-
+        public List<HumanEducationInfoRequest> HumanEducationInfos { get; set; }
     }
 }

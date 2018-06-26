@@ -1,21 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Text;
 
-namespace XYHHumanPlugin.Models
+namespace XYHHumanPlugin.Dto.Request
 {
-    /// <summary>
-    /// 薪资构成
-    /// </summary>
-    public class HumanSalaryStructure
+    public class HumanSalaryStructureRequest
     {
-        /// <summary>
-        /// 主键Id
-        /// </summary>
-        [Key]
-        [MaxLength(127)]
-        public string Id { get; set; }
         /// <summary>
         /// 基本工资
         /// </summary>
@@ -36,8 +26,5 @@ namespace XYHHumanPlugin.Models
         /// 其他补贴
         /// </summary>
         public decimal OtherAllowance { get; set; } = 0;
-
-
-
     }
 }

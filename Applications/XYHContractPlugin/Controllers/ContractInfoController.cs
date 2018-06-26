@@ -37,7 +37,7 @@ namespace XYHContractPlugin.Controllers
         private readonly FileInfoManager _fileInfoManager;
         private readonly RestClient _restClient;
 
-        public ContractInfoController(ContractInfoManager contractManager, FileScopeManager fim, FileInfoManager fileInfoManager,RestClient rsc)
+        public ContractInfoController(ContractInfoManager contractManager, FileScopeManager fim, FileInfoManager fileInfoManager, RestClient rsc)
         {
             _fileScopeManager = fim;
             _fileInfoManager = fileInfoManager;
@@ -84,8 +84,8 @@ namespace XYHContractPlugin.Controllers
             }
             try
             {
-                var ret = await _contractInfoManager.GetAllinfoByIdAsync2(user,contractId, HttpContext.RequestAborted);
-                if(ret == null)
+                var ret = await _contractInfoManager.GetAllinfoByIdAsync2(user, contractId, HttpContext.RequestAborted);
+                if (ret == null)
                 {
                     Response.Code = ResponseCodeDefines.ModelStateInvalid;
                     Response.Message = "请求合同不存在";
@@ -166,7 +166,7 @@ namespace XYHContractPlugin.Controllers
             fi.Original = fl.FirstOrDefault(x => x.Type == "ORIGINAL")?.Uri;
             fi.Medium = fl.FirstOrDefault(x => x.Type == "MEDIUM")?.Uri;
             fi.Small = fl.FirstOrDefault(x => x.Type == "SMALL")?.Uri;
-            fi.Ext1 = fl.FirstOrDefault()?.Ext1 ;
+            fi.Ext1 = fl.FirstOrDefault()?.Ext1;
             fi.Ext2 = fl.FirstOrDefault()?.Ext2;
             string fr = ApplicationCore.ApplicationContext.Current.FileServerRoot;
             fr = (fr ?? "").TrimEnd('/');
@@ -205,7 +205,7 @@ namespace XYHContractPlugin.Controllers
             //}
 
             var Response = new ResponseMessage<List<ContractContentResponse>>();
-            
+
             try
             {
                 Response.Extension = await _contractInfoManager.GetAllListinfoByUserIdAsync(user.Id, HttpContext.RequestAborted);
@@ -329,17 +329,17 @@ namespace XYHContractPlugin.Controllers
                 {
                     strModifyGuid = Guid.NewGuid().ToString();
                     request.Modifyinfo = new List<ContractModifyResponse>();
-                    request.Modifyinfo.Add(new ContractModifyResponse { ID= strModifyGuid });
+                    request.Modifyinfo.Add(new ContractModifyResponse { ID = strModifyGuid });
                 }
 
-                
+
                 GatewayInterface.Dto.ExamineSubmitRequest exarequest = new GatewayInterface.Dto.ExamineSubmitRequest();
                 exarequest.ContentId = request.BaseInfo.ID;
                 exarequest.ContentType = "ContractCommit";
                 exarequest.ContentName = "AddContract";
                 exarequest.SubmitDefineId = strModifyGuid;
                 exarequest.Source = "";
-                exarequest.CallbackUrl = ApplicationContext.Current.UpdateExamineCallbackUrl;
+                exarequest.CallbackUrl = "";
                 exarequest.Action = "TEST";/* exarequest.ContentType*/;
                 exarequest.TaskName = $"{User.UserName}添加合同{exarequest.ContentName}的动态{exarequest.ContentType}";
 
@@ -398,7 +398,7 @@ namespace XYHContractPlugin.Controllers
                 exarequest.ContentName = "AddComplement";
                 exarequest.SubmitDefineId = strModifyGuid;
                 exarequest.Source = "";
-                exarequest.CallbackUrl = ApplicationContext.Current.UpdateExamineCallbackUrl;
+                exarequest.CallbackUrl = "";
                 exarequest.Action = "TEST";/* exarequest.ContentType*/;
                 exarequest.TaskName = $"{User.UserName}添加合同补充协议{exarequest.ContentName}的动态{exarequest.ContentType}";
 
@@ -422,7 +422,7 @@ namespace XYHContractPlugin.Controllers
 
                 //写发送成功后的表
                 //response.Extension = await _contractInfoManager.AddComplementAsync(User, contract, strModifyGuid, "TEST", request, HttpContext.RequestAborted);
-                await _contractInfoManager.CreateComplementModifyAsync(User, contract, strModifyGuid, "TEST", JsonHelper.ToJson(User), JsonHelper.ToJson(request),HttpContext.RequestAborted);
+                await _contractInfoManager.CreateComplementModifyAsync(User, contract, strModifyGuid, "TEST", JsonHelper.ToJson(User), JsonHelper.ToJson(request), HttpContext.RequestAborted);
                 response.Message = "addcomplement ok";
             }
             catch (Exception e)
@@ -459,7 +459,7 @@ namespace XYHContractPlugin.Controllers
                 exarequest.ContentName = "AddComplement";
                 exarequest.SubmitDefineId = strModifyGuid;
                 exarequest.Source = "";
-                exarequest.CallbackUrl = ApplicationContext.Current.UpdateExamineCallbackUrl;
+                exarequest.CallbackUrl = "";
                 exarequest.Action = "TEST";/* exarequest.ContentType*/;
                 exarequest.TaskName = $"{User.UserName}更新合同补充协议{exarequest.ContentName}的动态{exarequest.ContentType}";
 
@@ -519,7 +519,7 @@ namespace XYHContractPlugin.Controllers
                 exarequest.ContentName = "ModifyComplement";
                 exarequest.SubmitDefineId = strModifyGuid;
                 exarequest.Source = "";
-                exarequest.CallbackUrl = ApplicationContext.Current.UpdateExamineCallbackUrl;
+                exarequest.CallbackUrl = "";
                 exarequest.Action = "TEST";/* exarequest.ContentType*/;
                 exarequest.TaskName = $"{User.UserName}修改合同补充协议{exarequest.ContentName}的动态{exarequest.ContentType}";
 
@@ -581,7 +581,7 @@ namespace XYHContractPlugin.Controllers
                 exarequest.ContentName = "Modify";
                 exarequest.SubmitDefineId = guid;
                 exarequest.Source = "";
-                exarequest.CallbackUrl = ApplicationContext.Current.UpdateExamineCallbackUrl;
+                exarequest.CallbackUrl = "";
                 exarequest.Action = "TEST"/*"TEST" exarequest.ContentType*/;
                 exarequest.TaskName = $"{User.UserName}修改合同{exarequest.ContentName}的动态{exarequest.ContentType}";
 
@@ -605,9 +605,9 @@ namespace XYHContractPlugin.Controllers
 
                 Logger.Trace($"{exarequest.ContentId}发生审核成功");
                 request.BaseInfo.Num = string.IsNullOrEmpty(request.BaseInfo.Num) ? await _contractInfoManager.GetContractNum(request.BaseInfo.ID, HttpContext.RequestAborted) : request.BaseInfo.Num;
-                await _contractInfoManager.ModifyContractBeforCheckAsync(User,  request, guid, "TEST", HttpContext.RequestAborted);
+                await _contractInfoManager.ModifyContractBeforCheckAsync(User, request, guid, "TEST", HttpContext.RequestAborted);
 
-                
+
                 response.Extension = guid;
                 response.Message = "modify simple ok";
             }
@@ -654,7 +654,7 @@ namespace XYHContractPlugin.Controllers
                 exarequest.ContentName = request.CheckName;
                 exarequest.SubmitDefineId = request.ModifyID;
                 exarequest.Source = "";
-                exarequest.CallbackUrl = ApplicationContext.Current.UpdateExamineCallbackUrl;
+                exarequest.CallbackUrl = "";
                 exarequest.Action = request.Action/*"TEST" exarequest.ContentType*/;
                 exarequest.TaskName = $"{User.UserName}提交合同{exarequest.ContentName}的动态{exarequest.ContentType}";
 
@@ -750,7 +750,7 @@ namespace XYHContractPlugin.Controllers
                 exarequest.ContentName = request.Name;
                 exarequest.SubmitDefineId = Guid.NewGuid().ToString();
                 exarequest.Source = "";
-                exarequest.CallbackUrl = ApplicationContext.Current.UpdateExamineCallbackUrl;
+                exarequest.CallbackUrl = "";
                 exarequest.Action = "TEST"/*exarequest.ContentType*/;
                 exarequest.TaskName = $"{User.UserName}提交合同{exarequest.ContentName}的动态{exarequest.ContentType}"; ;
                 GatewayInterface.Dto.UserInfo userinfo = new GatewayInterface.Dto.UserInfo()
@@ -772,7 +772,7 @@ namespace XYHContractPlugin.Controllers
                 }
 
                 //写发送成功后的表
-                await _contractInfoManager.CreateAsync(User,request, exarequest.SubmitDefineId, "TEST",HttpContext.RequestAborted);
+                await _contractInfoManager.CreateAsync(User, request, exarequest.SubmitDefineId, "TEST", HttpContext.RequestAborted);
             }
             catch (Exception e)
             {
@@ -868,8 +868,8 @@ namespace XYHContractPlugin.Controllers
                                 //Logger.Info("nwf协议");
                                 //string response2 = await _restClient.Post(ApplicationContext.Current.NWFUrl, listnf.ElementAt(nindex++), "POST", nameValueCollection);
                                 //Logger.Info("返回：\r\n{0}", response2);
-                                
-                                
+
+
                                 await _fileScopeManager.CreateAsync(user, modifyre.Ext4, modifyre.ContractID, modifyre.ID, item);
 
                                 //response.Message = response2;
@@ -886,13 +886,13 @@ namespace XYHContractPlugin.Controllers
                             await _fileInfoManager.CreateListAsync(user.Id, fileInfoRequests, HttpContext.RequestAborted);
                             await _fileScopeManager.DeleteContractFileListAsync(user.Id, modifyre.ContractID, deleteList, HttpContext.RequestAborted);
                         }
-                        catch(Exception e)
+                        catch (Exception e)
                         {
                             response.Code = ResponseCodeDefines.ServiceError;
                             response.Message = e.ToString();
                             Logger.Trace($"合同文件添加或删除失败，审核中心回调(SubmitBuildingCallback)报错：\r\n{e.ToString()}，\r\n请求参数为：\r\n" + fileInfoRequests != null ? JsonHelper.ToJson(fileInfoRequests) : "\r\n" + deleteList != null ? JsonHelper.ToJson(deleteList) : "");
                         }
-                       
+
                     }
                     else if (modifyre.Type == ContractInfoManager.UpdateComplementContract)
                     {
@@ -915,13 +915,13 @@ namespace XYHContractPlugin.Controllers
             return response;
         }
 
-  
+
         [HttpGet("getfollowhistory/{contractId}")]
         [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
         public async Task<ResponseMessage<List<ContractInfoResponse>>> GetFollowHistory(UserInfo user, string contractId)
         {
             ResponseMessage<List<ContractInfoResponse>> response = new ResponseMessage<List<ContractInfoResponse>>();
-            
+
             try
             {
                 Logger.Trace($"获取合同续签记录(GetFollowHistory)：\r\n请求参数为：\r\n" + contractId);
@@ -936,7 +936,7 @@ namespace XYHContractPlugin.Controllers
                 response.Extension = await _contractInfoManager.GetFollowHistory(user, contractId, HttpContext.RequestAborted);
                 response.Code = "0";
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 response.Code = ResponseCodeDefines.ServiceError;
                 response.Message = e.ToString();
@@ -963,7 +963,7 @@ namespace XYHContractPlugin.Controllers
                 response.Extension = await _contractInfoManager.GetModifyInfo(id, HttpContext.RequestAborted);
                 response.Code = "0";
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 response.Code = ResponseCodeDefines.ServiceError;
                 response.Message = e.ToString();
@@ -990,7 +990,7 @@ namespace XYHContractPlugin.Controllers
                 }
                 var modifyInfo = await _contractInfoManager.GetModifyInfo(id, HttpContext.RequestAborted);
 
-                if(modifyInfo == null || string.IsNullOrEmpty(modifyInfo.Ext1))
+                if (modifyInfo == null || string.IsNullOrEmpty(modifyInfo.Ext1))
                 {
                     response.Code = ResponseCodeDefines.ModelStateInvalid;
                     response.Message = "合同信息不存在";
@@ -1013,11 +1013,11 @@ namespace XYHContractPlugin.Controllers
                 info.ModifyStartTime = modifyInfo.ModifyStartTime;
                 info.Type = modifyInfo.Type;
 
-                if(info.Type == 1 || info.Type == 2)
+                if (info.Type == 1 || info.Type == 2)
                 {
                     info.ContractInfo = JsonHelper.ToObject<ContractContentResponse>(modifyInfo.Ext1);
                 }
-                else if(info.Type == 3)
+                else if (info.Type == 3)
                 {
                     List<FileInfo> fileInfos = new List<FileInfo>();
                     List<FileItemResponse> fileItems = new List<FileItemResponse>();
@@ -1026,8 +1026,8 @@ namespace XYHContractPlugin.Controllers
                     foreach (var item in fileInfoRequests)
                     {
                         var fileInfo = new FileInfo();
-                    
-            
+
+
                         fileInfo.Driver = item.WXPath.Substring(0, 1);
                         fileInfo.Uri = CovertPath(item.WXPath);
                         fileInfo.Type = "ICON";
@@ -1039,7 +1039,7 @@ namespace XYHContractPlugin.Controllers
                         fileInfos.Add(fileInfo);
                     }
 
-                  
+
                     if (fileInfos.Count() > 0)
                     {
                         var f = fileInfos.Select(a => a.FileGuid).Distinct();
@@ -1055,7 +1055,7 @@ namespace XYHContractPlugin.Controllers
                         info.FileList = fileItems;
                     }
                 }
-                else if(info.Type == 4)
+                else if (info.Type == 4)
                 {
                     info.ComplementInfo = JsonHelper.ToObject<List<ContractComplementResponse>>(modifyInfo.Ext1);
                 }

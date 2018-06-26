@@ -171,5 +171,25 @@ namespace XYHChargePlugin.Controllers
 
 
 
+        [HttpPost("recordingconfirm")]
+        [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
+        public async Task<ResponseMessage> RecordingConfirm(UserInfo User, [FromBody]ConfirmRequest request)
+        {
+            var r = new ResponseMessage();
+
+            try
+            {
+                r = await _borrowingManager.RecordingConfirm(User, request);
+            }
+            catch (Exception e)
+            {
+                r.Code = ResponseCodeDefines.ServiceError;
+                r.Message = "服务器错误：" + e.Message;
+                Logger.Error("财务确认失败：\r\n{0}", e.ToString());
+            }
+            return r;
+        }
+
+
     }
 }
