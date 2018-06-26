@@ -15,11 +15,13 @@ namespace XYHHumanPlugin.Models
         /// </summary>
         [Key]
         [MaxLength(127)]
-        public string ID { get; set; }
+        public string Id { get; set; }
+
         /// <summary>
         /// 合同编号
         /// </summary>
-        [MaxLength(127)]
+        [Required]
+        [MaxLength(50)]
         public string ContractNo { get; set; }
 
         /// <summary>
@@ -31,18 +33,18 @@ namespace XYHHumanPlugin.Models
         /// <summary>
         /// 合同签署日期
         /// </summary>
-        public DateTime ContractSignDate { get; set; }
+        public DateTime? ContractSignDate { get; set; }
 
         /// <summary>
         /// 合同有效日期
         /// </summary>
-        public DateTime ContractStartDate { get; set; }
+        public DateTime? ContractStartDate { get; set; }
 
         /// <summary>
         /// 合同到期日期
         /// </summary>
-        public DateTime ContractEndDate { get; set; }
+        public DateTime? ContractEndDate { get; set; }
 
-        
+
     }
 }

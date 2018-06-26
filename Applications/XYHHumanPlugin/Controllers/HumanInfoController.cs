@@ -26,10 +26,11 @@ namespace XYHHumanPlugin.Controllers
     [Authorize(AuthenticationSchemes = OAuthValidationDefaults.AuthenticationScheme)]
     [Produces("application/json")]
     [Route("api/humaninfo")]
-   public class HumanInfoController : Controller
+    public class HumanInfoController : Controller
     {
         private readonly ILogger Logger = LoggerManager.GetLogger("XYHHumaninfo");
         private readonly HumanManager _humanManage;
+        private readonly HumanInfoManager _humanInfoManager;
         private readonly RestClient _restClient;
         private string _lastDate;
         private int _lastNumber;
@@ -41,12 +42,49 @@ namespace XYHHumanPlugin.Controllers
         private const int BecomeHumanModifyType = 5;//转正
         private const int LeaveHumanModifyType = 7;//离职
 
-        public HumanInfoController( RestClient rsc, HumanManager human)
+
+        public HumanInfoController(RestClient rsc, HumanInfoManager humanInfoManager, HumanManager human)
         {
             _humanManage = human;
+            _humanInfoManager = humanInfoManager;
             _lastNumber = 0;
             _restClient = rsc;
         }
+
+        /// <summary>
+        /// 保存员工人事信息，如果已存在则更新
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="humanInfoRequest"></param>
+        /// <returns></returns>
+        [HttpPut]
+        [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
+        public async Task<ResponseMessage<HumanInfoResponse>> SaveHumanInfo(UserInfo user, [FromBody]HumanInfoRequest humanInfoRequest)
+        {
+            Logger.Trace($"用户{user?.UserName ?? ""}({user?.Id ?? ""})保存员工人事信息，如果已存在则更新(SaveHumanInfo)，请求体为：\r\n" + (humanInfoRequest != null ? JsonHelper.ToJson(humanInfoRequest) : ""));
+
+            ResponseMessage<HumanInfoResponse> response = new ResponseMessage<HumanInfoResponse>();
+            if (!ModelState.IsValid)
+            {
+                response.Code = ResponseCodeDefines.ModelStateInvalid;
+                response.Message = ModelState.GetAllErrors();
+                Logger.Error($"用户{user?.UserName ?? ""}({user?.Id ?? ""})保存员工人事信息，如果已存在则更新(SaveHumanInfo)模型验证失败：{response.Message}请求体为：\r\n" + (humanInfoRequest != null ? JsonHelper.ToJson(humanInfoRequest) : ""));
+                return response;
+            }
+            try
+            {
+                return await _humanInfoManager.GetMyReport(user, humanInfoRequest, HttpContext.RequestAborted);
+            }
+            catch (Exception e)
+            {
+                response.Code = ResponseCodeDefines.ServiceError;
+                response.Message = e.Message;
+                Logger.Error($"用户{user?.UserName ?? ""}({user?.Id ?? ""})根据报告Id获取成交报告信息(GetReport)失败：{response.Message}请求体为：\r\n" + (condition != null ? JsonHelper.ToJson(condition) : ""));
+            }
+            return response;
+        }
+
+
 
         [HttpGet("testinfo")]
         [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
@@ -73,9 +111,9 @@ namespace XYHHumanPlugin.Controllers
 
         [HttpPost("searchhumaninfo")]
         [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
-        public async Task<HumanSearchResponse<HumanInfoResponse>> SearchHumanInfo(UserInfo User, [FromBody]HumanSearchRequest condition)
+        public async Task<HumanSearchResponse<HumanInfoResponse1>> SearchHumanInfo(UserInfo User, [FromBody]HumanSearchRequest condition)
         {
-            var pagingResponse = new HumanSearchResponse<HumanInfoResponse>();
+            var pagingResponse = new HumanSearchResponse<HumanInfoResponse1>();
             if (!ModelState.IsValid)
             {
                 pagingResponse.Code = ResponseCodeDefines.ModelStateInvalid;
@@ -296,11 +334,17 @@ namespace XYHHumanPlugin.Controllers
             return pagingResponse;
         }
 
-        [HttpPost("addhuman")]
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="User"></param>
+        /// <param name="condition"></param>
+        /// <returns></returns>
+        [HttpPost]
         [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
-        public async Task<ResponseMessage<List<HumanInfoResponse>>> AddHumanInfo(UserInfo User, [FromBody]HumanInfoRequest condition)
+        public async Task<ResponseMessage<List<HumanInfoResponse1>>> CreateHumanInfo(UserInfo User, [FromBody]HumanInfoRequest humanInfoRequest)
         {
-            var Response = new ResponseMessage<List<HumanInfoResponse>>();
+            var Response = new ResponseMessage<List<HumanInfoResponse1>>();
             try
             {
                 string modifyid = Guid.NewGuid().ToString();
@@ -344,7 +388,7 @@ namespace XYHHumanPlugin.Controllers
 
                     await _humanManage.CreateFileScopeAsync(User.Id, condition.humaninfo.ID, condition.fileinfo, HttpContext.RequestAborted);
                 }
-                
+
                 await _humanManage.AddHuman(User, condition.humaninfo, modifyid, "TEST", HttpContext.RequestAborted);
                 Response.Message = $"addhumaninfo sucess";
             }
@@ -433,9 +477,9 @@ namespace XYHHumanPlugin.Controllers
 
         [HttpGet("simpleSearch")]
         [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
-        public async Task<PagingResponseMessage<HumanInfoResponse>> SimpleSearch(UserInfo User, string permissionId, string keyword, int pageSize, int pageIndex)
+        public async Task<PagingResponseMessage<HumanInfoResponse1>> SimpleSearch(UserInfo User, string permissionId, string keyword, int pageSize, int pageIndex)
         {
-            var r = new PagingResponseMessage<HumanInfoResponse>();
+            var r = new PagingResponseMessage<HumanInfoResponse1>();
             try
             {
                 r = await _humanManage.SimpleSearch(User, permissionId, keyword, pageSize, pageIndex);

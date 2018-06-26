@@ -129,9 +129,9 @@ namespace XYHHumanPlugin.Controllers
 
         [HttpPost("createmonth")]
         [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
-        public async Task<HumanSearchResponse<HumanInfoResponse>> CreateMonth(UserInfo User, [FromBody]DateTime nextmonth)
+        public async Task<HumanSearchResponse<HumanInfoResponse1>> CreateMonth(UserInfo User, [FromBody]DateTime nextmonth)
         {
-            var pagingResponse = new HumanSearchResponse<HumanInfoResponse>();
+            var pagingResponse = new HumanSearchResponse<HumanInfoResponse1>();
             if (!ModelState.IsValid)
             {
                 pagingResponse.Code = ResponseCodeDefines.ModelStateInvalid;

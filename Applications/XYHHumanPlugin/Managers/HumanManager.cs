@@ -4,7 +4,7 @@ using System.Text;
 using XYHHumanPlugin.Stores;
 using System.Threading.Tasks;
 using ApplicationCore.Dto;
-using HumanInfRequest = XYHHumanPlugin.Dto.Response.HumanInfoResponse;
+using HumanInfRequest = XYHHumanPlugin.Dto.Response.HumanInfoResponse1;
 using AutoMapper;
 using ApplicationCore.Models;
 using XYHHumanPlugin.Models;
@@ -204,14 +204,14 @@ namespace XYHHumanPlugin.Managers
         }
 
         #region 检索
-        public virtual async Task<HumanSearchResponse<HumanInfoResponse>> SearchHumanInfo(UserInfo user, HumanSearchRequest condition, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual async Task<HumanSearchResponse<HumanInfoResponse1>> SearchHumanInfo(UserInfo user, HumanSearchRequest condition, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (condition == null)
             {
                 throw new ArgumentNullException(nameof(condition));
             }
 
-            var Response = new HumanSearchResponse<HumanInfoResponse>();
+            var Response = new HumanSearchResponse<HumanInfoResponse1>();
             var sql = @"SELECT a.* from XYH_HU_HUMANMANAGE as a where";
 
             if (condition?.CheckStatu > 0)
@@ -392,7 +392,7 @@ namespace XYHHumanPlugin.Managers
 
                 Response.PageIndex = condition.pageIndex;
                 Response.PageSize = condition.pageSize;
-                Response.Extension = _mapper.Map<List<HumanInfoResponse>>(result);
+                Response.Extension = _mapper.Map<List<HumanInfoResponse1>>(result);
 
                 foreach (var item in Response.Extension)
                 {

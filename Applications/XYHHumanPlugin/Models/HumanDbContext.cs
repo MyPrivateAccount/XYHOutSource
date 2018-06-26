@@ -16,6 +16,16 @@ namespace XYHHumanPlugin.Models
 
         public DbSet<HumanInfo> HumanInfos { get; set; }
         public DbSet<HumanContractInfo> HumanContractInfos { get; set; }
+        public DbSet<HumanSalaryStructure> HumanSalaryStructures { get; set; }
+        public DbSet<HumanSocialSecurity> HumanSocialSecurities { get; set; }
+        public DbSet<HumanTitleInfo> HumanTitleInfos { get; set; }
+
+        public DbSet<HumanWorkHistory> HumanWorkHistories { get; set; }
+
+        public DbSet<HumanEducationInfo> HumanEducationInfos { get; set; }
+
+        public DbSet<HumanFileScope> HumanFileScopes { get; set; }
+
         public DbSet<BlackInfo> BlackInfos { get; set; }
         public DbSet<AttendanceInfo> AttendanceInfos { get; set; }
         public DbSet<PositionInfo> PositionInfos { get; set; }
@@ -40,15 +50,43 @@ namespace XYHHumanPlugin.Models
 
             modelBuilder.Entity<HumanInfo>(b =>
             {
-                b.ToTable("XYH_HU_HUMANMANAGE");
-                b.HasKey(k => new { k.ID });
+                b.ToTable("xyh_hu_humaninfo");
+                b.HasKey(k => new { k.Id });
 
             });
             modelBuilder.Entity<HumanContractInfo>(b =>
             {
-                b.HasKey(k => new { k.ID });
-                b.ToTable("XYH_HU_CONTRACT");
+                b.ToTable("xyh_hu_humancontractinfo");
             });
+
+            modelBuilder.Entity<HumanSalaryStructure>(b =>
+            {
+                b.ToTable("xyh_hu_humansalarystructure");
+            });
+
+            modelBuilder.Entity<HumanSocialSecurity>(b =>
+            {
+                b.ToTable("xyh_hu_humansocialsecurity");
+            });
+            modelBuilder.Entity<HumanTitleInfo>(b =>
+            {
+                b.ToTable("xyh_hu_humantitleinfo");
+            });
+            modelBuilder.Entity<HumanWorkHistory>(b =>
+            {
+                b.ToTable("xyh_hu_humanworkhistory");
+            });
+            modelBuilder.Entity<HumanFileScope>(b =>
+            {
+                b.HasKey(k => new { k.HumanId, k.FileGuid });
+                b.ToTable("xyh_hu_humanfilescope");
+            });
+            modelBuilder.Entity<HumanEducationInfo>(b =>
+            {
+                b.ToTable("xyh_hu_humaneducationinfo");
+            });
+
+
             modelBuilder.Entity<BlackInfo>(b =>
             {
                 b.HasKey(k => new { k.IDCard });
