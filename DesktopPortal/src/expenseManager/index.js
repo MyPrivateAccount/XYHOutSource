@@ -117,6 +117,11 @@ class ExpenseManagerIndex extends Component {
         if(p.fk){
             ml.push({menuID:'fkqr', displayName: '付款确认', menuIcon:'contacts', type:'item', path:'/fk', par:{noQR:true,noGL:true, noFK:false, noAdd:true, status: [chargeStatus.Confirm]}})
         }
+        if(p.mxb){
+            ml.push({menuID:'mxb', displayName: '费用明细表', menuIcon:'contacts', type:'item', path:'/mxb', par:{}})
+        }
+       
+        ml.push({menuID:'split'})
 
         if(p.yjk || p.yjkgl){
             ml.push({menuID:'yjk', displayName: '预借款/还款', menuIcon:'contacts', type:'item', path:'/yjk', par:{noQR:true,noGL: false, noFK:true, noAdd:false, status: []}})
@@ -140,11 +145,10 @@ class ExpenseManagerIndex extends Component {
                 noAdd:true, 
                 status: [ chargeStatus.Confirm]}})
         }
-
-        if(p.mxb){
-            ml.push({menuID:'mxb', displayName: '费用明细表', menuIcon:'contacts', type:'item', path:'/mxb', par:{}})
-        }
+       
+       
         if(p.bxxe){
+            ml.push({menuID:'split'})
             ml.push({menuID:'bxxe', displayName: '报销限额设置', menuIcon:'contacts', type:'item', path:'/bxxe', par:{}})
         }
 
@@ -204,6 +208,9 @@ class ExpenseManagerIndex extends Component {
                     >
                     {
                         this.state.menuList.map(mi=>{
+                            if(mi.menuID==='split'){
+                                return <Menu.Divider />
+                            }
                             return  <Menu.Item key={mi.menuID} ><span><Icon type={mi.menuIcon} /><span>{mi.displayName}</span></span></Menu.Item>;
                         })
                      

@@ -88,9 +88,33 @@ namespace XYHChargePlugin.Managers
                         int seq = await _Store.GetChargeNo(request.BranchId, prefix, DateTime.Now, request.Type);
                         request.Seq = seq;
 
-                        request.ChargeNo = String.Format("JK{0}{1}{2:D5}", prefix, DateTime.Now.ToString("yyyyMMdd"), seq);
+                        string bt = "JK";
+                        if(request.Type == 3)
+                        {
+                            bt = "HK";
+                        }
+                        request.ChargeNo = String.Format("{0}{1}{2}{3:D5}", bt, prefix, DateTime.Now.ToString("yyyyMMdd"), seq);
                     }
                     var ci = _mapper.Map<ChargeInfo>(request);
+
+                    //预借款冲减
+                    if (request.Status == (int)ChargeStatus.Submit)
+                    {
+                        if (!String.IsNullOrEmpty(request.ChargeId) && request.Type == 3)
+                        {
+                            var li = await _Store.UpdateReimbursedAmount(_mapper.Map<SimpleUser>(user), ci);
+                            decimal total = li.TotalAmount - li.UnSubmitAmount + (ci.ReimbursedAmount ?? 0);
+                            if (li.LimitAmount < total)
+                            {
+                                r.Code = "410";
+                                r.Message = $"预借款冲减超额：预借款总金额 {li.LimitAmount}元，已报销：{total}元，超出：{total - li.LimitAmount}元";
+
+                                t.Rollback();
+                                return r;
+                            }
+                        }
+                    }
+
                     await _Store.Save(_mapper.Map<SimpleUser>(user), ci);
 
                     r.Extension = _mapper.Map<ChargeInfoResponse>(ci);
@@ -236,6 +260,20 @@ namespace XYHChargePlugin.Managers
                 return r;
             }
 
+            //预借款冲减
+           
+            if (!String.IsNullOrEmpty(cit.ChargeId) && cit.Type == 3)
+            {
+                var li = await _Store.UpdateReimbursedAmount(_mapper.Map<SimpleUser>(user), cit);
+                decimal total = li.TotalAmount - li.UnSubmitAmount + (cit.ReimbursedAmount ?? 0);
+                if (li.LimitAmount < total)
+                {
+                    r.Code = "410";
+                    r.Message = $"预借款冲减超额：预借款总金额 {li.LimitAmount}元，已报销：{total}元，超出：{total - li.LimitAmount}元";
+
+                    return r;
+                }
+            }
             
 
             await _Store.UpdateStatus(_mapper.Map<SimpleUser>(user), id, (int)ChargeStatus.Submit, null, ModifyTypeEnum.Submit, ModifyTypeConstans.Submit);
@@ -321,6 +359,33 @@ namespace XYHChargePlugin.Managers
             return r;
 
         }
+
+
+        public async Task<ResponseMessage> RecordingConfirm(UserInfo user, ConfirmRequest request)
+        {
+
+            ResponseMessage r = new ResponseMessage();
+            var ci = await _Store.Get(request.Id);
+            if (ci == null)
+            {
+                r.Code = "404";
+                r.Message = "还款单不存在";
+                return r;
+            }
+
+            await checkPermission(r, user.Id, PERMISSION_YJKFK, ci.ReimburseDepartment);
+            if (!r.IsSuccess())
+            {
+                return r;
+            }
+           
+            
+            await _Store.UpdateRecordingStatus(_mapper.Map<SimpleUser>(user), request.Id, request.Status, "", ModifyTypeEnum.RecordingConfirm, ModifyTypeConstans.RecordingConfirm);
+          
+            return r;
+
+        }
+
 
         public async Task<ChargeInfoResponse> GetDetail(UserInfo user, string id)
         {

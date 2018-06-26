@@ -81,6 +81,7 @@ namespace XYHChargePlugin.Stores
                             SubmitUser = c.SubmitUser,
                             ChargeId = c.ChargeId,
                             ReimbursedAmount = c.ReimbursedAmount,
+                            RecordingStatus = c.RecordingStatus,
                             CreateUserInfo = new SimpleUser()
                             {
                                 Id = cu.Id,

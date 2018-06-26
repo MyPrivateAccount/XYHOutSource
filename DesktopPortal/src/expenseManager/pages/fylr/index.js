@@ -174,7 +174,7 @@ class FylrIndex extends Component{
             reimburseUserName: this.props.user.nickname
         }
       
-        this.props.history.push(`${this.props.match.url}/chargeInfo`, {entity: newFee, op: 'add'})
+        this.props.history.push(`${this.props.match.url}/chargeInfo`, {entity: newFee, op: 'add', pagePar: this.state.pagePar})
     }
 
     deleteCharge = (record)=>{
