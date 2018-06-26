@@ -53,46 +53,94 @@ namespace XYHHumanPlugin.Models
         [MaxLength(127)]
         public string ID { get; set; }
         [MaxLength(127)]
+        /// <summary>
+        /// 工号
+        /// </summary>
         public string UserID { get; set; }
+        /// <summary>
+        /// 考勤月份
+        /// </summary>
         public DateTime? Date { get; set; }
         [MaxLength(32)]
         public string Name { get; set; }
+        /// <summary>
+        /// 备注
+        /// </summary>
         [MaxLength(255)]
         public string Comments { get; set; }
+        /// <summary>
+        /// 正常出勤天数
+        /// </summary>
         public int Normal { get; set; }
+        /// <summary>
+        /// json详细信息
+        /// </summary>
         [MaxLength(400)]
         public string NormalDate { get; set; }
+        /// <summary>
+        /// 调休
+        /// </summary>
         public int Relaxation { get; set; }
         [MaxLength(400)]
         public string RelaxationDate { get; set; }
+        /// <summary>
+        /// 事假
+        /// </summary>
         public int Matter { get; set; }
         [MaxLength(400)]
         public string MatterDate { get; set; }
+        /// <summary>
+        /// 病假
+        /// </summary>
         public int Illness { get; set; }
         [MaxLength(400)]
         public string IllnessDate { get; set; }
+        /// <summary>
+        /// 年假
+        /// </summary>
         public int Annual { get; set; }
         [MaxLength(400)]
         public string AnnualDate { get; set; }
+        /// <summary>
+        /// 婚假
+        /// </summary>
         public int Marry { get; set; }
         [MaxLength(400)]
         public string MarryDate { get; set; }
+        /// <summary>
+        /// 丧假
+        /// </summary>
         public int Funeral { get; set; }
         [MaxLength(400)]
         public string FuneralDate { get; set; }
+        /// <summary>
+        /// 迟到
+        /// </summary>
         public int Late { get; set; }
         [MaxLength(400)]
         public string LateDate { get; set; }
+        /// <summary>
+        /// 旷工
+        /// </summary>
         public int Absent { get; set; }
         [MaxLength(400)]
         public string AbsentDate { get; set; }
     }
 
+    /// <summary>
+    /// 考勤规则设置
+    /// </summary>
     public class AttendanceSettingInfo
     {
         [Key]
         public int Type { get; set; }
+        /// <summary>
+        /// 次数
+        /// </summary>
         public int Times { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
         public int Money { get; set; }
     }
 

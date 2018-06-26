@@ -69,9 +69,32 @@ namespace XYHChargePlugin.Dto
 
         public String DeleteUser { get; set; }
 
+        public string SubmitUser { get; set; }
+
+        public DateTime? SubmitTime { get; set; }
+
+        public string ConfirmMessage { get; set; }
+
+        public string ConfirmBillMessage { get; set; }
+
+        public string ChargeId { get; set; }
+
+        public DateTime? ExpectedPaymentDate { get; set; }
+
+        public decimal? ReimbursedAmount { get; set; }
+
+        public bool? IsReimbursed { get; set; }
+
+        public DateTime? LastReimbursedTime { get; set; }
+
+        public int RecordingStatus { get; set; }
+
         public List<CostInfoResponse> FeeList { get; set; }
 
         public List<ReceiptInfoResponse> BillList { get; set; }
+
+
+        public List<ModifyInfoResponse> History { get; set; }
 
         public UserInfo CreateUserInfo { get; set; }
 
@@ -80,5 +103,7 @@ namespace XYHChargePlugin.Dto
         public string ReimburseDepartmentName { get; set; }
 
         public UserInfo ReimburseUserInfo { get; set; }
+
+        public List<ChargeInfoResponse> ChargeList { get; set; }
     }
 }

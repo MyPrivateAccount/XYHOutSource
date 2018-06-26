@@ -16,6 +16,12 @@ namespace XYHChargePlugin.Dto
         public decimal Amount { get; set; }
 
         public string Memo { get; set; }
+
+       
+        public ChargeInfoResponse ChargeInfo { get; set; }
+
+        
+        public string TypeName { get; set; }
     }
 
     //public class CostInfoResponseEx

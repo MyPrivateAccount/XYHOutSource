@@ -47,7 +47,9 @@ namespace XYHHumanPlugin
 
             CreateMap<ModifyInfoResponse, ModifyInfo>();
             CreateMap<ModifyInfo, ModifyInfoResponse>();
-            
+
+            CreateMap<AttendanceSettingInfoResponse, AttendanceSettingInfo>();
+            CreateMap<AttendanceSettingInfo, AttendanceSettingInfoResponse>();
         }
     }
 }

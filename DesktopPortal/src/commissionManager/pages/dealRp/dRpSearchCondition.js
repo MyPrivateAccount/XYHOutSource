@@ -21,7 +21,7 @@ class DRpSearchCondition extends Component {
 
     handleSearch = (e) => {
         this.props.searchCondition.pageSize = 10
-        this.props.searchCondition.pageIndex = 1
+        this.props.searchCondition.pageIndex = 0
         this.props.handleSearch(this.props.searchCondition)
     }
     handleReset = (e) => {
@@ -184,7 +184,7 @@ class DRpSearchCondition extends Component {
                                 <span style={{ marginRight: '10px' }}>报告类型</span>
                                 <Select style={{ width: 80 }} onChange={(e) => this.handleSelect(e, 'type')}>
                                     {
-                                        cjbgTypes.map(tp => <Select.Option key={tp.key} value={tp.key}>{tp.key}</Select.Option>)
+                                        cjbgTypes.map(tp => <Select.Option key={tp.key} value={tp.value}>{tp.key}</Select.Option>)
                                     }
                                 </Select>
                             </label>
@@ -194,7 +194,7 @@ class DRpSearchCondition extends Component {
                                 <span style={{ marginRight: '10px' }}>交易类型</span>
                                 <Select style={{ width: 80 }} onChange={(e) => this.handleSelect(e, 'jylx')}>
                                     {
-                                        tradeTypes.map(tp => <Select.Option key={tp.key} value={tp.key}>{tp.key}</Select.Option>)
+                                        tradeTypes.map(tp => <Select.Option key={tp.key} value={tp.value}>{tp.key}</Select.Option>)
                                     }
                                 </Select>
                             </label>
@@ -204,7 +204,7 @@ class DRpSearchCondition extends Component {
                                 <span style={{ marginRight: '10px' }}>成交状态</span>
                                 <Select style={{ width: 80 }} onChange={(e) => this.handleSelect(e, 'cjzt')}>
                                     {
-                                        cjTypes.map(tp => <Select.Option key={tp.key} value={tp.key}>{tp.key}</Select.Option>)
+                                        cjTypes.map(tp => <Select.Option key={tp.key} value={tp.value}>{tp.key}</Select.Option>)
                                     }
                                 </Select>
                             </label>
@@ -214,7 +214,7 @@ class DRpSearchCondition extends Component {
                                 <span style={{ marginRight: '10px' }}>报数物业分类</span>
                                 <Select style={{ width: 80 }} onChange={(e) => this.handleSelect(e, 'bswlfl')}>
                                     {
-                                        bswyTypes.map(tp => <Select.Option key={tp.key} value={tp.key}>{tp.key}</Select.Option>)
+                                        bswyTypes.map(tp => <Select.Option key={tp.key} value={tp.value}>{tp.key}</Select.Option>)
                                     }
                                 </Select>
                             </label>
@@ -226,7 +226,7 @@ class DRpSearchCondition extends Component {
                                 <span style={{ marginRight: '10px' }}>付款方式</span>
                                 <Select style={{ width: 80 }} onChange={(e) => this.handleSelect(e, 'fkfs')}>
                                     {
-                                        payTypes.map(tp => <Select.Option key={tp.key} value={tp.key}>{tp.key}</Select.Option>)
+                                        payTypes.map(tp => <Select.Option key={tp.key} value={tp.value}>{tp.key}</Select.Option>)
                                     }
                                 </Select>
                             </label>
@@ -242,7 +242,7 @@ class DRpSearchCondition extends Component {
                                 <span style={{ marginRight: '10px' }}>过户状态</span>
                                 <Select style={{ width: 80 }} onChange={(e) => this.handleSelect(e, 'ghzt')}>
                                     {
-                                        ghTypes.map(tp => <Select.Option key={tp.key} value={tp.key}>{tp.key}</Select.Option>)
+                                        ghTypes.map(tp => <Select.Option key={tp.key} value={tp.value}>{tp.key}</Select.Option>)
                                     }
                                 </Select>
                             </label>
@@ -252,7 +252,7 @@ class DRpSearchCondition extends Component {
                                 <span style={{ marginRight: '10px' }}>客户信息来源</span>
                                 <Select style={{ width: 80 }} onChange={(e) => this.handleSelect(e, 'kgxxly')}>
                                     {
-                                        khTypes.map(tp => <Select.Option key={tp.key} value={tp.key}>{tp.key}</Select.Option>)
+                                        khTypes.map(tp => <Select.Option key={tp.key} value={tp.value}>{tp.key}</Select.Option>)
                                     }
                                 </Select>
                             </label>
@@ -282,7 +282,7 @@ class DRpSearchCondition extends Component {
                                 <span style={{ marginRight: '10px' }}>物业类型</span>
                                 <Select style={{ width: 80 }} onChange={(e) => this.handleSelect(e, 'wylx')}>
                                     {
-                                        wyWylxTypes.map(tp => <Select.Option key={tp.key} value={tp.key}>{tp.key}</Select.Option>)
+                                        wyWylxTypes.map(tp => <Select.Option key={tp.key} value={tp.value}>{tp.key}</Select.Option>)
                                     }
                                 </Select>
                             </label>
@@ -306,7 +306,7 @@ class DRpSearchCondition extends Component {
                                 <span style={{ marginRight: '10px' }}>审批状态</span>
                                 <Select style={{ width: 80 }} onChange={(e) => this.handleSelect(e, 'examineStatus')}>
                                     {
-                                        spTypes.map(tp => <Select.Option key={tp.key} value={tp.key}>{tp.key}</Select.Option>)
+                                        spTypes.map(tp => <Select.Option key={tp.key} value={tp.value}>{tp.key}</Select.Option>)
                                     }
                                 </Select>
                             </label>

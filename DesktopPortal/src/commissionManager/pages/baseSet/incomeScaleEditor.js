@@ -24,7 +24,7 @@ class InComeScaleEditor extends Component{
         } else if (operType === 'add') {
             this.clear()
             this.setState({visible: true,isEdit:false, dialogTitle: '添加'});
-            this.setState({paramInfo:{name:newProps.param.name,jobType:newProps.param.jobType}})
+            this.setState({paramInfo:{name:newProps.param.name,jobType:newProps.param.jobType,branchId:newProps.param.branchId,code:newProps.param.code}})
         } else {
             this.props.form.resetFields();
             this.setState({visible: false});
@@ -44,6 +44,8 @@ class InComeScaleEditor extends Component{
             if (!err) {
                 console.log('Received values of form: ', values);
                 //调用保存接口，进行数据保存,待续
+                values.branchId = this.state.paramInfo.branchId;
+                values.code = this.state.paramInfo.code;
                 this.props.dispatch(incomeScaleSave(values));
             }
         });
@@ -100,7 +102,7 @@ class InComeScaleEditor extends Component{
                                 initialValue: this.state.paramInfo.startYj,
                                 rules: [{required: true, message: '请填写起始业绩!' }]
                             })(
-                                <Input style={{float: 'left',width:300}}/>
+                                <Input type="number" step="0.01" style={{float: 'left',width:300}}/>
                                 )}
                         </FormItem></Col>
                 </Row>
@@ -113,7 +115,7 @@ class InComeScaleEditor extends Component{
                                 initialValue: this.state.paramInfo.endYj,
                                 rules: [{required: true, message: '请填写结束业绩!' }]
                             })(
-                                <Input style={{float: 'left',width:300}}/>
+                                <Input type="number" step="0.01" style={{float: 'left',width:300}}/>
                                 )}
                         </FormItem>
                     </Col>
@@ -127,7 +129,7 @@ class InComeScaleEditor extends Component{
                                 initialValue: this.state.paramInfo.percent,
                                 rules: [{required: true, message: '请填写提成比例!' }]
                             })(
-                                <Input style={{float: 'left',width:300}}/>
+                                <Input type="number" step="0.01" style={{float: 'left',width:300}}/>
                                 )}
                         </FormItem>
                     </Col>

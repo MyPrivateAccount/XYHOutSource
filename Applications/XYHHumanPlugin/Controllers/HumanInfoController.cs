@@ -20,6 +20,7 @@ using Microsoft.Extensions.DependencyInjection;
 using SocialInsuranceRequest = XYHHumanPlugin.Dto.Response.SocialInsuranceResponse;
 using LeaveInfoRequest = XYHHumanPlugin.Dto.Response.LeaveInfoResponse;
 using ChangeInfoRequest = XYHHumanPlugin.Dto.Response.ChangeInfoResponse;
+using ApplicationCore.Managers;
 
 namespace XYHHumanPlugin.Controllers
 {
@@ -192,7 +193,7 @@ namespace XYHHumanPlugin.Controllers
                 exarequest.ContentName = $"beconmehuman {condition.IDCard}";
                 exarequest.SubmitDefineId = modifyid;
                 exarequest.Source = "";
-                exarequest.CallbackUrl = ApplicationContext.Current.UpdateExamineCallbackUrl;
+                //exarequest.CallbackUrl = ApplicationContext.Current.UpdateExamineCallbackUrl;
                 exarequest.Action = "TEST"/*exarequest.ContentType*/;
                 exarequest.TaskName = $"{User.UserName}提交转正请求{exarequest.ContentName}的动态{exarequest.ContentType}"; ;
                 GatewayInterface.Dto.UserInfo userinfo = new GatewayInterface.Dto.UserInfo()
@@ -247,7 +248,7 @@ namespace XYHHumanPlugin.Controllers
                 exarequest.ContentName = $"leavehuman {condition.IDCard}";
                 exarequest.SubmitDefineId = modifyid;
                 exarequest.Source = "";
-                exarequest.CallbackUrl = ApplicationContext.Current.UpdateExamineCallbackUrl;
+                //exarequest.CallbackUrl = ApplicationContext.Current.UpdateExamineCallbackUrl;
                 exarequest.Action = "TEST"/*exarequest.ContentType*/;
                 exarequest.TaskName = $"{User.UserName}提交离职请求{exarequest.ContentName}的动态{exarequest.ContentType}"; ;
                 GatewayInterface.Dto.UserInfo userinfo = new GatewayInterface.Dto.UserInfo()
@@ -302,7 +303,7 @@ namespace XYHHumanPlugin.Controllers
                 exarequest.ContentName = $"changehuman {condition.IDCard}";
                 exarequest.SubmitDefineId = modifyid;
                 exarequest.Source = "";
-                exarequest.CallbackUrl = ApplicationContext.Current.UpdateExamineCallbackUrl;
+                //exarequest.CallbackUrl = ApplicationContext.Current.UpdateExamineCallbackUrl;
                 exarequest.Action = "TEST"/*exarequest.ContentType*/;
                 exarequest.TaskName = $"{User.UserName}提交离职请求{exarequest.ContentName}的动态{exarequest.ContentType}"; ;
                 GatewayInterface.Dto.UserInfo userinfo = new GatewayInterface.Dto.UserInfo()
@@ -355,7 +356,7 @@ namespace XYHHumanPlugin.Controllers
                 exarequest.ContentName = $"addhuman {condition.humaninfo.Name}";
                 exarequest.SubmitDefineId = modifyid;
                 exarequest.Source = "";
-                exarequest.CallbackUrl = ApplicationContext.Current.UpdateExamineCallbackUrl;
+                //exarequest.CallbackUrl = ApplicationContext.Current.UpdateExamineCallbackUrl;
                 exarequest.Action = "TEST"/*exarequest.ContentType*/;
                 exarequest.TaskName = $"{User.UserName}提交入职请求{exarequest.ContentName}的动态{exarequest.ContentType}"; ;
                 GatewayInterface.Dto.UserInfo userinfo = new GatewayInterface.Dto.UserInfo()
@@ -477,12 +478,16 @@ namespace XYHHumanPlugin.Controllers
 
         [HttpGet("simpleSearch")]
         [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
+<<<<<<< .mine
         public async Task<PagingResponseMessage<HumanInfoResponse1>> SimpleSearch(UserInfo User, string permissionId, string keyword, int pageSize, int pageIndex)
+=======
+        public async Task<PagingResponseMessage<HumanInfoResponse>> SimpleSearch(UserInfo User, string permissionId, string keyword, string branchId, int pageSize, int pageIndex)
+>>>>>>> .theirs
         {
             var r = new PagingResponseMessage<HumanInfoResponse1>();
             try
             {
-                r = await _humanManage.SimpleSearch(User, permissionId, keyword, pageSize, pageIndex);
+                r = await _humanManage.SimpleSearch(User, permissionId, keyword,branchId, pageSize, pageIndex);
             }
             catch (Exception e)
             {
@@ -558,7 +563,15 @@ namespace XYHHumanPlugin.Controllers
                                     NameValueCollection nameValueCollection = new NameValueCollection();
                                     //nameValueCollection.Add("appToken", "app:nwf");
 
-                                    string response2 = await _restClient.Post("http://localhost:5000/api/user/", user, "POST", nameValueCollection);
+                                    //string response2 = await _restClient.Post("http://localhost:5000/api/user/", user, "POST", nameValueCollection);
+
+                                    string tokenUrl = $"{ApplicationContext.Current.AuthUrl}/connect/token";
+                                    string userurl = $"{ApplicationContext.Current.AuthUrl}/api/user/";
+                                    var tokenManager = new TokenManager(tokenUrl, ApplicationContext.Current.ClientID, ApplicationContext.Current.ClientSecret);
+                                    var response2 = await tokenManager.Execute(async (token) =>
+                                    {
+                                        return await _restClient.PostWithToken<ResponseMessage>(userurl, user, token);
+                                    });
                                 }
                                 break;
                             default: break;

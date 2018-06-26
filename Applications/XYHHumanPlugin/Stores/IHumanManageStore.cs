@@ -21,6 +21,8 @@ namespace XYHHumanPlugin.Stores
         Task SetStationAsync(PositionInfo fileinfo, CancellationToken cancellationToken = default(CancellationToken));
         Task SetSalaryAsync(SalaryInfo salaryinfo, CancellationToken cle = default(CancellationToken));
         Task SetBlackAsync(BlackInfo salaryinfo, string id = null, CancellationToken cle = default(CancellationToken));
+        Task SetAttendanceSettingAsync(AttendanceSettingInfo atteninfo, CancellationToken cle = default(CancellationToken));
+        Task AddAttendanceAsync(List<AttendanceInfo> atteninfo, CancellationToken cle = default(CancellationToken));
 
 
         Task CreateMonthAsync(SimpleUser userinfo, MonthInfo monthinf, CancellationToken cancellationToken = default(CancellationToken));
@@ -34,6 +36,7 @@ namespace XYHHumanPlugin.Stores
         Task DeleteStationAsync(PositionInfo monthinfo, CancellationToken cancellationToken = default(CancellationToken));
         Task DeleteSalaryAsync(SalaryInfo monthinfo, CancellationToken cancellationToken = default(CancellationToken));
         Task DeleteBlackAsync(BlackInfo monthinfo, CancellationToken cancellationToken = default(CancellationToken));
+        Task DeleteAttendenceAsync(AttendanceInfo monthinfo, CancellationToken cancellationToken = default(CancellationToken));
 
         Task DeleteListAsync(List<HumanInfo> buildingBaseList, CancellationToken cancellationToken = default(CancellationToken));
         Task DeleteListAsync(List<MonthInfo> monthList, CancellationToken cancellationToken = default(CancellationToken));
@@ -67,6 +70,7 @@ namespace XYHHumanPlugin.Stores
         Task<List<TResult>> GetListMonthAsync<TResult>(Func<IQueryable<MonthInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken));
         Task<List<TResult>> GetListSalaryFormAsync<TResult>(Func<IQueryable<SalaryFormInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken));
         Task<List<TResult>> GetListAttendanceFormAsync<TResult>(Func<IQueryable<AttendanceFormInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken));
+        Task<List<AttendanceSettingInfo>> GetListAttendanceSettingAsync(CancellationToken cancellationToken = default(CancellationToken));
 
         Task UpdateAsync(HumanInfo buildingBase, CancellationToken cancellationToken = default(CancellationToken));
 

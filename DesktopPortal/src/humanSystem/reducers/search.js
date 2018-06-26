@@ -4,6 +4,7 @@ import moment from 'moment';
 
 const initState = {
     attendanceList: {extension: [{key: "1", time: "tt", name: "tt", idcard: "tta", signed: "today"}], pageIndex: 0, pageSize: 10, totalCount: 1},
+    attendanceSettingList: [],
     achievementList: {extension: [], pageIndex: 0, pageSize: 10, totalCount: 1},
     stationList: [],//选中的部门职位
     orgstationList: [],//选中的部门职位
@@ -101,6 +102,17 @@ reducerMap[actionTypes.UPDATE_STATIONLIST] = function (state, action) {
     return Object.assign({}, state, {stationList: f, showLoading: false});
 }
 
+reducerMap[actionTypes.UPDATE_ATTENDANCELST] = function (state, action) {
+    let f = action.payload.map(function(v, i) {
+        return {key: i+"", ...v};
+    });
+    return Object.assign({}, state, {attendanceList: f, showLoading: false});
+}
+
+reducerMap[actionTypes.SET_SEARCHINDEX] = function (state, action) {
+    return Object.assign({}, state, {pageIndex: action.payload});
+}
+
 reducerMap[actionTypes.UPDATE_ORGSTATIONLIST] = function (state, action) {
     let f = action.payload.map(function(v, i) {
         return {key: i+"", stationname: v.positionName, isnew: false, positionType:v.positionType, id: v.id};
@@ -148,7 +160,9 @@ reducerMap[actionTypes.UPDATE_SALARYINFO] = function(state, action) {
 reducerMap[actionTypes.SET_SEARCH_LOADING] = function(state, action) {
     return Object.assign({}, state, {showLoading: action.payload} );
 }
-
+reducerMap[actionTypes.UPDATE_ATTENDANCESETTINGLST] = function(state, action) {
+    return Object.assign({}, state, {attendanceSettingList: action.payload} );
+}
 
 
 export default handleActions(reducerMap, initState);

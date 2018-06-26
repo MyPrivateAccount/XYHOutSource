@@ -67,8 +67,38 @@ export function* saveOrgParamDataAsync(state){
         });
     }
 }
+//获取列表数据
+export function* delOrgParamAsyncs(state){
+    let result = { isOk: false, msg: '删除组织参数设置成功!' };
+    let url = WebApiConfig.baseset.orgsave+state.payload.branchId+'/'+state.payload.parCode;
+    try {
+        console.log(url)
+        console.log('delOrgParamAsyncs:', state);
+        let res = yield call(ApiClient.del, url,state.payload);
+       
+        //console.log(res, '获取参数列表');
+        getApiResult(res, result);
+        if (result.isOk) {
+            yield put({ type: actionUtils.getActionType(actionTypes.ORG_PARAM_DEL_UPDATE), payload: result });
+            // yield put({ type: actionUtils.getActionType(actionTypes.SET_SEARCH_LOADING), payload: false });
+        }
+    } catch (e) {
+        result.msg = "删除组织参数设置接口调用异常！";
+    }
+    if (!result.isOk) {
+        console.log(result.msg)
+        notification.error({
+            message: '提示',
+            description: '删除组织参数设置信息失败!',
+            duration: 3
+        });
+    }
+    //等待数据接口
+    //yield put({ type: actionUtils.getActionType(actionTypes.ORG_PARAMLIST_UPDATE), payload: result });
+}
 
 export default function* watchAllOrgParamAsync(){
     yield takeLatest(actionUtils.getActionType(actionTypes.ORG_PARAMLIST_GET), getOrgParamDataListByOrgIdAsyncs);
     yield takeLatest(actionUtils.getActionType(actionTypes.ORG_PARAM_SAVE), saveOrgParamDataAsync);
+    yield takeLatest(actionUtils.getActionType(actionTypes.ORG_PARAM_DEL), delOrgParamAsyncs);
 }

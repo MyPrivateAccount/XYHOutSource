@@ -130,6 +130,17 @@ namespace XYHHumanPlugin.Dto.Response
         /// </summary>
         public string Picture { get; set; }
 
+<<<<<<< .mine
+
+
+
+
+=======
+        public string OrganizationFullName { get; set; }
+
+        public PositionInfoResponse PositionInfo { get; set; }
+    }
+>>>>>>> .theirs
 
         /// <summary>
         /// 状态

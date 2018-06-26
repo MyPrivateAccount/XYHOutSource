@@ -284,4 +284,15 @@ namespace XYHHumanPlugin.Models
     }
 
 
+<<<<<<< .mine
+
+
+
+
+=======
+        [NotMapped]
+        public PositionInfo PositionInfo { get; set; }
+
+    }
+>>>>>>> .theirs
 }
