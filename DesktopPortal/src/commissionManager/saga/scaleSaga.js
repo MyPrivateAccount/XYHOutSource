@@ -14,7 +14,7 @@ export function* getScaleDataListAsyncs(state){
     //等待数据接口
     let result = { isOk: false, msg: '获取提成比例列表成功!' };
     console.log(state)
-    let url = WebApiConfig.baseset.incomesave+'/'+state.payload.branchId+'/'+state.payload.code;
+    let url = WebApiConfig.baseset.incomesave+state.payload.branchId+'/'+state.payload.code;
     try {
         console.log(url)
         console.log('getScaleDataListAsyncs:', state);
@@ -43,7 +43,7 @@ export function* saveScaleDataAsync(state){
     //等待数据接口
     let result = { isOk: false, msg: '保存提成比例设置成功!' };
     console.log(state)
-    let url = WebApiConfig.baseset.incomesave+state.payload.branchId+'/'+state.payload.code;
+    let url = WebApiConfig.baseset.incomesave;
     try {
         console.log(url)
         console.log('saveScaleDataAsync:', state);
@@ -69,8 +69,32 @@ export function* saveScaleDataAsync(state){
 }
 //删除数据
 export function* delScaleDataAsync(state){
-    let result = { isOk: false, msg: '删除提成比例数据失败!' };
     //等待数据接口
+    let result = { isOk: false, msg: '删除提成比例设置成功!' };
+    console.log(state)
+    let url = WebApiConfig.baseset.incomesave+state.payload.id;
+    try {
+        console.log(url)
+        console.log('delScaleDataAsync:', state);
+        let res = yield call(ApiClient.del, url, state.payload);
+       
+        //console.log(res, '获取参数列表');
+        getApiResult(res, result);
+        if (result.isOk) {
+            yield put({ type: actionUtils.getActionType(actionTypes.INCOME_SCALE_DEL_UPDATE), payload: result });
+            // yield put({ type: actionUtils.getActionType(actionTypes.SET_SEARCH_LOADING), payload: false });
+        }
+    } catch (e) {
+        result.msg = "删除提成比例设置接口调用异常！";
+    }
+    if (!result.isOk) {
+        console.log(result.msg)
+        notification.error({
+            message: '提示',
+            description: '删除提成比例设置失败!',
+            duration: 3
+        });
+    }
 }
 
 export default function* watchAllScaleAsync(){

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -168,6 +169,80 @@ namespace ApplicationCore
                 //Logger.Error("请求异常：\r\n{0}", e.ToString());
                 throw;
             }
+        }
+
+
+        public async Task<TResult> PostWithToken<TResult>(string url, object body, string token, string userId = null, string method = "Post")
+        {
+            //Stopwatch sw = new Stopwatch();
+            //sw.Start();
+
+            string apiUrl = $"{url}";
+            HttpMethod hm = new HttpMethod(method);
+
+            var request = new HttpRequestMessage(hm, apiUrl);
+            if (!String.IsNullOrEmpty(token))
+            {
+                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+            }
+            if (!String.IsNullOrEmpty(userId))
+            {
+                request.Headers.Add("User", userId);
+            }
+
+            string json = "";
+            if (body != null)
+            {
+                json = Newtonsoft.Json.JsonConvert.SerializeObject(body);
+            }
+            request.Content = new StringContent(json);
+            request.Content.Headers.ContentType = new MediaTypeWithQualityHeaderValue("application/json");
+
+            var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseContentRead);
+            if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized ||
+                response.StatusCode == System.Net.HttpStatusCode.Forbidden)
+            {
+                throw new UnauthorizedAccessException("验证失败");
+            }
+            try
+            {
+                response.EnsureSuccessStatusCode();
+                string str = await response.Content.ReadAsStringAsync();
+
+                //sw.Stop();
+                //if (sw.ElapsedMilliseconds >= 1000)
+                //{
+                //slowLogger.Warn("请求时间超过一秒：POST {0} {1}", apiUrl, sw.ElapsedMilliseconds);
+                //}
+
+                return Newtonsoft.Json.JsonConvert.DeserializeObject<TResult>(str);
+            }
+            catch (Exception e)
+            {
+                //logger.Error("Post 失败：{0}\r\n{1}", url, e.ToString());
+                string str = await response.Content.ReadAsStringAsync();
+                //logger.Error(str);
+                throw;
+            }
+        }
+
+
+
+        public async Task<TResult> SubmitForm<TResult>(string url, Dictionary<string, string> formData, string method = "Post")
+        {
+            HttpMethod hm = new HttpMethod(method);
+            var request = new HttpRequestMessage(hm, url);
+            request.Content = new FormUrlEncodedContent(formData);
+            var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseContentRead);
+            if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized ||
+                response.StatusCode == System.Net.HttpStatusCode.Forbidden)
+            {
+                throw new UnauthorizedAccessException("验证失败");
+            }
+            response.EnsureSuccessStatusCode();
+            string str = await response.Content.ReadAsStringAsync();
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<TResult>(str);
         }
 
 

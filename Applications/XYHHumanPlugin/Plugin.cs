@@ -48,7 +48,9 @@ namespace XYHHumanPlugin
             context.Services.AddScoped<StationManager>();
             context.Services.AddScoped<SalaryManager>();
             context.Services.AddScoped<BlackManager>();
+            context.Services.AddScoped<AttendanceManager>();
             context.Services.AddScoped<PermissionExpansionManager>();
+            context.Services.AddScoped<RewardPunishmentManager>();
 
 
             return base.Init(context);

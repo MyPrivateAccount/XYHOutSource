@@ -18,6 +18,7 @@ namespace XYHHumanPlugin.Models
         public DbSet<HumanContractInfo> HumanContractInfos { get; set; }
         public DbSet<BlackInfo> BlackInfos { get; set; }
         public DbSet<AttendanceInfo> AttendanceInfos { get; set; }
+        public DbSet<AttendanceSettingInfo> AttendanceSettingInfos { get; set; }
         public DbSet<PositionInfo> PositionInfos { get; set; }
         public DbSet<SalaryInfo> SalaryInfos { get; set; }
         public DbSet<MonthInfo> MonthInfos { get; set; }
@@ -29,6 +30,7 @@ namespace XYHHumanPlugin.Models
         public DbSet<Users> Users { get; set; }
         public DbSet<LeaveInfo> LeaveInfos { get; set; }
         public DbSet<ChangeInfo> ChangeInfos { get; set; }
+        public DbSet<RewardPunishment> RewardPunishments { get; set; }
 
         public DbSet<SocialInsurance> SocialInsurances { get; set; }
         public DbSet<Organizations> Organizations { get; set; }
@@ -58,6 +60,11 @@ namespace XYHHumanPlugin.Models
             {
                 b.HasKey(k => new { k.ID });
                 b.ToTable("XYH_HU_ATTENDANCE");
+            });
+            modelBuilder.Entity<AttendanceSettingInfo>(b =>
+            {
+                b.HasKey(k => new { k.Type });
+                b.ToTable("XYH_HU_ATTENDANCESETTING");
             });
             modelBuilder.Entity<PositionInfo>(b =>
             {
@@ -117,6 +124,12 @@ namespace XYHHumanPlugin.Models
             {
                 b.HasKey(k => new { k.IDCard });
                 b.ToTable("XYH_HU_CHANGE");
+            });
+
+            modelBuilder.Entity<RewardPunishment>(b =>
+            {
+                b.HasKey(k => new { k.ID });
+                b.ToTable("XYH_HU_REWARDPUNISHMENT");
             });
 
             modelBuilder.Entity<Users>(b =>

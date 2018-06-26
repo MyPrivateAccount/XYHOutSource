@@ -21,7 +21,7 @@ class PeopleSet extends Component {
         {
             title: '操作', dataIndex: 'edit', key: 'edit', render: (text, recored) => (
                 <span>
-                    <Popconfirm title="是否删除该分摊项?" onConfirm={this.zfconfirm} onCancel={this.zfcancel} okText="确认" cancelText="取消">
+                    <Popconfirm title="是否删除该分摊项?" onConfirm={(e)=>this.zfconfirm(recored)} onCancel={this.zfcancel} okText="确认" cancelText="取消">
                         <Button type='primary' shape='circle' size='small' icon='delete' />
                     </Popconfirm>
                 </span>
@@ -42,7 +42,7 @@ class PeopleSet extends Component {
     }
     handleNew = (info) => {
         console.log(info);
-        this.props.dispatch(orgFtParamAdd());
+        this.props.dispatch(orgFtParamAdd(this.state.branchId));
     }
     handleSearch = (e) => {
         console.log(e)
@@ -61,7 +61,7 @@ class PeopleSet extends Component {
     };
     componentDidMount = () => {
         this.setState({isDataLoading:true})
-        this.props.dispatch(orgGetPermissionTree("UserInfoCreate"));
+        this.props.dispatch(orgGetPermissionTree("BaseSet"));
     }
     componentWillReceiveProps = (newProps) => {
         this.setState({ isDataLoading: false });
@@ -74,16 +74,28 @@ class PeopleSet extends Component {
         this.setState({ pagination: paginationInfo });
         if (newProps.operInfo.operType === 'org_update') {
             console.log('org_update')
-            this.setState({isDataLoading: true ,branchId:newProps.permissionOrgTree.AddUserTree[0].key})
-            this.handleSearch(newProps.permissionOrgTree.AddUserTree[0].key)
+            this.setState({isDataLoading: true ,branchId:newProps.permissionOrgTree.BaseSetOrgTree[0].key})
+            this.handleSearch(newProps.permissionOrgTree.BaseSetOrgTree[0].key)
             newProps.operInfo.operType = ''
         }
+        if(newProps.ppftOp.operType === 'ORG_FT_PARAM_DELETE_UPDATE'){
+            this.handleSearch(this.state.branchId)
+            newProps.ppftOp.operType = ''
+        }
+        if(newProps.ppftOp.operType === 'FT_PARAM_SAVE_SUCCESS'){
+            this.handleSearch(this.state.branchId)
+            newProps.ppftOp.operType = ''
+        }
+
     }
     getListData=()=>{
         if(this.props.ppFtSearchResult.extension == null){
             return null
         }
         let data = this.props.ppFtSearchResult.extension;
+        if(this.props.ppftOp.operType!=='ORG_FT_PARAMLIST_UPDATE'){
+            return data
+        }
             for(let i=0;i<data.length;i++){
                 data[i].ftbl = data[i].ftbl*100+'%'
                 data[i].name = this.getOrgNameById(data[i].branchId)
@@ -101,7 +113,7 @@ class PeopleSet extends Component {
                     组织：
                     <TreeSelect style={{ width: 300 }}
                         dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-                        treeData={this.props.permissionOrgTree.AddUserTree}
+                        treeData={this.props.permissionOrgTree.BaseSetOrgTree}
                         placeholder="所属组织"
                         value = {this.state.branchId}
                         onChange={this.handleSearch}>
@@ -113,7 +125,7 @@ class PeopleSet extends Component {
                 <Spin spinning={this.state.isDataLoading}>
                     <Table columns={this.appTableColumns} dataSource={this.getListData()}></Table>
                 </Spin>
-                <PeopleOrgFtEditor />
+                <PeopleOrgFtEditor/>
             </Layout>
         )
     }
@@ -123,7 +135,8 @@ function peoMapStateToProps(state) {
         activeTreeNode: state.org.activeTreeNode,
         permissionOrgTree: state.org.permissionOrgTree,
         ppFtSearchResult: state.ppft.ppFtSearchResult,
-        operInfo:state.org.operInfo
+        operInfo:state.org.operInfo,
+        ppftOp:state.ppft.operInfo,
     }
 }
 

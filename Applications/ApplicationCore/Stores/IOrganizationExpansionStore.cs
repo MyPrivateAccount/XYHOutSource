@@ -10,8 +10,8 @@ namespace ApplicationCore.Stores
 {
     public interface IOrganizationExpansionStore
     {
-        DbSet<OrganizationExpansion> OrganizationExpansions { get; }
-
+        IQueryable<OrganizationExpansion> OrganizationExpansions { get; }
+        string GetFullName(string departmentid);
         Task<OrganizationExpansion> CreateAsync(OrganizationExpansion organizationExpansion);
         Task<List<OrganizationExpansion>> CreateListAsync(List<OrganizationExpansion> organizationExpansionList);
         Task DeleteAsync(OrganizationExpansion organizationExpansion);
