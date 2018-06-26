@@ -2,8 +2,6 @@ import React, {Component} from 'react';
 import {withReducer} from 'react-redux-dynamic-reducer';
 import {connect} from 'react-redux';
 import reducers from './reducers/index';
-import rootSaga from './saga/rootSaga';
-import {sagaMiddleware} from '../';
 import {Layout, Menu, Icon} from 'antd';
 import createHistory from 'history/createMemoryHistory'
 import {ConnectedRouter} from 'react-router-redux'
@@ -19,7 +17,6 @@ import {permission, chargeStatus} from './pages/fylr/const'
 import './index.less'
 
 const {Header, Sider, Content} = Layout;
-sagaMiddleware.run(rootSaga);
 
 const history = createHistory();
 let routeCallback =null;
@@ -30,21 +27,7 @@ history.listen((location,action)=>{
     }
 })
 
-const homeStyle = {
-    navigator: {
-        cursor: 'pointer'
-    },
-    activeOrg: {
-        float: 'right',
-        marginRight: '10px',
 
-    },
-    curOrgStype:{
-        marginLeft: '10px',
-        overflow: 'hidden', 
-        textOverflow: 'ellipsis'
-    }
-}
 
 class ExpenseManagerIndex extends Component {
     constructor(props){
@@ -104,9 +87,9 @@ class ExpenseManagerIndex extends Component {
         }
 
         let ml = [];
-        ml.push({menuID:'fybx', displayName: '费用报销', menuIcon:'contacts', type:'item', path:'/lr', par:{noQR:true, noFK:true}})
+        ml.push({menuID:'fybx', displayName: '费用报销', menuIcon:'calculator', type:'item', path:'/lr', par:{noQR:true, noFK:true}})
         if(p.qr){
-            ml.push({menuID:'bxdqr', displayName: '报销单确认', menuIcon:'contacts', type:'item', path:'/qr', 
+            ml.push({menuID:'bxdqr', displayName: '报销单确认', menuIcon:'check-circle-o', type:'item', path:'/qr', 
             par:{
                 noQR:false,
                 noGL:true, 
@@ -115,10 +98,10 @@ class ExpenseManagerIndex extends Component {
                 status: [chargeStatus.Submit, chargeStatus.Confirm]}})
         }
         if(p.fk){
-            ml.push({menuID:'fkqr', displayName: '付款确认', menuIcon:'contacts', type:'item', path:'/fk', par:{noQR:true,noGL:true, noFK:false, noAdd:true, status: [chargeStatus.Confirm]}})
+            ml.push({menuID:'fkqr', displayName: '付款确认', menuIcon:'pay-circle-o', type:'item', path:'/fk', par:{noQR:true,noGL:true, noFK:false, noAdd:true, status: [chargeStatus.Confirm]}})
         }
         if(p.mxb){
-            ml.push({menuID:'mxb', displayName: '费用明细表', menuIcon:'contacts', type:'item', path:'/mxb', par:{}})
+            ml.push({menuID:'mxb', displayName: '费用明细表', menuIcon:'calculator', type:'item', path:'/mxb', par:{}})
         }
        
         ml.push({menuID:'split'})
@@ -127,7 +110,7 @@ class ExpenseManagerIndex extends Component {
             ml.push({menuID:'yjk', displayName: '预借款/还款', menuIcon:'contacts', type:'item', path:'/yjk', par:{noQR:true,noGL: false, noFK:true, noAdd:false, status: []}})
         }
         if(p.yjkqr){
-            ml.push({menuID:'yjkqr', displayName: '预借款/还款确认', menuIcon:'contacts', type:'item', path:'/yjkqr', 
+            ml.push({menuID:'yjkqr', displayName: '预借款/还款确认', menuIcon:'check-circle-o', type:'item', path:'/yjkqr', 
             par:{
                 noQR:false,
                 noGL:true, 
@@ -137,7 +120,7 @@ class ExpenseManagerIndex extends Component {
         }
 
         if(p.yjkfk){
-            ml.push({menuID:'yjkfk', displayName: '预借款财务确认', menuIcon:'contacts', type:'item', path:'/yjkfk', 
+            ml.push({menuID:'yjkfk', displayName: '预借款财务确认', menuIcon:'pay-circle-o', type:'item', path:'/yjkfk', 
             par:{
                 noQR:true,
                 noGL:true, 
@@ -149,7 +132,7 @@ class ExpenseManagerIndex extends Component {
        
         if(p.bxxe){
             ml.push({menuID:'split'})
-            ml.push({menuID:'bxxe', displayName: '报销限额设置', menuIcon:'contacts', type:'item', path:'/bxxe', par:{}})
+            ml.push({menuID:'bxxe', displayName: '报销限额设置', menuIcon:'setting', type:'item', path:'/bxxe', par:{}})
         }
 
         this.setState({menuList: ml,activeMenu: ml[0],showBack:false, title: ml[0].displayName},()=>{
