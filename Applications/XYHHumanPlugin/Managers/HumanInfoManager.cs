@@ -16,6 +16,12 @@ namespace XYHHumanPlugin.Managers
 {
     public class HumanInfoManager
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="humanInfoStore"></param>
+        /// <param name="mapper"></param>
+        /// <param name="restClient"></param>
         public HumanInfoManager(IHumanInfoStore humanInfoStore, IMapper mapper, RestClient restClient)
         {
             Store = humanInfoStore;
@@ -38,8 +44,8 @@ namespace XYHHumanPlugin.Managers
                 throw new ArgumentNullException(nameof(UserInfo) + nameof(HumanInfoRequest));
             }
 
-            return _mapper.Map<HumanInfoResponse>(await Store.SaveAsync(user, _mapper.Map<HumanInfo>(humanInfoRequest), cancellationToken));
-
+            response.Extension = _mapper.Map<HumanInfoResponse>(await Store.SaveAsync(user, _mapper.Map<HumanInfo>(humanInfoRequest), cancellationToken));
+            return response;
         }
 
 

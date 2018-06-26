@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using XYHHumanPlugin.Models;
 
 namespace XYHHumanPlugin.Dto.Response
 {
@@ -130,22 +131,15 @@ namespace XYHHumanPlugin.Dto.Response
         /// </summary>
         public string Picture { get; set; }
 
-<<<<<<< .mine
-
-
-
-
-=======
         public string OrganizationFullName { get; set; }
 
         public PositionInfoResponse PositionInfo { get; set; }
-    }
->>>>>>> .theirs
+
 
         /// <summary>
         /// 状态
         /// </summary>
-        public string StaffStatus { get; set; }
+        public StaffStatus StaffStatus { get; set; }
 
         /// <summary>
         /// 入职日期

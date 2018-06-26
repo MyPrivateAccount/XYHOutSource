@@ -328,16 +328,16 @@ namespace XYHHumanPlugin.Stores
                 HumanInfo buildings = new HumanInfo()
                 {
                     Id = huid,
-                    IsSocialInsurance = info.IsSocial,
-                    SocialInsuranceInfo = info.IDCard,
+                    //IsSocialInsurance = info.IsSocial,
+                    //SocialInsuranceInfo = info.IDCard,
                     BecomeTime = info.EnTime,
                     StaffStatus = StaffStatus.Regular
                 };
 
                 Context.Attach(buildings);
                 var entry = Context.Entry(buildings);
-                entry.Property(x => x.IsSocialInsurance).IsModified = true;
-                entry.Property(x => x.SocialInsuranceInfo).IsModified = true;
+                //entry.Property(x => x.IsSocialInsurance).IsModified = true;
+                //entry.Property(x => x.SocialInsuranceInfo).IsModified = true;
                 entry.Property(x => x.BecomeTime).IsModified = true;
                 entry.Property(x => x.StaffStatus).IsModified = true;
 
@@ -451,8 +451,8 @@ namespace XYHHumanPlugin.Stores
                 Id = huid,
                 Position = info.NewPosition,
                 DepartmentId = info.NewDepartmentId,
-                BaseSalary = info.BaseSalary,
-                Subsidy = info.Subsidy,
+                //BaseSalary = info.BaseSalary,
+                //Subsidy = info.Subsidy,
                 ClothesBack = info.ClothesBack,
                 AdministrativeBack = info.AdministrativeBack,
                 PortBack = info.PortBack,
@@ -473,8 +473,8 @@ namespace XYHHumanPlugin.Stores
             var entry = Context.Entry(buildings);
             entry.Property(x => x.Position).IsModified = true;
             entry.Property(x => x.DepartmentId).IsModified = true;
-            entry.Property(x => x.BaseSalary).IsModified = true;
-            entry.Property(x => x.Subsidy).IsModified = true;
+            //entry.Property(x => x.BaseSalary).IsModified = true;
+            //entry.Property(x => x.Subsidy).IsModified = true;
             entry.Property(x => x.ClothesBack).IsModified = true;
             entry.Property(x => x.AdministrativeBack).IsModified = true;
             entry.Property(x => x.PortBack).IsModified = true;

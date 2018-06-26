@@ -250,6 +250,9 @@ namespace XYHHumanPlugin.Models
 
         [NotMapped]
         public IEnumerable<FileInfo> FileInfos { get; set; }
+
+        [NotMapped]
+        public PositionInfo PositionInfo { get; set; }
     }
 
     /// <summary>
@@ -283,16 +286,4 @@ namespace XYHHumanPlugin.Models
         Black = 10
     }
 
-
-<<<<<<< .mine
-
-
-
-
-=======
-        [NotMapped]
-        public PositionInfo PositionInfo { get; set; }
-
-    }
->>>>>>> .theirs
 }

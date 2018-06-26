@@ -74,13 +74,13 @@ namespace XYHHumanPlugin.Controllers
             }
             try
             {
-                return await _humanInfoManager.GetMyReport(user, humanInfoRequest, HttpContext.RequestAborted);
+                return await _humanInfoManager.SaveHumanInfo(user, humanInfoRequest, HttpContext.RequestAborted);
             }
             catch (Exception e)
             {
                 response.Code = ResponseCodeDefines.ServiceError;
                 response.Message = e.Message;
-                Logger.Error($"用户{user?.UserName ?? ""}({user?.Id ?? ""})根据报告Id获取成交报告信息(GetReport)失败：{response.Message}请求体为：\r\n" + (condition != null ? JsonHelper.ToJson(condition) : ""));
+                Logger.Error($"用户{user?.UserName ?? ""}({user?.Id ?? ""})根据报告Id获取成交报告信息(GetReport)失败：{response.Message}请求体为：\r\n" + (humanInfoRequest != null ? JsonHelper.ToJson(humanInfoRequest) : ""));
             }
             return response;
         }
@@ -351,9 +351,9 @@ namespace XYHHumanPlugin.Controllers
                 string modifyid = Guid.NewGuid().ToString();
 
                 GatewayInterface.Dto.ExamineSubmitRequest exarequest = new GatewayInterface.Dto.ExamineSubmitRequest();
-                exarequest.ContentId = condition.humaninfo.ID;
+                //exarequest.ContentId = condition.humaninfo.ID;
                 exarequest.ContentType = "HumanCommit";
-                exarequest.ContentName = $"addhuman {condition.humaninfo.Name}";
+                //exarequest.ContentName = $"addhuman {condition.humaninfo.Name}";
                 exarequest.SubmitDefineId = modifyid;
                 exarequest.Source = "";
                 //exarequest.CallbackUrl = ApplicationContext.Current.UpdateExamineCallbackUrl;
@@ -377,20 +377,20 @@ namespace XYHHumanPlugin.Controllers
                     return Response;
                 }
 
-                if (condition.fileinfo != null)
-                {
-                    NameValueCollection nameValueCollection = new NameValueCollection();
-                    var nwf = CreateNwf(User, "humaninfo", condition.fileinfo);
+                //if (condition.fileinfo != null)
+                //{
+                //    NameValueCollection nameValueCollection = new NameValueCollection();
+                //    var nwf = CreateNwf(User, "humaninfo", condition.fileinfo);
 
-                    nameValueCollection.Add("appToken", "app:nwf");
-                    Logger.Info("nwf协议");
-                    string response2 = await _restClient.Post(ApplicationContext.Current.NWFUrl, nwf, "POST", nameValueCollection);
-                    Logger.Info("返回：\r\n{0}", response2);
+                //    nameValueCollection.Add("appToken", "app:nwf");
+                //    Logger.Info("nwf协议");
+                //    string response2 = await _restClient.Post(ApplicationContext.Current.NWFUrl, nwf, "POST", nameValueCollection);
+                //    Logger.Info("返回：\r\n{0}", response2);
 
-                    await _humanManage.CreateFileScopeAsync(User.Id, condition.humaninfo.ID, condition.fileinfo, HttpContext.RequestAborted);
-                }
+                //    await _humanManage.CreateFileScopeAsync(User.Id, condition.humaninfo.ID, condition.fileinfo, HttpContext.RequestAborted);
+                //}
 
-                await _humanManage.AddHuman(User, condition.humaninfo, modifyid, "TEST", HttpContext.RequestAborted);
+                //await _humanManage.AddHuman(User, condition.humaninfo, modifyid, "TEST", HttpContext.RequestAborted);
                 Response.Message = $"addhumaninfo sucess";
             }
             catch (Exception e)
@@ -478,16 +478,12 @@ namespace XYHHumanPlugin.Controllers
 
         [HttpGet("simpleSearch")]
         [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
-<<<<<<< .mine
-        public async Task<PagingResponseMessage<HumanInfoResponse1>> SimpleSearch(UserInfo User, string permissionId, string keyword, int pageSize, int pageIndex)
-=======
         public async Task<PagingResponseMessage<HumanInfoResponse>> SimpleSearch(UserInfo User, string permissionId, string keyword, string branchId, int pageSize, int pageIndex)
->>>>>>> .theirs
         {
-            var r = new PagingResponseMessage<HumanInfoResponse1>();
+            var r = new PagingResponseMessage<HumanInfoResponse>();
             try
             {
-                r = await _humanManage.SimpleSearch(User, permissionId, keyword,branchId, pageSize, pageIndex);
+                //r = await _humanManage.SimpleSearch(User, permissionId, keyword, branchId, pageSize, pageIndex);
             }
             catch (Exception e)
             {

@@ -416,7 +416,7 @@ namespace XYHHumanPlugin.Managers
 
         public virtual async Task<PagingResponseMessage<HumanInfoResponse>> SimpleSearch(UserInfo user, string permissionId, string keyword,string branchId, int pageSize, int pageIndex)
         {
-            PagingResponseMessage<HumanInfoResponse> r = new PagingResponseMessage<HumanInfRequest>();
+            PagingResponseMessage<HumanInfoResponse> r = new PagingResponseMessage<HumanInfoResponse>();
 
             var orgIds = await _permissionExpansionManager.GetOrganizationOfPermission(user.Id, permissionId);
             if (!String.IsNullOrEmpty(branchId))
@@ -430,30 +430,30 @@ namespace XYHHumanPlugin.Managers
 
             if (!String.IsNullOrWhiteSpace(keyword))
             {
-                query = query.Where(hr => ( hr.Name.Contains(keyword) || hr.UserID.Contains(keyword) || hr.ID==keyword ));
+                //query = query.Where(hr => ( hr.Name.Contains(keyword) || hr.UserID.Contains(keyword) || hr.ID==keyword ));
             }
             if(pageSize>0 && pageIndex > 0)
             {
-                r.TotalCount = await query.CountAsync();
+                //r.TotalCount = await query.CountAsync();
                 r.PageIndex = pageIndex;
                 r.PageSize = pageSize;
                 query = query.Skip((pageIndex - 1) * pageSize).Take(pageSize);
                 
             }
-            var ul = await query.ToListAsync();
-            r.Extension = new List<HumanInfRequest>();
-            ul.ForEach(u =>
-            {
-                var u2 = _mapper.Map<HumanInfoResponse>(u);
-                if (u.OrganizationExpansion != null && !String.IsNullOrEmpty(u.OrganizationExpansion.FullName))
-                {
-                    u2.OrganizationFullName = u.OrganizationExpansion.FullName;
-                }else if (u.Organizations != null)
-                {
-                    u2.OrganizationFullName = u.Organizations.OrganizationName;
-                }
-                r.Extension.Add(u2);
-            });
+            //var ul = await query.ToListAsync();
+            //r.Extension = new List<HumanInfRequest>();
+            //ul.ForEach(u =>
+            //{
+            //    var u2 = _mapper.Map<HumanInfoResponse>(u);
+            //    if (u.OrganizationExpansion != null && !String.IsNullOrEmpty(u.OrganizationExpansion.FullName))
+            //    {
+                    //u2.OrganizationFullName = u.OrganizationExpansion.FullName;
+                //}else if (u.Organizations != null)
+                //{
+                    //u2.OrganizationFullName = u.Organizations.OrganizationName;
+                //}
+            //    r.Extension.Add(u2);
+            //});
 
             if (r.TotalCount == 0)
             {
