@@ -30,7 +30,9 @@ namespace XYHHumanPlugin.Stores
         Task CreateMonthAttendanceAsync(AttendanceFormInfo forminfo , CancellationToken cle = default(CancellationToken));
 
         Task CreateListAsync(List<FileInfo> fileInfoList, CancellationToken cancellationToken = default(CancellationToken));
+        Task AddRPInfoeAsync(RewardPunishmentInfo rpinfo, CancellationToken cancellationToken = default(CancellationToken));
 
+        Task DeleteRPInfoeAsync(RewardPunishmentInfo rpinfo, CancellationToken cancellationToken = default(CancellationToken));
         Task DeleteAsync(HumanInfo userinfo, string contractid, CancellationToken cancellationToken = default(CancellationToken));
         Task DeleteAsync(MonthInfo monthinfo, CancellationToken cancellationToken = default(CancellationToken));
         Task DeleteStationAsync(PositionInfo monthinfo, CancellationToken cancellationToken = default(CancellationToken));

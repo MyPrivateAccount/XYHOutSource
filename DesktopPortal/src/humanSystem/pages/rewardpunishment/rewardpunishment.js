@@ -24,6 +24,7 @@ class MainIndex extends Component {
 
     handleClickFucButton = (e) => {
         if (e.target.id === "import") {
+            this.props.dispatch(adduserPage({id: "2", menuID: "awpuinput", displayName: '行政惩罚录入', type: 'item'}));
         } else if (e.target.id === "delete") {
             if (this.props.selAttendanceList.length > 0) {
                 //this.props.dispatch(deleteAttendenceItem(this.props.selAttendanceList[this.props.selAttendanceList.length-1].id));
@@ -57,7 +58,7 @@ class MainIndex extends Component {
     render() {
         let showLoading = this.props.showLoading;
         return (
-            <div >
+            <div>
                 <Spin spinning={showLoading}>
                     <SearchCondition />
                     {
@@ -66,8 +67,7 @@ class MainIndex extends Component {
                             <Button  id= {button.buttonID}
                             onClick={this.handleClickFucButton} 
                             icon={button.icon} size={button.size} type={button.type}>{button.buttonName}</Button>
-                            : null
-                        )
+                            : null)
                     }
                     <SearchResult />
                 </Spin>
