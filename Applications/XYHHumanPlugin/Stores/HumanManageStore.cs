@@ -514,7 +514,7 @@ namespace XYHHumanPlugin.Stores
             }
 
             Context.Add(rpinfo);
-            await Context.SaveChangesAsync(cle);
+            await Context.SaveChangesAsync(cancellationToken);
         }
 
         public async Task DeleteRPInfoeAsync(RewardPunishmentInfo rpinfo, CancellationToken cancellationToken = default(CancellationToken))

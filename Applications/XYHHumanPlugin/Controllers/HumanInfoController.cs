@@ -494,14 +494,15 @@ namespace XYHHumanPlugin.Controllers
             return r;
         }
 
-        [HttpPost("hulistbyorg/{orgid}")]
+        [HttpPost("hulistbyorg")]
         [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
-        public async Task<ResponseMessage<List<HumanInfoResponse>>> SimpleSearch(UserInfo User, [FromRoute]string orgid, [FromBody]List<string> lst)
+        public async Task<ResponseMessage<List<HumanInfoResponse>>> SimpleSearch(UserInfo User, [FromBody]List<string> lst)
         {
             var r = new ResponseMessage<List<HumanInfoResponse>>();
-            try
+            try          
             {
-                await _humanManage.SimpleSearch(User, permissionId, keyword,branchId, pageSize, pageIndex);
+                r.Extension = await _humanManage.GethumanlistByorgid(lst);
+                //await _humanManage.SimpleSearch(User, permissionId, keyword,branchId, pageSize, pageIndex);
             }
             catch (Exception e)
             {

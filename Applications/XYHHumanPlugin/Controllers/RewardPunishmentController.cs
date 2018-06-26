@@ -1,4 +1,6 @@
 ﻿using ApplicationCore;
+using ApplicationCore.Dto;
+using ApplicationCore.Filters;
 using AspNet.Security.OAuth.Validation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -6,7 +8,10 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Text;
+using System.Threading.Tasks;
 using XYH.Core.Log;
+using XYHHumanPlugin.Dto.Request;
+using XYHHumanPlugin.Dto.Response;
 using XYHHumanPlugin.Managers;
 using RewardPunishmentRequest = XYHHumanPlugin.Dto.Response.RewardPunishmentResponse;
 
@@ -32,20 +37,20 @@ namespace XYHHumanPlugin.Controllers
             if (!ModelState.IsValid)
             {
                 pagingResponse.Code = ResponseCodeDefines.ModelStateInvalid;
-                Logger.Warn($"用户{User?.UserName ?? ""}({User?.Id ?? ""})创建行政奖惩(PostCustomerListSaleMan)模型验证失败：\r\n{pagingResponse.Message ?? ""}，\r\n请求参数为：\r\n" + (lst != null ? JsonHelper.ToJson(lst) : ""));
+                Logger.Warn($"用户{User?.UserName ?? ""}({User?.Id ?? ""})创建行政奖惩(PostCustomerListSaleMan)模型验证失败：\r\n{pagingResponse.Message ?? ""}，\r\n请求参数为：\r\n" + (item != null ? JsonHelper.ToJson(item) : ""));
                 return pagingResponse;
             }
 
             try
             {
-                await _attendanceManage.AddRPInfo(item, HttpContext.RequestAborted);
+                await _rpManage.AddRPInfo(item, HttpContext.RequestAborted);
                 pagingResponse.Message = "importattendenceLst ok";
             }
             catch (Exception e)
             {
                 pagingResponse.Code = ResponseCodeDefines.ServiceError;
                 pagingResponse.Message = "服务器错误:" + e.ToString();
-                Logger.Error($"用户{User?.UserName ?? ""}({User?.Id ?? ""})创建行政奖惩(PostCustomerListSaleMan)请求失败：\r\n{pagingResponse.Message ?? ""}，\r\n请求参数为：\r\n" + (lst != null ? JsonHelper.ToJson(lst) : ""));
+                Logger.Error($"用户{User?.UserName ?? ""}({User?.Id ?? ""})创建行政奖惩(PostCustomerListSaleMan)请求失败：\r\n{pagingResponse.Message ?? ""}，\r\n请求参数为：\r\n" + (item != null ? JsonHelper.ToJson(item) : ""));
             }
             return pagingResponse;
         }
@@ -64,7 +69,7 @@ namespace XYHHumanPlugin.Controllers
 
             try
             {
-                pagingResponse.Extension = await _attendanceManage.SearchRewardPunishmentInfo(User, condition, HttpContext.RequestAborted);
+                pagingResponse.Extension = await _rpManage.SearchRewardPunishmentInfo(User, condition, HttpContext.RequestAborted);
                 pagingResponse.Message = "searchattendencelst ok";
             }
             catch (Exception e)
@@ -90,7 +95,7 @@ namespace XYHHumanPlugin.Controllers
 
             try
             {
-                await _attendanceManage.DeleteRPInfo(id, HttpContext.RequestAborted);
+                await _rpManage.DeleteRPInfo(id, HttpContext.RequestAborted);
                 pagingResponse.Message = "searchattendencelst ok";
             }
             catch (Exception e)

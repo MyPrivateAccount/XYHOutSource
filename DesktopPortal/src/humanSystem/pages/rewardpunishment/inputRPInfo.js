@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { getDicParList, postBlackLst } from '../../actions/actionCreator';
+import { getDicParList, gethumanlstbyorgid, addRewardPunishment } from '../../actions/actionCreator';
 import React, { Component } from 'react'
 import {Table, Input, Select, Form, Button, Row, Col, InputNumber, DatePicker, Cascader} from 'antd'
 
@@ -15,11 +15,11 @@ const formItemLayout1 = {
 class Black extends Component {
     state = {
         type: 0,
+        tempname: "",
         department:"",
     }
 
     componentWillMount() {
-        this.props.dispatch(getDicParList(["ADMINISTRATIVE_REWARD, ADMINISTRATIVE_PUNISHMENT, ADMINISTRATIVE_DEDUCT"]));
     }
 
     componentDidMount() {
@@ -32,9 +32,9 @@ class Black extends Component {
     handleSubmit = (e) => {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
-            values.userID;
             if (!err) {
-                this.props.dispatch(postBlackLst(values));
+                values.name = this.state.tempname;
+                this.props.dispatch(addRewardPunishment(values));
             }
         });
     }
@@ -42,13 +42,32 @@ class Black extends Component {
     onHandleChange = (e) => {
         this.setState({type: e});
     }
+    onHandleHumanChange = (e) => {
+        this.state.tempname = e;
+    }
 
     handleChooseDepartmentChange = (e) => {
         this.state.department = e[e.length - 1];
     }
 
+    getChildrenID(orgInfo,lst) {
+        if (orgInfo) {
+            if (!orgInfo.children || orgInfo.children.length === 0) {
+                lst.push(orgInfo.id);
+            } else {
+                lst.push(orgInfo.id);
+                orgInfo.children.forEach(org => this.getChildrenID(org, lst));
+            }
+        }
+    }
+
     handleSelectChange = (e) => {
-        //this.props.dispatch(getSalaryItem(e));
+        let lst = [];
+        this.props.search.lstChildren = [e.id];
+        if (e.children instanceof Array) {
+            e.children.forEach(org => this.getChildrenID(org, lst));
+        }
+        this.props.dispatch(gethumanlstbyorgid(lst));
     }
 
     render() {
@@ -107,16 +126,16 @@ class Black extends Component {
                         )}
                     </FormItem>
                     <FormItem {...formItemLayout1} label="员工">
-                        {getFieldDecorator('name', {
+                        {getFieldDecorator('userID', {
                             reules: [{
                                 required:true, message: 'please entry name',
                             }]
                         })(
-                            <Select placeholder="选择员工">
+                            <Select placeholder="选择员工" onChange={this.onHandleHumanChange}>
                             {
                                 this.props.rewardpunishhumanlst.map(function(v, i) {
                                     return (
-                                        <Option key={i} value={v.value}>{v.key}</Option>
+                                        <Option key={i} value={v.id}>{v.name}</Option>
                                     );
                                 })
                             }
@@ -162,7 +181,7 @@ class Black extends Component {
 
 function tableMapStateToProps(state) {
     return {
-        rewardpunishhumanlst: state.basicData.rewardpunishhumanlst,
+        rewardpunishhumanlst: state.search.rewardpunishhumanlst,
         setDepartmentOrgTree: state.basicData.searchOrgTree,
         administrativereward: state.basicData.administrativereward,
         administrativepunishment: state.basicData.administrativepunishment,

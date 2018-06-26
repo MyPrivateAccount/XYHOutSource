@@ -674,6 +674,60 @@ export function* deleteAttendenceItem(state) {
     }
 }
 
+export function* addRewardPunishment(state) {
+    let url = WebApiConfig.server.addRPInfo;
+    let huResult = { isOk: false, msg: '添加行政奖惩失败!'};
+
+    try {
+        huResult = yield call(ApiClient.post, url, state.payload);
+        if (huResult.data.code == 0) {
+            huResult.data.message = '添加行政奖惩成功';
+
+            notification.success({
+                message: huResult.data.message,
+                duration: 3
+            });
+            return;
+        }
+    } catch (e) {
+        huResult.data.message = "添加行政奖惩接口调用异常!";
+    }
+    
+    if (huResult.data.code != 0) {
+        notification.error({
+            message: huResult.data.message,
+            duration: 3
+        });
+    }
+}
+
+export function* deleteRewardPunishment(state) {
+    let url = WebApiConfig.server.addRPInfo+"/"+state.payload;
+    let huResult = { isOk: false, msg: '删除行政奖惩失败!'};
+
+    try {
+        huResult = yield call(ApiClient.post, url, state.payload);
+        if (huResult.data.code == 0) {
+            huResult.data.message = '删除行政奖惩成功';
+
+            notification.success({
+                message: huResult.data.message,
+                duration: 3
+            });
+            return;
+        }
+    } catch (e) {
+        huResult.data.message = "删除行政奖惩接口调用异常!";
+    }
+    
+    if (huResult.data.code != 0) {
+        notification.error({
+            message: huResult.data.message,
+            duration: 3
+        });
+    }
+}
+
 export default function* watchDicAllAsync() {
     yield takeLatest(actionUtils.getActionType(actionTypes.POST_HUMANINFO), postHumanInfoAsync);
     yield takeLatest(actionUtils.getActionType(actionTypes.GET_HUMANINFONUMBER), getWorkNumber);
@@ -702,4 +756,7 @@ export default function* watchDicAllAsync() {
     yield takeLatest(actionUtils.getActionType(actionTypes.IMPORT_ATTENDANCELST), importAttendenceLst);
     yield takeLatest(actionUtils.getActionType(actionTypes.SEARCH_ATTENDANCELST), searchtAttendenceLst);
     yield takeLatest(actionUtils.getActionType(actionTypes.DELETE_ATTENDANCEITEM), deleteAttendenceItem);
+    //行政惩罚
+    yield takeLatest(actionUtils.getActionType(actionTypes.ADD_REWARDPUNISHMENT), addRewardPunishment);
+    yield takeLatest(actionUtils.getActionType(actionTypes.DELTE_REWARDPUNISHMENT), deleteRewardPunishment);
 }

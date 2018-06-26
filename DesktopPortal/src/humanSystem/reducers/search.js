@@ -3,6 +3,8 @@ import * as actionTypes from '../constants/actionType';
 import moment from 'moment';
 
 const initState = {
+    rewardpunishmenList: {extension: [{key: "1", time: "tt", name: "tt", idcard: "tta", signed: "today"}], pageIndex: 0, pageSize: 10, totalCount: 1},
+    rewardpunishhumanlst: [],
     attendanceList: {extension: [{key: "1", time: "tt", name: "tt", idcard: "tta", signed: "today"}], pageIndex: 0, pageSize: 10, totalCount: 1},
     attendanceSettingList: [],
     achievementList: {extension: [], pageIndex: 0, pageSize: 10, totalCount: 1},
@@ -163,6 +165,15 @@ reducerMap[actionTypes.SET_SEARCH_LOADING] = function(state, action) {
 reducerMap[actionTypes.UPDATE_ATTENDANCESETTINGLST] = function(state, action) {
     return Object.assign({}, state, {attendanceSettingList: action.payload} );
 }
-
+reducerMap[actionTypes.UPDATE_REWARDPUNISHHUMANLIST] = function(state, action) {
+    return Object.assign({}, state, {rewardpunishhumanlst: action.payload} );
+}
+reducerMap[actionTypes.UPDATE_REWARDPUNISHMENTLIST] = function(state, action) {
+    let lst =["","行政奖励","行政惩罚","行政扣款"];
+    let f = action.payload.map(function(v, i) {
+        return {key: i+"", ...v, typename:lst[v.type]};
+    });
+    return Object.assign({}, state, {rewardpunishmenList: f, showLoading:false} );
+}
 
 export default handleActions(reducerMap, initState);
