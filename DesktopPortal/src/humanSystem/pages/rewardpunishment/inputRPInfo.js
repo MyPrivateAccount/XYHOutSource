@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 import { getDicParList, gethumanlstbyorgid, addRewardPunishment } from '../../actions/actionCreator';
 import React, { Component } from 'react'
 import {Table, Input, Select, Form, Button, Row, Col, InputNumber, DatePicker, Cascader} from 'antd'
-
+import Layer from '../../../components/Layer'
 const {MonthPicker} = DatePicker;
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -82,7 +82,7 @@ class Black extends Component {
         }
 
         return (
-            <div>
+            <Layer>
                 <Form onSubmit={this.handleSubmit}>
                     <FormItem {...formItemLayout1}/>
                     <FormItem {...formItemLayout1}/>
@@ -173,7 +173,7 @@ class Black extends Component {
                         <Col span={6}><Button type="primary" htmlType="submit" disabled={this.hasErrors(getFieldsValue())} >提交</Button></Col>
                     </FormItem>
                 </Form>
-            </div>
+            </Layer>
             
         );
     }

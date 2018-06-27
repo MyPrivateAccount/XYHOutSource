@@ -507,7 +507,7 @@ class OnBoarding extends Component {
                             <Row>
                                 <Col span={12}>
                                     <FormItem {...formItemLayout} label="身份证号" >
-                                        {getFieldDecorator('IdCard', {
+                                        {getFieldDecorator('idCard', {
                                             rules: [{
                                                 required: true, message: '请输入身份证号',
                                             }, {
@@ -825,7 +825,7 @@ class OnBoarding extends Component {
                         </Col>
                         <Col span={7}>
                             <FormItem {...formItemLayout} label="紧急联系人电话" >
-                                {getFieldDecorator('EmergencyContactPhone', {
+                                {getFieldDecorator('emergencyContactPhone', {
                                     rules: [{
                                         required: true, message: '请输入手机号码',
                                     }, {pattern: '^((1[0-9][0-9])|(14[5|7])|(15([0-3]|[5-9]))|(18[0,5-9]))\\d{8}$', message: '不是有效的手机号码!'}]
