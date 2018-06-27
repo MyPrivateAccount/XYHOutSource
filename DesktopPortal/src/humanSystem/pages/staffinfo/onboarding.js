@@ -152,7 +152,8 @@ class OnBoarding extends Component {
         SocialSecurity: {},//社保信息
         SocialSecurityForm: null,
         Salary: {},//薪资构成信息
-        SalaryForm: null
+        SalaryForm: null,
+        humenNewId: NewGuid()
     }
 
     componentWillMount() {
@@ -198,13 +199,17 @@ class OnBoarding extends Component {
         let dicPolitics = getDicPars("HUMEN_POLITICS", this.props.rootBasicData);
         let dicContractCategories = getDicPars("CONTRACT_CATEGORIES", this.props.rootBasicData);
         let dicDegree = getDicPars("HUMEN_DEGREE", this.props.rootBasicData);
-        this.setState({dicNation: dicNation});
-        this.setState({dicHouseRegister: dicHouseRegister});
-        this.setState({dicEducation: dicEducation});
-        this.setState({dicHealth: dicHealth});
-        this.setState({dicPolitics: dicPolitics});
-        this.setState({dicContractCategories: dicContractCategories});
-        this.setState({dicDegree: dicDegree});
+        let dicPositions = getDicPars("POSITION_TYPE", this.props.rootBasicData);
+        this.setState({
+            dicNation: dicNation,
+            dicHouseRegister: dicHouseRegister,
+            dicEducation: dicEducation,
+            dicHealth: dicHealth,
+            dicPolitics: dicPolitics,
+            dicContractCategories: dicContractCategories,
+            dicDegree: dicDegree,
+            dicPositions: dicPositions
+        });
         console.log("字典列表:", dicNation, dicHouseRegister);
     }
 
@@ -385,17 +390,22 @@ class OnBoarding extends Component {
                 }
                 if (this.state.SocialSecurityForm) {
                     let socialSecurityValues = this.state.SocialSecurityForm.getFieldsValue();
+                    socialSecurityValues.id = this.state.humenNewId;
                     values = {...values, humanSocialSecurity: socialSecurityValues}
                 }
                 if (this.state.SalaryForm) {
                     let salaryValues = this.state.SalaryForm.getFieldsValue();
+                    salaryValues.id = this.state.humenNewId;
                     values = {...values, humanSalaryStructure: salaryValues}
                 }
+                values.id = this.state.humenNewId;
                 values.humanTitleInfos = this.state.positionalTitleList || []
                 values.humanWorkHistories = this.state.formerCompanyList || []
                 values.humanEducationInfos = this.state.educationList || []
+                values.fileinfo = this.state.fileinfo;
                 console.log("提交内容", values);
-                this.props.dispatch(postHumanInfo({humaninfo: values, fileinfo: this.state.fileinfo}));
+                // this.props.dispatch(postHumanInfo({humaninfo: values, fileinfo: this.state.fileinfo}));
+                this.props.dispatch(postHumanInfo(values));
             }
         });
     }
@@ -420,6 +430,8 @@ class OnBoarding extends Component {
     //对话框信息回调
     dialogConfirmCallback = (info, type) => {
         console.log("表单对象:", this.props.form, info, type);
+        info.id = NewGuid();
+        info.humenId = this.state.humenNewId;
         if (type == 'formerCompany') {
             let formerCompanyList = this.state.formerCompanyList;
             formerCompanyList.push(info);
@@ -547,7 +559,7 @@ class OnBoarding extends Component {
                                 </Col>
                                 <Col span={12}>
                                     <FormItem {...formItemLayout} label="手机号码" >
-                                        {getFieldDecorator('idcard', {
+                                        {getFieldDecorator('phone', {
                                             rules: [{
                                                 required: true, message: '请输入手机号码',
                                             }, {pattern: '^((1[0-9][0-9])|(14[5|7])|(15([0-3]|[5-9]))|(18[0,5-9]))\\d{8}$', message: '不是有效的手机号码!'}]

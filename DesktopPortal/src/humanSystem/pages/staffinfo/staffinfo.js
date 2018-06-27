@@ -241,12 +241,12 @@ class Staffinfo extends Component {
                         <Col span={12}>
                             <Input addonBefore="新耀行" prefix={<Icon type="search" />}
                                 onPressEnter={(e) => this.handleSearch()}
-                                style={{paddingRight: '10px', marginLeft: '5px'}}
+                                style={{paddingRight: '10px'}}
                                 placeholder='请输入姓名'
                                 onChange={this.handleKeyChangeWord} />
                         </Col>
                         <Col span={8}>
-                            <Button type="primary" onClick={(e) => this.handleSearch()}>搜索</Button>
+                            <Button type="primary" size="large" onClick={(e) => this.handleSearch()}>搜索</Button>
                         </Col>
                     </Row>
                     <div className='searchCondition'>
@@ -301,21 +301,9 @@ class Staffinfo extends Component {
                             <Button type="primary" className="statuButton" onClick={(e) => this.handleExport()}>导出花名册</Button>
                         </Col>
                     </Row>
-                    <p style={{padding: '15px 10px', borderBottom: '1px solid #e0e0e0', fontSize: '1.4rem', fontWeight: 'bold'}}>目前已为你筛选出<b style={{color: '#f36366'}}> {humanList.length || 0} </b>条员工信息</p>
+                    <p style={{fontSize: '1.4rem', fontWeight: 'bold'}}>目前已为你筛选出<b style={{color: '#f36366'}}> {humanList.length || 0} </b>条员工信息</p>
                     <Spin spinning={showLoading} delay={200} tip="查询中...">
-                        {
-                            humanList.length > 0 ? <div className='searchResult'>
-                                {/**搜索结果**/}
-                                <h2 style={{backgroundColor: '#ececec'}}>人事列表</h2>
-                                <div className="page-fill">
-                                    <Table style={{width: '100%'}} rowSelection={rowSelection} rowKey={record => record.key} pagination={this.props.searchInfo.searchResult} columns={this.ListColums} dataSource={this.props.searchInfo.searchResult.extension} onChange={this.handleTableChange} />
-                                </div>
-                                {/* {
-                                    (searchResult.length > 0 && searchResult[0].id !== "00000000") ? <Pagination showQuickJumper current={this.state.condition.pageIndex + 1} total={paginationInfo.totalCount} onChange={this.handlePageChange}
-                                        style={{display: 'flex', justifyContent: 'flex-end'}} /> : null
-                                } */}
-                            </div> : null
-                        }
+                        <Table rowSelection={rowSelection} rowKey={record => record.key} pagination={this.props.searchInfo.searchResult} columns={this.ListColums} dataSource={this.props.searchInfo.searchResult.extension} onChange={this.handleTableChange} />
                     </Spin>
                 </div>
                 <LayerRouter>
