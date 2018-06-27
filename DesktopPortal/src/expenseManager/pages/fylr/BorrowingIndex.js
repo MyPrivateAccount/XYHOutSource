@@ -9,9 +9,10 @@ import Layer, { LayerRouter } from '../../../components/Layer'
 import {Route } from 'react-router'
 import BorrowingInfo from './BorrowingInfo'
 import AddCharge from './AddCharge'
+import Repayment from './Repayment'
 import uuid from 'uuid'
 import moment from 'moment'
-import {chargeStatus, billStatus, permission, billType, borrowingStatus} from './const'
+import {chargeStatus, recordingStatus, permission, billType, borrowingStatus} from './const'
 
 const FormItem = Form.Item;
 const ButtonGroup = Button.Group;
@@ -65,7 +66,7 @@ class BorrowingIndex extends Component{
         
         this.props.form.setFieldsValue({
             status:sl[0].value, 
-            billStatus:-1, 
+            isReimbursed:null, 
             isBackup:null, 
             isPayment: (typeof initState.isPayment==='boolean') ?initState.isPayment: null
         })
@@ -107,7 +108,9 @@ class BorrowingIndex extends Component{
     gotoDetail = (item, op)=>{
         this.props.history.push(`${this.props.match.url}/borrowingInfo`, {entity: item, op: op||'view', pagePar: this.state.pagePar})
     }
-
+    gotoRepaymentDetail = (item, op)=>{
+        this.props.history.push(`${this.props.match.url}/repayment`, {entity: item, op: op||'view', pagePar: this.state.pagePar})
+    }
     clickSearch=()=>{
         this.setState({
             pagination:{...this.state.pagination,...{pageIndex:1}}
@@ -171,7 +174,7 @@ class BorrowingIndex extends Component{
             reimburseUserName: this.props.user.nickname
         }
       
-        this.props.history.push(`${this.props.match.url}/borrowingInfo`, {entity: newFee, op: 'add'})
+        this.props.history.push(`${this.props.match.url}/borrowingInfo`, {entity: newFee, op: 'add', pagePar: this.state.pagePar})
     }
 
     deleteBorrowing = (record)=>{
@@ -245,11 +248,21 @@ class BorrowingIndex extends Component{
             chargeId: record.id
         }
       
-        this.props.history.push(`${this.props.match.url}/chargeInfo`, {entity: newFee, op: 'add'})
+        this.props.history.push(`${this.props.match.url}/chargeInfo`, {entity: newFee, op: 'add', pagePar: this.state.pagePar})
     }
 
-    addReback=(record)=>{
-
+    addRepayment=(record)=>{
+        let newFee = {
+            id: uuid.v1(),
+            type:3,
+            createTime: new Date(),
+            reimburseDepartment: record.reimburseDepartment,
+            reimburseUser: record.reimburseUser,
+            reimburseUserName: record.reimburseUserInfo.userName,
+            chargeId: record.id
+        }
+      
+        this.props.history.push(`${this.props.match.url}/repayment`, {entity: newFee, op: 'add', pagePar: this.state.pagePar})
     }
 
     changeCallback = (entity)=>{
@@ -259,7 +272,8 @@ class BorrowingIndex extends Component{
             l[idx] = {...entity,...{
                 status: entity.status, 
                 isPayment: entity.isPayment,
-                paymentAmount: entity.paymentAmount
+                paymentAmount: entity.paymentAmount,
+                recordingStatus: entity.recordingStatus,
             }}
             this.setState({list: [...l]})
         }
@@ -284,7 +298,9 @@ class BorrowingIndex extends Component{
                 key: 'chargeNo',
                 width:'10rem',
                 render: (text, record)=>{
-                    return <a href="javascript:void();" title="点击查看详情" onClick={()=>this.gotoDetail(record)}>{text}</a>
+
+                    return  record.type===2? <a href="javascript:void();" title="点击查看详情" onClick={()=>this.gotoDetail(record)}>{text}</a>
+                        : <a href="javascript:void();" title="点击查看详情" onClick={()=>this.gotoRepaymentDetail(record)}>{text}</a>
                 }
             },
             {
@@ -326,7 +342,7 @@ class BorrowingIndex extends Component{
                 className: 'column-money',
                 width:'8rem',
                 render:(text,record)=>{
-                    return <span style={{textAlign:'right'}}>{record.chargeAmount}</span>
+                    return  record.type===2? <span style={{textAlign:'right'}}>{record.chargeAmount}</span>:'-'
                 }
             },
             {
@@ -339,11 +355,14 @@ class BorrowingIndex extends Component{
                 }
             },           
             {
-                title: '付款',
+                title: '付款/还款',
                 dataIndex: 'isPayment',
                 key: 'isPayment',
                 width:'4rem',
                 render:(text,record)=>{
+                    if(record.type===3){
+                        return recordingStatus[record.recordingStatus]
+                    }
                     return record.isPayment?'已付':'未付'
                 }
             },
@@ -373,7 +392,7 @@ class BorrowingIndex extends Component{
                 className: 'column-money',
                 width:'8rem',
                 render:(text,record)=>{
-                    return <span style={{textAlign:'right'}}>{record.chargeAmount - record.reimbursedAmount}</span>
+                    return record.type===2? <span style={{textAlign:'right'}}>{record.chargeAmount - record.reimbursedAmount}</span>:'-'
                 }
             },
             {
@@ -400,10 +419,23 @@ class BorrowingIndex extends Component{
                         if( record.isPayment && !record.isReimbursed && 
                             !pagePar.noGL && ( permission.gl || record.reimburseUser === this.props.user.sub )){
                                 btns.push(<Button onClick={()=>this.addReimburse(record)}>报销</Button>)
-                                btns.push(<Button onClick={()=>this.addReback(record)}>还款</Button>)
+                                btns.push(<Button onClick={()=>this.addRepayment(record)}>还款</Button>)
                         }
                  }else if(record.type === 3){
                      //还款
+                     if( (s === borrowingStatus.UnSubmit || s === borrowingStatus.Reject) &&
+                     !pagePar.noGL && ( permission.gl || record.reimburseUser === this.props.user.sub )){
+                         btns.push(<Button onClick={()=>this.deleteBorrowing(record)}>作废</Button>)
+                         btns.push(<Button onClick={()=>this.gotoRepaymentDetail(record, 'edit')}>修改</Button>)
+                         btns.push(<Button onClick={()=>this.submitBorrowing(record)}>提交</Button>)
+                     } 
+                     if(s === borrowingStatus.Submit && (!pagePar.noQR && permission.qr) ){
+                         btns.push(<Button onClick={()=>this.gotoRepaymentDetail(record, 'confirm')}>确认</Button>)
+                     }
+                     if(s === borrowingStatus.Confirm && record.recordingStatus!==recordingStatus.Confirm && (!pagePar.noFK && permission.fk) ){
+                         btns.push(<Button onClick={()=>this.gotoRepaymentDetail(record, 'payment')}>财务确认</Button>)
+                     }
+                    
                  }
                 
                   return <span>
@@ -538,7 +570,7 @@ class BorrowingIndex extends Component{
             <LayerRouter>
                 <Route path={`${this.props.match.url}/borrowingInfo`}  render={(props)=><BorrowingInfo changeCallback={this.changeCallback} {...props}/>}/>
                 <Route path={`${this.props.match.url}/chargeInfo`}  render={(props)=><AddCharge  {...props}/>}/>
-                
+                <Route path={`${this.props.match.url}/repayment`}  render={(props)=><Repayment  {...props}/>}/>
             </LayerRouter>
         </Layer>
     }

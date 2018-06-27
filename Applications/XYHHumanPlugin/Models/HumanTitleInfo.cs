@@ -13,6 +13,7 @@ namespace XYHHumanPlugin.Models
         /// <summary>
         /// 主键Id
         /// </summary>
+        [Key]
         [MaxLength(127)]
         public string Id { get; set; }
 
@@ -31,6 +32,17 @@ namespace XYHHumanPlugin.Models
         /// <summary>
         /// 获得时间
         /// </summary>
-        public DateTime GetTitleTime { get; set; }
+        public DateTime? GetTitleTime { get; set; }
+
+        [MaxLength(127)]
+        public string CreateUser { get; set; }
+        public DateTime? CreateTime { get; set; }
+        [MaxLength(127)]
+        public string UpdateUser { get; set; }
+        public DateTime? UpdateTime { get; set; }
+        public bool IsDeleted { get; set; }
+        [MaxLength(127)]
+        public string DeleteUser { get; set; }
+        public DateTime? DeleteTime { get; set; }
     }
 }

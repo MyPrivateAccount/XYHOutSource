@@ -22,6 +22,7 @@ import Attendance from './pages/attendance/attendance'
 import Organization from './pages/organization/organization'
 import Statistics from './pages/statistics/statistics'
 import Set from './pages/set/set'
+import Rewardpunishment  from './pages/rewardpunishment/rewardpunishment'
 sagaMiddleware.run(rootSaga);
 
 const {SubMenu} = Menu;
@@ -35,7 +36,8 @@ const menuDefine = [
     {id: 24, menuID: "menu_achievement", displayName: "薪酬管理", menuIcon: 'database', path: '/achievement'},
     {id: 25, menuID: "menu_attendance", displayName: "考勤信息", menuIcon: 'pushpin-o', path: '/attendance'},
     {id: 26, menuID: "menu_organization", displayName: "组织架构管理", menuIcon: 'layout', path: '/organization'},
-    {id: 27, menuID: "menu_statistics", displayName: "统计报表", menuIcon: 'global', path: '/statistics'},
+    // {id: 27, menuID: "menu_statistics", displayName: "统计报表", menuIcon: 'global', path: '/statistics'},
+    {id: 27, menuID: "menu_awpu", displayName: "行政奖惩", menuIcon: 'global',path:'/rewardpunishment'},
     {id: 28, menuID: "menu_set", displayName: "设置", menuIcon: 'setting', path: '/set'},
     //{menuID: "menu_app", displayName: "应用管理", menuIcon: 'appstore', requirePermission: ['ApplicationCreate']}
 ];
@@ -323,6 +325,7 @@ class HumanIndex extends Component {
                                     <Route path='/organization' component={Organization} />
                                     <Route path='/statistics' component={Statistics} />
                                     <Route path='/set' component={Set} />
+                                    <Route path='/rewardpunishment' component={Rewardpunishment}/>
                                 </Layer>
                             </ConnectedRouter>
                         </Content>

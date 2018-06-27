@@ -163,6 +163,20 @@ CREATE TABLE `XYH_HU_ATTENDANCESETTING` (
   PRIMARY KEY (`Type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS `XYH_HU_REWARDPUNISHMENT`;/*考勤设置表*/
+CREATE TABLE `XYH_HU_REWARDPUNISHMENT` (
+  `ID` varchar(127) NOT NULL DEFAULT '',
+  `Type` int(11) DEFAULT 0,/*类型*/
+  `Detail` int(11) DEFAULT 0,/*详细类型，对应字典*/
+  `DepartmentID` varchar(127) NOT NULL DEFAULT '',/*部门id*/
+  `UserID` varchar(127) NOT NULL DEFAULT '',/*用户id*/
+  `Name` varchar(127) NOT NULL DEFAULT '',/*用户名*/
+  `WorkDate` datetime(6) DEFAULT NULL,/*有效时间*/
+  `Money` int(11) DEFAULT 0,/*金额*/
+  `Comments` varchar(255) DEFAULT '',
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 DROP TABLE IF EXISTS `XYH_HU_POSITION`;/*职位管理*/
 CREATE TABLE `XYH_HU_POSITION` (
   `ID` varchar(127) NOT NULL DEFAULT '',

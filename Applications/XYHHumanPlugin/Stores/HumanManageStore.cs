@@ -50,7 +50,7 @@ namespace XYHHumanPlugin.Stores
                         from p in p2.DefaultIfEmpty()
                         select new HumanInfo()
                         {
-                            ID = hr.ID,
+                            Id = hr.Id,
                             UserID = hr.UserID,
                             Name = hr.Name,
                             Position = hr.Position,
@@ -105,14 +105,14 @@ namespace XYHHumanPlugin.Stores
             modify.ExamineStatus = (int)ExamineStatusEnum.Auditing;
             modify.ExamineTime = modify.ModifyStartTime;
             modify.ModifyCheck = checkaction;
-            modify.Ext1 = humaninfo.ID;
+            modify.Ext1 = humaninfo.Id;
             modify.Ext2 = humaninfo.Name;
 
             humaninfo.CreateUser = userinfo.Id;
             humaninfo.Modify = 1;
             humaninfo.RecentModify = modifyid;
             humaninfo.CreateTime = DateTime.Now;
-            humaninfo.StaffStatus = HumanCreateType;//-1黑名单 0 未入职 1离职 2入职 3转正 
+            humaninfo.StaffStatus = StaffStatus.NonEntry;//-1黑名单 0 未入职 1离职 2入职 3转正 
             Context.Add(humaninfo);
             Context.Add(modify);
 
@@ -200,15 +200,15 @@ namespace XYHHumanPlugin.Stores
             {
                 HumanInfo buildings = new HumanInfo()
                 {
-                    ID = id,
-                    StaffStatus = HumanBlackType
+                    Id = id,
+                    StaffStatus = StaffStatus.Leave
                 };
 
                 Context.Attach(buildings);
                 var entry = Context.Entry(buildings);
                 entry.Property(x => x.StaffStatus).IsModified = true;
             }
-            
+
 
             if (Context.BlackInfos.Any(x => x.IDCard == salaryinfo.IDCard))
             {
@@ -327,17 +327,17 @@ namespace XYHHumanPlugin.Stores
             {
                 HumanInfo buildings = new HumanInfo()
                 {
-                    ID = huid,
-                    IsSocialInsurance = info.IsSocial,
-                    SocialInsuranceInfo = info.IDCard,
+                    Id = huid,
+                    //IsSocialInsurance = info.IsSocial,
+                    //SocialInsuranceInfo = info.IDCard,
                     BecomeTime = info.EnTime,
-                    StaffStatus = HumanBecomeType
+                    StaffStatus = StaffStatus.Regular
                 };
 
                 Context.Attach(buildings);
                 var entry = Context.Entry(buildings);
-                entry.Property(x => x.IsSocialInsurance).IsModified = true;
-                entry.Property(x => x.SocialInsuranceInfo).IsModified = true;
+                //entry.Property(x => x.IsSocialInsurance).IsModified = true;
+                //entry.Property(x => x.SocialInsuranceInfo).IsModified = true;
                 entry.Property(x => x.BecomeTime).IsModified = true;
                 entry.Property(x => x.StaffStatus).IsModified = true;
 
@@ -353,13 +353,14 @@ namespace XYHHumanPlugin.Stores
 
                 await Context.SaveChangesAsync(cancellationToken);
             }
-            else {
+            else
+            {
                 throw new ArgumentNullException("have no IDCard");
             }
-            
+
         }
 
-        
+
         public async Task PreLeaveHuman(SimpleUser userinfo, string modifyid, string huid, string info, string idcard, string checkaction, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (string.IsNullOrEmpty(modifyid))
@@ -391,9 +392,9 @@ namespace XYHHumanPlugin.Stores
             }
             HumanInfo buildings = new HumanInfo()
             {
-                ID = huid,
+                Id = huid,
                 LeaveTime = DateTime.Now,
-                StaffStatus = HumanLeaveType
+                StaffStatus = StaffStatus.Leave
             };
 
             if (Context.LeaveInfos.Any(x => x.IDCard == info.IDCard))
@@ -411,7 +412,7 @@ namespace XYHHumanPlugin.Stores
             var entry = Context.Entry(buildings);
             entry.Property(x => x.LeaveTime).IsModified = true;
             entry.Property(x => x.StaffStatus).IsModified = true;
-            
+
             await Context.SaveChangesAsync(cancellationToken);
         }
 
@@ -447,11 +448,11 @@ namespace XYHHumanPlugin.Stores
 
             HumanInfo buildings = new HumanInfo()
             {
-                ID = huid,
+                Id = huid,
                 Position = info.NewPosition,
                 DepartmentId = info.NewDepartmentId,
-                BaseSalary = info.BaseSalary,
-                Subsidy = info.Subsidy,
+                //BaseSalary = info.BaseSalary,
+                //Subsidy = info.Subsidy,
                 ClothesBack = info.ClothesBack,
                 AdministrativeBack = info.AdministrativeBack,
                 PortBack = info.PortBack,
@@ -472,13 +473,13 @@ namespace XYHHumanPlugin.Stores
             var entry = Context.Entry(buildings);
             entry.Property(x => x.Position).IsModified = true;
             entry.Property(x => x.DepartmentId).IsModified = true;
-            entry.Property(x => x.BaseSalary).IsModified = true;
-            entry.Property(x => x.Subsidy).IsModified = true;
+            //entry.Property(x => x.BaseSalary).IsModified = true;
+            //entry.Property(x => x.Subsidy).IsModified = true;
             entry.Property(x => x.ClothesBack).IsModified = true;
             entry.Property(x => x.AdministrativeBack).IsModified = true;
             entry.Property(x => x.PortBack).IsModified = true;
             entry.Property(x => x.OtherBack).IsModified = true;
-            
+
             await Context.SaveChangesAsync(cancellationToken);
         }
 
@@ -489,9 +490,9 @@ namespace XYHHumanPlugin.Stores
                 throw new ArgumentNullException(nameof(positioninfo));
             }
             Context.Remove(positioninfo);
-            
+
             await Context.SaveChangesAsync(cancellationToken);
-           
+
         }
 
         public async Task DeleteSalaryAsync(SalaryInfo monthinfo, CancellationToken cancellationToken = default(CancellationToken))
@@ -502,6 +503,28 @@ namespace XYHHumanPlugin.Stores
             }
             Context.Remove(monthinfo);
 
+            await Context.SaveChangesAsync(cancellationToken);
+        }
+
+        public async Task AddRPInfoeAsync(RewardPunishmentInfo rpinfo, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (rpinfo == null)
+            {
+                throw new ArgumentNullException(nameof(rpinfo));
+            }
+
+            Context.Add(rpinfo);
+            await Context.SaveChangesAsync(cancellationToken);
+        }
+
+        public async Task DeleteRPInfoeAsync(RewardPunishmentInfo rpinfo, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (rpinfo == null)
+            {
+                throw new ArgumentNullException(nameof(rpinfo));
+            }
+            
+            Context.Remove(rpinfo);
             await Context.SaveChangesAsync(cancellationToken);
         }
 
@@ -562,7 +585,7 @@ namespace XYHHumanPlugin.Stores
             {
                 return "未找到相应部门";
             }
-            
+
             var response = Context.OrganizationExpansions.AsNoTracking().Where(x => (x.SonId == departmentid) || (x.OrganizationId == departmentid)).FirstOrDefault();
             return response == null ? "未找到相应部门" : response.FullName;
         }
@@ -749,7 +772,7 @@ namespace XYHHumanPlugin.Stores
 
         public async Task SaveAsync(HumanInfo huinfo, CancellationToken cancellationToken = default(CancellationToken))
         {
-            
+
         }
         
         public async Task<ModifyInfo> UpdateExamineStatus(string modifyId, ExamineStatusEnum status, CancellationToken cancellationToken = default(CancellationToken))
@@ -760,36 +783,40 @@ namespace XYHHumanPlugin.Stores
                 switch (modify.Type)
                 {
                     case CreateHumanModifyType:
-                    {
-                        HumanInfo buildings = new HumanInfo()
                         {
-                            ID = modify.Ext1,
-                            StaffStatus = HumanEntryType
-                        };
+                            HumanInfo buildings = new HumanInfo()
+                            {
+                                Id = modify.Ext1,
+                                StaffStatus = StaffStatus.Entry
+                            };
 
-                        Context.Attach(buildings);
-                        var entry = Context.Entry(buildings);
-                        entry.Property(x => x.StaffStatus).IsModified = true;
+                            Context.Attach(buildings);
+                            var entry = Context.Entry(buildings);
+                            entry.Property(x => x.StaffStatus).IsModified = true;
 
-                    } break;
+                        }
+                        break;
 
                     case BecomeHumanModifyType:
-                    {
-                        SocialInsurance responinfo = JsonHelper.ToObject<SocialInsurance>(modify.Ext2);
-                        await BecomeHuman(responinfo, modify.Ext1, cancellationToken);
-                    } break;
+                        {
+                            SocialInsurance responinfo = JsonHelper.ToObject<SocialInsurance>(modify.Ext2);
+                            await BecomeHuman(responinfo, modify.Ext1, cancellationToken);
+                        }
+                        break;
 
-                    case ChangeHumanModifyType: 
-                    {
-                        ChangeInfo responinfo = JsonHelper.ToObject<ChangeInfo>(modify.Ext2);
-                        await ChangeHuman(responinfo, modify.Ext1, cancellationToken);
-                    } break;
+                    case ChangeHumanModifyType:
+                        {
+                            ChangeInfo responinfo = JsonHelper.ToObject<ChangeInfo>(modify.Ext2);
+                            await ChangeHuman(responinfo, modify.Ext1, cancellationToken);
+                        }
+                        break;
 
                     case LeaveHumanModifyType:
-                    {
-                        LeaveInfo responinfo = JsonHelper.ToObject<LeaveInfo>(modify.Ext2);
-                        await LeaveHuman(responinfo, modify.Ext1, cancellationToken);
-                    } break;
+                        {
+                            LeaveInfo responinfo = JsonHelper.ToObject<LeaveInfo>(modify.Ext2);
+                            await LeaveHuman(responinfo, modify.Ext1, cancellationToken);
+                        }
+                        break;
 
                     default: break;
                 }

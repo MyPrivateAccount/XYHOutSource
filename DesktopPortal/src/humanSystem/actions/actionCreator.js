@@ -108,3 +108,10 @@ export const importAttendenceList = createAction(actionTypes.IMPORT_ATTENDANCELS
 export const searchAttendenceList = createAction(actionTypes.SEARCH_ATTENDANCELST);
 export const deleteAttendenceItem = createAction(actionTypes.DELETE_ATTENDANCEITEM);
 export const selAttendenceList = createAction(actionTypes.SEL_ATTENDANCELIST);
+
+//行政奖惩
+export const addRewardPunishment = createAction(actionTypes.ADD_REWARDPUNISHMENT);
+export const searchRewardPunishment = createAction(actionTypes.SEARCH_REWARDPUNISHMENT);
+export const deleteRewardPunishment = createAction(actionTypes.DELTE_REWARDPUNISHMENT);
+
+export const gethumanlstbyorgid = createAction(actionTypes.GETSELHUMANLIST_BYORGID);

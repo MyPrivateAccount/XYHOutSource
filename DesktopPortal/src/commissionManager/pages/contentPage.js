@@ -74,70 +74,72 @@ const LoadableTYXQPage = Loadable({//调整佣
 
 function ContentPage(props) {
     const { curMenuID } = props;
+    const {user} = props;
+
     if (curMenuID === "menu_yjftxsz") {
         console.log("menu_yjftxsz");
-        return <LoadableAcmentPage/>;
+        return <LoadableAcmentPage user={user}/>;
     }
     else if(curMenuID === "menu_rsftzzsz"){
         console.log("menu_rsftzzsz");
-        return <LoadablePeopleSetPage/>;
+        return <LoadablePeopleSetPage user={user}/>;
     }
     else if(curMenuID === "menu_tcblsz"){
         console.log("menu_tcblsz");
-        return <LoadableInComeScaleSetPage/>;
+        return <LoadableInComeScaleSetPage user={user}/>;
     }
     else if(curMenuID === "menu_zzcssz"){
         console.log("menu_zzcssz");
-        return <LoadableOrgParamSetPage/>;
+        return <LoadableOrgParamSetPage user={user}/>;
     }
     else if(curMenuID === 'menu_myrp'){
         console.log("menu_myrp");
-        return <LoadableDealRpPage/>;
+        return <LoadableDealRpPage user={user}/>;
     }
     else if(curMenuID === 'menu_query'){
         console.log("menu_query");
-        return <LoadableDealRpQueryPage/>;
+        return <LoadableDealRpQueryPage user={user}/>;
     }
     else if(curMenuID === 'menu_sumbymonth'){
         console.log("menu_sumbymonth");
-        return <LoadableMonthPage/>;
+        return <LoadableMonthPage user={user}/>;
     }
     else if(curMenuID === 'menu_ps'){
         console.log("menu_ps");
-        return <LoadablePPFTPage/>;
+        return <LoadablePPFTPage user={user}/>;
     }
     else if(curMenuID === 'menu_yftcb'){
         console.log("menu_yftcb");
-        return <LoadableYFTCPage/>;
+        return <LoadableYFTCPage user={user}/>;
     }
     else if(curMenuID === 'menu_sftcb'){
         console.log("menu_sftcb");
-        return <LoadableSFTCPage/>;
+        return <LoadableSFTCPage user={user}/>;
     }
     else if(curMenuID === 'menu_tccbftb'){
         console.log("menu_tccbftb");
-        return <LoadableTCCBPage/>;
+        return <LoadableTCCBPage user={user}/>;
     }
     else if(curMenuID === 'menu_yftccjb'){
         console.log("menu_yftccjb");
-        return <LoadableYFTCCJPage/>;
+        return <LoadableYFTCCJPage user={user}/>;
     }
     else if(curMenuID === 'menu_lzryyjqrb'){
         console.log("menu_lzryyjqrb");
-        return <LoadableLZRYYJPage/>;
+        return <LoadableLZRYYJPage user={user}/>;
     }
     else if(curMenuID === 'menu_sfkjqrb'){
         console.log("menu_sfkjqrb");
-        return <LoadableSFKJQRJPage/>;
+        return <LoadableSFKJQRJPage user={user}/>;
     }
     else if(curMenuID === 'menu_fyxcb'){
-        return <LoadableFYXQBPage/>;
+        return <LoadableFYXQBPage user={user}/>;
     }
     else if(curMenuID === 'menu_yjtzmxb'){
-        return <LoadableYJTZHZPage/>;
+        return <LoadableYJTZHZPage user={user}/>;
     }
     else if(curMenuID === 'menu_tymxb'){
-        return <LoadableTYXQPage/>;
+        return <LoadableTYXQPage user={user}/>;
     }
     return null;
 }

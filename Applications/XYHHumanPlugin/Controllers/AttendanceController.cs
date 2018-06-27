@@ -55,7 +55,7 @@ namespace XYHHumanPlugin.Controllers
             if (!ModelState.IsValid)
             {
                 pagingResponse.Code = ResponseCodeDefines.ModelStateInvalid;
-                Logger.Warn($"用户{User?.UserName ?? ""}({User?.Id ?? ""})设置考勤金额信息(PostCustomerListSaleMan)模型验证失败：\r\n{pagingResponse.Message ?? ""}，\r\n请求参数为：\r\n" + (black != null ? JsonHelper.ToJson(black) : ""));
+                Logger.Warn($"用户{User?.UserName ?? ""}({User?.Id ?? ""})设置考勤金额信息(PostCustomerListSaleMan)模型验证失败：\r\n{pagingResponse.Message ?? ""}，\r\n请求参数为：\r\n" + (lst != null ? JsonHelper.ToJson(lst) : ""));
                 return pagingResponse;
             }
 
@@ -68,7 +68,7 @@ namespace XYHHumanPlugin.Controllers
             {
                 pagingResponse.Code = ResponseCodeDefines.ServiceError;
                 pagingResponse.Message = "服务器错误:" + e.ToString();
-                Logger.Error($"用户{User?.UserName ?? ""}({User?.Id ?? ""})设置考勤金额信息(PostCustomerListSaleMan)请求失败：\r\n{pagingResponse.Message ?? ""}，\r\n请求参数为：\r\n" + (black != null ? JsonHelper.ToJson(black) : ""));
+                Logger.Error($"用户{User?.UserName ?? ""}({User?.Id ?? ""})设置考勤金额信息(PostCustomerListSaleMan)请求失败：\r\n{pagingResponse.Message ?? ""}，\r\n请求参数为：\r\n" + (lst != null ? JsonHelper.ToJson(lst) : ""));
 
             }
             return pagingResponse;
@@ -82,7 +82,7 @@ namespace XYHHumanPlugin.Controllers
             if (!ModelState.IsValid)
             {
                 pagingResponse.Code = ResponseCodeDefines.ModelStateInvalid;
-                Logger.Warn($"用户{User?.UserName ?? ""}({User?.Id ?? ""})导入考勤信息(PostCustomerListSaleMan)模型验证失败：\r\n{pagingResponse.Message ?? ""}，\r\n请求参数为：\r\n" + (black != null ? JsonHelper.ToJson(black) : ""));
+                Logger.Warn($"用户{User?.UserName ?? ""}({User?.Id ?? ""})导入考勤信息(PostCustomerListSaleMan)模型验证失败：\r\n{pagingResponse.Message ?? ""}，\r\n请求参数为：\r\n" + (lst != null ? JsonHelper.ToJson(lst) : ""));
                 return pagingResponse;
             }
 
@@ -95,7 +95,7 @@ namespace XYHHumanPlugin.Controllers
             {
                 pagingResponse.Code = ResponseCodeDefines.ServiceError;
                 pagingResponse.Message = "服务器错误:" + e.ToString();
-                Logger.Error($"用户{User?.UserName ?? ""}({User?.Id ?? ""})导入考勤信息(PostCustomerListSaleMan)请求失败：\r\n{pagingResponse.Message ?? ""}，\r\n请求参数为：\r\n" + (black != null ? JsonHelper.ToJson(black) : ""));
+                Logger.Error($"用户{User?.UserName ?? ""}({User?.Id ?? ""})导入考勤信息(PostCustomerListSaleMan)请求失败：\r\n{pagingResponse.Message ?? ""}，\r\n请求参数为：\r\n" + (lst != null ? JsonHelper.ToJson(lst) : ""));
 
             }
             return pagingResponse;
@@ -103,13 +103,13 @@ namespace XYHHumanPlugin.Controllers
 
         [HttpPost("searchattendancelst")]
         [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
-        public async Task<ResponseMessage> SearchAttendenceLst(UserInfo User, [FromBody]AttendenceSearchRequest condition)
+        public async Task<ResponseMessage<HumanSearchResponse<AttendanceInfoResponse>>> SearchAttendenceLst(UserInfo User, [FromBody]AttendenceSearchRequest condition)
         {
-            var pagingResponse = new ResponseMessage();
+            var pagingResponse = new ResponseMessage<HumanSearchResponse<AttendanceInfoResponse>>();
             if (!ModelState.IsValid)
             {
                 pagingResponse.Code = ResponseCodeDefines.ModelStateInvalid;
-                Logger.Warn($"用户{User?.UserName ?? ""}({User?.Id ?? ""})查询考勤信息(PostCustomerListSaleMan)模型验证失败：\r\n{pagingResponse.Message ?? ""}，\r\n请求参数为：\r\n" + (black != null ? JsonHelper.ToJson(black) : ""));
+                Logger.Warn($"用户{User?.UserName ?? ""}({User?.Id ?? ""})查询考勤信息(PostCustomerListSaleMan)模型验证失败：\r\n{pagingResponse.Message ?? ""}，\r\n请求参数为：\r\n" + (condition != null ? JsonHelper.ToJson(condition) : ""));
                 return pagingResponse;
             }
 
@@ -122,7 +122,7 @@ namespace XYHHumanPlugin.Controllers
             {
                 pagingResponse.Code = ResponseCodeDefines.ServiceError;
                 pagingResponse.Message = "服务器错误:" + e.ToString();
-                Logger.Error($"用户{User?.UserName ?? ""}({User?.Id ?? ""})查询考勤信息(PostCustomerListSaleMan)请求失败：\r\n{pagingResponse.Message ?? ""}，\r\n请求参数为：\r\n" + (black != null ? JsonHelper.ToJson(black) : ""));
+                Logger.Error($"用户{User?.UserName ?? ""}({User?.Id ?? ""})查询考勤信息(PostCustomerListSaleMan)请求失败：\r\n{pagingResponse.Message ?? ""}，\r\n请求参数为：\r\n" + (condition != null ? JsonHelper.ToJson(condition) : ""));
 
             }
             return pagingResponse;
@@ -136,20 +136,20 @@ namespace XYHHumanPlugin.Controllers
             if (!ModelState.IsValid)
             {
                 pagingResponse.Code = ResponseCodeDefines.ModelStateInvalid;
-                Logger.Warn($"用户{User?.UserName ?? ""}({User?.Id ?? ""})查询考勤信息(PostCustomerListSaleMan)模型验证失败：\r\n{pagingResponse.Message ?? ""}，\r\n请求参数为：\r\n" + (black != null ? JsonHelper.ToJson(black) : ""));
+                Logger.Warn($"用户{User?.UserName ?? ""}({User?.Id ?? ""})查询考勤信息(PostCustomerListSaleMan)模型验证失败：\r\n{pagingResponse.Message ?? ""}，\r\n请求参数为：\r\n" + (id != null ? JsonHelper.ToJson(id) : ""));
                 return pagingResponse;
             }
 
             try
             {
-                await _attendanceManage.DeleteAttendenceAsync(User, id, HttpContext.RequestAborted);
+                await _attendanceManage.DeleteAttendence(id, HttpContext.RequestAborted);
                 pagingResponse.Message = "searchattendencelst ok";
             }
             catch (Exception e)
             {
                 pagingResponse.Code = ResponseCodeDefines.ServiceError;
                 pagingResponse.Message = "服务器错误:" + e.ToString();
-                Logger.Error($"用户{User?.UserName ?? ""}({User?.Id ?? ""})查询考勤信息(PostCustomerListSaleMan)请求失败：\r\n{pagingResponse.Message ?? ""}，\r\n请求参数为：\r\n" + (black != null ? JsonHelper.ToJson(black) : ""));
+                Logger.Error($"用户{User?.UserName ?? ""}({User?.Id ?? ""})查询考勤信息(PostCustomerListSaleMan)请求失败：\r\n{pagingResponse.Message ?? ""}，\r\n请求参数为：\r\n" + (id != null ? JsonHelper.ToJson(id) : ""));
 
             }
             return pagingResponse;

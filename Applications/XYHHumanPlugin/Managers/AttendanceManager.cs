@@ -72,7 +72,7 @@ namespace XYHHumanPlugin.Managers
         {
             if (string.IsNullOrEmpty(id))
             {
-                throw new ArgumentNullException(nameof(lst));
+                throw new ArgumentNullException(nameof(id));
             }
 
             await _Store.DeleteAttendenceAsync(new AttendanceInfo() {ID = id}, cancellationToken);
@@ -98,11 +98,11 @@ namespace XYHHumanPlugin.Managers
             {
                 sql += connectstr + @"a.`ID`!=''";
                 connectstr = " and ";
-            }importattendancelsImtI
+            }
 
-            if (condition?.CreateDate)
+            if (condition?.CreateDate != null)
             {
-                sql += connectstr + @"(a.`CreateTime`='" + condition.CreateDate.Value + "'";
+                sql += connectstr + @"(a.`CreateTime`='" + condition.CreateDate + "'";
                 connectstr = " and ";
             }
            

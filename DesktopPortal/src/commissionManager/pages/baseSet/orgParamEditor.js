@@ -24,7 +24,7 @@ class OrgParamEditor extends Component{
             this.setState({visible: true, isEdit:true, dialogTitle: '修改组织参数',paramInfo:newProps.activeOrgParam});
         } else if (operType === 'add') {
             this.clear()
-            this.setState({visible: true,isEdit:false, dialogTitle: '添加组织参数'});
+            this.setState({visible: true,isEdit:false, dialogTitle: '添加组织参数',paramInfo:newProps.activeOrgParam});
             
         } else {
             this.props.form.resetFields();
@@ -44,6 +44,7 @@ class OrgParamEditor extends Component{
             if (!err) {
                 console.log('Received values of form: ', values);
                 //调用保存接口，进行数据保存,待续
+                values.branchId = this.state.paramInfo.branchId
                 this.props.dispatch(orgParamSave(values));
             }
         });

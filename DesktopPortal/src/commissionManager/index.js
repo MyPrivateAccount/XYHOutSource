@@ -78,6 +78,11 @@ class CommissionManagerIndex extends Component {
             collapsed: !this.state.collapsed,
         });
     }
+    componentWillMount=()=>{
+        console.log("commission 当前用户所在部门:", this.props.oidc);
+        let userInfo = this.props.oidc.user.profile;
+        console.log("commission 当前用户信息:"+userInfo)
+    }
     handleMenuClick = (e) => {
         console.log('click ', e);
         let find = false;
@@ -145,7 +150,7 @@ class CommissionManagerIndex extends Component {
                         isShowHeader ? < Header > {this.state.activeMenu.displayName}</Header> : null
                     }
                     <Content className={className}>
-                         <ContentPage curMenuID={this.state.activeMenu.menuID} />
+                         <ContentPage curMenuID={this.state.activeMenu.menuID} user={this.props.oidc.user}/>
                     </Content>
                 </Layout>
             </Layout>
@@ -156,7 +161,8 @@ class CommissionManagerIndex extends Component {
 function mapStateToProps(state, props) {
     
     return {
-        judgePermissions: state.judgePermissions
+        judgePermissions: state.judgePermissions,
+        oidc: state.oidc
     }
 }
 function mapDispatchToProps(dispatch) {
@@ -164,4 +170,4 @@ function mapDispatchToProps(dispatch) {
         dispatch
     }
 }
-export default withReducer(reducers, 'CommissionManagerIndex', { mapExtraState: (state, rootState) => ({ oidc: rootState.oidc }) })(connect(mapStateToProps, mapDispatchToProps)(CommissionManagerIndex));
+export default withReducer(reducers, 'CommissionManagerIndex', { mapExtraState: (state, rootState) => ({oidc:rootState.oidc,judgePermissions: rootState.app.judgePermissions}) })(connect(mapStateToProps, mapDispatchToProps)(CommissionManagerIndex));

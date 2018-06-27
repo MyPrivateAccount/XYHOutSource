@@ -100,8 +100,32 @@ export function* saveAcmentDataAsync(state){
 }
 //删除数据
 export function* delAcmentDataAsync(state){
-    let result = { isOk: false, msg: '删除业绩分摊数据失败!' };
     //等待数据接口
+    let result = { isOk: false, msg: '删除业绩分摊列表数据成功!' };
+    console.log(state)
+    let url = WebApiConfig.baseset.acmentlistget+state.payload.id;
+    try {
+        console.log(url)
+        console.log('delAcmentDataAsync:', state);
+        let res = yield call(ApiClient.del, url,state.payload);
+       
+        //console.log(res, '获取参数列表');
+        getApiResult(res, result);
+        if (result.isOk) {
+            yield put({ type: actionUtils.getActionType(actionTypes.ACMENT_PARAM_DEL_UPDATE), payload: result });
+            // yield put({ type: actionUtils.getActionType(actionTypes.SET_SEARCH_LOADING), payload: false });
+        }
+    } catch (e) {
+        result.msg = "获取业绩分摊列表数据接口调用异常！";
+    }
+    if (!result.isOk) {
+        console.log(result.msg)
+        notification.error({
+            message: '提示',
+            description: '获取业绩分摊列表数据信息失败!',
+            duration: 3
+        });
+    }
 }
 
 //保存数据

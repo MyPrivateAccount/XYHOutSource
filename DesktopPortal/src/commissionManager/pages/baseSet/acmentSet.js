@@ -1,16 +1,17 @@
 //业绩分摊项设置页面
 import { connect } from 'react-redux';
-import React,{Component} from 'react';
+import React, { Component } from 'react';
 import { Layout, Table, Button, Checkbox, Popconfirm, Tooltip, Row, Col, Input, Spin, Select, TreeSelect } from 'antd'
-import {acmentParamAdd,acmentParamEdit,acmentParamDel,acmentParamListGet,orgGetPermissionTree} from '../../actions/actionCreator'
+import { acmentParamAdd, acmentParamEdit, acmentParamDel, acmentParamListGet, orgGetPermissionTree } from '../../actions/actionCreator'
 import SearchCondition from '../../constants/searchCondition'
 import AcmentEditor from './acmentEditor'
 
-class AcmentSet extends Component{
+class AcmentSet extends Component {
     state = {
         pagination: {},
-        isDataLoading:false,
-        branchId:''
+        isDataLoading: false,
+        branchId: '',
+        orgList:[]
     }
     appTableColumns = [
         { title: '分摊项名称', dataIndex: 'name', key: 'name' },
@@ -20,9 +21,9 @@ class AcmentSet extends Component{
         {
             title: '操作', dataIndex: 'edit', key: 'edit', render: (text, recored) => (
                 <span>
-                    <Popconfirm title="是否删除该分摊项?" onConfirm={this.zfconfirm} onCancel={this.zfcancel} okText="确认" cancelText="取消">
-                        <Button type='primary' shape='circle' size='small' icon='delete' />
-                    </Popconfirm>
+                    <Tooltip title='删除'>
+                        <Button type='primary' shape='circle' size='small' icon='delete' onClick={(e) => this.handleDelClick(recored)} />
+                    </Tooltip>
                     <Tooltip title='修改'>
                         <Button type='primary' shape='circle' size='small' icon='edit' onClick={(e) => this.handleModClick(recored)} />
                     </Tooltip>
@@ -30,24 +31,19 @@ class AcmentSet extends Component{
             )
         }
     ];
-    zfconfirm=(e)=>{
-        this.handleDelClick(e)
-    }
-    zfcancel=(e)=>{
-
-    }
-    handleDelClick = (info) =>{
+    handleDelClick = (info) => {
+        info.branchId = this.state.branchId;
         this.props.dispatch(acmentParamDel(info));
     }
-    handleModClick = (info) =>{
+    handleModClick = (info) => {
         this.props.dispatch(acmentParamEdit(info));
     }
-    handleNew = (info)=>{
+    handleNew = (info) => {
         this.props.dispatch(acmentParamAdd());
     }
     handleSearch = (e) => {
         console.log(e)
-        this.setState({branchId:e})
+        this.setState({ branchId: e })
         SearchCondition.acmentListCondition.branchId = e;
         console.log("查询条件", SearchCondition.acmentListCondition);
         this.setState({ isDataLoading: true });
@@ -60,80 +56,97 @@ class AcmentSet extends Component{
         this.setState({ isDataLoading: true });
         this.props.dispatch(acmentParamListGet(SearchCondition.acmentListCondition));
     };
-    componentDidMount = ()=>{
-            this.setState({isDataLoading:true})
-            this.props.dispatch(orgGetPermissionTree("UserInfoCreate"));
+    componentDidMount = () => {
+        this.setState({ isDataLoading: true })
+        console.log("AcmentSet dispatch user info:")
+        console.log(this.props.user)
+        this.props.dispatch(orgGetPermissionTree("BaseSet"));
     }
-    componentWillReceiveProps = (newProps)=>{
-        this.setState({isDataLoading:false});
-        let paginationInfo = {
-            pageSize: newProps.scaleSearchResult.pageSize,
-            current: newProps.scaleSearchResult.pageIndex,
-            total: newProps.scaleSearchResult.totalCount
-        };
-        console.log("分页信息：", paginationInfo);
-        this.setState({ pagination: paginationInfo });
+    componentWillReceiveProps = (newProps) => {
 
-        if(newProps.operInfo.operType==='org_update'){
-            console.log('org_update')
-            this.handleSearch(newProps.permissionOrgTree.AddUserTree[0].key)
-            this.setState({branchId:newProps.permissionOrgTree.AddUserTree[0].key})
+        this.setState({ isDataLoading: false });
+
+        if (newProps.operInfo.operType === 'ACMENT_PARAM_LIST_UPDATE') {
+
+            let paginationInfo = {
+                pageSize: newProps.scaleSearchResult.pageSize,
+                current: newProps.scaleSearchResult.pageIndex,
+                total: newProps.scaleSearchResult.totalCount
+            };
+            console.log("分页信息：", paginationInfo);
+            this.setState({ pagination: paginationInfo });
             newProps.operInfo.operType = ''
         }
+
+        if (newProps.operInfo.operType === 'org_update') {
+            console.log('org_update')
+            this.handleSearch(newProps.permissionOrgTree.BaseSetOrgTree[0].key)
+            this.setState({ branchId: newProps.permissionOrgTree.BaseSetOrgTree[0].key })
+            newProps.operInfo.operType = ''
+        }
+        if (newProps.acmOp.operType === 'ACMENT_PARAM_DEL_UPDATE'||
+            newProps.acmOp.operType === 'ACMENT_PARAM_UPDATE') {
+            this.handleSearch(this.state.branchId)
+            newProps.acmOp.operType = ''
+        }
     }
-    getListData=()=>{
-        if(this.props.scaleSearchResult.extension == null){
+    getListData = () => {
+        if (this.props.scaleSearchResult.extension == null) {
             return null
         }
         let data = this.props.scaleSearchResult.extension;
-            for(let i=0;i<data.length;i++){
-                if(data[i].isfixed){
-                    data[i].isfixed = '是'
-                }
-                else{
-                    data[i].isfixed = '否'
-                }
-                if(data[i].type === 1){
-                    data[i].type = '外部佣金'
-                }
-                else{
-                    data[i].type = '内部分配项'
-                }
-                data[i].percent = data[i].percent*100+'%'
+        if(this.props.acmOp.operType!=='ACMENT_PARAM_LIST_UPDATE'){
+            return data
+        }
+        for (let i = 0; i < data.length; i++) {
+            if (data[i].isfixed) {
+                data[i].isfixed = '是'
             }
+            else {
+                data[i].isfixed = '否'
+            }
+            if (data[i].type === 1) {
+                data[i].type = '外部佣金'
+            }
+            else {
+                data[i].type = '内部分配项'
+            }
+            data[i].percent = data[i].percent * 100 + '%'
+        }
         return data
     }
-    render(){
+    render() {
         return (
             <Layout>
-               <Spin spinning={this.state.isDataLoading}>
-                <div style={{'margin':5}}>
-                    组织：
+                <Spin spinning={this.state.isDataLoading}>
+                    <div style={{ 'margin': 5 }}>
+                        组织：
                     <TreeSelect style={{ width: 300 }}
-                                    dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-                                    treeData={this.props.permissionOrgTree.AddUserTree}
-                                    placeholder="所属组织"
-                                    onChange={this.handleSearch}
-                                    value={this.state.branchId}
-                                    >
-                    </TreeSelect>
-                </div>
-                <Tooltip title="新增">
-                    <Button type='primary' shape='circle' icon='plus' onClick={this.handleNew} style={{'margin':'10'}}/>
-                </Tooltip>
-                 <Table  columns={this.appTableColumns} dataSource={this.getListData()}></Table>
-                 <AcmentEditor orgid={this.state.branchId}/>
-                 </Spin>
+                            dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+                            treeData={this.props.permissionOrgTree.BaseSetOrgTree}
+                            placeholder="所属组织"
+                            onChange={this.handleSearch}
+                            value={this.state.branchId}
+                        >
+                        </TreeSelect>
+                    </div>
+                    <Tooltip title="新增">
+                        <Button type='primary' shape='circle' icon='plus' onClick={this.handleNew} style={{ 'margin': '10' }} />
+                    </Tooltip>
+                    <Table columns={this.appTableColumns} dataSource={this.getListData()}></Table>
+                    <AcmentEditor orgid={this.state.branchId} />
+                </Spin>
             </Layout>
         )
     }
 }
-function MapStateToProps(state){
+function MapStateToProps(state) {
     return {
-        activeTreeNode:    state.org.activeTreeNode,
+        activeTreeNode: state.org.activeTreeNode,
         permissionOrgTree: state.org.permissionOrgTree,
         scaleSearchResult: state.acm.scaleSearchResult,
-        operInfo:state.org.operInfo
+        operInfo: state.org.operInfo,
+        acmOp: state.acm.operInfo,
     }
 }
 

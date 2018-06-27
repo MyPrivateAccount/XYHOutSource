@@ -5,10 +5,19 @@ import {Button, Row, Col, Table} from 'antd';
 
 //{key: "1", time: "tt", name: "tt", idcard: "tta", signed: "today"}
 const columns = [
-    {title: '日期',dataIndex: 'time',key: 'time',},
-    {title: '姓名',dataIndex: 'name',key: 'name'},
+    {title: '工号',dataIndex: 'userID',key: 'userID',},
+    {title: '考勤月份',dataIndex: 'date',key: 'date'},
     {title: '身份证号',dataIndex: 'idcard',key: 'idcard'},
-    {title: '签到记录',dataIndex: 'signed',key: 'signed'},
+    {title: '姓名',dataIndex: 'name',key: 'name'},
+    {title: '正常出勤',dataIndex: 'normal',key: 'normal'},
+    {title: '调休',dataIndex: 'relaxation',key: 'relaxation'},
+    {title: '事假',dataIndex: 'matter',key: 'matter'},
+    {title: '病假',dataIndex: 'illness',key: 'illness'},
+    {title: '年假',dataIndex: 'annual',key: 'annual'},
+    {title: '婚假',dataIndex: 'marry',key: 'marry'},
+    {title: '丧假',dataIndex: 'funeral',key: 'funeral'},
+    {title: '迟到',dataIndex: 'late',key: 'late'},
+    {title: '旷工',dataIndex: 'absent',key: 'absent'},
 ];
 
 
