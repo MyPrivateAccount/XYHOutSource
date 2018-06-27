@@ -494,6 +494,25 @@ namespace XYHHumanPlugin.Controllers
             return r;
         }
 
+        [HttpPost("hulistbyorg")]
+        [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
+        public async Task<ResponseMessage<List<HumanInfoResponse>>> SimpleSearch(UserInfo User, [FromBody]List<string> lst)
+        {
+            var r = new ResponseMessage<List<HumanInfoResponse>>();
+            try          
+            {
+                r.Extension = await _humanManage.GethumanlistByorgid(lst);
+                //await _humanManage.SimpleSearch(User, permissionId, keyword,branchId, pageSize, pageIndex);
+            }
+            catch (Exception e)
+            {
+                r.Code = ResponseCodeDefines.ServiceError;
+                r.Message = "服务器错误：" + e.Message;
+                Logger.Error("error");
+            }
+            return r;
+        }
+
         #region Flow
         [HttpPost("audit/updatehumancallback")]
         [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]

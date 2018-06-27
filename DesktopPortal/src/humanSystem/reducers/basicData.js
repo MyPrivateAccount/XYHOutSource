@@ -19,6 +19,9 @@ const initState = {
     monthlast: '2018.5',
     headVisible: true,
     orgnazitionType: [],
+    administrativereward: [],
+    administrativepunishment: [],
+    administrativededuct:[],
 };
 let reducerMap = {};
 //字典数据
@@ -27,6 +30,9 @@ reducerMap[actionTypes.DIC_GET_PARLIST_COMPLETE] = function (state, action) {
     let changeTypeList = [...state.changeTypeList];
     let changeResonList = [...state.changeResonList];
     let orgnazitionType = [...state.orgnazitionType];
+    let administrativereward = [...state.administrativereward];
+    let administrativepunishment = [...state.administrativepunishment];
+    let administrativededuct = [...state.administrativededuct];
 
     action.payload.map((group) => {
         if(group.groupId === "POSITION_TYPE") {
@@ -41,14 +47,25 @@ reducerMap[actionTypes.DIC_GET_PARLIST_COMPLETE] = function (state, action) {
         } else if (group.groupId === "ORGNAZATION_TYPE") {
             group.dictionaryDefines = group.dictionaryDefines.sort((aItem, bItem) => aItem.order - bItem.order);
             orgnazitionType = group.dictionaryDefines;
+        } else if (group.groupId === "ADMINISTRATIVE_REWARD") {
+            group.dictionaryDefines = group.dictionaryDefines.sort((aItem, bItem) => aItem.order - bItem.order);
+            administrativereward = group.dictionaryDefines;
+        } else if (group.groupId === "ADMINISTRATIVE_PUNISHMENT") {
+            group.dictionaryDefines = group.dictionaryDefines.sort((aItem, bItem) => aItem.order - bItem.order);
+            administrativepunishment = group.dictionaryDefines;
+        } else if (group.groupId === "ADMINISTRATIVE_DEDUCT") {
+            group.dictionaryDefines = group.dictionaryDefines.sort((aItem, bItem) => aItem.order - bItem.order);
+            administrativededuct = group.dictionaryDefines;
         }
-
     });
     return Object.assign({}, state, {
         orgnazitionType: orgnazitionType,
         stationTypeList: stationTypeList,
         changeTypeList: changeTypeList,
         changeResonList: changeResonList,
+        administrativereward: administrativereward,
+        administrativepunishment: administrativepunishment,
+        administrativededuct: administrativededuct,
     });
 }
 //区域数据

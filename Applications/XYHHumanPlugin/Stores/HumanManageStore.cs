@@ -506,6 +506,28 @@ namespace XYHHumanPlugin.Stores
             await Context.SaveChangesAsync(cancellationToken);
         }
 
+        public async Task AddRPInfoeAsync(RewardPunishmentInfo rpinfo, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (rpinfo == null)
+            {
+                throw new ArgumentNullException(nameof(rpinfo));
+            }
+
+            Context.Add(rpinfo);
+            await Context.SaveChangesAsync(cancellationToken);
+        }
+
+        public async Task DeleteRPInfoeAsync(RewardPunishmentInfo rpinfo, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (rpinfo == null)
+            {
+                throw new ArgumentNullException(nameof(rpinfo));
+            }
+            
+            Context.Remove(rpinfo);
+            await Context.SaveChangesAsync(cancellationToken);
+        }
+
         public async Task DeleteAttendenceAsync(AttendanceInfo monthinfo, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (monthinfo == null)

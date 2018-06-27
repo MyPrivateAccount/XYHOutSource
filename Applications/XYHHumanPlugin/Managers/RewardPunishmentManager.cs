@@ -32,7 +32,7 @@ namespace XYHHumanPlugin.Managers
                 throw new ArgumentNullException(nameof(itm));
             }
 
-            //await _Store.AddRPInfoeAsync(_mapper.Map<List<RewardPunishmentInfo>>(itm), cancellationToken);
+            await _Store.AddRPInfoeAsync(_mapper.Map<RewardPunishmentInfo>(itm), cancellationToken);
         }
 
         public virtual async Task DeleteRPInfo(string id, CancellationToken cancellationToken = default(CancellationToken))
@@ -42,10 +42,10 @@ namespace XYHHumanPlugin.Managers
                 throw new ArgumentNullException(nameof(id));
             }
 
-            //await _Store.DeleteRPInfoAsync(new RewardPunishmentInfo() { ID = id }, cancellationToken);
+            await _Store.DeleteRPInfoeAsync(new RewardPunishmentInfo() { ID = id }, cancellationToken);
         }
 
-        public virtual async Task<HumanSearchResponse<RewardPunishmentResponse>> SearchAttendenceInfo(UserInfo user, RewardPunishmentSearchRequest condition, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual async Task<HumanSearchResponse<RewardPunishmentResponse>> SearchRewardPunishmentInfo(UserInfo user, RewardPunishmentSearchRequest condition, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (condition == null)
             {

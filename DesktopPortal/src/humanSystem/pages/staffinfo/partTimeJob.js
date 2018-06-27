@@ -2,7 +2,7 @@ import {connect} from 'react-redux';
 import {createStation, getOrgList, leavePosition} from '../../actions/actionCreator';
 import React, {Component} from 'react'
 import {Select, Input, Form, Cascader, Button, Row, Col, Checkbox, DatePicker, Spin, Table} from 'antd'
-
+import Layer from '../../../components/Layer'
 const FormItem = Form.Item;
 const Option = Select.Option;
 const formItemLayout = {
@@ -73,7 +73,8 @@ class PartTimeJob extends Component {
         const {getFieldDecorator, getFieldsError, getFieldsValue, isFieldTouched} = this.props.form;
         let tableColumns = this.state.columns || [];
         return (
-            <div>
+            <Layer>
+                <div className="page-title" style={{marginBottom: '10px'}}>兼职</div>
                 <Form onSubmit={this.handleSubmit}>
                     <Row style={{marginTop: '10px'}}>
                         <Col span={6}>
@@ -135,7 +136,7 @@ class PartTimeJob extends Component {
                     </Row>
 
                 </Form>
-            </div >
+            </Layer >
 
         );
     }

@@ -71,6 +71,10 @@ const LoadableRewardPunishment = Loadable({
     loader: () => import('./rewardpunishment/rewardpunishment'),
     loading: () => <LoadableLoading />,
 });
+const LoadableAddRewardPunishment = Loadable({
+    loader: () => import('./rewardpunishment/inputRPInfo'),
+    loading: () => <LoadableLoading />,
+});
 
 function ContentPage(props) {
     const {curMenuID} = props;
@@ -133,6 +137,9 @@ function ContentPage(props) {
     }
     else if (curMenuID === "menu_awpu") {
         return <LoadableRewardPunishment />;
+    } 
+    else if (curMenuID === "awpuinput") {
+        return <LoadableAddRewardPunishment />;
     }
     else {
         return <LoadableStaffPage />;

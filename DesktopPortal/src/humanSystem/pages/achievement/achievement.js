@@ -1,16 +1,19 @@
-import { connect } from 'react-redux';
-import { setLoadingVisible, adduserPage, deleteSalaryInfo, getSalaryList, getcreateStation } from '../../actions/actionCreator';
-import React, { Component } from 'react';
-import { Input, Spin, Checkbox, Button, notification } from 'antd';
+import {connect} from 'react-redux';
+import {setLoadingVisible, adduserPage, deleteSalaryInfo, getSalaryList, getcreateStation} from '../../actions/actionCreator';
+import React, {Component} from 'react';
+import {Input, Spin, Checkbox, Button, notification} from 'antd';
 //import {getDicParList} from '../actions/actionCreator';
 import SearchCondition from './searchCondition';
 import SearchResult from './searchResult';
 import './search.less';
+import Layer, {LayerRouter} from '../../../components/Layer'
+import {Route} from 'react-router'
+import Achievement from './addachievement'
 
 const buttonDef = [
-    { buttonID:"addnew", buttonName:"新建", icon:'', type:'primary', size:'large',},
-    { buttonID:"modify", buttonName:"修改", icon:'', type:'primary', size:'large',},
-    { buttonID:"delete", buttonName:"删除", icon:'', type:'primary', size:'large',},
+    {buttonID: "addnew", buttonName: "新建", icon: '', type: 'primary', size: 'large', },
+    {buttonID: "modify", buttonName: "修改", icon: '', type: 'primary', size: 'large', },
+    {buttonID: "delete", buttonName: "删除", icon: '', type: 'primary', size: 'large', },
 ];
 
 
@@ -22,14 +25,18 @@ class MainIndex extends Component {
         //this.props.dispatch(getSalaryList(this.props.selAchievementList));
         //this.props.dispatch(setLoadingVisible(false));//测试
     }
-
+    gotoSubPage = (path, params) => {
+        this.props.history.push(`${this.props.match.url}/${path}`, {...params})
+    }
     handleClickFucButton = (e) => {
         if (e.target.id === "addnew") {
-            this.props.dispatch(adduserPage({id: 11, menuID: 'menu_achievementnew', displayName: '新建薪酬', type:'item'}));
+            // this.props.dispatch(adduserPage({id: 11, menuID: 'menu_achievementnew', displayName: '新建薪酬', type: 'item'}));
+            this.gotoSubPage('achievement', {ismodify:'0'});
         } else if (e.target.id === "modify") {
             if (this.props.selAchievementList.length > 0) {
-                this.props.dispatch(getcreateStation(this.props.selAchievementList[this.props.selAchievementList.length-1].organize));
-                this.props.dispatch(adduserPage({id: 12, menuID: 'menu_achievementmodify', displayName: '修改薪酬', type:'item'}));
+                this.props.dispatch(getcreateStation(this.props.selAchievementList[this.props.selAchievementList.length - 1].organize));
+                // this.props.dispatch(adduserPage({id: 12, menuID: 'menu_achievementmodify', displayName: '修改薪酬', type: 'item'}));
+                this.gotoSubPage('achievement', {ismodify:'1'});
             }
             else {
                 notification.error({
@@ -40,7 +47,7 @@ class MainIndex extends Component {
             }
         } else if (e.target.id === "delete") {
             if (this.props.selAchievementList.length > 0) {
-                this.props.dispatch(deleteSalaryInfo(this.props.selAchievementList[this.props.selAchievementList.length-1]));
+                this.props.dispatch(deleteSalaryInfo(this.props.selAchievementList[this.props.selAchievementList.length - 1]));
             }
             else {
                 notification.error({
@@ -51,7 +58,7 @@ class MainIndex extends Component {
             }
         }
     }
-       //是否有权限
+    //是否有权限
     hasPermission(buttonInfo) {
         let hasPermission = false;
         if (this.props.judgePermissions && buttonInfo.requirePermission) {
@@ -70,20 +77,24 @@ class MainIndex extends Component {
     render() {
         let showLoading = this.props.showLoading;
         return (
-            <div >
+            <Layer >
                 <Spin spinning={showLoading}>
                     <SearchCondition />
                     {
                         buttonDef.map(
-                            (button, i)=>this.hasPermission(button) ?
-                             <Button key = {i} id= {button.buttonID} style={{marginTop: '10px', marginBottom: '10px', marginRight: '10px', border:0}}
-                             onClick={this.handleClickFucButton} 
-                             icon={button.icon} size={button.size} type={button.type}>{button.buttonName}</Button> : null
+                            (button, i) => this.hasPermission(button) ?
+                                <Button key={i} id={button.buttonID} style={{marginTop: '10px', marginBottom: '10px', marginRight: '10px', border: 0}}
+                                    onClick={this.handleClickFucButton}
+                                    icon={button.icon} size={button.size} type={button.type}>{button.buttonName}</Button> : null
                         )
                     }
                     <SearchResult />
                 </Spin>
-            </div>
+                <LayerRouter>
+                    <Route path={`${this.props.match.url}/achievement`} render={(props) => <Achievement  {...props} />} />
+                    {/* <Route path={`${this.props.match.url}/becomeStaff`} render={(props) => <BecomeStaff changeCallback={this.changeCallback} {...props} />} /> */}
+                </LayerRouter>
+            </Layer>
         )
     }
 }
