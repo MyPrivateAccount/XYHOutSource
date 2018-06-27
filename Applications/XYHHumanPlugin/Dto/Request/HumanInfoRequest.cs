@@ -8,10 +8,22 @@ namespace XYHHumanPlugin.Dto.Request
     public class HumanInfoRequest
     {
         /// <summary>
+        /// 主键Id
+        /// </summary>
+        [Required]
+        [StringLength(127)]
+        public string Id { get; set; }
+        /// <summary>
         /// 姓名
         /// </summary>
         [StringLength(127)]
         public string Name { get; set; }
+
+        /// <summary>
+        /// 工号
+        /// </summary>
+        [MaxLength(127)]
+        public string UserID { get; set; }
         /// <summary>
         /// 身份证号码
         /// </summary>
@@ -27,7 +39,11 @@ namespace XYHHumanPlugin.Dto.Request
         /// </summary>
         [StringLength(255)]
         public string Company { get; set; }
-
+        /// <summary>
+        /// 电话
+        /// </summary>
+        [StringLength(50)]
+        public string Phone { get; set; }
         /// <summary>
         /// 名族
         /// </summary>
@@ -139,9 +155,9 @@ namespace XYHHumanPlugin.Dto.Request
 
         public HumanContractInfoRequest HumanContractInfo { get; set; }
 
-        public List<HumanTitleInfoRequest> HumanTitleInfos { get; set; }
-        public List<HumanWorkHistoryRequest> HumanWorkHistories { get; set; }
+        public IEnumerable<HumanTitleInfoRequest> HumanTitleInfos { get; set; }
+        public IEnumerable<HumanWorkHistoryRequest> HumanWorkHistories { get; set; }
 
-        public List<HumanEducationInfoRequest> HumanEducationInfos { get; set; }
+        public IEnumerable<HumanEducationInfoRequest> HumanEducationInfos { get; set; }
     }
 }

@@ -50,6 +50,56 @@ namespace XYHHumanPlugin
 
             CreateMap<AttendanceSettingInfoResponse, AttendanceSettingInfo>();
             CreateMap<AttendanceSettingInfo, AttendanceSettingInfoResponse>();
+
+            CreateMap<HumanEducationInfo, HumanEducationInfoRequest>();
+            CreateMap<HumanEducationInfoRequest, HumanEducationInfo>();
+
+            CreateMap<HumanEducationInfo, HumanEducationInfoResponse>();
+            CreateMap<HumanEducationInfoResponse, HumanEducationInfo>();
+
+            CreateMap<HumanTitleInfo, HumanTitleInfoRequest>();
+            CreateMap<HumanTitleInfoRequest, HumanTitleInfo>();
+
+            CreateMap<HumanTitleInfo, HumanTitleInfoResponse>();
+            CreateMap<HumanTitleInfoResponse, HumanTitleInfo>();
+
+            CreateMap<HumanSalaryStructure, HumanSalaryStructureRequest>();
+            CreateMap<HumanSalaryStructureRequest, HumanSalaryStructure>();
+
+            CreateMap<HumanSalaryStructure, HumanSalaryStructureResponse>();
+            CreateMap<HumanSalaryStructureResponse, HumanSalaryStructure>();
+
+            CreateMap<HumanSocialSecurity, HumanSocialSecurityRequest>();
+            CreateMap<HumanSocialSecurityRequest, HumanSocialSecurity>();
+
+            CreateMap<HumanSocialSecurity, HumanSocialSecurityResponse>();
+            CreateMap<HumanSocialSecurityResponse, HumanSocialSecurity>();
+
+            CreateMap<HumanWorkHistory, HumanWorkHistoryRequest>();
+            CreateMap<HumanWorkHistoryRequest, HumanWorkHistory>();
+
+            CreateMap<HumanWorkHistory, HumanWorkHistoryResponse>();
+            CreateMap<HumanWorkHistoryResponse, HumanWorkHistory>();
+
+
+            CreateMap<HumanContractInfo, HumanContractInfoRequest>();
+            CreateMap<HumanContractInfoRequest, HumanContractInfo>();
+
+            CreateMap<HumanContractInfo, HumanContractInfoResponse>();
+            CreateMap<HumanContractInfoResponse, HumanContractInfo>();
+
+
+            CreateMap<IEnumerable<HumanEducationInfo>, IEnumerable<HumanEducationInfoRequest>>().ReverseMap();
+            CreateMap<IEnumerable<HumanEducationInfo>, IEnumerable<HumanEducationInfoResponse>>().ReverseMap();
+            CreateMap<IEnumerable<HumanEducationInfo>, IEnumerable<HumanTitleInfoRequest>>().ReverseMap();
+            CreateMap<IEnumerable<HumanEducationInfo>, IEnumerable<HumanTitleInfoResponse>>().ReverseMap();
+            CreateMap<IEnumerable<HumanEducationInfo>, IEnumerable<HumanWorkHistoryRequest>>().ReverseMap();
+            CreateMap<IEnumerable<HumanEducationInfo>, IEnumerable<HumanWorkHistoryResponse>>().ReverseMap();
+
+            CreateMap<HumanInfo, HumanInfoResponse>().ReverseMap();
+            CreateMap<HumanInfo, HumanInfoRequest>();
+            CreateMap<HumanInfoRequest, HumanInfo>();
+
         }
     }
 }

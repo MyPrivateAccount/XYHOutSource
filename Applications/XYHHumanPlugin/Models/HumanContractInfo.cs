@@ -20,7 +20,6 @@ namespace XYHHumanPlugin.Models
         /// <summary>
         /// 合同编号
         /// </summary>
-        [Required]
         [MaxLength(50)]
         public string ContractNo { get; set; }
 

@@ -694,7 +694,7 @@ namespace XYHHumanPlugin.Stores
 
         public Task<List<AttendanceSettingInfo>> GetListAttendanceSettingAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-          
+
             return Context.AttendanceSettingInfos.ToListAsync(cancellationToken);
         }
 
@@ -752,7 +752,7 @@ namespace XYHHumanPlugin.Stores
         {
 
         }
-        
+
         public async Task<ModifyInfo> UpdateExamineStatus(string modifyId, ExamineStatusEnum status, CancellationToken cancellationToken = default(CancellationToken))
         {
             var modify = await GetModifyAsync(a => a.Where(b => b.ID == modifyId));

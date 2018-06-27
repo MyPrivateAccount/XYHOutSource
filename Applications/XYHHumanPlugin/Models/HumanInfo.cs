@@ -25,6 +25,12 @@ namespace XYHHumanPlugin.Models
         /// </summary>
         [MaxLength(127)]
         public string Name { get; set; }
+
+        /// <summary>
+        /// 电话
+        /// </summary>
+        [MaxLength(50)]
+        public string Phone { get; set; }
         /// <summary>
         /// 身份证号码
         /// </summary>
