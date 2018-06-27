@@ -56,6 +56,9 @@ namespace XYHHumanPlugin.Stores
         Task<string> GetOrganizationFullName(string departmentid);
         Task<List<Organizations>> GetAllOrganization();
 
+        Task<List<TResult>> GetRewardPunishmentListAsync<TResult>(Func<IQueryable<RewardPunishmentInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken));
+        Task<List<TResult>> GetAttendenceListAsync<TResult>(Func<IQueryable<AttendanceInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken));
+
         Task<SocialInsurance> GetSocialInfoAsync(string idcard);
         Task<TResult> GetHumanAsync<TResult>(Func<IQueryable<HumanInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken));
         Task<TResult> GetMonthAsync<TResult>(Func<IQueryable<MonthInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken));
