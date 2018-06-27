@@ -52,6 +52,8 @@ namespace XYHHumanPlugin
             context.Services.AddScoped<PermissionExpansionManager>();
             context.Services.AddScoped<RewardPunishmentManager>();
 
+            context.Services.AddScoped<HumanInfoManager>();
+            context.Services.AddScoped<IHumanInfoStore, HumanInfoStore>();
 
             return base.Init(context);
         }
