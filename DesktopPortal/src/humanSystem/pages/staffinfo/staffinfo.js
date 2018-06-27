@@ -1,15 +1,19 @@
 import {connect} from 'react-redux';
 import {postBlackLst, setHumanInfo, searchConditionType, setSearchLoadingVisible, getHumanImage, exportHumanForm, setbreadPageIndex, searchHumanType, searchAgeType, searchOrderType, adduserPage} from '../../actions/actionCreator';
 import React, {Component} from 'react'
-import {Table, Layout, Input, Select, Icon, Button, Row, Col, Checkbox, Tag, Pagination, Spin, notification} from 'antd'
+import {Table, Input, Select, Icon, Button, Row, Col, Checkbox, Tag, Pagination, Spin, notification} from 'antd'
 import '../search.less'
 import SearchCondition from '../../constants/searchCondition'
 import {SearchHumanTypes, AgeRanges} from '../../constants/tools'
+import Layer, {LayerRouter} from '../../../components/Layer'
+import {Route} from 'react-router'
+import OnBoarding from './onboarding'
+import BecomeStaff from './becomeStaff'
+import Change from './change'
+import Leave from './leave'
+import PartTimeJob from './partTimeJob'
 
-const {Header, Sider, Content} = Layout;
-const CheckboxGroup = Checkbox.Group;
 const ButtonGroup = Button.Group;
-const tagsOptionData = [{value: 'nolimit', label: '不限'}, {value: 'yes', label: '是'}, {value: 'no', label: '否'}]
 const styles = {
     conditionRow: {
         width: '80px',
@@ -114,13 +118,19 @@ class Staffinfo extends Component {
         this.handleSearch(condition);
     }
 
+    gotoSubPage = (path, params) => {
+        this.props.history.push(`${this.props.match.url}/${path}`, {entity: params, op: 'add'})
+    }
+
     handleOnboarding = (e) => {
-        this.props.dispatch(adduserPage({id: "0", menuID: "Onboarding", displayName: '入职', type: 'item'}));
+        // this.props.dispatch(adduserPage({id: "0", menuID: "Onboarding", displayName: '入职', type: 'item'}));
+        this.gotoSubPage('onBoarding', {});
     }
 
     handleBecome = () => {
         if (this.props.selHumanList.length > 0) {
-            this.props.dispatch(adduserPage({id: "1", menuID: "BecomeStaff", displayName: '转正', type: 'item'}));
+            //this.props.dispatch(adduserPage({id: "1", menuID: "BecomeStaff", displayName: '转正', type: 'item'}));
+            this.gotoSubPage('becomeStaff', {})
         } else {
             notification.error({
                 message: "请选择员工",
@@ -131,7 +141,8 @@ class Staffinfo extends Component {
 
     handleChangeSalary = () => {
         if (this.props.selHumanList.length > 0) {
-            this.props.dispatch(adduserPage({id: "2", menuID: "changestation", displayName: '异动调薪', type: 'item'}));
+            // this.props.dispatch(adduserPage({id: "2", menuID: "changestation", displayName: '异动调薪', type: 'item'}));
+            this.gotoSubPage('change', {})
         } else {
             notification.error({
                 message: "请选择员工",
@@ -142,7 +153,8 @@ class Staffinfo extends Component {
 
     handleLeft = () => {
         if (this.props.selHumanList.length > 0) {
-            this.props.dispatch(adduserPage({id: "3", menuID: "leftstation", displayName: '离职', type: 'item'}));
+            // this.props.dispatch(adduserPage({id: "3", menuID: "leftstation", displayName: '离职', type: 'item'}));
+            this.gotoSubPage('leave', {})
         } else {
             notification.error({
                 message: "请选择员工",
@@ -154,7 +166,8 @@ class Staffinfo extends Component {
 
     handlePartTimeJob = () => {
         if (this.props.selHumanList.length > 0) {
-            this.props.dispatch(adduserPage({id: "3", menuID: "partTimeJob", displayName: '离职', type: 'item'}));
+            // this.props.dispatch(adduserPage({id: "3", menuID: "partTimeJob", displayName: '离职', type: 'item'}));
+            this.gotoSubPage('partTimeJob', {})
         } else {
             notification.error({
                 message: "请选择员工",
@@ -187,6 +200,25 @@ class Staffinfo extends Component {
         }));
     }
 
+
+    changeCallback = (entity) => {
+        let l = this.state.list;
+        let idx = l.findIndex(x => x.id === entity.id);
+        if (idx >= 0) {
+            l[idx] = {
+                ...entity, ...{
+                    status: entity.status,
+                    billStatus: entity.billStatus,
+                    isBackup: entity.isBackup,
+                    backuped: entity.backuped,
+                    isPayment: entity.isPayment,
+                    paymentAmount: entity.paymentAmount
+                }
+            }
+            this.setState({list: [...l]})
+        }
+    }
+
     render() {
         let self = this;
         const rowSelection = {
@@ -203,8 +235,8 @@ class Staffinfo extends Component {
         const showLoading = searchInfo.showLoading;
         const humanList = this.props.searchInfo.searchResult.extension;
         return (
-            <div>
-                <div style={{display: "block"}}>
+            <Layer className="content-page">
+                <div style={{marginTop: '1.5rem'}}>
                     <Row className='searchBox'>
                         <Col span={12}>
                             <Input addonBefore="新耀行" prefix={<Icon type="search" />}
@@ -274,19 +306,10 @@ class Staffinfo extends Component {
                         {
                             humanList.length > 0 ? <div className='searchResult'>
                                 {/**搜索结果**/}
-                                <Row>
-                                    <Col span={24}>
-                                        <Layout>
-                                            <Header style={{backgroundColor: '#ececec'}}>
-                                                人事列表
-                                                    &nbsp;
-                                            </Header>
-                                            <Content>
-                                                <Table rowSelection={rowSelection} rowKey={record => record.key} pagination={this.props.searchInfo.searchResult} columns={this.ListColums} dataSource={this.props.searchInfo.searchResult.extension} onChange={this.handleTableChange} />
-                                            </Content>
-                                        </Layout>
-                                    </Col>
-                                </Row>
+                                <h2 style={{backgroundColor: '#ececec'}}>人事列表</h2>
+                                <div className="page-fill">
+                                    <Table style={{width: '100%'}} rowSelection={rowSelection} rowKey={record => record.key} pagination={this.props.searchInfo.searchResult} columns={this.ListColums} dataSource={this.props.searchInfo.searchResult.extension} onChange={this.handleTableChange} />
+                                </div>
                                 {/* {
                                     (searchResult.length > 0 && searchResult[0].id !== "00000000") ? <Pagination showQuickJumper current={this.state.condition.pageIndex + 1} total={paginationInfo.totalCount} onChange={this.handlePageChange}
                                         style={{display: 'flex', justifyContent: 'flex-end'}} /> : null
@@ -295,7 +318,14 @@ class Staffinfo extends Component {
                         }
                     </Spin>
                 </div>
-            </div>
+                <LayerRouter>
+                    <Route path={`${this.props.match.url}/onBoarding`} render={(props) => <OnBoarding changeCallback={this.changeCallback} {...props} />} />
+                    <Route path={`${this.props.match.url}/becomeStaff`} render={(props) => <BecomeStaff changeCallback={this.changeCallback} {...props} />} />
+                    <Route path={`${this.props.match.url}/change`} render={(props) => <Change changeCallback={this.changeCallback} {...props} />} />
+                    <Route path={`${this.props.match.url}/leave`} render={(props) => <Leave changeCallback={this.changeCallback} {...props} />} />
+                    <Route path={`${this.props.match.url}/partTimeJob`} render={(props) => <PartTimeJob changeCallback={this.changeCallback} {...props} />} />
+                </LayerRouter>
+            </Layer>
         );
     }
 }

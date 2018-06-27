@@ -1,4 +1,4 @@
-import { BaseApiUrl, basicDataBaseApiUrl ,UploadUrl } from '../../constants/baseConfig';
+import {BaseApiUrl, basicDataBaseApiUrl, UploadUrl} from '../../constants/baseConfig';
 
 const WebApiConfig = {
     dic: {
@@ -12,7 +12,8 @@ const WebApiConfig = {
     },
     server: {
         PostHumanPicture: basicDataBaseApiUrl + "humanfile/humaninfo/uploadmore/",
-        PostHumaninfo: basicDataBaseApiUrl + "humaninfo/addhuman",
+        // PostHumaninfo: basicDataBaseApiUrl + "humaninfo/addhuman",
+        PostHumaninfo: basicDataBaseApiUrl + 'humaninfo',
         GetWorkNumber: basicDataBaseApiUrl + "humaninfo/jobnumber",
         LastMonth: basicDataBaseApiUrl + "month/lastmonth",
         RecoverMonth: basicDataBaseApiUrl + "month/backmonth",
@@ -50,7 +51,7 @@ const WebApiConfig = {
     },
     auth: {
         deleteOrg: BaseApiUrl + '/Organization/',
-        addupdateOrg:  BaseApiUrl + '/Organization/',
+        addupdateOrg: BaseApiUrl + '/Organization/',
     },
 }
 export default WebApiConfig;
