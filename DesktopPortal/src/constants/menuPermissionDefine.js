@@ -45,6 +45,14 @@ const ToolMenuPermissionDefine = [
             {id: 'SALARY_VIEW', name: '薪资构成查看'},
             {id: 'SOCIAL_SECURITY_VIEW', name: '社保信息查看'}
         ]
+    },
+    {//佣金系统
+        id:'commissionManager',
+        permissions:[
+            {id:'YJ_YJFTSZ_CK',name:'业绩分摊项设置查看'},
+            {id:'YJ_YJFTSZ',name:'业绩分摊项设置'}
+        ]
+
     }
 ]
 

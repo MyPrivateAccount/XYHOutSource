@@ -11,7 +11,8 @@ class AcmentSet extends Component {
         pagination: {},
         isDataLoading: false,
         branchId: '',
-        orgList:[]
+        orgList: [],
+        requirePermission:['YJ_YJFTSZ']
     }
     appTableColumns = [
         { title: '分摊项名称', dataIndex: 'name', key: 'name' },
@@ -20,14 +21,16 @@ class AcmentSet extends Component {
         { title: '是否固定比例', dataIndex: 'isfixed', key: 'isfixed' },
         {
             title: '操作', dataIndex: 'edit', key: 'edit', render: (text, recored) => (
-                <span>
-                    <Tooltip title='删除'>
-                        <Button type='primary' shape='circle' size='small' icon='delete' onClick={(e) => this.handleDelClick(recored)} />
-                    </Tooltip>
-                    <Tooltip title='修改'>
-                        <Button type='primary' shape='circle' size='small' icon='edit' onClick={(e) => this.handleModClick(recored)} />
-                    </Tooltip>
-                </span>
+                (this.state.branchId === recored.branchId && this.hasPermission(this.state.requirePermission)) ?
+                    <span>
+                        <Tooltip title='删除'>
+                            <Button type='primary' shape='circle' size='small' icon='delete' onClick={(e) => this.handleDelClick(recored)} />
+                        </Tooltip>
+                        <Tooltip title='修改'>
+                            <Button type='primary' shape='circle' size='small' icon='edit' onClick={(e) => this.handleModClick(recored)} />
+                        </Tooltip>
+                    </span>
+                    : null
             )
         }
     ];
@@ -36,10 +39,11 @@ class AcmentSet extends Component {
         this.props.dispatch(acmentParamDel(info));
     }
     handleModClick = (info) => {
+        info.branchId = this.state.branchId
         this.props.dispatch(acmentParamEdit(info));
     }
     handleNew = (info) => {
-        this.props.dispatch(acmentParamAdd());
+        this.props.dispatch(acmentParamAdd(this.state.branchId));
     }
     handleSearch = (e) => {
         console.log(e)
@@ -60,7 +64,7 @@ class AcmentSet extends Component {
         this.setState({ isDataLoading: true })
         console.log("AcmentSet dispatch user info:")
         console.log(this.props.user)
-        this.props.dispatch(orgGetPermissionTree("BaseSet"));
+        this.props.dispatch(orgGetPermissionTree("YJ_YJFTSZ_CK"));
     }
     componentWillReceiveProps = (newProps) => {
 
@@ -84,18 +88,33 @@ class AcmentSet extends Component {
             this.setState({ branchId: newProps.permissionOrgTree.BaseSetOrgTree[0].key })
             newProps.operInfo.operType = ''
         }
-        if (newProps.acmOp.operType === 'ACMENT_PARAM_DEL_UPDATE'||
+        if (newProps.acmOp.operType === 'ACMENT_PARAM_DEL_UPDATE' ||
             newProps.acmOp.operType === 'ACMENT_PARAM_UPDATE') {
             this.handleSearch(this.state.branchId)
             newProps.acmOp.operType = ''
         }
+    }
+    //是否有权限
+    hasPermission=(requirePermission)=>{
+        let hasPermission = false;
+        if (this.props.judgePermissions && requirePermission) {
+            for (let i = 0; i < requirePermission.length; i++) {
+                if (this.props.judgePermissions.includes(requirePermission[i])) {
+                    hasPermission = true;
+                    break;
+                }
+            }
+        } else {
+            hasPermission = true;
+        }
+        return hasPermission;
     }
     getListData = () => {
         if (this.props.scaleSearchResult.extension == null) {
             return null
         }
         let data = this.props.scaleSearchResult.extension;
-        if(this.props.acmOp.operType!=='ACMENT_PARAM_LIST_UPDATE'){
+        if (this.props.acmOp.operType !== 'ACMENT_PARAM_LIST_UPDATE') {
             return data
         }
         for (let i = 0; i < data.length; i++) {
