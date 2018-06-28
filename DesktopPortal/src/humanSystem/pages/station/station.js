@@ -157,16 +157,7 @@ class Station extends Component {
         return !Object.keys(fieldsError).some(field => fieldsError[field]);
     }
 
-    handleSubmit = (e) => {
-        e.preventDefault();
-        this.props.form.validateFields((err, values) => {
-            if (!err) {
-                //this.props.dispatch(postBlackLst(values));
-            }
-        });
-    }
     handleChooseDepartmentChange = (e) => {
-        console.log("部门change:", e);
         this.setState({department: e});
     }
 

@@ -36,6 +36,7 @@ class Left extends Component {
 
     render() {
         const {getFieldDecorator, getFieldsError, getFieldsValue, isFieldTouched} = this.props.form;
+        let humenInfo = this.props.location.state;
         return (
             <Layer>
                 <div className="page-title" style={{marginBottom: '10px'}}>离职</div>
@@ -43,7 +44,8 @@ class Left extends Component {
                     <Row style={{marginTop: '10px'}}>
                         <Col span={7}>
                             <FormItem {...formItemLayout} label="员工编号">
-                                {getFieldDecorator('id', {
+                                {getFieldDecorator('userID', {
+                                    initialValue: humenInfo.userID,
                                     reules: [{
                                         required: true, message: '请输入员工编号',
                                     }]
@@ -55,6 +57,7 @@ class Left extends Component {
                         <Col span={7}>
                             <FormItem {...formItemLayout} label="姓名">
                                 {getFieldDecorator('name', {
+                                    initialValue: humenInfo.name,
                                     reules: [{
                                         required: true, message: '请输入姓名',
                                     }]
@@ -65,7 +68,8 @@ class Left extends Component {
                         </Col>
                         <Col span={7}>
                             <FormItem {...formItemLayout} label="部门">
-                                {getFieldDecorator('orgDepartmentId', {
+                                {getFieldDecorator('departmentId', {
+                                    initialValue: humenInfo.departmentId,
                                     reules: [{
                                         required: true,
                                         message: 'please entry',

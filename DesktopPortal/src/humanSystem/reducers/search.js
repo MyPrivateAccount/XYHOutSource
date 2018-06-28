@@ -18,10 +18,10 @@ const initState = {
     activeMenu: 'menu_index',//当前菜单
     keyWord: '',//搜索关键词
     searchCondition: {},//完整搜索条件
-    humanType: 0,//0不限 1在职 2离职 3黑名单
-    orderRule: 0,//0不排 1升 2降
-    ageCondition: 0,//0不限 1 20以上 2 30以上 3 40以上
-    expandSearchBox: true,
+    // humanType: 0,//0不限 1在职 2离职 3黑名单
+    // orderRule: 0,//0不排 1升 2降
+    // ageCondition: 0,//0不限 1 20以上 2 30以上 3 40以上
+    // expandSearchBox: true,
     pageIndex: 0,
     pageSize: 10,
     lstChildren: [],
@@ -128,21 +128,21 @@ reducerMap[actionTypes.SAVE_SEARCH_CONDITION] = function (state, action) {
     return Object.assign({}, state, {searchCondition: action.payload});
 }
 
-reducerMap[actionTypes.SEARCH_BOX_EXPAND] = function (state, action) {
-    return Object.assign({}, state, {expandSearchBox: !state.expandSearchBox});
-}
+// reducerMap[actionTypes.SEARCH_BOX_EXPAND] = function (state, action) {
+//     return Object.assign({}, state, {expandSearchBox: !state.expandSearchBox});
+// }
 
-reducerMap[actionTypes.SEARCH_HUMANTYPE] = function (state, action) {
-    return Object.assign({}, state, {humanType: action.payload});
-}
+// reducerMap[actionTypes.SEARCH_HUMANTYPE] = function (state, action) {
+//     return Object.assign({}, state, {humanType: action.payload});
+// }
 
-reducerMap[actionTypes.SEARCH_AGETYPE] = function (state, action) {
-    return Object.assign({}, state, {ageCondition: action.payload});
-}
+// reducerMap[actionTypes.SEARCH_AGETYPE] = function (state, action) {
+//     return Object.assign({}, state, {ageCondition: action.payload});
+// }
 
-reducerMap[actionTypes.SEARCH_ORDERTYPE] = function (state, action) {
-    return Object.assign({}, state, {orderRule: action.payload});
-}
+// reducerMap[actionTypes.SEARCH_ORDERTYPE] = function (state, action) {
+//     return Object.assign({}, state, {orderRule: action.payload});
+// }
 
 reducerMap[actionTypes.UPDATE_ALLHUMANINFO] = function (state, action) {
     return Object.assign({}, state, {searchResult: action.payload, showLoading: false});

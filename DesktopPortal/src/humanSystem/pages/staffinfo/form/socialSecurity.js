@@ -54,7 +54,7 @@ class SocialSecurity extends Component {
                         <FormItem {...formItemLayout} label="是否参保" >
                             {getFieldDecorator('bankName', {
                                 rules: [{
-                                    required: true, message: '请输入职称',
+                                    required: true, message: '请选择是否参保',
                                 }]
                             })(
                                 <Checkbox disabled={this.props.ismodify == 1}>已参保</Checkbox>

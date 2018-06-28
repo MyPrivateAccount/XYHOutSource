@@ -1,6 +1,6 @@
-import { createAction } from 'redux-actions';
+import {createAction} from 'redux-actions';
 import * as actionTypes from '../constants/actionType';
-import { create } from 'domain';
+import {create} from 'domain';
 
 export const getHumanList = createAction(actionTypes.GET_ALLHUMANINFO);
 
@@ -25,15 +25,16 @@ export const setVisibleHead = createAction(actionTypes.SET_VISIBLEHEAD);
 export const searchKeyWord = createAction(actionTypes.SEARCH_KEYWORD);
 export const searchCondition = createAction(actionTypes.SEARCH_CONDITION);
 export const searchCustomer = createAction(actionTypes.SEARCH_CUSTOMER);
-export const searchHumanType = createAction(actionTypes.SEARCH_HUMANTYPE);
-export const searchAgeType = createAction(actionTypes.SEARCH_AGETYPE);
-export const searchOrderType = createAction(actionTypes.SEARCH_ORDERTYPE);
+// export const searchHumanType = createAction(actionTypes.SEARCH_HUMANTYPE);
+// export const searchAgeType = createAction(actionTypes.SEARCH_AGETYPE);
+// export const searchOrderType = createAction(actionTypes.SEARCH_ORDERTYPE);
 export const searchConditionType = createAction(actionTypes.SEARCH_CONDITION);
 export const searchIndex = createAction(actionTypes.SET_SEARCHINDEX);
 
 export const saveSearchCondition = createAction(actionTypes.SAVE_SEARCH_CONDITION);
-export const expandSearchbox = createAction(actionTypes.SEARCH_BOX_EXPAND);
-
+// export const expandSearchbox = createAction(actionTypes.SEARCH_BOX_EXPAND);
+export const getHumenDetail = createAction(actionTypes.GET_HUMEN_DETAIL);
+export const getHumenDetailEnd = createAction(actionTypes.GET_HUMEN_DETAIL_END);
 //面包屑
 export const setbreadPageIndex = createAction(actionTypes.SET_USER_BREADINDEX);
 export const setbreadPageItemIndex = createAction(actionTypes.SET_USER_BREADITEMINDEX);
