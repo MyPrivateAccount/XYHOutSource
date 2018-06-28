@@ -259,7 +259,7 @@ class AddCharge extends Component {
         let url = `${basicDataServiceUrl}/api/humaninfo/simpleSearch`;
         var r = await ApiClient.get(url, true, { permissionId: 'FY_BXMD', keyword: value, pageSize: 0, pageIndex: 0 });
         if (r && r.data && r.data.code === '0') {
-            this.setState({ userList: r.data.extension })
+            this.setState({ userList: r.data.extension||[] })
         }
     }
     selectedUser = (value) => {

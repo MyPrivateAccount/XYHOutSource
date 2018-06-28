@@ -2,7 +2,8 @@
 import {connect} from 'react-redux';
 import { incomeScaleSave, incomeScaleDlgClose } from '../../actions/actionCreator'
 import React, {Component} from 'react'
-import {Modal, Row, Col, Form, Input,Select} from 'antd'
+import {Modal, Row, Col, Form, Input,Select,notification} from 'antd'
+import NumericInput from './numberInput'
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -21,13 +22,16 @@ class InComeScaleEditor extends Component{
         let {operType} = newProps.operInfo;
         if (operType === 'edit') {
             this.setState({visible: true, isEdit:true, dialogTitle: '修改',paramInfo:newProps.activeScale});
+            newProps.operInfo.operType = ''
         } else if (operType === 'add') {
             this.clear()
             this.setState({visible: true,isEdit:false, dialogTitle: '添加'});
-            this.setState({paramInfo:{name:newProps.param.name,jobType:newProps.param.jobType,branchId:newProps.param.branchId,code:newProps.param.code}})
-        } else {
-            this.props.form.resetFields();
+            this.setState({paramInfo:{branchName:newProps.param.branchName,codeName:newProps.param.codeName,branchId:newProps.param.branchId,code:newProps.param.code}})
+            newProps.operInfo.operType = ''
+        } 
+        else if(operType === 'INCOME_SCALE_DLGCLOSE') {
             this.setState({visible: false});
+            newProps.operInfo.operType = ''
         }
     }
     clear=()=>{
@@ -43,7 +47,19 @@ class InComeScaleEditor extends Component{
         this.props.form.validateFields((err, values) => {
             if (!err) {
                 console.log('Received values of form: ', values);
+                if(parseFloat(values.startYj)>parseFloat(values.endYj)){
+                    notification.error({
+                        message: '错误',
+                        description: '开始业绩必须小于结束业绩',
+                        duration: 3
+                    });
+                    return
+                }
                 //调用保存接口，进行数据保存,待续
+                if(this.state.isEdit){
+                    values.id = this.state.paramInfo.id
+                    values.mod = true
+                }
                 values.branchId = this.state.paramInfo.branchId;
                 values.code = this.state.paramInfo.code;
                 this.props.dispatch(incomeScaleSave(values));
@@ -53,6 +69,12 @@ class InComeScaleEditor extends Component{
     handleCancel = (e) => {//关闭对话框
         this.props.dispatch(incomeScaleDlgClose());
     };
+    getPercent = (e) => {
+        let pp = e
+        pp = pp.substr(0, pp.length - 1)
+        pp = parseFloat(pp) / 100
+        return pp
+    }
     render(){
         const {getFieldDecorator} = this.props.form;
         const formItemLayout = {
@@ -72,9 +94,9 @@ class InComeScaleEditor extends Component{
                                 </span>
                             )}
                             hasFeedback>
-                            {getFieldDecorator('name', {
+                            {getFieldDecorator('branchName', {
 
-                                initialValue: this.state.paramInfo.name,
+                                initialValue: this.state.paramInfo.branchName,
                             })(
                                 <Input style={{float: 'left',width:300}} disabled={true}></Input>
                                 )}
@@ -86,8 +108,8 @@ class InComeScaleEditor extends Component{
                         <FormItem
                             {...formItemLayout}
                             label={(<span>职位类别</span>)}>
-                            {getFieldDecorator('jobType', {
-                                initialValue: this.state.paramInfo.jobType
+                            {getFieldDecorator('codeName', {
+                                initialValue: this.state.paramInfo.codeName
                             })(
                                 <Input style={{float: 'left',width:300}} disabled={true}></Input>
                                 )}
@@ -126,10 +148,10 @@ class InComeScaleEditor extends Component{
                             {...formItemLayout}
                             label={(<span>提成比例</span>)}>
                             {getFieldDecorator('percent', {
-                                initialValue: this.state.paramInfo.percent,
+                                initialValue: this.state.isEdit?this.getPercent(this.state.paramInfo.percent):'',
                                 rules: [{required: true, message: '请填写提成比例!' }]
                             })(
-                                <Input type="number" step="0.01" style={{float: 'left',width:300}}/>
+                                <NumericInput style={{float: 'left',width:300}}/>
                                 )}
                         </FormItem>
                     </Col>

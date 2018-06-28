@@ -23,7 +23,7 @@ ppFtReducerMap[actionTypes.ORG_FT_PARAMLIST_UPDATE] = function (state, action) {
 }
 ppFtReducerMap[actionTypes.ORG_FT_DIALOG_CLOSE] = function (state, action) {
     console.log("readucer退出dialog" + JSON.stringify(action.payload));
-    return Object.assign({}, state, { operInfo: { objType: '', operType: ''} });
+    return Object.assign({}, state, { operInfo: { objType: '', operType: 'ORG_FT_DIALOG_CLOSE'} });
 }
 ppFtReducerMap[actionTypes.ORG_FT_PARAM_SAVE_SUCCESS] = function (state, action) {
     console.log("readucer保存成功" + JSON.stringify(action.payload));

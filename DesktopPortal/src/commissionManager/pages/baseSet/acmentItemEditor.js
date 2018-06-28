@@ -2,6 +2,7 @@
 import {connect} from 'react-redux';
 import React, {Component} from 'react'
 import {Row, Col, Form, Input,Tooltip,Button,Select,Checkbox} from 'antd'
+import NumericInput from './numberInput'
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -122,7 +123,7 @@ class AcmentItemEditor extends Component{
                                     initialValue: '',
                                     rules: [{ required: true, message: '请填写默认分摊比例!' }]
                                 })(
-                                    <Input step="0.01" type="number"  max="1.00" style={{ float: 'left', width: 200 }}></Input>
+                                    <NumericInput  style={{ float: 'left', width: 200 }}></NumericInput>
                                 )}
                             </FormItem>
                         </Col>
