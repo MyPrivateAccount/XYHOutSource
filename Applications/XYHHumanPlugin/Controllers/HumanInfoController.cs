@@ -501,7 +501,7 @@ namespace XYHHumanPlugin.Controllers
             var r = new ResponseMessage<List<HumanInfoResponse>>();
             try          
             {
-                r.Extension = await _humanManage.GethumanlistByorgid(lst);
+                //r.Extension = await _humanManage.GethumanlistByorgid(lst);
                 //await _humanManage.SimpleSearch(User, permissionId, keyword,branchId, pageSize, pageIndex);
             }
             catch (Exception e)

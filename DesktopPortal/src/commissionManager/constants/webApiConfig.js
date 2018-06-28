@@ -29,6 +29,7 @@ const WebApiConfig = {
         Base: BaseApiUrl + 'PermissionItems',
         List: BaseApiUrl + 'PermissionItems/list/',//获取权限列表
         Delete: BaseApiUrl + 'PermissionItems/delete',
+        Check: BaseApiUrl + "Permission/each"
     },
     rolePrivilege: {
         Base: BaseApiUrl + 'RolePermissions',//角色权限

@@ -44,6 +44,7 @@ namespace XYHHumanPlugin
             context.Services.AddDbContext<HumanDbContext>(options => options.UseMySql(context.ConnectionString), ServiceLifetime.Scoped);
             context.Services.AddScoped<IHumanManageStore, HumanManageStore>();
             context.Services.AddScoped<HumanManager>();
+            context.Services.AddScoped<HumanInfoManager>();
             context.Services.AddScoped<MonthManager>();
             context.Services.AddScoped<StationManager>();
             context.Services.AddScoped<SalaryManager>();
