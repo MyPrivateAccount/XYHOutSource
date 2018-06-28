@@ -13,18 +13,24 @@ class PeopleSet extends Component {
     state = {
         pagination: {},
         isDataLoading: false,
-        branchId: ''
+        branchId: '',
+        requirePermission:['YJ_RSFTZZSZ']
     }
     appTableColumns = [
-        { title: '组织', dataIndex: 'name', key: 'name' },
-        { title: '分摊比例', dataIndex: 'ftbl', key: 'ftbl' },
+        { title: '组织', dataIndex: 'shareName', key: 'shareName' },
+        { title: '分摊比例', dataIndex: 'shareRatio', key: 'shareRatio' },
         {
             title: '操作', dataIndex: 'edit', key: 'edit', render: (text, recored) => (
+                this.hasPermission(this.state.requirePermission)?
                 <span>
                     <Popconfirm title="是否删除该分摊项?" onConfirm={(e)=>this.zfconfirm(recored)} onCancel={this.zfcancel} okText="确认" cancelText="取消">
                         <Button type='primary' shape='circle' size='small' icon='delete' />
                     </Popconfirm>
+                    <Tooltip title='修改'>
+                            <Button type='primary' shape='circle' size='small' icon='edit' onClick={(e) => this.handleEditClick(recored)} />
+                    </Tooltip>
                 </span>
+                :null
             )
         }
     ];
@@ -61,7 +67,7 @@ class PeopleSet extends Component {
     };
     componentDidMount = () => {
         this.setState({isDataLoading:true})
-        this.props.dispatch(orgGetPermissionTree("BaseSet"));
+        this.props.dispatch(orgGetPermissionTree("YJ_RSFTZZSZ_CK"));
     }
     componentWillReceiveProps = (newProps) => {
         this.setState({ isDataLoading: false });
@@ -84,6 +90,7 @@ class PeopleSet extends Component {
         }
         if(newProps.ppftOp.operType === 'FT_PARAM_SAVE_SUCCESS'){
             this.handleSearch(this.state.branchId)
+            this.props.dispatch(orgFtDialogClose())
             newProps.ppftOp.operType = ''
         }
 
@@ -97,14 +104,25 @@ class PeopleSet extends Component {
             return data
         }
             for(let i=0;i<data.length;i++){
-                data[i].ftbl = data[i].ftbl*100+'%'
-                data[i].name = this.getOrgNameById(data[i].branchId)
+                data[i].shareRatio = data[i].shareRatio*100+'%'
+                data[i].shareName = data[i].shareName
             }
         return data
     }
-    //根据组织id获取组织名称
-    getOrgNameById=(branchId)=>{
-        return '测试'
+    //是否有权限
+    hasPermission=(requirePermission)=>{
+        let hasPermission = false;
+        if (this.props.judgePermissions && requirePermission) {
+            for (let i = 0; i < requirePermission.length; i++) {
+                if (this.props.judgePermissions.includes(requirePermission[i])) {
+                    hasPermission = true;
+                    break;
+                }
+            }
+        } else {
+            hasPermission = true;
+        }
+        return hasPermission;
     }
     render() {
         return (

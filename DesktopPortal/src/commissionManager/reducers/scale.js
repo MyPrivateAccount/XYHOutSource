@@ -24,10 +24,14 @@ scaleReducerMap[actionTypes.INCOME_SCALE_LIST_UPDATE] = function (state, action)
 }
 scaleReducerMap[actionTypes.INCOME_SCALE_DLGCLOSE] = function (state, action) {
     console.log("readucer退出dialog" + JSON.stringify(action.payload));
-    return Object.assign({}, state, { operInfo: { objType: '', operType: ''} });
+    return Object.assign({}, state, { operInfo: { objType: '', operType: 'INCOME_SCALE_DLGCLOSE'} });
 }
 scaleReducerMap[actionTypes.INCOME_SCALE_DEL_UPDATE] = function (state, action) {
     console.log("readucer删除成功" + JSON.stringify(action.payload));
     return Object.assign({}, state, { operInfo: { objType: '', operType: 'INCOME_SCALE_DEL_UPDATE'} });
+}
+scaleReducerMap[actionTypes.INCOME_SCALE_SAVE_SUCCESS] = function (state, action) {
+    console.log("readucer新增成功" + JSON.stringify(action.payload));
+    return Object.assign({}, state, { operInfo: { objType: '', operType: 'INCOME_SCALE_SAVE_SUCCESS'} });
 }
 export default handleActions(scaleReducerMap, initState)

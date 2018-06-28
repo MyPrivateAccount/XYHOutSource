@@ -4,6 +4,7 @@ import { acmentParamSave, acmentParamDlgClose, acmentParamItemAdd, acmentParamIt
 import React, { Component } from 'react'
 import { Button, Modal, Row, Col, Form, Input, Select, Checkbox, Tooltip, InputNumber } from 'antd'
 import AcmentItemEditor from './acmentItemEditor'
+import NumericInput from './numberInput'
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -187,10 +188,10 @@ class AcmentEditor extends Component {
                                 {...formItemLayout}
                                 label={(<span>默认分摊比例</span>)}>
                                 {getFieldDecorator('percent', {
-                                    initialValue: this.getPercent(this.state.paramInfo.percent),
+                                    initialValue: this.state.isEdit? this.getPercent(this.state.paramInfo.percent):'',
                                     rules: [{ required: true, message: '请填写默认分摊比例!' }]
                                 })(
-                                    <Input value={this.getPercent(this.state.paramInfo.percent)} step="0.01" type="number" max="1.00" style={{ float: 'left', width: 200 }}></Input>
+                                    <NumericInput style={{ float: 'left', width: 200 }}></NumericInput>
                                 )}
                             </FormItem>
                         </Col>

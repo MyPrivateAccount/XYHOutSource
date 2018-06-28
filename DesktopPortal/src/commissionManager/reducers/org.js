@@ -13,7 +13,8 @@ const initState = {
         AddNormalRoleTree: [],//添加普通角色时
         AddPublicRoleTree: [],//添加公共角色时
         AddRolePermissionTree: [],//角色授权时
-        BaseSetOrgTree:[]
+        BaseSetOrgTree:[],
+        RSFTZZOrgTree:[]//人数分摊组织页面的树
     },
     areaList: [],
     humanList:[]
@@ -25,6 +26,7 @@ treeReducerMap[actionTypes.ORG_GET_PERMISSION_TREE_UPDATE] = function (state, ac
     let AddUserTree = state.permissionOrgTree.AddUserTree, AddNormalRoleTree = state.permissionOrgTree.AddNormalRoleTree;
     let AddPublicRoleTree = state.permissionOrgTree.AddPublicRoleTree, AddRolePermissionTree = state.permissionOrgTree.AddRolePermissionTree;
     let BaseSetOrgTree = state.permissionOrgTree.BaseSetOrgTree
+    let RSFTZZOrgTree = state.permissionOrgTree.RSFTZZOrgTree
     let formatNodeList = [];
     for (var i in action.payload.extension) {
         var node = action.payload.extension[i];
@@ -60,10 +62,16 @@ treeReducerMap[actionTypes.ORG_GET_PERMISSION_TREE_UPDATE] = function (state, ac
     else if (action.payload.permissionType === "AuthorizationPermission") {
         AddRolePermissionTree = orgTreeSource;
     }
-    else if(action.payload.permissionType === "YJ_YJFTSZ_CK"){
+    else if(action.payload.permissionType === "YJ_YJFTSZ_CK"||
+            action.payload.permissionType === "YJ_RSFTZZSZ_CK"||
+            action.payload.permissionType === "YJ_TCBLSZ"||
+            action.payload.permissionType === "YJ_ZZCSSZ_CK"){
         BaseSetOrgTree = getContractOrg(orgTreeSource,null)
     }
-    return Object.assign({}, state, {permissionOrgTree: {AddUserTree: AddUserTree, AddNormalRoleTree: AddNormalRoleTree, AddPublicRoleTree: AddPublicRoleTree, AddRolePermissionTree: AddRolePermissionTree,BaseSetOrgTree:BaseSetOrgTree},operInfo:{operType:'org_update'}});
+    else if(action.payload.permissionType === "YJ_SZ_KXFTZZ"){
+        RSFTZZOrgTree = orgTreeSource
+    }
+    return Object.assign({}, state, {permissionOrgTree: {AddUserTree: AddUserTree, AddNormalRoleTree: AddNormalRoleTree, AddPublicRoleTree: AddPublicRoleTree, AddRolePermissionTree: AddRolePermissionTree,BaseSetOrgTree:BaseSetOrgTree,RSFTZZOrgTree:RSFTZZOrgTree},operInfo:{operType:'org_update'}});
 }
 function getContractOrg(orgTree,sArray) {
     if(sArray === null){
