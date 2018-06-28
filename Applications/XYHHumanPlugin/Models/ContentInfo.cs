@@ -170,7 +170,13 @@ namespace XYHHumanPlugin.Models
         public string Position { get; set; }
         [MaxLength(127)]
         public string PositionName { get; set; }
+        /// <summary>
+        /// 基本工资
+        /// </summary>
         public int? BaseSalary { get; set; }
+        /// <summary>
+        /// 岗位补贴
+        /// </summary>
         public int? Subsidy { get; set; }
         public int? ClothesBack { get; set; }
         public int? AdministrativeBack { get; set; }

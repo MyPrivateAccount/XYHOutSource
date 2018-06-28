@@ -1,7 +1,7 @@
 //组织参数设置
 import { connect } from 'react-redux';
 import React, { Component } from 'react';
-import { orgParamAdd, orgParamEdit, orgParamListGet, orgGetPermissionTree,orgParamDel } from '../../actions/actionCreator'
+import { orgParamAdd, orgParamDlgClose,orgParamEdit, orgParamListGet, orgGetPermissionTree, orgParamDel } from '../../actions/actionCreator'
 import { Layout, Table, Button, Checkbox, Popconfirm, Tooltip, Row, Col, Input, Spin, Select, TreeSelect } from 'antd'
 import SearchCondition from '../../constants/searchCondition'
 import OrgParamEditor from './orgParamEditor'
@@ -12,29 +12,33 @@ class OrgParamSet extends Component {
     state = {
         pagination: {},
         isDataLoading: false,
-        branchId: ''
+        branchId: '',
+        branchName:'',
+        requirePermission:['YJ_ZZCSSZ']
     }
     appTableColumns = [
-        { title: '组织', dataIndex: 'name', key: 'name' },
-        { title: '参数名称', dataIndex: 'parValue', key: 'parValue' },
-        { title: '参数值', dataIndex: 'parCode', key: 'parCode' },
+        { title: '组织', dataIndex: 'branchName', key: 'name' },
+        { title: '参数名称', dataIndex: 'parCode', key: 'parCode' },
+        { title: '参数值', dataIndex: 'parValue', key: 'parValue' },
         {
             title: '操作', dataIndex: 'edit', key: 'edit', render: (text, recored) => (
+                this.hasPermission(this.state.requirePermission)?
                 <span>
-                    <Popconfirm title="是否删除该项?" onConfirm={(e)=>this.zfconfirm(recored)} onCancel={this.zfcancel} okText="确认" cancelText="取消">
+                    <Popconfirm title="是否删除该项?" onConfirm={(e) => this.zfconfirm(recored)} onCancel={this.zfcancel} okText="确认" cancelText="取消">
                         <Button type='primary' shape='circle' size='small' icon='delete' />
                     </Popconfirm>
                     <Tooltip title='修改'>
                         <Button type='primary' shape='circle' size='small' icon='edit' onClick={(e) => this.handleModClick(recored)} />
                     </Tooltip>
-                </span>
+                </span>:
+                null
             )
         }
     ];
-    zfconfirm=(e)=>{
+    zfconfirm = (e) => {
         this.handleDelClick(e)
     }
-    handleDelClick = (info)=>{
+    handleDelClick = (info) => {
         info.branchId = this.state.branchId
         this.props.dispatch(orgParamDel(info))
     }
@@ -44,11 +48,14 @@ class OrgParamSet extends Component {
     }
     handleNew = (e) => {
         console.log(e);
-        this.props.dispatch(orgParamAdd(this.state.branchId));
+        let info = {}
+        info.branchId = this.state.branchId
+        info.branchName = this.state.branchName
+        this.props.dispatch(orgParamAdd(info));
     }
-    handleSearch = (e) => {
+    handleSearch = (e,label, extra) => {
         console.log(e)
-        this.setState({ branchId: e })
+        this.setState({ branchId: e ,branchName:label})
         SearchCondition.orgParamListCondition.branchId = e;
         console.log("查询条件", SearchCondition.orgParamListCondition);
         this.setState({ isDataLoading: true });
@@ -63,7 +70,7 @@ class OrgParamSet extends Component {
     };
     componentDidMount = () => {
         this.setState({ isDataLoading: true })
-        this.props.dispatch(orgGetPermissionTree("BaseSet"));
+        this.props.dispatch(orgGetPermissionTree("YJ_ZZCSSZ_CK"));
     }
     componentWillReceiveProps = (newProps) => {
         this.setState({ isDataLoading: false });
@@ -76,12 +83,17 @@ class OrgParamSet extends Component {
         this.setState({ pagination: paginationInfo });
         if (newProps.operInfo.operType === 'org_update') {
             console.log('org_update')
-            this.setState({ isDataLoading: true, branchId: newProps.permissionOrgTree.AddUserTree[0].key })
-            this.handleSearch(newProps.permissionOrgTree.BaseSetOrgTree[0].key)
+            this.setState({ isDataLoading: true, branchId: newProps.permissionOrgTree.BaseSetOrgTree[0].key })
+            this.handleSearch(newProps.permissionOrgTree.BaseSetOrgTree[0].key,newProps.permissionOrgTree.BaseSetOrgTree[0].label)
             newProps.operInfo.operType = ''
         }
-        if(newProps.paramOp.operType ==='ORG_PARAM_DEL_UPDATE'){
+        if (newProps.paramOp.operType === 'ORG_PARAM_DEL_UPDATE') {
             this.handleSearch(this.state.branchId)
+            newProps.paramOp.operType = ''
+        }
+        if(newProps.paramOp.operType === 'ORG_PARAM_SAVE_UPDATE'){
+            this.handleSearch(this.state.branchId,this.state.branchName)
+            this.props.dispatch(orgParamDlgClose())
             newProps.paramOp.operType = ''
         }
     }
@@ -90,18 +102,33 @@ class OrgParamSet extends Component {
             return null
         }
         let data = []
-        data = Object.assign(data,this.props.orgParamSearchResult.extension)
-        if(this.props.paramOp.operType!=='ORG_PARAMLIST_UPDATE'){
+        data = Object.assign(data, this.props.orgParamSearchResult.extension)
+        if (this.props.paramOp.operType !== 'ORG_PARAMLIST_UPDATE') {
             return data
         }
         for (let i = 0; i < data.length; i++) {
             data[i].name = this.getOrgNameById(data[i].branchId)
-            }
+        }
         return data
     }
     //根据组织id获取组织名称
     getOrgNameById = (branchId) => {
         return '测试'
+    }
+    //是否有权限
+    hasPermission = (requirePermission) => {
+        let hasPermission = false;
+        if (this.props.judgePermissions && requirePermission) {
+            for (let i = 0; i < requirePermission.length; i++) {
+                if (this.props.judgePermissions.includes(requirePermission[i])) {
+                    hasPermission = true;
+                    break;
+                }
+            }
+        } else {
+            hasPermission = true;
+        }
+        return hasPermission;
     }
     render() {
         return (
@@ -133,7 +160,7 @@ function MapStateToProps(state) {
         permissionOrgTree: state.org.permissionOrgTree,
         orgParamSearchResult: state.orgparam.orgParamSearchResult,
         operInfo: state.org.operInfo,
-        paramOp:state.orgparam.operInfo
+        paramOp: state.orgparam.operInfo
     }
 }
 

@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {withReducer} from 'react-redux-dynamic-reducer';
 import {connect} from 'react-redux';
 import reducers from './reducers/index';
-import {Layout, Menu, Icon} from 'antd';
+import {Layout, Menu, Icon, Button} from 'antd';
 import createHistory from 'history/createMemoryHistory'
 import {ConnectedRouter} from 'react-router-redux'
 import {Route } from 'react-router'
@@ -184,6 +184,7 @@ class ExpenseManagerIndex extends Component {
                 >    <div className="logo" />
                     <Menu
                         theme="dark"
+                        className="left-menu"
                         defaultSelectedKeys = {[this.state.activeMenu.menuID]}
                         selectedKeys={[this.state.activeMenu.menuID]}
                         mode="inline"
@@ -202,9 +203,10 @@ class ExpenseManagerIndex extends Component {
                 </Sider>
                 <Layout>
                     <Header>
-                        <div onClick={this.goBack} className="back-btn" style={{display: this.state.showBack?'inline-block':'none'}}>
-                            <Icon type="left" /><span className="b-text">返回</span>
-                        </div> 
+                        <Button type="primary" onClick={this.goBack} style={{display: this.state.showBack?'inline-block':'none'}}>
+                            <Icon type="left" />返回
+                        </Button>
+                     
                         {
                             !this.state.showBack? <div>{this.state.title}</div>:null
                         }

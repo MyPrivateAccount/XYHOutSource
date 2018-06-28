@@ -43,12 +43,25 @@ export function* saveScaleDataAsync(state){
     //等待数据接口
     let result = { isOk: false, msg: '保存提成比例设置成功!' };
     console.log(state)
-    let url = WebApiConfig.baseset.incomesave;
+    let url = ''
+    if(state.payload.mod){
+        url = WebApiConfig.baseset.incomesave + state.payload.id
+        console.log(url)
+    }
+    else{
+        url = WebApiConfig.baseset.incomesave
+        console.log(url)
+    }
     try {
         console.log(url)
         console.log('saveScaleDataAsync:', state);
-        let res = yield call(ApiClient.put, url, state.payload);
-       
+        let res = null
+        if(state.payload.mod){
+            res = yield call(ApiClient.put, url, state.payload);
+        }
+        else{
+            res = yield call(ApiClient.post, url, state.payload);
+        }
         //console.log(res, '获取参数列表');
         getApiResult(res, result);
         if (result.isOk) {

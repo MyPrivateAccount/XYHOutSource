@@ -93,7 +93,7 @@ export function* saveAcmentDataAsync(state){
         console.log(result.msg)
         notification.error({
             message: '提示',
-            description: '保存业绩分摊数据信息失败!',
+            description: '保存业绩分摊数据信息失败!'+result.msg,
             duration: 3
         });
     }
@@ -128,6 +128,36 @@ export function* delAcmentDataAsync(state){
     }
 }
 
+//获取分摊项数据
+export function* getAcmentItemsAsyncs(state){
+    let result = { isOk: false, msg: '获取业绩分摊项数据成功!' };
+    console.log(state)
+    let url = WebApiConfig.baseset.acmentitems+'?branchId='+state.payload;
+    try {
+        console.log(url)
+        console.log('getAcmentItemsAsyncs:', state);
+        let res = yield call(ApiClient.get, url);
+       
+        //console.log(res, '获取参数列表');
+        getApiResult(res, result);
+        if (result.isOk) {
+            yield put({ type: actionUtils.getActionType(actionTypes.ACMENT_PARAM_ITEM_GET_UPDATE), payload: result });
+            // yield put({ type: actionUtils.getActionType(actionTypes.SET_SEARCH_LOADING), payload: false });
+        }
+    } catch (e) {
+        result.msg = "获取业绩分摊项接口调用异常！";
+    }
+    if (!result.isOk) {
+        console.log(result.msg)
+        notification.error({
+            message: '提示',
+            description: '获取业绩分摊项信息失败!',
+            duration: 3
+        });
+    }
+    //等待数据接口
+    //yield put({ type: actionUtils.getActionType(actionTypes.ACMENT_PARAM_LIST_UPDATE), payload: result });
+}
 //保存数据
 export function* saveAcmentItemDataAsync(state){
     let result = { isOk: false, msg: '新增分摊项保存数据失败!' };
@@ -139,5 +169,6 @@ export default function* watchAllAcmentAsync(){
     yield takeLatest(actionUtils.getActionType(actionTypes.ACMENT_PARAM_SAVE), saveAcmentDataAsync);
     yield takeLatest(actionUtils.getActionType(actionTypes.ACMENT_PARAM_DEL), delAcmentDataAsync);
     yield takeLatest(actionUtils.getActionType(actionTypes.ACMENT_PARAM_ITEM_SAVE), saveAcmentItemDataAsync);
+    yield takeLatest(actionUtils.getActionType(actionTypes.ACMENT_PARAM_ITEM_GET), getAcmentItemsAsyncs);
 
 }

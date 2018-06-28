@@ -29,6 +29,7 @@ const WebApiConfig = {
         Base: BaseApiUrl + 'PermissionItems',
         List: BaseApiUrl + 'PermissionItems/list/',//获取权限列表
         Delete: BaseApiUrl + 'PermissionItems/delete',
+        Check: BaseApiUrl + "Permission/each"
     },
     rolePrivilege: {
         Base: BaseApiUrl + 'RolePermissions',//角色权限
@@ -79,6 +80,7 @@ const WebApiConfig = {
         acmentlistget:basicDataBaseApiUrl+'yj/allocationsettings/',
         acmentdetail:basicDataBaseApiUrl+'yj/allocationsettings/',
         acmentsave:basicDataBaseApiUrl+'yj/allocationsettings/',
+        acmentitems:basicDataBaseApiUrl+'yj/allocationsettings/items',
         orgsave:basicDataBaseApiUrl+'yj/branchsettings/',
         ppftsave:basicDataBaseApiUrl+'yj/brandsharesetting/',
         incomesave:basicDataBaseApiUrl+'yj/rules/'

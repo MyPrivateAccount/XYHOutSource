@@ -169,12 +169,7 @@ reducerMap[actionTypes.UPDATE_ATTENDANCESETTINGLST] = function (state, action) {
 reducerMap[actionTypes.UPDATE_REWARDPUNISHHUMANLIST] = function (state, action) {
     return Object.assign({}, state, {rewardpunishhumanlst: action.payload});
 }
-reducerMap[actionTypes.UPDATE_REWARDPUNISHMENTLIST] = function (state, action) {
-    let lst = ["", "行政奖励", "行政惩罚", "行政扣款"];
-    let f = action.payload.map(function (v, i) {
-        return {key: i + "", ...v, typename: lst[v.type]};
-    });
-    return Object.assign({}, state, {rewardpunishmenList: f, showLoading: false});
+reducerMap[actionTypes.UPDATE_REWARDPUNISHMENTLIST] = function(state, action) {
+    return Object.assign({}, state, {rewardpunishmenList: action.payload, showLoading:false} );
 }
-
 export default handleActions(reducerMap, initState);

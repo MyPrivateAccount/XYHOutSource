@@ -2,7 +2,7 @@
 import { connect } from 'react-redux';
 import React, { Component } from 'react';
 import { Layout, Table, Button, Checkbox, Popconfirm, Tooltip, Row, Col, Input, Spin, Select, TreeSelect } from 'antd'
-import { incomeScaleAdd, incomeScaleEdit, incomeScaleDel, incomeScaleListGet, orgGetPermissionTree, getDicParList } from '../../actions/actionCreator'
+import { incomeScaleAdd,incomeScaleDlgClose, incomeScaleEdit, incomeScaleDel, incomeScaleListGet, orgGetPermissionTree, getDicParList } from '../../actions/actionCreator'
 import SearchCondition from '../../constants/searchCondition'
 import InComeScaleEditor from './incomeScaleEditor'
 
@@ -12,16 +12,18 @@ class InComeScaleSet extends Component {
     state = {
         pagination: {},
         isDataLoading: false,
-        params: { name: "测试", jobType: "测试", branchId: '', code: '' }
+        params: { branchName: "测试", codeName: "测试", branchId: '', code: '' },
+        requirePermission:['YJ_SZ_TCBLSZ']
     }
     appTableColumns = [
-        { title: '组织', dataIndex: 'name', key: 'name' },
-        { title: '职位类别', dataIndex: 'jobType', key: 'jobType' },
+        { title: '组织', dataIndex: 'branchName', key: 'branchName' },
+        { title: '职位类别', dataIndex: 'codeName', key: 'codeName' },
         { title: '起始业绩', dataIndex: 'startYj', key: 'startYj' },
         { title: '结束业绩', dataIndex: 'endYj', key: 'endYj' },
         { title: '提成比例', dataIndex: 'percent', key: 'percent' },
         {
             title: '操作', dataIndex: 'edit', key: 'edit', render: (text, recored) => (
+                this.hasPermission(this.state.requirePermission)?
                 <span>
                     <Popconfirm title="是否删除该项?" onConfirm={(e) => this.zfconfirm(recored)} onCancel={this.zfcancel} okText="确认" cancelText="取消">
                         <Button type='primary' shape='circle' size='small' icon='delete' />
@@ -30,6 +32,7 @@ class InComeScaleSet extends Component {
                         <Button type='primary' shape='circle' size='small' icon='edit' onClick={(e) => this.handleModClick(recored)} />
                     </Tooltip>
                 </span>
+                :null
             )
         }
     ];
@@ -67,7 +70,7 @@ class InComeScaleSet extends Component {
     }
     componentDidMount = () => {
         this.setState({ isDataLoading: true })
-        this.props.dispatch(orgGetPermissionTree("BaseSet"));
+        this.props.dispatch(orgGetPermissionTree("YJ_TCBLSZ"));
         this.props.dispatch(getDicParList(['POSITION_TYPE']));
     }
     componentWillReceiveProps = (newProps) => {
@@ -84,6 +87,7 @@ class InComeScaleSet extends Component {
             console.log('org_update')
             let params = { ...this.state.params }
             params.branchId = newProps.permissionOrgTree.BaseSetOrgTree[0].key
+            params.branchName = newProps.permissionOrgTree.BaseSetOrgTree[0].label
             this.setState({ params }, () => {
                 if (this.state.params.branchId !== '' && this.state.params.code !== '') {
                     this.setState({ isDataLoading: true })
@@ -95,6 +99,7 @@ class InComeScaleSet extends Component {
         if (newProps.basicOper.operType === 'DIC_GET_PARLIST_COMPLETE') {
             let params = { ...this.state.params }
             params.code = newProps.basicData.zwTypes[0].value
+            params.codeName = newProps.basicData.zwTypes[0].key
             this.setState({ params }, () => {
                 if (this.state.params.branchId !== '' && this.state.params.code !== '') {
                     this.setState({ isDataLoading: true })
@@ -103,19 +108,23 @@ class InComeScaleSet extends Component {
             })
             newProps.basicOper.operType = ''
         }
-        if (newProps.incomeOp.operType === 'INCOME_SCALE_DEL_UPDATE') {
+        if (newProps.incomeOp.operType === 'INCOME_SCALE_DEL_UPDATE'||
+            newProps.incomeOp.operType === 'INCOME_SCALE_SAVE_SUCCESS') {
+            this.props.dispatch(incomeScaleDlgClose())
             this.handleSearch()
             newProps.incomeOp.operType = ''
         }
     }
-    treeChange = (e) => {
+    treeChange = (value, label, extra) => {
         let params = { ...this.state.params }
-        params.branchId = e
+        params.branchId = value
+        params.branchName = label
         this.setState({ params })
     }
-    zwlbChange = (e) => {
+    zwlbChange = (value, option) => {
         let params = { ...this.state.params }
-        params.code = e
+        params.code = value
+        params.codeName = this.getLevel(value)
         this.setState({ params })
     }
     getListData = () => {
@@ -124,13 +133,14 @@ class InComeScaleSet extends Component {
         }
         let data = this.props.scaleSearchResult.extension;
 
-        if(this.props.incomeOp.operType!=='INCOME_SCALE_LIST_UPDATE'){
+        if (this.props.incomeOp.operType !== 'INCOME_SCALE_LIST_UPDATE') {
             return data
         }
 
+        this.props.incomeOp.operType = ''
+
         for (let i = 0; i < data.length; i++) {
-            data[i].name = this.getOrgName(data[i].branchId)
-            data[i].jobType = this.getLevel(data[i].code)
+            data[i].percent = data[i].percent*100+'%'
         }
         return data
     }
@@ -138,7 +148,27 @@ class InComeScaleSet extends Component {
         return '测试'
     }
     getLevel = (code) => {
-        return '测试'
+        let temps = this.props.basicData.zwTypes
+        for(let i=0;i<temps.length;i++){
+            if(temps[i].value === code){
+                return temps[i].key
+            }
+        }
+    }
+    //是否有权限
+    hasPermission = (requirePermission) => {
+        let hasPermission = false;
+        if (this.props.judgePermissions && requirePermission) {
+            for (let i = 0; i < requirePermission.length; i++) {
+                if (this.props.judgePermissions.includes(requirePermission[i])) {
+                    hasPermission = true;
+                    break;
+                }
+            }
+        } else {
+            hasPermission = true;
+        }
+        return hasPermission;
     }
     render() {
         let zwTypes = this.props.basicData.zwTypes;
@@ -167,7 +197,7 @@ class InComeScaleSet extends Component {
                     <Button type='primary' shape='circle' icon='plus' onClick={this.handleNew} style={{ 'margin': '10' }} />
                 </Tooltip>
                 <Spin spinning={this.state.isDataLoading}>
-                    <Table pagination={this.state.pagination} columns={this.appTableColumns} dataSource={this.props.scaleSearchResult.extension} onChange={this.handleTableChange}></Table>
+                    <Table pagination={this.state.pagination} columns={this.appTableColumns} dataSource={this.getListData()} onChange={this.handleTableChange}></Table>
 
                     <InComeScaleEditor />
                 </Spin>

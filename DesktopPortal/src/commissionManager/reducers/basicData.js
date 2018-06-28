@@ -41,7 +41,9 @@ const initState = {
     //成交报告审核状态
     spTypes:[],
     //职位等级
-    zwTypes:[]
+    zwTypes:[],
+    //参数名称
+    branchTypes:[]
 };
 let reducerMap = {};
 //字典数据
@@ -81,6 +83,7 @@ reducerMap[actionTypes.DIC_GET_PARLIST_COMPLETE] = function (state, action) {
     let spTypes = [...state.spTypes];
 
     let zwTypes = [...state.zwTypes];
+    let branchTypes = [...state.branchTypes];
     
     console.log('字典数据：', action.payload);
     action.payload.map((group) => {
@@ -192,6 +195,11 @@ reducerMap[actionTypes.DIC_GET_PARLIST_COMPLETE] = function (state, action) {
             group.dictionaryDefines = group.dictionaryDefines.sort((aItem, bItem) => aItem.order - bItem.order);
             zwTypes = group.dictionaryDefines;
         }
+        else if(group.groupId === 'YJ_BRANCH_PAR'){
+            group.dictionaryDefines = group.dictionaryDefines.sort((aItem, bItem) => aItem.order - bItem.order);
+            branchTypes = group.dictionaryDefines;
+        }
+
   
 
     });
@@ -223,7 +231,8 @@ reducerMap[actionTypes.DIC_GET_PARLIST_COMPLETE] = function (state, action) {
         khTypes:khTypes,
         ghTypes:ghTypes,
         spTypes:spTypes,
-        zwTypes:zwTypes
+        zwTypes:zwTypes,
+        branchTypes:branchTypes
     });
 }
 

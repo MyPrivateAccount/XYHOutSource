@@ -5,13 +5,14 @@ const initState = {
     showLoading: false,
     operInfo: { operType: ''},
     activeScale:{},
-    scaleSearchResult:[]
+    scaleSearchResult:[],
+    ext:[]
 };
 let acmReducerMap = {};
 
 acmReducerMap[actionTypes.ACMENT_PARAM_ADD] = function (state, action) {
     console.log("readucer新增业绩分摊" + JSON.stringify(action.payload));
-    return Object.assign({}, state, { operInfo: { operType: 'add', dialogOpen: true } });
+    return Object.assign({}, state, {activeScale:action.payload, operInfo: { operType: 'add', dialogOpen: true } });
 }
 acmReducerMap[actionTypes.ACMENT_PARAM_ITEM_ADD] = function (state, action) {
     console.log("readucer新增业绩分摊" + JSON.stringify(action.payload));
@@ -40,5 +41,9 @@ acmReducerMap[actionTypes.ACMENT_PARAM_UPDATE] = function (state, action) {
 acmReducerMap[actionTypes.ACMENT_PARAM_DEL_UPDATE] = function (state, action) {
     console.log("reducer del update" + JSON.stringify(action.payload));
     return Object.assign({}, state, { operInfo: { objType: '', operType: 'ACMENT_PARAM_DEL_UPDATE'} });
+}
+acmReducerMap[actionTypes.ACMENT_PARAM_ITEM_GET_UPDATE] = function (state, action) {
+    console.log("reducer acment items get" + JSON.stringify(action.payload));
+    return Object.assign({}, state, {ext:action.payload.extension, operInfo: { objType: '', operType: 'ACMENT_PARAM_ITEM_GET_UPDATE'} });
 }
 export default handleActions(acmReducerMap, initState)

@@ -1,9 +1,11 @@
 //业绩分摊新增分摊项
 import {connect} from 'react-redux';
 import React, {Component} from 'react'
-import {Row, Col, Form, Input,Tooltip,Button} from 'antd'
+import {Row, Col, Form, Input,Tooltip,Button,Select,Checkbox} from 'antd'
+import NumericInput from './numberInput'
 
 const FormItem = Form.Item;
+const Option = Select.Option;
 
 class AcmentItemEditor extends Component{
     state = {
@@ -27,6 +29,19 @@ class AcmentItemEditor extends Component{
             }
         });
     }
+    getPercent=(e)=>{
+        let pp = e
+        pp = pp.substr(0,pp.length-1)
+        pp = parseFloat(pp)/100
+        return pp
+    }
+    isFixedChange=(e)=>{
+        let paramInfo = {...this.state.paramInfo}
+        paramInfo.isfixed = e.target.checked
+        this.setState({paramInfo},()=>{
+            console.log(this.state.paramInfo)
+        })
+    }
     render(){
         const {getFieldDecorator} = this.props.form;
         const formItemLayout = {
@@ -45,9 +60,9 @@ class AcmentItemEditor extends Component{
                                 </span>
                             )}
                             hasFeedback>
-                            {getFieldDecorator('itemCode', {
+                            {getFieldDecorator('code', {
 
-                                initialValue: this.state.paramInfo.ftItem,
+                                initialValue: '',
                                 rules: [{required: true, message: '请填写编码!' }]
                             })(
                                 <Input style={{float: 'left',width:200}}></Input>
@@ -70,14 +85,59 @@ class AcmentItemEditor extends Component{
                         <FormItem
                             {...formItemLayout}
                             label={(<span>名称</span>)}>
-                            {getFieldDecorator('itemName', {
-                                initialValue: this.state.paramInfo.ftScale,
+                            {getFieldDecorator('name', {
+                                initialValue: '',
                                 rules: [{required: true, message: '请填写名称!' }]
                             })(
                                 <Input style={{float: 'left',width:200}}></Input>
                                 )}
                         </FormItem></Col>
                 </Row>
+                <Row>
+                        <Col span={12}>
+                            <FormItem
+                                {...formItemLayout}
+                                label={(
+                                    <span>
+                                        分摊类型
+                                </span>
+                                )}
+                                hasFeedback>
+                                {getFieldDecorator('type', {
+                                    initialValue: this.state.paramInfo.type==='外部佣金'?"1":"2",
+                                })(
+                                    <Select initialValue="1" style={{ width: 200 }}>
+                                        <Option value="1">外部佣金</Option>
+                                        <Option value="2">内部分摊项</Option>
+                                    </Select>
+                                )}
+                            </FormItem>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col span={12}>
+                            <FormItem
+                                {...formItemLayout}
+                                label={(<span>默认分摊比例</span>)}>
+                                {getFieldDecorator('percent', {
+                                    initialValue: '',
+                                    rules: [{ required: true, message: '请填写默认分摊比例!' }]
+                                })(
+                                    <NumericInput  style={{ float: 'left', width: 200 }}></NumericInput>
+                                )}
+                            </FormItem>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col span={12} push={5}>
+                            <FormItem>
+                                {getFieldDecorator('isfixed', {
+                                    initialValue:true
+                                })(
+                                    <Checkbox defaultChecked={true}>固定比例</Checkbox>
+                                )}
+                            </FormItem></Col>
+                    </Row>
             </div>
         )
     }
