@@ -282,7 +282,7 @@ class CommissionManagerIndex extends Component {
                     onCollapse={this.toggle}>
                     <Menu mode="inline"
                         theme="dark"
-                        style={{height:'100%',overflowY:'auto', overflowX:'hidden', paddingBottom:'40px'}}
+                        className="left-menu"
                         onClick={this.handleMenuClick}
                         inlineCollapsed={this.state.collapsed}
                         defaultSelectedKeys = {[this.state.activeMenu.menuID]}
@@ -317,26 +317,26 @@ class CommissionManagerIndex extends Component {
                     <Content className={className}>
                         <ConnectedRouter history={history}>
                             <Layer>
-                                <Route path='/sz_yjft' render={(...props) => <LoadableAcmentPage user={this.props.user} {...props} />} />
-                                <Route path='/sz_rsft' render={(...props) => <LoadablePeopleSetPage user={this.props.user} {...props} />} />
-                                <Route path='/sz_fcbl' render={(...props) => <LoadableInComeScaleSetPage user={this.props.user} {...props} />} />
-                                <Route path='/sz_zzcs' render={(...props) => <LoadableOrgParamSetPage user={this.props.user} {...props} />} />
+                                <Route path='/sz_yjft' render={(props) => <LoadableAcmentPage user={this.props.user} {...props} />} />
+                                <Route path='/sz_rsft' render={(props) => <LoadablePeopleSetPage user={this.props.user} {...props} />} />
+                                <Route path='/sz_fcbl' render={(props) => <LoadableInComeScaleSetPage user={this.props.user} {...props} />} />
+                                <Route path='/sz_zzcs' render={(props) => <LoadableOrgParamSetPage user={this.props.user} {...props} />} />
 
-                                <Route path='/yj' render={(...props) => <LoadableMonthPage user={this.props.user} {...props} />} />
-                                <Route path='/ryft' render={(...props) => <LoadablePPFTPage user={this.props.user} {...props} />} />
-                                <Route path='/yftc' render={(...props) => <LoadableYFTCPage user={this.props.user} {...props} />} />
-                                <Route path='/sftc' render={(...props) => <LoadableSFTCPage user={this.props.user} {...props} />} />
-                                <Route path='/tccb' render={(...props) => <LoadableTCCBPage user={this.props.user} {...props} />} />
-                                <Route path='/yftccj' render={(...props) => <LoadableYFTCCJPage user={this.props.user} {...props} />} />
-                                <Route path='/lzryyj' render={(...props) => <LoadableLZRYYJPage user={this.props.user} {...props} />} />
-                                <Route path='/sfkj' render={(...props) => <LoadableSFKJQRJPage user={this.props.user} {...props} />} />
+                                <Route path='/yj' render={(props) => <LoadableMonthPage user={this.props.user} {...props} />} />
+                                <Route path='/ryft' render={(props) => <LoadablePPFTPage user={this.props.user} {...props} />} />
+                                <Route path='/yftc' render={(props) => <LoadableYFTCPage user={this.props.user} {...props} />} />
+                                <Route path='/sftc' render={(props) => <LoadableSFTCPage user={this.props.user} {...props} />} />
+                                <Route path='/tccb' render={(props) => <LoadableTCCBPage user={this.props.user} {...props} />} />
+                                <Route path='/yftccj' render={(props) => <LoadableYFTCCJPage user={this.props.user} {...props} />} />
+                                <Route path='/lzryyj' render={(props) => <LoadableLZRYYJPage user={this.props.user} {...props} />} />
+                                <Route path='/sfkj' render={(props) => <LoadableSFKJQRJPage user={this.props.user} {...props} />} />
                                 
-                                <Route path='/fyxq' render={(...props) => <LoadableFYXQBPage user={this.props.user} {...props} />} />
-                                <Route path='/yjtzmxhz' render={(...props) => <LoadableYJTZHZPage user={this.props.user} {...props} />} />
-                                <Route path='/tyxq' render={(...props) => <LoadableTYXQPage user={this.props.user} {...props} />} />
+                                <Route path='/fyxq' render={(props) => <LoadableFYXQBPage user={this.props.user} {...props} />} />
+                                <Route path='/yjtzmxhz' render={(props) => <LoadableYJTZHZPage user={this.props.user} {...props} />} />
+                                <Route path='/tyxq' render={(props) => <LoadableTYXQPage user={this.props.user} {...props} />} />
 
-                                <Route path='/myreport' render={(...props) => <LoadableDealRpPage user={this.props.user} {...props} />} />
-                                <Route path='/reportquery' render={(...props) => <LoadableDealRpQueryPage user={this.props.user} {...props} />} />
+                                <Route path='/myreport' render={(props) =>  <LoadableDealRpPage user={this.props.user} {...props} />} />
+                                <Route path='/reportquery' render={(props) => <LoadableDealRpQueryPage user={this.props.user} {...props} />} />
 
                             </Layer>
                         </ConnectedRouter>

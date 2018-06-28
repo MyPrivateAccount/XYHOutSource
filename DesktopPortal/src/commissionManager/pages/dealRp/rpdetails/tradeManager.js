@@ -13,6 +13,8 @@ import TradeAttact from './tradeAttact'
 import TradeTransfer from './tradeTransfer'
 import TradeAjust from './tradeAjust'
 import TradeReportTable from './tradeReportTable'
+import Layer, { LayerRouter } from '../../../../components/Layer'
+import {Route } from 'react-router'
 import moment from 'moment'
 
 const { Header, Sider, Content } = Layout;
@@ -216,13 +218,13 @@ class TradeManager extends Component {
     }
     render() {
         return (
-            <div style={{ display: this.props.vs ? 'block' : 'none' }}>
+            <Layer>
                 <Layout>
-                    <div>
+                    {/* <div>
                         <Tooltip title="返回">
                             <Button type='primary' shape='circle' icon='arrow-left' style={{ 'margin': 10, float: 'left' }} onClick={this.props.handleback} />
                         </Tooltip>
-                    </div>
+                    </div> */}
                     <Spin spinning={this.state.isDataLoading}>
                         <Content style={{ overflowY: 'auto', height: '100%' }}>
                             <Tabs defaultActiveKey="jyht" onChange={this.loadTabData}>
@@ -257,7 +259,7 @@ class TradeManager extends Component {
                     </Spin>
                     <TradeReportTable onSelf={this.onTradReportTableSelf} onHandleChooseCjbb={this.onHandleChooseCjbb} />
                 </Layout>
-            </div>
+            </Layer>
         )
     }
 }

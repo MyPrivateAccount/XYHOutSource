@@ -6,6 +6,8 @@ import TradeManager from './rpdetails/tradeManager'
 import DealRpTable from './dealRpTable'
 import SearchCondition from '../../constants/searchCondition'
 import { rpClear,syncRp,syncWy,syncYz,syncKh,syncFp } from '../../actions/actionCreator'
+import Layer, { LayerRouter } from '../../../components/Layer'
+import {Route } from 'react-router'
 
 const { Header, Content } = Layout;
 const Option = Select.Option;
@@ -24,8 +26,10 @@ class MyDealRp extends Component {
 
     }
     handleNew = (info) => {
-        this.setState({ isShowManager: true, rpId: '', editReport: false })
-        this.clearRp()
+        this.props.history.push(`${this.props.match.url}/reportInfo`, {entity: {}, op: 'add', pagePar: this.state.pagePar})
+
+      //  this.setState({ isShowManager: true, rpId: '', editReport: false })
+      //  this.clearRp()
     }
     //清除数据
     clearRp = (e) => {
@@ -66,15 +70,18 @@ class MyDealRp extends Component {
             }),
         };
         return (
-            <Layout>
+            <Layer className="content-page">
                 <div style={{ display: !this.state.isShowManager ? 'block' : 'none' }}>
                     <Tooltip title="新增">
-                        <Button type='primary' shape='circle' icon='plus' onClick={this.handleNew} style={{ 'margin': '10' }} />
+                        <Button type='primary'  onClick={this.handleNew} style={{ 'margin': '10' }} >录入成交报告</Button>
                     </Tooltip>
                     <DealRpTable SearchCondition={this.state.cd} onRpTable={this.onRpTable} type={'myget'}/>
                 </div>
-                <TradeManager vs={this.state.isShowManager} handleback={this.handleBack} rpId={this.state.rpId} isEdit={this.state.editReport} />
-            </Layout>
+                <LayerRouter>
+                    <Route path={`${this.props.match.url}/reportInfo`}  render={(props)=> <TradeManager {...props} vs={this.state.isShowManager} handleback={this.handleBack} rpId={this.state.rpId} isEdit={this.state.editReport} />}/>
+                </LayerRouter>
+               
+            </Layer>
         )
     }
 }

@@ -184,6 +184,7 @@ class ExpenseManagerIndex extends Component {
                 >    <div className="logo" />
                     <Menu
                         theme="dark"
+                        className="left-menu"
                         defaultSelectedKeys = {[this.state.activeMenu.menuID]}
                         selectedKeys={[this.state.activeMenu.menuID]}
                         mode="inline"
