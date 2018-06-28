@@ -57,7 +57,7 @@ const menuDefine = [
         menuIcon:'appstore-o',
         type:'subMenu',
         menuItems:[
-            {menuID:"menu_yjftxsz",displayName:"业绩分摊项设置",menuIcon:'contacts',type:'item'},
+            {menuID:"menu_yjftxsz",displayName:"业绩分摊项设置",menuIcon:'contacts',type:'item',/*requirePermission:['YJ_YJFTSZ_CK']*/},
             {menuID:"menu_rsftzzsz",displayName:"人数分摊组织设置",menuIcon:'contacts',type:'item'},
             {menuID:"menu_tcblsz",displayName:"提成比例设置",menuIcon:'contacts',type:'item'},
             {menuID:"menu_zzcssz",displayName:"组织参数设置",menuIcon:'contacts',type:'item'}
@@ -135,10 +135,12 @@ class CommissionManagerIndex extends Component {
                             <SubMenu key={submenu.menuID} title={<span><Icon type={submenu.menuIcon} /><span>{submenu.displayName}</span></span>}>
                             {
                             submenu.menuItems.map((menu,j)=>
+                            this.hasPermission(menu)?
                                 <Menu.Item key={menu.menuID}>
                                     <Icon type={menu.menuIcon} />
                                     <span>{menu.displayName}</span>
                                 </Menu.Item>
+                                :null
                             )}
                             </SubMenu>
                         )}
@@ -150,7 +152,7 @@ class CommissionManagerIndex extends Component {
                         isShowHeader ? < Header > {this.state.activeMenu.displayName}</Header> : null
                     }
                     <Content className={className}>
-                         <ContentPage curMenuID={this.state.activeMenu.menuID} user={this.props.oidc.user}/>
+                         <ContentPage curMenuID={this.state.activeMenu.menuID} user={this.props.oidc.user} judgePermissions={this.props.judgePermissions}/>
                     </Content>
                 </Layout>
             </Layout>

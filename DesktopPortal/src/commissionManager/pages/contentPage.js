@@ -75,71 +75,72 @@ const LoadableTYXQPage = Loadable({//调整佣
 function ContentPage(props) {
     const { curMenuID } = props;
     const {user} = props;
+    const {judgePermissions} = props;
 
     if (curMenuID === "menu_yjftxsz") {
         console.log("menu_yjftxsz");
-        return <LoadableAcmentPage user={user}/>;
+        return <LoadableAcmentPage user={user} judgePermissions={judgePermissions}/>;
     }
     else if(curMenuID === "menu_rsftzzsz"){
         console.log("menu_rsftzzsz");
-        return <LoadablePeopleSetPage user={user}/>;
+        return <LoadablePeopleSetPage user={user} judgePermissions={judgePermissions}/>;
     }
     else if(curMenuID === "menu_tcblsz"){
         console.log("menu_tcblsz");
-        return <LoadableInComeScaleSetPage user={user}/>;
+        return <LoadableInComeScaleSetPage user={user} judgePermissions={judgePermissions}/>;
     }
     else if(curMenuID === "menu_zzcssz"){
         console.log("menu_zzcssz");
-        return <LoadableOrgParamSetPage user={user}/>;
+        return <LoadableOrgParamSetPage user={user} judgePermissions={judgePermissions}/>;
     }
     else if(curMenuID === 'menu_myrp'){
         console.log("menu_myrp");
-        return <LoadableDealRpPage user={user}/>;
+        return <LoadableDealRpPage user={user} judgePermissions={judgePermissions}/>;
     }
     else if(curMenuID === 'menu_query'){
         console.log("menu_query");
-        return <LoadableDealRpQueryPage user={user}/>;
+        return <LoadableDealRpQueryPage user={user} judgePermissions={judgePermissions}/>;
     }
     else if(curMenuID === 'menu_sumbymonth'){
         console.log("menu_sumbymonth");
-        return <LoadableMonthPage user={user}/>;
+        return <LoadableMonthPage user={user} judgePermissions={judgePermissions}/>;
     }
     else if(curMenuID === 'menu_ps'){
         console.log("menu_ps");
-        return <LoadablePPFTPage user={user}/>;
+        return <LoadablePPFTPage user={user} judgePermissions={judgePermissions}/>;
     }
     else if(curMenuID === 'menu_yftcb'){
         console.log("menu_yftcb");
-        return <LoadableYFTCPage user={user}/>;
+        return <LoadableYFTCPage user={user} judgePermissions={judgePermissions}/>;
     }
     else if(curMenuID === 'menu_sftcb'){
         console.log("menu_sftcb");
-        return <LoadableSFTCPage user={user}/>;
+        return <LoadableSFTCPage user={user} judgePermissions={judgePermissions}/>;
     }
     else if(curMenuID === 'menu_tccbftb'){
         console.log("menu_tccbftb");
-        return <LoadableTCCBPage user={user}/>;
+        return <LoadableTCCBPage user={user} judgePermissions={judgePermissions}/>;
     }
     else if(curMenuID === 'menu_yftccjb'){
         console.log("menu_yftccjb");
-        return <LoadableYFTCCJPage user={user}/>;
+        return <LoadableYFTCCJPage user={user} judgePermissions={judgePermissions}/>;
     }
     else if(curMenuID === 'menu_lzryyjqrb'){
         console.log("menu_lzryyjqrb");
-        return <LoadableLZRYYJPage user={user}/>;
+        return <LoadableLZRYYJPage user={user} judgePermissions={judgePermissions}/>;
     }
     else if(curMenuID === 'menu_sfkjqrb'){
         console.log("menu_sfkjqrb");
-        return <LoadableSFKJQRJPage user={user}/>;
+        return <LoadableSFKJQRJPage user={user} judgePermissions={judgePermissions}/>;
     }
     else if(curMenuID === 'menu_fyxcb'){
-        return <LoadableFYXQBPage user={user}/>;
+        return <LoadableFYXQBPage user={user} judgePermissions={judgePermissions}/>;
     }
     else if(curMenuID === 'menu_yjtzmxb'){
-        return <LoadableYJTZHZPage user={user}/>;
+        return <LoadableYJTZHZPage user={user} judgePermissions={judgePermissions}/>;
     }
     else if(curMenuID === 'menu_tymxb'){
-        return <LoadableTYXQPage user={user}/>;
+        return <LoadableTYXQPage user={user} judgePermissions={judgePermissions}/>;
     }
     return null;
 }

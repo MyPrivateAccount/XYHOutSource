@@ -1,5 +1,5 @@
 import {connect} from 'react-redux';
-import {setSearchLoadingVisible, getDicParList, adduserPage, searchRewardPunishment} from '../../actions/actionCreator';
+import {setSearchLoadingVisible, getDicParList, adduserPage, searchRewardPunishment, deleteRewardPunishment} from '../../actions/actionCreator';
 import React, {Component} from 'react';
 import {Input, Spin, Upload, Checkbox, Button, notification, Modal, Row, Col, InputNumber, Table} from 'antd';
 import Layer, {LayerRouter} from '../../../components/Layer'
@@ -18,37 +18,28 @@ const columns = [
     {title: '有效日期', dataIndex: 'workDate', key: 'workDate'},
     {title: '金额', dataIndex: 'money', key: 'money'},
     {title: '类型', dataIndex: 'typename', key: 'typename', },
+    {title: '详细类型', dataIndex: 'detailname', key: 'detailname', },
     {title: '备注', dataIndex: 'comments', key: 'comments'},
 ];
 
-
-const rowSelection = {
-    onChange: (selectedRowKeys, selectedRows) => {
-        console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-    },
-    getCheckboxProps: record => ({
-        disabled: record.name === 'Disabled User', // Column configuration not to be checked
-        name: record.name,
-    }),
-}
-
 class MainIndex extends Component {
     state = {
-        attendanceList: [],
         selList: [],
     }
 
     componentWillMount() {//ADMINISTRATIVE_REWARD  ADMINISTRATIVE_PUNISHMENT  ADMINISTRATIVE_DEDUCT
+        this.props.dispatch(setSearchLoadingVisible(true));
+        this.props.dispatch(searchRewardPunishment(this.props.searchInfo));
         this.props.dispatch(getDicParList(["ADMINISTRATIVE_REWARD, ADMINISTRATIVE_PUNISHMENT, ADMINISTRATIVE_DEDUCT"]));
     }
-
+    
     handleClickFucButton = (e) => {
         if (e.target.id === "import") {
-            this.props.dispatch(adduserPage({id: "2", menuID: "awpuinput", displayName: '行政惩罚录入', type: 'item'}));
+            this.props.dispatch(adduserPage({id: "2", menuID: "awpuinput", displayName: '行政奖惩录入', type: 'item'}));
             this.gotoSubPage("inputRPInfo", {});
         } else if (e.target.id === "delete") {
-            if (this.props.selAttendanceList.length > 0) {
-                //this.props.dispatch(deleteAttendenceItem(this.props.selAttendanceList[this.props.selAttendanceList.length-1].id));
+            if (this.state.selList.length > 0) {
+                this.props.dispatch(deleteRewardPunishment(this.state.selList[this.state.selList.length-1].id));
             }
             else {
                 notification.error({
@@ -89,7 +80,31 @@ class MainIndex extends Component {
     }
 
     render() {
+        let self = this;
         let showLoading = this.props.showLoading;
+
+        let lst =["","行政奖励","行政惩罚","行政扣款"];
+        let datalist = this.props.searchInfo.rewardpunishmenList.extension.map(function(v, i) {
+            let detailtype = null;
+            switch (this.state.type) {
+                case 1:detailtype = this.props.administrativereward;break;
+                case 2:detailtype = this.props.administrativepunishment;break;
+                case 3:detailtype = this.props.administrativededuct;break;
+                default:detailtype = [];break;
+            }
+            return {key: i+"", ...v, typename:lst[v.type], detailname:detailtype[v.detail].key};
+        });
+        
+        const rowSelection = {
+            onChange: (selectedRowKeys, selectedRows) => {
+                self.setState({selList: selectedRowKeys});
+            },
+            getCheckboxProps: record => ({
+                disabled: record.name === 'Disabled User', // Column configuration not to be checked
+                name: record.name,
+            }),
+        }
+
         return (
             <Layer>
                 <Spin spinning={showLoading}>
@@ -112,13 +127,13 @@ class MainIndex extends Component {
                                 : null)
                     }
                     <div>
-                        <p style={{marginBottom: '10px'}}>目前已为你筛选出<b>{this.props.searchInfo.rewardpunishmenList.extension.length}</b>条考勤信息</p>
+                        <p style={{marginBottom: '10px'}}>目前已为你筛选出<b>{datalist.length}</b>条考勤信息</p>
                         <div id="searchResult">
                             <Table id={"table"} rowKey={record => record.key}
                                 columns={columns}
                                 pagination={this.props.searchInfo}
                                 onChange={this.handleChangePage}
-                                dataSource={this.props.searchInfo.rewardpunishmenList.extension} bordered size="middle"
+                                dataSource={datalist} bordered size="middle"
                                 rowSelection={rowSelection} />
                         </div>
                     </div>
@@ -135,6 +150,9 @@ function mapStateToProps(state) {
     return {
         searchInfo: state.search,
         showLoading: state.search.showLoading,
+        administrativereward: state.basicData.administrativereward,
+        administrativepunishment: state.basicData.administrativepunishment,
+        administrativededuct: state.basicData.administrativededuct,
     }
 }
 

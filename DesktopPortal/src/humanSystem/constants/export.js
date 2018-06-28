@@ -618,7 +618,7 @@ export const MonthHead = [//以第一层为基准, 必须平行
                 }
             },
             {
-                t: "s", v: "应出勤天数", row: 2,col: 1,
+                t: "s", v: "正常出勤天数", row: 2,col: 1,
                 s: {
                     fill: {
                         patternType: "solid",
@@ -820,6 +820,30 @@ export const MonthHead = [//以第一层为基准, 必须平行
                             }
                         }
                     },
+                    {
+                        t: "s", v: "行政奖励",row: 1, col: 1,
+                        s: {
+                            fill: {
+                                patternType: "solid",
+                                bgColor: { indexed: 64 },
+                                fgColor: {rgb: "BFBFBF"}
+                            },
+                            font: {
+                                name: "Calibri",
+                                sz: 10,
+                                color: {rgb: "FFFF00"},
+                                bold: false,
+                                italic: false,
+                                underline: false
+                            },
+                            border: {
+                                top: {style: "thin", color: {auto: 1}},
+                                right: {style: "thin", color: {auto: 1}},
+                                bottom: {style: "thin", color: {auto: 1}},
+                                left: {style: "thin", color: {auto: 1}}
+                            }
+                        }
+                    },
                 ],
             }
         ],
@@ -907,6 +931,30 @@ export const MonthHead = [//以第一层为基准, 必须平行
                     },
                     {
                         t: "s", v: "旷工", row: 1, col: 1,
+                        s: {
+                            fill: {
+                                patternType: "solid",
+                                bgColor: { indexed: 64 },
+                                fgColor: {rgb: "BFBFBF"}
+                            },
+                            font: {
+                                name: "Calibri",
+                                sz: 10,
+                                color: {rgb: "FFFF00"},
+                                bold: false,
+                                italic: false,
+                                underline: false
+                            },
+                            border: {
+                                top: {style: "thin", color: {auto: 1}},
+                                right: {style: "thin", color: {auto: 1}},
+                                bottom: {style: "thin", color: {auto: 1}},
+                                left: {style: "thin", color: {auto: 1}}
+                            }
+                        }
+                    },
+                    {
+                        t: "s", v: "行政罚款", row: 1, col: 1,
                         s: {
                             fill: {
                                 patternType: "solid",
@@ -1282,7 +1330,7 @@ export const MonthHead = [//以第一层为基准, 必须平行
 const Letter = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K",
 "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z",
 "AA", "AB", "AC", "AD", "AE", "AF", "AG", "AH", "AI", "AJ", "AK", "AL", "AM",
-"AN", "AO", "AP", "AQ", "AR", "AS", "AT"];
+"AN", "AO", "AP", "AQ", "AR", "AS", "AT","AU", "AV", "AW", "AX", "AY"];
 //以第一层为绝对
 function findSubhead(head, lst, r, c) {
     let mv = {s: {r:0,c:0}, e: {r:0,c:0}};

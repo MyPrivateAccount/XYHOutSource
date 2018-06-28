@@ -51,6 +51,7 @@ export function* getSearchConditionAsync(state) {
     let url = WebApiConfig.search.searchHumanList;
     try {
         let res = yield call(ApiClient.post, url, state.payload);
+        console.log("查询结果:",res);
          if (res.data.code == 0) {
              result.isOk = true;
              let lv = res.data.extension;

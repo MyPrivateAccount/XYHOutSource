@@ -14,6 +14,7 @@ export function* getPermissionOrgAsync(state) {
     let result = { isOk: false, msg: '根据权限获取部门数据失败!' };
     let url = WebApiConfig.org.permissionOrg + state.payload;
     try {
+        console.log(url)
         const deleteResult = yield call(ApiClient.get, url);
         //console.log(`部门获取请求：url:${url},id:${state.payload},result:${JSON.stringify(deleteResult)}`);
         getApiResult(deleteResult, result);
