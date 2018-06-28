@@ -57,10 +57,10 @@ const menuDefine = [
         menuIcon:'appstore-o',
         type:'subMenu',
         menuItems:[
-            {menuID:"menu_yjftxsz",displayName:"业绩分摊项设置",menuIcon:'contacts',type:'item',/*requirePermission:['YJ_YJFTSZ_CK']*/},
-            {menuID:"menu_rsftzzsz",displayName:"人数分摊组织设置",menuIcon:'contacts',type:'item'},
-            {menuID:"menu_tcblsz",displayName:"提成比例设置",menuIcon:'contacts',type:'item'},
-            {menuID:"menu_zzcssz",displayName:"组织参数设置",menuIcon:'contacts',type:'item'}
+            {menuID:"menu_yjftxsz",displayName:"业绩分摊项设置",menuIcon:'contacts',type:'item',requirePermission:['YJ_YJFTSZ_CK']},
+            {menuID:"menu_rsftzzsz",displayName:"人数分摊组织设置",menuIcon:'contacts',type:'item',requirePermission:['YJ_RSFTZZSZ_CK']},
+            {menuID:"menu_tcblsz",displayName:"提成比例设置",menuIcon:'contacts',type:'item',requirePermission:['YJ_SZ_TCBLSZ_CK']},
+            {menuID:"menu_zzcssz",displayName:"组织参数设置",menuIcon:'contacts',type:'item',requirePermission:['YJ_ZZCSSZ_CK']}
         ]
     }
 ];

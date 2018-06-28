@@ -1,6 +1,6 @@
 //组织参数配置对话框页面
 import {connect} from 'react-redux';
-import {orgParamDlgClose,orgParamSave} from '../../actions/actionCreator'
+import {orgParamDlgClose,orgParamSave,getDicParList} from '../../actions/actionCreator'
 import React, {Component} from 'react'
 import {Modal, Row, Col, Form, Input,Select} from 'antd'
 
@@ -12,6 +12,7 @@ class OrgParamEditor extends Component{
         dialogTitle:'',
         visible:false,
         paramInfo:{
+            items:[]
         },
         isEdit:false
     }
@@ -21,14 +22,28 @@ class OrgParamEditor extends Component{
     componentWillReceiveProps(newProps){
         let {operType} = newProps.operInfo;
         if (operType === 'edit') {
+            newProps.operInfo.operType = ''
             this.setState({visible: true, isEdit:true, dialogTitle: '修改组织参数',paramInfo:newProps.activeOrgParam});
         } else if (operType === 'add') {
             this.clear()
-            this.setState({visible: true,isEdit:false, dialogTitle: '添加组织参数',paramInfo:newProps.activeOrgParam});
+            newProps.operInfo.operType = ''
+            let paramInfo = { ...this.state.paramInfo }
+            paramInfo.branchId = newProps.activeOrgParam.branchId
+            paramInfo.branchName = newProps.activeOrgParam.branchName
+            paramInfo.items=[]
+            this.setState({visible: true,isEdit:false, dialogTitle: '添加组织参数',paramInfo:paramInfo});
+            this.props.dispatch(getDicParList(['YJ_BRANCH_PAR']));
             
-        } else {
-            this.props.form.resetFields();
+        } 
+        else if (newProps.basicOper.operType === 'DIC_GET_PARLIST_COMPLETE') {
+            let paramInfo = { ...this.state.paramInfo }
+            paramInfo.items = newProps.basicData.branchTypes
+            this.setState({paramInfo})
+            newProps.basicOper.operType = ''
+        }
+        else if(operType === 'ORG_PARAM_DIALOG_CLOSE') {
             this.setState({visible: false});
+            newProps.operInfo.operType = ''
         }
     }
     clear=()=>{
@@ -52,6 +67,9 @@ class OrgParamEditor extends Component{
     handleCancel = (e) => {//关闭对话框
         this.props.dispatch(orgParamDlgClose());
     };
+    handleSelect=(e,type)=>{
+
+    }
     render(){
         const {getFieldDecorator} = this.props.form;
         const formItemLayout = {
@@ -71,9 +89,9 @@ class OrgParamEditor extends Component{
                                 </span>
                             )}
                             hasFeedback>
-                            {getFieldDecorator('name', {
+                            {getFieldDecorator('branchName', {
 
-                                initialValue: this.state.paramInfo.name,
+                                initialValue: this.state.paramInfo.branchName,
                             })(
                                 <Input style={{float: 'left',width:300}} disabled={true}></Input>
                                 )}
@@ -89,7 +107,12 @@ class OrgParamEditor extends Component{
                                 initialValue: this.state.paramInfo.parCode,
                                 rules: [{required: true, message: '请填写参数名称!' }]
                             })(
-                                <Input style={{float: 'left',width:300}}></Input>
+                               !this.state.isEdit? <Select style={{ width: 200 }} disabled={this.state.isEdit} onChange={(e) => this.handleSelect(e, 'parcode')}>
+                                        {
+                                            this.state.paramInfo.items.map(tp => <Select.Option key={tp.key} value={tp.key}>{tp.key}</Select.Option>)
+                                        }
+                                    </Select>:
+                                    <Input style={{float: 'left',width:300}} disabled={true}></Input>
                                 )}
                         </FormItem></Col>
                 </Row>
@@ -115,7 +138,9 @@ function MapStateToProps(state) {
 
     return {
         operInfo:state.orgparam.operInfo,
-        activeOrgParam:state.orgparam.activeOrgParam
+        activeOrgParam:state.orgparam.activeOrgParam,
+        basicData: state.base,
+        basicOper: state.base.operInfo,
     }
 }
 

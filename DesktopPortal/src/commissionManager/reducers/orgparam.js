@@ -11,7 +11,7 @@ let orgParamReducerMap = {};
 
 orgParamReducerMap[actionTypes.ORG_PARAM_ADD] = function (state, action) {
     console.log("readucer新增组织参数" + JSON.stringify(action.payload));
-    return Object.assign({}, state, { operInfo: { operType: 'add', dialogOpen: true } });
+    return Object.assign({}, state, {activeOrgParam:action.payload, operInfo: { operType: 'add', dialogOpen: true } });
 }
 orgParamReducerMap[actionTypes.ORG_PARAM_EDIT] = function (state, action) {
     console.log("readucer修改组织参数" + JSON.stringify(action.payload));
@@ -23,11 +23,11 @@ orgParamReducerMap[actionTypes.ORG_PARAMLIST_UPDATE] = function (state, action) 
 }
 orgParamReducerMap[actionTypes.ORG_PARAM_DIALOG_CLOSE] = function (state, action) {
     console.log("readucer退出dialog" + JSON.stringify(action.payload));
-    return Object.assign({}, state, { operInfo: { objType: '', operType: ''} });
+    return Object.assign({}, state, { operInfo: { objType: '', operType: 'ORG_PARAM_DIALOG_CLOSE'} });
 }
 orgParamReducerMap[actionTypes.ORG_PARAM_SAVE_UPDATE] = function (state, action) {
     console.log("组织参数设置保存成功" + JSON.stringify(action.payload));
-    return Object.assign({}, state, { operInfo: { objType: '', operType: 'orgparam_save_success'} });
+    return Object.assign({}, state, { operInfo: { objType: '', operType: 'ORG_PARAM_SAVE_UPDATE'} });
 }
 orgParamReducerMap[actionTypes.ORG_PARAM_DEL_UPDATE] = function (state, action) {
     console.log("组织参数设置删除成功" + JSON.stringify(action.payload));
