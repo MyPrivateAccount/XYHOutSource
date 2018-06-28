@@ -27,6 +27,11 @@ namespace XYHHumanPlugin.Models
         public string Name { get; set; }
 
         /// <summary>
+        /// 生日
+        /// </summary>
+        public DateTime Birthday { get; set; }
+
+        /// <summary>
         /// 电话
         /// </summary>
         [MaxLength(50)]

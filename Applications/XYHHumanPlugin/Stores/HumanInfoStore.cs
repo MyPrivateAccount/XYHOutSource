@@ -59,10 +59,64 @@ namespace XYHHumanPlugin.Stores
 
         public IQueryable<HumanInfo> GetQuery()
         {
-            var query = from r in Context.HumanInfos.AsNoTracking()
+            var query = from h in Context.HumanInfos.AsNoTracking()
+                        join hc1 in Context.HumanContractInfos.AsNoTracking() on h.Id equals hc1.Id into hc2
+                        from hc in hc2.DefaultIfEmpty()
+                        join hs1 in Context.HumanSalaryStructures.AsNoTracking() on h.Id equals hs1.Id into hs2
+                        from hs in hs2.DefaultIfEmpty()
+                        join hss1 in Context.HumanSocialSecurities.AsNoTracking() on h.Id equals hss1.Id into hss2
+                        from hss in hss2.DefaultIfEmpty()
+
+                        join oe1 in Context.OrganizationExpansions.AsNoTracking() on new { h.DepartmentId, Type = "Region" } equals new { DepartmentId = oe1.SonId, Type = oe1.Type } into oe2
+                        from oe in oe2.DefaultIfEmpty()
+                        join o1 in Context.Organizations.AsNoTracking() on h.DepartmentId equals o1.Id into o2
+                        from o in o2.DefaultIfEmpty()
+
                         select new HumanInfo
                         {
-
+                            Id = h.Id,
+                            DepartmentId = h.DepartmentId,
+                            EntryTime = h.EntryTime,
+                            IDCard = h.IDCard,
+                            LeaveTime = h.LeaveTime,
+                            BecomeTime = h.BecomeTime,
+                            Name = h.Name,
+                            Picture = h.Picture,
+                            Position = h.Position,
+                            Birthday = h.Birthday,
+                            Phone = h.Phone,
+                            Sex = h.Sex,
+                            UserID = h.UserID,
+                            UpdateTime = h.UpdateTime,
+                            CreateUser = h.CreateUser,
+                            IsDeleted = h.IsDeleted,
+                            StaffStatus = h.StaffStatus,
+                            Company = h.Company,
+                            CreateTime = h.CreateTime,
+                            HumanContractInfo = new HumanContractInfo
+                            {
+                                ContractSignDate = hc.ContractSignDate
+                            },
+                            HumanSocialSecurity = new HumanSocialSecurity
+                            {
+                                IsGiveUp = hss.IsGiveUp
+                            },
+                            HumanSalaryStructure = new HumanSalaryStructure
+                            {
+                                BaseWages = hs.BaseWages
+                            },
+                            Organizations = new Organizations()
+                            {
+                                Id = o.Id,
+                                OrganizationName = o.OrganizationName,
+                                Type = o.Type
+                            },
+                            OrganizationExpansion = new OrganizationExpansion()
+                            {
+                                OrganizationId = oe.OrganizationId,
+                                SonId = oe.SonId,
+                                FullName = oe.FullName
+                            }
                         };
 
             return query;
@@ -107,6 +161,7 @@ namespace XYHHumanPlugin.Stores
                             HealthCondition = h.HealthCondition,
                             DomicilePlace = h.DomicilePlace,
                             HouseholdType = h.HouseholdType,
+                            Birthday = h.Birthday,
                             IDCard = h.IDCard,
                             FamilyAddress = h.FamilyAddress,
                             LeaveTime = h.LeaveTime,

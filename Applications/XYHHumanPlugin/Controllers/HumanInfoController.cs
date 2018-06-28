@@ -112,35 +112,34 @@ namespace XYHHumanPlugin.Controllers
 
         [HttpPost("searchhumaninfo")]
         [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
-        public async Task<HumanSearchResponse<HumanInfoResponse1>> SearchHumanInfo(UserInfo User, [FromBody]HumanSearchRequest condition)
+        public async Task<PagingResponseMessage<HumanInfoSearchResponse>> SearchHumanInfo(UserInfo User, [FromBody]HumanInfoSearchCondition condition)
         {
-            var pagingResponse = new HumanSearchResponse<HumanInfoResponse1>();
+            Logger.Trace($"用户{User?.UserName ?? ""}({User?.Id ?? ""})查询人事信息(SearchHumanInfo)，\r\n请求参数为：\r\n" + (condition != null ? JsonHelper.ToJson(condition) : ""));
+            var pagingResponse = new PagingResponseMessage<HumanInfoSearchResponse>();
             if (!ModelState.IsValid)
             {
                 pagingResponse.Code = ResponseCodeDefines.ModelStateInvalid;
-                Logger.Warn($"用户{User?.UserName ?? ""}({User?.Id ?? ""})查询人事条件(PostCustomerListSaleMan)模型验证失败：\r\n{pagingResponse.Message ?? ""}，\r\n请求参数为：\r\n" + (condition != null ? JsonHelper.ToJson(condition) : ""));
+                pagingResponse.Message = ModelState.GetAllErrors();
+                Logger.Warn($"用户{User?.UserName ?? ""}({User?.Id ?? ""})查询人事信息(SearchHumanInfo)模型验证失败：\r\n{pagingResponse.Message ?? ""}，\r\n请求参数为：\r\n" + (condition != null ? JsonHelper.ToJson(condition) : ""));
                 return pagingResponse;
             }
-
             try
             {
                 //if (await _permissionExpansionManager.HavePermission(User.Id, "SEARCH_CONTRACT"))
                 //{
-                pagingResponse = await _humanManage.SearchHumanInfo(User, condition, HttpContext.RequestAborted);
+                pagingResponse = await _humanInfoManager.SearchHumanInfo(User, condition, HttpContext.RequestAborted);
                 //}
                 //else
                 //{
                 //    pagingResponse.Code = ResponseCodeDefines.NotAllow;
                 //    pagingResponse.Message = "权限不足";
                 //}
-
             }
             catch (Exception e)
             {
                 pagingResponse.Code = ResponseCodeDefines.ServiceError;
                 pagingResponse.Message = "服务器错误:" + e.ToString();
-                Logger.Error($"用户{User?.UserName ?? ""}({User?.Id ?? ""})查询业务员条件(PostCustomerListSaleMan)请求失败：\r\n{pagingResponse.Message ?? ""}，\r\n请求参数为：\r\n" + (condition != null ? JsonHelper.ToJson(condition) : ""));
-
+                Logger.Error($"用户{User?.UserName ?? ""}({User?.Id ?? ""})查询人事信息(SearchHumanInfo)请求失败：\r\n{pagingResponse.Message ?? ""}，\r\n请求参数为：\r\n" + (condition != null ? JsonHelper.ToJson(condition) : ""));
             }
             return pagingResponse;
         }
@@ -499,7 +498,7 @@ namespace XYHHumanPlugin.Controllers
         public async Task<ResponseMessage<List<HumanInfoResponse>>> SimpleSearch(UserInfo User, [FromBody]List<string> lst)
         {
             var r = new ResponseMessage<List<HumanInfoResponse>>();
-            try          
+            try
             {
                 //r.Extension = await _humanManage.GethumanlistByorgid(lst);
                 //await _humanManage.SimpleSearch(User, permissionId, keyword,branchId, pageSize, pageIndex);

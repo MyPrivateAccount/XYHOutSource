@@ -46,6 +46,8 @@ namespace XYHHumanPlugin.Models
         public DbSet<Organizations> Organizations { get; set; }
         public DbSet<OrganizationExpansion> OrganizationExpansions { get; set; }
 
+        public DbSet<HumanInfoBlack> HumanInfoBlacks { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -87,7 +89,10 @@ namespace XYHHumanPlugin.Models
             {
                 b.ToTable("xyh_hu_humaneducationinfo");
             });
-
+            modelBuilder.Entity<HumanInfoBlack>(b =>
+            {
+                b.ToTable("xyh_hu_humaninfoblack");
+            });
 
             modelBuilder.Entity<BlackInfo>(b =>
             {

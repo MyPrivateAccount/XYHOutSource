@@ -11,7 +11,7 @@ namespace XYHHumanPlugin.Dto.Response
         /// <summary>
         /// 主键Id
         /// </summary>
-        public string ID { get; set; }
+        public string Id { get; set; }
         /// <summary>
         /// 工号
         /// </summary>
@@ -28,6 +28,8 @@ namespace XYHHumanPlugin.Dto.Response
         /// 性别
         /// </summary>
         public Int16 Sex { get; set; }
+
+        public DateTime Birthday { get; set; }
 
         /// <summary>
         /// 公司
@@ -145,7 +147,10 @@ namespace XYHHumanPlugin.Dto.Response
         /// 入职日期
         /// </summary>
         public DateTime EntryTime { get; set; }
-
+        /// <summary>
+        /// 转正日期？
+        /// </summary>
+        public DateTime? BecomeTime { get; set; }
         /// <summary>
         /// 创建时间
         /// </summary>
