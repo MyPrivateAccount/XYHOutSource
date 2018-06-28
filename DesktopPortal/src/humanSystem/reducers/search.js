@@ -3,6 +3,8 @@ import * as actionTypes from '../constants/actionType';
 import moment from 'moment';
 
 const initState = {
+    rewardpunishmenList: {extension: [{key: "1", time: "tt", name: "tt", idcard: "tta", signed: "today"}], pageIndex: 0, pageSize: 10, totalCount: 1},
+    rewardpunishhumanlst: [],
     attendanceList: {extension: [{key: "1", time: "tt", name: "tt", idcard: "tta", signed: "today"}], pageIndex: 0, pageSize: 10, totalCount: 1},
     attendanceSettingList: [],
     achievementList: {extension: [], pageIndex: 0, pageSize: 10, totalCount: 1},
@@ -96,15 +98,16 @@ reducerMap[actionTypes.SEARCH_CUSTOMER_COMPLETE] = function (state, action) {
 }
 
 reducerMap[actionTypes.UPDATE_STATIONLIST] = function (state, action) {
-    let f = action.payload.map(function(v, i) {
-        return {key: i+"", stationname: v.positionName, isnew: false, positionType:v.positionType, id: v.id};
-    });
-    return Object.assign({}, state, {stationList: f, showLoading: false});
+    // let f = action.payload.map(function(v, i) {
+    //     return {key: i+"", stationname: v.positionName, isnew: false, positionType:v.positionType, id: v.id};
+    // });
+    console.log("shai::", action.payload);
+    return Object.assign({}, state, {stationList: action.payload, showLoading: false});
 }
 
 reducerMap[actionTypes.UPDATE_ATTENDANCELST] = function (state, action) {
-    let f = action.payload.map(function(v, i) {
-        return {key: i+"", ...v};
+    let f = action.payload.map(function (v, i) {
+        return {key: i + "", ...v};
     });
     return Object.assign({}, state, {attendanceList: f, showLoading: false});
 }
@@ -114,8 +117,8 @@ reducerMap[actionTypes.SET_SEARCHINDEX] = function (state, action) {
 }
 
 reducerMap[actionTypes.UPDATE_ORGSTATIONLIST] = function (state, action) {
-    let f = action.payload.map(function(v, i) {
-        return {key: i+"", stationname: v.positionName, isnew: false, positionType:v.positionType, id: v.id};
+    let f = action.payload.map(function (v, i) {
+        return {key: i + "", stationname: v.positionName, isnew: false, positionType: v.positionType, id: v.id};
     });
     return Object.assign({}, state, {orgstationList: f, showLoading: false});
 }
@@ -125,44 +128,48 @@ reducerMap[actionTypes.SAVE_SEARCH_CONDITION] = function (state, action) {
     return Object.assign({}, state, {searchCondition: action.payload});
 }
 
-reducerMap[actionTypes.SEARCH_BOX_EXPAND] = function(state, action) {
+reducerMap[actionTypes.SEARCH_BOX_EXPAND] = function (state, action) {
     return Object.assign({}, state, {expandSearchBox: !state.expandSearchBox});
 }
 
-reducerMap[actionTypes.SEARCH_HUMANTYPE] = function(state, action) {
-    return Object.assign({}, state, {humanType:action.payload} );
+reducerMap[actionTypes.SEARCH_HUMANTYPE] = function (state, action) {
+    return Object.assign({}, state, {humanType: action.payload});
 }
 
-reducerMap[actionTypes.SEARCH_AGETYPE] = function(state, action) {
-    return Object.assign({}, state, {ageCondition:action.payload} );
+reducerMap[actionTypes.SEARCH_AGETYPE] = function (state, action) {
+    return Object.assign({}, state, {ageCondition: action.payload});
 }
 
-reducerMap[actionTypes.SEARCH_ORDERTYPE] = function(state, action) {
-    return Object.assign({}, state, {orderRule:action.payload} );
+reducerMap[actionTypes.SEARCH_ORDERTYPE] = function (state, action) {
+    return Object.assign({}, state, {orderRule: action.payload});
 }
 
-reducerMap[actionTypes.UPDATE_ALLHUMANINFO] = function(state, action) {
-    return Object.assign({}, state,{searchResult: action.payload, showLoading: false} );
+reducerMap[actionTypes.UPDATE_ALLHUMANINFO] = function (state, action) {
+    return Object.assign({}, state, {searchResult: action.payload, showLoading: false});
 }
 
-reducerMap[actionTypes.UPDATE_BLACKLST] = function(state, action) {
-    return Object.assign({}, state, {blackList: action.payload} );
+reducerMap[actionTypes.UPDATE_BLACKLST] = function (state, action) {
+    return Object.assign({}, state, {blackList: action.payload});
 }
 
-reducerMap[actionTypes.DELETE_UPDATEBLACKINFO] = function(state, action) {
+reducerMap[actionTypes.DELETE_UPDATEBLACKINFO] = function (state, action) {
     state.blackList.extension.splice(state.blackList.extension.findIndex(item => action.payload.idCard === item.idCard), 1);
     return Object.assign({}, state, {blackList: state.blackList});
 }
 
-reducerMap[actionTypes.UPDATE_SALARYINFO] = function(state, action) {
-    return Object.assign({}, state, {achievementList: action.payload} );
+reducerMap[actionTypes.UPDATE_SALARYINFO] = function (state, action) {
+    return Object.assign({}, state, {achievementList: action.payload});
 }
-reducerMap[actionTypes.SET_SEARCH_LOADING] = function(state, action) {
-    return Object.assign({}, state, {showLoading: action.payload} );
+reducerMap[actionTypes.SET_SEARCH_LOADING] = function (state, action) {
+    return Object.assign({}, state, {showLoading: action.payload});
 }
-reducerMap[actionTypes.UPDATE_ATTENDANCESETTINGLST] = function(state, action) {
-    return Object.assign({}, state, {attendanceSettingList: action.payload} );
+reducerMap[actionTypes.UPDATE_ATTENDANCESETTINGLST] = function (state, action) {
+    return Object.assign({}, state, {attendanceSettingList: action.payload});
 }
-
-
+reducerMap[actionTypes.UPDATE_REWARDPUNISHHUMANLIST] = function (state, action) {
+    return Object.assign({}, state, {rewardpunishhumanlst: action.payload});
+}
+reducerMap[actionTypes.UPDATE_REWARDPUNISHMENTLIST] = function(state, action) {
+    return Object.assign({}, state, {rewardpunishmenList: action.payload, showLoading:false} );
+}
 export default handleActions(reducerMap, initState);

@@ -67,7 +67,8 @@ namespace XYHChargePlugin.Models
         SubmitBill = 256, //提交发票
         ConfirmBill = 260,
         RejectBill = 170,
-        
+        RecordingConfirm = 180, //财务退款确认
+
     }
 
     public class ModifyTypeConstans
@@ -93,5 +94,7 @@ namespace XYHChargePlugin.Models
         public const string ConfirmBill = "后补发票确认";
 
         public const string RejectBill = "驳回发票";
+
+        public const string RecordingConfirm = "财务退款确认";
     }
 }

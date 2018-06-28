@@ -25,6 +25,8 @@ namespace XYHChargePlugin.Stores
 
         Task UpdateStatus(SimpleUser user, string id, int status, string message, ModifyTypeEnum mtype, string mtypememo);
 
+        Task UpdateRecordingStatus(SimpleUser user, string id, int status, string message, ModifyTypeEnum mtype, string mtypememo);
+
         Task<LimitTipInfo> UpdateReimbursedAmount(SimpleUser user, ChargeInfo bill);
     }
 }

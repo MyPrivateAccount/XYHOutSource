@@ -16,7 +16,9 @@ class Salary extends Component {
     }
 
     componentDidMount() {
-
+        if (this.props.subPageLoadCallback) {
+            this.props.subPageLoadCallback(this.props.form, 'salary')
+        }
     }
 
     handleOk = (e) => {
@@ -96,7 +98,7 @@ class Salary extends Component {
                     </Col>
                     <Col span={7}>
                         <FormItem {...formItemLayout} label="应发工资" >
-                            {getFieldDecorator('bankName', {
+                            {getFieldDecorator('grossPay', {
                                 rules: []
                             })(
                                 <InputNumber disabled style={{width: '100%'}} />
@@ -107,7 +109,7 @@ class Salary extends Component {
                 <Row>
                     <Col span={7}>
                         <FormItem {...formItemLayout} label="试用期工资" >
-                            {getFieldDecorator('bankName', {
+                            {getFieldDecorator('probationaryPay', {
                                 rules: []
                             })(
                                 <InputNumber disabled style={{width: '100%'}} />

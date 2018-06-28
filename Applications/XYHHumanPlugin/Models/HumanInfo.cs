@@ -14,7 +14,7 @@ namespace XYHHumanPlugin.Models
         /// </summary>
         [Key]
         [MaxLength(127)]
-        public string ID { get; set; }
+        public string Id { get; set; }
         /// <summary>
         /// 工号
         /// </summary>
@@ -25,10 +25,16 @@ namespace XYHHumanPlugin.Models
         /// </summary>
         [MaxLength(127)]
         public string Name { get; set; }
+
+        /// <summary>
+        /// 电话
+        /// </summary>
+        [MaxLength(50)]
+        public string Phone { get; set; }
         /// <summary>
         /// 身份证号码
         /// </summary>
-        [MaxLength(127)]
+        [MaxLength(50)]
         public string IDCard { get; set; }
         /// <summary>
         /// 性别
@@ -68,6 +74,7 @@ namespace XYHHumanPlugin.Models
         /// <summary>
         /// 籍贯
         /// </summary>
+        [MaxLength(255)]
         public string NativePlace { get; set; }
 
         /// <summary>
@@ -85,26 +92,31 @@ namespace XYHHumanPlugin.Models
         /// <summary>
         /// 政治面貌
         /// </summary>
+        [MaxLength(255)]
         public string PolicitalStatus { get; set; }
 
         /// <summary>
         /// 户籍所在地
         /// </summary>
+        [MaxLength(255)]
         public string DomicilePlace { get; set; }
 
         /// <summary>
         /// 紧急联系人
         /// </summary>
+        [MaxLength(50)]
         public string EmergencyContact { get; set; }
 
         /// <summary>
         /// 紧急联系电话
         /// </summary>
+        [MaxLength(127)]
         public string EmergencyContactPhone { get; set; }
 
         /// <summary>
         /// 紧急联系人关系
         /// </summary>
+        [MaxLength(50)]
         public string EmergencyContactType { get; set; }
 
         /// <summary>
@@ -116,11 +128,13 @@ namespace XYHHumanPlugin.Models
         /// <summary>
         /// 银行名称
         /// </summary>
+        [MaxLength(50)]
         public string BankName { get; set; }
 
         /// <summary>
         /// 银行账号
         /// </summary>
+        [MaxLength(50)]
         public string BankAccount { get; set; }
 
         /// <summary>
@@ -130,26 +144,23 @@ namespace XYHHumanPlugin.Models
         public string DepartmentId { get; set; }
 
         /// <summary>
-        /// 创建人
-        /// </summary>
-        [MaxLength(127)]
-        public string CreateUser { get; set; }
-
-        /// <summary>
         /// 备注
         /// </summary>
+        [MaxLength(512)]
         public string Desc { get; set; }
+
+
+        /// <summary>
+        /// 头像
+        /// </summary>
+        [MaxLength(255)]
+        public string Picture { get; set; }
+
 
         /// <summary>
         /// 
         /// </summary>
         public int? Modify { get; set; }
-
-        /// <summary>
-        /// 头像
-        /// </summary>
-        [MaxLength(127)]
-        public string Picture { get; set; }
 
         /// <summary>
         /// 
@@ -161,7 +172,7 @@ namespace XYHHumanPlugin.Models
         /// 状态
         /// </summary>
         [MaxLength(255)]
-        public string StaffStatus { get; set; }
+        public StaffStatus StaffStatus { get; set; }
 
         /// <summary>
         /// 入职日期
@@ -169,40 +180,16 @@ namespace XYHHumanPlugin.Models
         public DateTime EntryTime { get; set; }
 
         /// <summary>
-        /// 
+        /// 转正日期？
         /// </summary>
         public DateTime? BecomeTime { get; set; }
 
-        /// <summary>
-        /// 创建时间
-        /// </summary>
-        public DateTime CreateTime { get; set; }
 
         /// <summary>
-        /// 
+        /// 离职时间？
         /// </summary>
         public DateTime? LeaveTime { get; set; }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public bool? IsSocialInsurance { get; set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        [MaxLength(127)]
-        public string SocialInsuranceInfo { get; set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public int? BaseSalary { get; set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public int? Subsidy { get; set; }
 
         /// <summary>
         /// 
@@ -224,6 +211,25 @@ namespace XYHHumanPlugin.Models
         /// </summary>
         public int? OtherBack { get; set; }
 
+
+        /// <summary>
+        /// 创建时间
+        /// </summary>
+        public DateTime CreateTime { get; set; }
+        /// <summary>
+        /// 创建人
+        /// </summary>
+        [MaxLength(127)]
+        public string CreateUser { get; set; }
+        [MaxLength(127)]
+        public string UpdateUser { get; set; }
+        public DateTime? UpdateTime { get; set; }
+        public bool IsDeleted { get; set; }
+        [MaxLength(127)]
+        public string DeleteUser { get; set; }
+        public DateTime? DeleteTime { get; set; }
+
+
         [NotMapped]
         public Organizations Organizations { get; set; }
 
@@ -231,7 +237,59 @@ namespace XYHHumanPlugin.Models
         public OrganizationExpansion OrganizationExpansion { get; set; }
 
         [NotMapped]
-        public PositionInfo PositionInfo { get; set; }
+        public HumanContractInfo HumanContractInfo { get; set; }
 
+        [NotMapped]
+        public HumanSalaryStructure HumanSalaryStructure { get; set; }
+
+        [NotMapped]
+        public HumanSocialSecurity HumanSocialSecurity { get; set; }
+
+        [NotMapped]
+        public IEnumerable<HumanEducationInfo> HumanEducationInfos { get; set; }
+
+        [NotMapped]
+        public IEnumerable<HumanTitleInfo> HumanTitleInfos { get; set; }
+
+        [NotMapped]
+        public IEnumerable<HumanWorkHistory> HumanWorkHistories { get; set; }
+
+        [NotMapped]
+        public IEnumerable<FileInfo> FileInfos { get; set; }
+
+        [NotMapped]
+        public PositionInfo PositionInfo { get; set; }
     }
+
+    /// <summary>
+    /// 员工状态
+    /// </summary>
+    public enum StaffStatus
+    {
+        /// <summary>
+        /// 未入职
+        /// </summary>
+        NonEntry = 1,
+
+        /// <summary>
+        /// 试用
+        /// </summary>
+        Entry = 2,
+
+        /// <summary>
+        /// 正式工
+        /// </summary>
+        Regular = 3,
+
+        /// <summary>
+        /// 离职
+        /// </summary>
+        Leave = 4,
+
+        /// <summary>
+        /// 黑名单
+        /// </summary>
+        Black = 10
+    }
+
 }

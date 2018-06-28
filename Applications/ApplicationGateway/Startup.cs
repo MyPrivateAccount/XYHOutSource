@@ -153,6 +153,7 @@ namespace ApplicationGateway
                 //var xmlPath5 = Path.Combine(basePath, "Plugin", "MessageServerPlugin.xml");
                 //var xmlPath6 = Path.Combine(basePath, "Plugin", "XYHStatisticalPlugin.xml");
                 //var xmlPath7 = Path.Combine(basePath, "Plugin", "CommissionManagePlugin.xml");
+                var xmlPath8 = Path.Combine(basePath, "Plugin", "XYHHumanPlugin.xml");
                 //c.IncludeXmlComments(xmlPath);
                 //c.IncludeXmlComments(xmlPath2);
                 //c.IncludeXmlComments(xmlPath3);
@@ -160,6 +161,7 @@ namespace ApplicationGateway
                 //c.IncludeXmlComments(xmlPath5);
                 //c.IncludeXmlComments(xmlPath6);
                 //c.IncludeXmlComments(xmlPath7);
+                c.IncludeXmlComments(xmlPath8);
                 c.OperationFilter<HttpHeaderOperation>(); // 添加httpHeader参数
             });
             services.ConfigureSwaggerGen(options =>

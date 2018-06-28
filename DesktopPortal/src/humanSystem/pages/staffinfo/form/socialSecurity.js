@@ -16,7 +16,9 @@ class SocialSecurity extends Component {
     }
 
     componentDidMount() {
-
+        if (this.props.subPageLoadCallback) {
+            this.props.subPageLoadCallback(this.props.form, 'socialSecurity')
+        }
     }
 
     handleOk = (e) => {

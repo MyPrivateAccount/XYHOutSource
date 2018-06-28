@@ -2,7 +2,7 @@ import {connect} from 'react-redux';
 import {createStation, getOrgList, leavePosition} from '../../actions/actionCreator';
 import React, {Component} from 'react'
 import {Select, Input, Form, Cascader, Button, Row, Col, Checkbox, DatePicker, Spin} from 'antd'
-
+import Layer from '../../../components/Layer'
 const FormItem = Form.Item;
 const Option = Select.Option;
 const formItemLayout = {
@@ -37,7 +37,8 @@ class Left extends Component {
     render() {
         const {getFieldDecorator, getFieldsError, getFieldsValue, isFieldTouched} = this.props.form;
         return (
-            <div>
+            <Layer>
+                <div className="page-title" style={{marginBottom: '10px'}}>离职</div>
                 <Form onSubmit={this.handleSubmit}>
                     <Row style={{marginTop: '10px'}}>
                         <Col span={7}>
@@ -148,7 +149,7 @@ class Left extends Component {
                         <Col span={6}><Button type="primary" htmlType="submit" disabled={this.hasErrors(getFieldsValue())} >提交</Button></Col>
                     </FormItem> */}
                 </Form>
-            </div >
+            </Layer >
 
         );
     }

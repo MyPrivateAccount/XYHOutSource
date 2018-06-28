@@ -9,40 +9,63 @@ import rootSaga from './saga/rootSaga';
 import {getOrgList, setSearchLoadingVisible, searchConditionType, setbreadPageItem, setVisibleHead, setbreadPageItemIndex} from './actions/actionCreator';
 import {getDicParList} from '../actions/actionCreators';
 import {globalAction} from 'redux-subspace';
+import Layer from '../components/Layer'
+import createHistory from 'history/createMemoryHistory'
+import {ConnectedRouter} from 'react-router-redux'
+import {Route} from 'react-router'
+import Staffinfo from './pages/staffinfo/staffinfo'
+import Month from './pages/month/month'
+import Black from './pages/black/black'
+import Station from './pages/station/station'
+import Achievement from './pages/achievement/achievement'
+import Attendance from './pages/attendance/attendance'
+import Organization from './pages/organization/organization'
+import Statistics from './pages/statistics/statistics'
+import Set from './pages/set/set'
+import Rewardpunishment  from './pages/rewardpunishment/rewardpunishment'
 sagaMiddleware.run(rootSaga);
 
 const {SubMenu} = Menu;
 const {Header, Sider, Content} = Layout;
 
-
 const menuDefine = [
-    {id: 20, menuID: "menu_user_mgr", displayName: "员工信息管理", menuIcon: 'contacts'},
-    {id: 21, menuID: "menu_month", displayName: "月结", menuIcon: 'calendar'},
-    {id: 22, menuID: "menu_black", displayName: "黑名单管理", menuIcon: 'lock'/*, requirePermission: ['PermissionItemCreate']*/},
-    {id: 23, menuID: "menu_station", displayName: "职位和岗位配置", menuIcon: 'solution'},
-    {id: 24, menuID: "menu_achievement", displayName: "薪酬管理", menuIcon: 'database'},
-    {id: 25, menuID: "menu_attendance", displayName: "考勤信息", menuIcon: 'pushpin-o'},
-    {id: 26, menuID: "menu_organization", displayName: "组织架构管理", menuIcon: 'layout'},
-    {id: 27, menuID: "menu_awpu", displayName: "行政奖惩", menuIcon: 'global'},
-    {id: 28, menuID: "menu_set", displayName: "设置", menuIcon: 'setting'},
+    {id: 20, menuID: "menu_user_mgr", displayName: "员工信息管理", menuIcon: 'contacts', path: '/staff', par: {noQR: false, noGL: true, noFK: true, noAdd: true, }},
+    {id: 21, menuID: "menu_month", displayName: "月结", menuIcon: 'calendar', path: '/month'},
+    {id: 22, menuID: "menu_black", displayName: "黑名单管理", menuIcon: 'lock', path: '/black',/*, requirePermission: ['PermissionItemCreate']*/},
+    {id: 23, menuID: "menu_station", displayName: "职位和岗位配置", menuIcon: 'solution', path: '/station'},
+    {id: 24, menuID: "menu_achievement", displayName: "薪酬管理", menuIcon: 'database', path: '/achievement'},
+    {id: 25, menuID: "menu_attendance", displayName: "考勤信息", menuIcon: 'pushpin-o', path: '/attendance'},
+    {id: 26, menuID: "menu_organization", displayName: "组织架构管理", menuIcon: 'layout', path: '/organization'},
+    // {id: 27, menuID: "menu_statistics", displayName: "统计报表", menuIcon: 'global', path: '/statistics'},
+    {id: 27, menuID: "menu_awpu", displayName: "行政奖惩", menuIcon: 'global',path:'/rewardpunishment'},
+    {id: 28, menuID: "menu_set", displayName: "设置", menuIcon: 'setting', path: '/set'},
     //{menuID: "menu_app", displayName: "应用管理", menuIcon: 'appstore', requirePermission: ['ApplicationCreate']}
 ];
 
-const homeStyle = {
-    navigator: {
-        cursor: 'pointer'
-    },
-    activeOrg: {
-        float: 'right',
-        marginRight: '10px',
+// const homeStyle = {
+//     navigator: {
+//         cursor: 'pointer'
+//     },
+//     activeOrg: {
+//         float: 'right',
+//         marginRight: '10px',
 
-    },
-    curOrgStype: {
-        marginLeft: '10px',
-        overflow: 'hidden',
-        textOverflow: 'ellipsis'
+//     },
+//     curOrgStype: {
+//         marginLeft: '10px',
+//         overflow: 'hidden',
+//         textOverflow: 'ellipsis'
+//     }
+// }
+
+const history = createHistory();
+let routeCallback = null;
+
+history.listen((location, action) => {
+    if (routeCallback) {
+        routeCallback(location, action);
     }
-}
+})
 
 class HumanIndex extends Component {
 
@@ -50,10 +73,29 @@ class HumanIndex extends Component {
         activeOrg: {},
         collapsed: false,
         activeMenu: menuDefine[0],
+        menuList: []
     }
     componentDidMount() {
-        const dicArray = ['HUMEN_Nation', 'HUMEN_HOUSE_REGISTER', 'HUMEN_EDUCATION', 'HUMENT_HEALTH', 'HUMEN_POLITICS', 'CONTRACT_CATEGORIES', 'HUMEN_DEGREE'];
+        const dicArray = ['HUMEN_Nation', 'HUMEN_HOUSE_REGISTER', 'HUMEN_EDUCATION', 'HUMENT_HEALTH', 'HUMEN_POLITICS', 'CONTRACT_CATEGORIES', 'HUMEN_DEGREE','POSITION_TYPE'];
         this.props.dispatch(globalAction(getDicParList([...dicArray])));
+        let ml = [];
+        menuDefine.map(menu => {
+            if (this.hasPermission(menu)) {
+                ml.push(menu);
+            }
+        })
+        if (ml.length > 0) {
+            this.setState({menuList: ml, activeMenu: ml[0], showBack: false, title: ml[0].displayName}, () => {
+                history.replace(this.state.activeMenu.path, {...this.state.activeMenu.par, menu: this.state.activeMenu})
+            })
+        }
+        routeCallback = (location, action) => {
+            this.setState({showBack: location.pathname !== this.state.activeMenu.path, title: ((location.state || {}).menu || {}).displayName})
+        }
+    }
+
+    componentWillUnmount = () => {
+        routeCallback = null;
     }
 
     toggle = () => {
@@ -67,20 +109,32 @@ class HumanIndex extends Component {
             return;
         }
 
-        for (let i in menuDefine) {
-            if (menuDefine[i].menuID == e.key) {
-                if (e.key == "menu_statistics" || e.key == "menu_set") {
-                    notification.error({
-                        message: "no page",
-                        duration: 3
-                    });
-                    return;
-                }
-                this.state.activeMenu = menuDefine[i];
-                this.props.dispatch(setbreadPageItem(menuDefine[i]));
-                break;
-            }
+        // for (let i in menuDefine) {
+        //     if (menuDefine[i].menuID == e.key) {
+        //         if (e.key == "menu_statistics" || e.key == "menu_set") {
+        //             notification.error({
+        //                 message: "no page",
+        //                 duration: 3
+        //             });
+        //             return;
+        //         }
+        //         this.state.activeMenu = menuDefine[i];
+        //         this.props.dispatch(setbreadPageItem(menuDefine[i]));
+        //         break;
+        //     }
+        // }
+        let menu = this.state.menuList.find(x => x.menuID === e.key);
+        if (!menu) {
+            notification.error({
+                message: "no page",
+                duration: 3
+            });
+            return;
         }
+        history.entries.length = 0;
+        this.setState({activeMenu: menu}, () => {
+            history.replace(menu.path, {...menu.par, menu: menu})
+        })
     }
 
     //是否有权限
@@ -100,13 +154,13 @@ class HumanIndex extends Component {
     }
 
     //当前页面区域替换
-    getContentPage() {
-        let navigator = this.props.basicData.navigator;
-        if (navigator.length > 0) {
-            return <ContentPage curMenuID={navigator[navigator.length - 1].menuID} />
-        }
-        return <ContentPage curMenuID={this.state.activeMenu.menuID} />;
-    }
+    // getContentPage() {
+    //     let navigator = this.props.basicData.navigator;
+    //     if (navigator.length > 0) {
+    //         return <ContentPage curMenuID={navigator[navigator.length - 1].menuID} />
+    //     }
+    //     return <ContentPage curMenuID={this.state.activeMenu.menuID} />;
+    // }
 
     handleNavClick(i, itm) {
         let navigator = this.props.basicData.navigator;
@@ -242,18 +296,38 @@ class HumanIndex extends Component {
                 {
                     <Layout>
                         <Header>
-                            <Breadcrumb separator='>' style={{fontSize: '0.8rem'}}>
+                            {/* <Breadcrumb separator='>' style={{fontSize: '0.8rem'}}>
                                 {
                                     navigator.map((item, i) => {
                                         return <Breadcrumb.Item key={i} style={homeStyle.navigator} onClick={(e) => this.handleNavClick(i, item)} >{item.displayName}</Breadcrumb.Item>
                                     })
                                 }
-                            </Breadcrumb>
+                            </Breadcrumb> */}
+                            <div onClick={() => history.goBack()} className="back-btn" style={{display: this.state.showBack ? 'inline-block' : 'none'}}>
+                                <Icon type="left" /><span className="b-text">返回</span>
+                            </div>
+                            {
+                                !this.state.showBack ? <div>{this.state.title}</div> : null
+                            }
                         </Header>
                         <Content className='content'>
-                            {
+                            {/* {
                                 this.getContentPage()
-                            }
+                            } */}
+                            <ConnectedRouter history={history}>
+                                <Layer>
+                                    <Route path='/staff' component={Staffinfo} />
+                                    <Route path='/month' component={Month} />
+                                    <Route path='/black' component={Black} />
+                                    <Route path='/station' component={Station} />
+                                    <Route path='/achievement' component={Achievement} />
+                                    <Route path='/attendance' component={Attendance} />
+                                    <Route path='/organization' component={Organization} />
+                                    <Route path='/statistics' component={Statistics} />
+                                    <Route path='/set' component={Set} />
+                                    <Route path='/rewardpunishment' component={Rewardpunishment}/>
+                                </Layer>
+                            </ConnectedRouter>
                         </Content>
                     </Layout>
                 }

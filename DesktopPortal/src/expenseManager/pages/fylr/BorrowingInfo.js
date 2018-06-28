@@ -8,7 +8,7 @@ import { getDicPars, getOrganizationTree } from '../../../utils/utils'
 import { getDicParList } from '../../../actions/actionCreators'
 import validations from '../../../utils/validations'
 import Layer from '../../../components/Layer'
-import { borrowingStatus, billStatus, permission } from './const'
+import { borrowingStatus, chargeStatus, permission, billType, recordingStatus } from './const'
 import moment from 'moment'
 import uuid from 'uuid';
 import ConfirmDialog from './ConfirmDialog'
@@ -18,7 +18,7 @@ const FormItem = Form.Item;
 const Option = Select.Option;
 const confirm = Modal.confirm;
 
-const formFields = ['chargeNo', 'reimburseDepartment', 'reimburseUser', 'expectedPaymentDate', 'memo', 'chargeAmount']
+const formFields = ['chargeNo', 'reimburseDepartment', 'reimburseUser', 'expectedPaymentDate', 'memo', 'chargeAmount','reimbursedAmount']
 
 
 const styles = {
@@ -82,15 +82,15 @@ class BorrowingInfo extends Component {
         } else if (initState.entity) {
             let canEditBase = false;
             if (initState.op === 'edit') {
-                canEditBase =  true;
-            } 
+                canEditBase = true;
+            }
             this.setState({ canEditBase })
             this.setState({ op: initState.op })
             this.getBorrowingInfo(initState.entity.id);
         }
-        this.setState({ pagePar: initState.pagePar||{} })
+        this.setState({ pagePar: initState.pagePar || {} })
         console.log(this.props.match);
-    //    this.props.getDicParList(['CHARGE_COST_TYPE']);
+        //    this.props.getDicParList(['CHARGE_COST_TYPE']);
         this.getNodes();
         this.getPermission();
     }
@@ -98,7 +98,7 @@ class BorrowingInfo extends Component {
 
     getPermission = async () => {
         let url = `${AuthorUrl}/api/Permission/each`
-        let r = await ApiClient.post(url, [permission.yjk, permission.yjkgl,  permission.yjkqr, permission.yjkfk])
+        let r = await ApiClient.post(url, [permission.yjk, permission.yjkgl, permission.yjkqr, permission.yjkfk])
         if (r && r.data && r.data.code === '0') {
             let p = {};
             (r.data.extension || []).forEach(pi => {
@@ -108,7 +108,7 @@ class BorrowingInfo extends Component {
                     p.fk = pi.isHave;
                 } else if (pi.permissionItem === permission.yjkgl) {
                     p.gl = pi.isHave;
-                }else if (pi.permissionItem === permission.yjk) {
+                } else if (pi.permissionItem === permission.yjk) {
                     p.yjk = pi.isHave;
                 }
             })
@@ -134,18 +134,18 @@ class BorrowingInfo extends Component {
                 } else {
                     //转换
                     let entity = r.data.extension;
-                    
+
                     await this.fetchUser(entity.reimburseUser);
 
-                    this.setState({  entity: entity }, () => {
+                    this.setState({ entity: entity }, () => {
                         var initValues = {};
                         formFields.forEach(k => {
                             initValues[k] = entity[k]
                         })
                         initValues.reimburseUser = [{ key: entity.reimburseUser }]
                         initValues.expectedPaymentDate = moment(entity.expectedPaymentDate)
-                       
-    
+
+
 
                         this.props.form.setFieldsValue(initValues);
                     });
@@ -228,10 +228,10 @@ class BorrowingInfo extends Component {
             notification.error({ message: '验证失败', description: '借款金额小于等于0' });
             return;
         }
-       
+
 
         var entity = { ...this.state.entity, ...values };
-      
+
         entity.reimburseUser = entity.reimburseUser[0].key;
 
         if (b) {
@@ -277,7 +277,7 @@ class BorrowingInfo extends Component {
         this.setState({ saveing: false })
     }
 
-   
+
     closeDialog = (key) => {
         let d = {};
         d[key] = false;
@@ -310,7 +310,7 @@ class BorrowingInfo extends Component {
         try {
             let r = await ApiClient.post(url, body);
             if (r && r.data && r.data.code === '0') {
-                this.setState({ entity: { ...this.state.entity, ...{ status: status } } })
+                this.setState({ entity: { ...this.state.entity, ...{ status: status, confirmMessage: entity.message } } })
                 if (this.props.changeCallback) {
                     this.props.changeCallback(this.state.entity);
                 }
@@ -378,27 +378,128 @@ class BorrowingInfo extends Component {
     render() {
         const { getFieldDecorator } = this.props.form;
         const lenValidator = [{ max: 120, message: '参数值长度不得大于120个字符' }]
-   
-        let {fetchingUser, userList, permission, entity,pagePar} = this.state;
+
+        let { fetchingUser, userList, permission, entity, pagePar } = this.state;
 
         let btns = [];
         let sText = '';
 
         let s = entity.status;
-        if( (s === borrowingStatus.UnSubmit || s === borrowingStatus.Reject) &&
-        !pagePar.noGL && ( permission.gl || entity.reimburseUser === this.props.user.sub )){
-            btns.push(<Button onClick={()=>this.submitBorrowing()}>提交</Button>)
-        } 
-        if(s === borrowingStatus.Submit && (!pagePar.noQR && permission.qr) ){
-            btns.push(<Button onClick={()=>this.showDialog("dlgConfirm")}>确认</Button>)
+
+        sText = chargeStatus[s];
+        if (entity.isPayment) {
+            sText = `${sText}-财务已付款`
         }
-        if(s === borrowingStatus.Confirm && !entity.isPayment && (!pagePar.noFK && permission.fk) ){
-            btns.push(<Button onClick={()=>this.showDialog("dlgPayment")}>财务确认</Button>)
+
+        if ((s === borrowingStatus.UnSubmit || s === borrowingStatus.Reject) &&
+            !pagePar.noGL && (permission.gl || entity.reimburseUser === this.props.user.sub)) {
+            btns.push(<Button type="primary" style={{ marginLeft: '0.5rem' }} onClick={() => this.submitBorrowing()}>提交</Button>)
+        }
+        if (s === borrowingStatus.Submit && (!pagePar.noQR && permission.qr)) {
+            btns.push(<Button type="primary" style={{ marginLeft: '0.5rem' }} onClick={() => this.showDialog("dlgConfirm")}>确认</Button>)
+        }
+        if (s === borrowingStatus.Confirm && !entity.isPayment && (!pagePar.noFK && permission.fk)) {
+            btns.push(<Button type="primary" style={{ marginLeft: '0.5rem' }} onClick={() => this.showDialog("dlgPayment")}>财务确认</Button>)
         }
         let canChangeDepartment = false;
-        if(permission.gl){
+        if (permission.gl) {
             canChangeDepartment = true;
         }
+
+        let showOther=  true;
+        if(this.state.op==='add' || this.state.op==='edit'){
+            showOther = false;
+        }
+
+        const columns = [
+            {
+                title: '类型',
+                dataIndex: 'type',
+                key: 'type',
+                width: '8rem',
+                render: (text, record) => {
+                    return billType[record.type];
+                }
+            },
+            {
+                title: '单据号',
+                dataIndex: 'chargeNo',
+                key: 'chargeNo',
+                width: '10rem',
+                // render: (text, record)=>{
+
+                //     return  record.type===2? <a href="javascript:void();" title="点击查看详情" onClick={()=>this.gotoDetail(record)}>{text}</a>
+                //         : <a href="javascript:void();" title="点击查看详情" onClick={()=>this.gotoRepaymentDetail(record)}>{text}</a>
+                // }
+            },
+            {
+                title: '部门',
+                dataIndex: 'reimburseDepartmentName',
+                key: 'reimburseDepartmentName'
+            },
+            {
+                title: '报销人/还款人',
+                dataIndex: 'reimburseUserInfo',
+                key: 'reimburseUserInfo',
+                width: '6rem',
+                render: (text, record) => {
+                    return (record.reimburseUserInfo || {}).userName
+                }
+            },
+            {
+                title: '日期',
+                dataIndex: 'createTime',
+                key: 'createTime',
+                width: '8rem',
+                render: (text, record) => {
+                    return moment(record.createTime).format('YYYY-MM-DD');
+                }
+            },
+            {
+                title: '费用总额',
+                dataIndex: 'chargeAmount',
+                key: 'chargeAmount',
+                className: 'column-money',
+                width: '10rem',
+                render: (text, record) => {
+                    if (record.type === 1) {
+                        return '-'
+                    }
+                    return <span style={{ textAlign: 'right' }}>{record.chargeAmount}</span>
+                }
+            },
+            {
+                title: '冲减预借款金额',
+                dataIndex: 'reimbursedAmount',
+                key: 'reimbursedAmount',
+                className: 'column-money',
+                width: '10rem',
+                render: (text, record) => {
+                    return <span style={{ textAlign: 'right' }}>{record.reimbursedAmount}</span>
+                }
+            },
+            {
+                title: '状态',
+                dataIndex: 'status',
+                key: 'status',
+                width: '10rem',
+                render: (text, record) => {
+                    let s = chargeStatus[record.status];
+                    if(record.type===1){
+                        if(record.isPayment){
+                            s = s + " | 已付款"
+                        }
+                    }
+                    if(record.type===3){
+                        if(record.recordingStatus===recordingStatus.Confirm){
+                            s = s + ` | ${recordingStatus[record.recordingStatus]}`
+                        }
+                    }
+
+                    return  s;
+                }
+            }
+        ]
 
         return <Layer showLoading={this.state.loading} className="content-page"
             fixedPanel={
@@ -421,7 +522,7 @@ class BorrowingInfo extends Component {
                     (this.state.entity.status === borrowingStatus.Reject || (this.state.entity.status === borrowingStatus.Submit && this.state.entity.confirmMessage)) ?
                         <Alert message={`驳回意见：${this.state.entity.confirmMessage}`} type="warning" /> : null
                 }
-               
+
                 <Form ref={(e) => this.form = e}>
                     <Row className="form-row">
                         <Col span={6}>
@@ -472,24 +573,34 @@ class BorrowingInfo extends Component {
                     <Row className="form-row">
                         <Col span={6}>
                             <FormItem label="借款金额(元)">
-                                {getFieldDecorator('chargeAmount', {rules:[{required:true, message:'必须输入借款金额'}]})(
-                                    <InputNumber style={{ textAlign: 'right', width:'100%' }} disabled={!this.state.canEditBase} />
+                                {getFieldDecorator('chargeAmount', { rules: [{ required: true, message: '必须输入借款金额' }] })(
+                                    <InputNumber style={{ textAlign: 'right', width: '100%' }} disabled={!this.state.canEditBase} />
                                 )}
                             </FormItem>
                         </Col>
-                        <Col span={8}>
+                        <Col span={10}>
                             <FormItem label="预计还款日期">
-                                {getFieldDecorator('expectedPaymentDate', { rules: [{required:true, message:'必须选择预计还款日期'}] })(
+                                {getFieldDecorator('expectedPaymentDate', { rules: [{ required: true, message: '必须选择预计还款日期' }] })(
                                     <DatePicker disabled={!this.state.canEditBase} />
                                 )}
                             </FormItem>
                         </Col>
+                        {
+                            showOther?<Col span={6}>
+                            <FormItem label="已还款(元)">
+                                {getFieldDecorator('reimbursedAmount', {})(
+                                    <InputNumber style={{ textAlign: 'right', width: '100%' }} disabled />
+                                )}
+                            </FormItem>
+                        </Col>:null
+                        }
+                        
                     </Row>
                     <Row className="form-row">
-                        
+
                         <Col span={24}>
                             <FormItem label="借款原因">
-                                {getFieldDecorator('memo', { rules: [{required:true, message:'必须输入借款原因'},...lenValidator] })(
+                                {getFieldDecorator('memo', { rules: [{ required: true, message: '必须输入借款原因' }, ...lenValidator] })(
                                     <Input disabled={!this.state.canEditBase} />
                                 )}
                             </FormItem>
@@ -497,11 +608,11 @@ class BorrowingInfo extends Component {
                     </Row>
                 </Form>
             </div>
-            
-            
+
+
             <div style={{ marginTop: '1rem', textAlign: 'center' }}>
                 {
-                    (this.state.canEditBase ) ?
+                    (this.state.canEditBase) ?
                         <div>
                             <Button size="large" loading={this.state.saveing} type="primary" onClick={() => this.submit(false)}>暂存</Button>
                             <Button size="large" style={{ marginLeft: '1rem' }} loading={this.state.saveing} type="primary" onClick={() => this.submit(true)}>提交</Button>
@@ -509,6 +620,23 @@ class BorrowingInfo extends Component {
                 }
 
             </div>
+            {
+                (this.state.op === 'add' || this.state.op === 'edit') ? null :
+                    <div>
+                        <div style={{ marginTop: '1rem' }}>
+                            <span>报销/还款明细</span>
+                        </div>
+                        <div style={{ marginTop: '0.5rem' }}>
+
+                            <Table columns={columns}
+                                rowKey={(record) => record.id}
+                                rowClassName={this.rowStyle}
+                                dataSource={this.state.entity.chargeList}
+                                bordered={true} pagination={false} />
+
+                        </div>
+                    </div>
+            }
 
             <ConfirmDialog title="预借款确认" loading={this.state.confirmLoading} visible={this.state.dlgConfirm} onCancel={() => this.closeDialog('dlgConfirm')} onReject={this.reject} onSubmit={this.confirm} />
             <PaymentDialog title="付款" loading={this.state.paymentLoading} visible={this.state.dlgPayment} onCancel={() => this.closeDialog('dlgPayment')} onSubmit={this.payment} initData={this.state.entity} />

@@ -13,7 +13,7 @@ class Education extends Component {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                values.id=NewGuid();
+                values.id = NewGuid();
                 console.log('学历信息: ', values);
                 if (this.props.confirmCallback) {
                     this.props.confirmCallback(values);
@@ -130,10 +130,7 @@ class Education extends Component {
                     <Col span={12}>
                         <FormItem {...formItemLayout} label="学位授予时间">
                             {getFieldDecorator('getDegreeTime', {
-                                rules: [{
-                                    required: true,
-                                    message: '请选择学位授予时间'
-                                }]
+                                rules: []
                             })(
                                 <DatePicker format='YYYY-MM-DD' style={{width: '100%'}} />
                             )}
@@ -144,9 +141,7 @@ class Education extends Component {
                     <Col span={12}>
                         <FormItem {...formItemLayout} label="学位授予单位" >
                             {getFieldDecorator('getDegreeCompany', {
-                                rules: [{
-                                    required: true, message: '请输入学位授予单位',
-                                }]
+                                rules: []
                             })(
                                 <Input placeholder="请输入学位授予单位" />
                             )}

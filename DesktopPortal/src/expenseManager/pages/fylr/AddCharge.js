@@ -788,7 +788,7 @@ class AddCharge extends Component {
         try {
             let r = await ApiClient.post(url, body);
             if (r && r.data && r.data.code === '0') {
-                this.setState({ entity: { ...this.state.entity, ...{ status: status } } })
+                this.setState({ entity: { ...this.state.entity, ...{ status: status , confirmMessage: entity.message} } })
                 if (this.props.changeCallback) {
                     this.props.changeCallback(this.state.entity);
                 }
@@ -828,7 +828,7 @@ class AddCharge extends Component {
         try {
             let r = await ApiClient.post(url, body);
             if (r && r.data && r.data.code === '0') {
-                this.setState({ entity: { ...this.state.entity, ...{ billStatus: status } } })
+                this.setState({ entity: { ...this.state.entity, ...{ billStatus: status , confirmBillMessage: entity.message} } })
                 if (this.props.changeCallback) {
                     this.props.changeCallback(this.state.entity);
                 }
@@ -1028,20 +1028,20 @@ class AddCharge extends Component {
             if ((status === chargeStatus.UnSubmit || status === chargeStatus.Reject) &&
                 (!this.state.pagePar.noGL && (this.state.permission.gl || this.state.entity.createUser === this.props.user.sub))
             ) {
-                btns.push(<Button key="submitBtn" type="primary" onClick={this.submitCharge}>提交</Button>)
+                btns.push(<Button key="submitBtn" type="primary" style={{marginLeft: '0.5rem'}}  onClick={this.submitCharge}>提交</Button>)
             }
             if (status === chargeStatus.Submit && (!this.state.pagePar.noQR && this.state.permission.qr)) {
-                btns.push(<Button key="confirmBtn" type="primary" onClick={() => this.showDialog('dlgConfirm')}>确认</Button>)
+                btns.push(<Button key="confirmBtn" type="primary" style={{marginLeft: '0.5rem'}} onClick={() => this.showDialog('dlgConfirm')}>确认</Button>)
             }
             if ((status === chargeStatus.Confirm && !this.state.entity.isPayment) && (!this.state.pagePar.noFK && this.state.permission.fk)) {
-                btns.push(<Button key="paymentBtn" type="primary" onClick={() => this.showDialog('dlgPayment')} >付款确认</Button>)
+                btns.push(<Button key="paymentBtn" type="primary" style={{marginLeft: '0.5rem'}} onClick={() => this.showDialog('dlgPayment')} >付款确认</Button>)
             }
             if ((bs === billStatus.UnSubmit && this.state.entity.isBackup && this.state.entity.backuped) &&
                 (!this.state.pagePar.noGL && (this.state.permission.gl || this.state.entity.createUser === this.props.user.sub))) {
-                btns.push(<Button key="submitBillBtn" type="primary">提交后补发票</Button>)
+                btns.push(<Button key="submitBillBtn" type="primary" style={{marginLeft: '0.5rem'}}>提交后补发票</Button>)
             }
             if (bs === billStatus.Submit && (!this.state.pagePar.noQR && this.state.permission.qr)) {
-                btns.push(<Button key="confirmBillBtn" type="primary" onClick={() => this.showDialog('dlgConfirmBill')} >确认后补发票</Button>)
+                btns.push(<Button key="confirmBillBtn" type="primary" style={{marginLeft: '0.5rem'}} onClick={() => this.showDialog('dlgConfirmBill')} >确认后补发票</Button>)
             }
         }
         let sText = chargeStatus[this.state.entity.status] || '';
@@ -1076,7 +1076,7 @@ class AddCharge extends Component {
         let ri = this.state.reimburseInfo;
         let riText = ''
         if(ri){
-            riText = `对应预借款单据${ri.chargeNo}, 总借款金额：${ri.chargeAmount}元，已报销/还款：${ri.reimbursedAmount||0}元`
+            riText = `对应预借款单据${ri.chargeNo}, 总借款金额：${ri.chargeAmount}元，已报销/还款：${ri.reimbursedAmount||0}元，可还款：${ri.chargeAmount-(ri.reimbursedAmount||0)}元`
         }
 
         return <Layer showLoading={this.state.loading} className="content-page"

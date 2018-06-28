@@ -1,65 +1,164 @@
-﻿using System;
+﻿using ApplicationCore.Models;
+using System;
 using System.Collections.Generic;
 using System.Text;
+using XYHHumanPlugin.Models;
 
 namespace XYHHumanPlugin.Dto.Response
 {
     public class HumanInfoResponse
     {
+        /// <summary>
+        /// 主键Id
+        /// </summary>
         public string ID { get; set; }
+        /// <summary>
+        /// 工号
+        /// </summary>
         public string UserID { get; set; }
+        /// <summary>
+        /// 姓名
+        /// </summary>
         public string Name { get; set; }
+        /// <summary>
+        /// 身份证号码
+        /// </summary>
         public string IDCard { get; set; }
-        public int Age { get; set; }
-        public int Sex { get; set; }
+        /// <summary>
+        /// 性别
+        /// </summary>
+        public Int16 Sex { get; set; }
+
+        /// <summary>
+        /// 公司
+        /// </summary>
+        public string Company { get; set; }
+
+        /// <summary>
+        /// 名族
+        /// </summary>
+        public string Nationality { get; set; }
+
+        /// <summary>
+        /// 户籍类型
+        /// </summary>
+        public string HouseholdType { get; set; }
+
+        /// <summary>
+        /// 最高学历
+        /// </summary>
+        public string HighestEducation { get; set; }
+
+        /// <summary>
+        /// 健康状况
+        /// </summary>
+        public string HealthCondition { get; set; }
+
+        /// <summary>
+        /// 籍贯
+        /// </summary>
+        public string NativePlace { get; set; }
+
+        /// <summary>
+        /// 家庭住址
+        /// </summary>
+        public string FamilyAddress { get; set; }
+
+        /// <summary>
+        /// 职位名称
+        /// </summary>
         public string Position { get; set; }
-        public string PositionName { get; set; }
+
+        /// <summary>
+        /// 政治面貌
+        /// </summary>
+        public string PolicitalStatus { get; set; }
+
+        /// <summary>
+        /// 户籍所在地
+        /// </summary>
+        public string DomicilePlace { get; set; }
+
+        /// <summary>
+        /// 紧急联系人
+        /// </summary>
+        public string EmergencyContact { get; set; }
+
+        /// <summary>
+        /// 紧急联系电话
+        /// </summary>
+        public string EmergencyContactPhone { get; set; }
+
+        /// <summary>
+        /// 紧急联系人关系
+        /// </summary>
+        public string EmergencyContactType { get; set; }
+
+        /// <summary>
+        /// 邮件地址
+        /// </summary>
+        public string EmailAddress { get; set; }
+
+        /// <summary>
+        /// 银行名称
+        /// </summary>
+        public string BankName { get; set; }
+
+        /// <summary>
+        /// 银行账号
+        /// </summary>
+        public string BankAccount { get; set; }
+
+        /// <summary>
+        /// 所属部门Id
+        /// </summary>
         public string DepartmentId { get; set; }
-        public int? Payment { get; set; }
+
+        /// <summary>
+        /// 创建人
+        /// </summary>
+        public string CreateUser { get; set; }
+
+        /// <summary>
+        /// 备注
+        /// </summary>
+        public string Desc { get; set; }
+
         public int? Modify { get; set; }
+
+        /// <summary>
+        /// 头像
+        /// </summary>
         public string Picture { get; set; }
-        public string RecentModify { get; set; }
-        public int? StaffStatus { get; set; }
-        public string Contract { get; set; }
-        public DateTime? EntryTime { get; set; }
-        public DateTime? BecomeTime { get; set; }
-        public DateTime? LeaveTime { get; set; }
-        public bool? IsSocialInsurance { get; set; }
-        public string SocialInsuranceInfo { get; set; }
-        public int? BaseSalary { get; set; }
-        public int? Subsidy { get; set; }
-        public int? ClothesBack { get; set; }
-        public int? AdministrativeBack { get; set; }
-        public int? PortBack { get; set; }
-        public int? OtherBack { get; set; }
 
         public string OrganizationFullName { get; set; }
 
         public PositionInfoResponse PositionInfo { get; set; }
-    }
 
-    public class HumanInfoFormResponse
-    {
-        public string ID { get; set; }
-        public string UserID { get; set; }
-        public string Name { get; set; }
-        public string IDCard { get; set; }
-        public int Age { get; set; }
-        public string SexName { get; set; }//转换
-        public string PositionName { get; set; }//转换
 
-        public string DepartmentName { get; set; }//转换
-        public string StaffStatusName { get; set; }//转换
-        public string Contract { get; set; }//转换
-        public DateTime? EntryTime { get; set; }
-        public DateTime? BecomeTime { get; set; }
-        public DateTime? LeaveTime { get; set; }
-        public string SocialInsuranceInfo { get; set; }//转换
-        public int? BaseSalary { get; set; }
-        public int? Subsidy { get; set; }
-        public int? ClothesBack { get; set; }
-        public int? AdministrativeBack { get; set; }
-        public int? PortBack { get; set; }
-        public int? OtherBack { get; set; }
+        /// <summary>
+        /// 状态
+        /// </summary>
+        public StaffStatus StaffStatus { get; set; }
+
+        /// <summary>
+        /// 入职日期
+        /// </summary>
+        public DateTime EntryTime { get; set; }
+
+        /// <summary>
+        /// 创建时间
+        /// </summary>
+        public DateTime CreateTime { get; set; }
+
+        public Organizations Organizations { get; set; }
+
+        public OrganizationExpansion OrganizationExpansion { get; set; }
+
+
+
+
+
+
     }
 }

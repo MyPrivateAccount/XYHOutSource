@@ -30,7 +30,9 @@ namespace XYHHumanPlugin.Stores
         Task CreateMonthAttendanceAsync(AttendanceFormInfo forminfo , CancellationToken cle = default(CancellationToken));
 
         Task CreateListAsync(List<FileInfo> fileInfoList, CancellationToken cancellationToken = default(CancellationToken));
+        Task AddRPInfoeAsync(RewardPunishmentInfo rpinfo, CancellationToken cancellationToken = default(CancellationToken));
 
+        Task DeleteRPInfoeAsync(RewardPunishmentInfo rpinfo, CancellationToken cancellationToken = default(CancellationToken));
         Task DeleteAsync(HumanInfo userinfo, string contractid, CancellationToken cancellationToken = default(CancellationToken));
         Task DeleteAsync(MonthInfo monthinfo, CancellationToken cancellationToken = default(CancellationToken));
         Task DeleteStationAsync(PositionInfo monthinfo, CancellationToken cancellationToken = default(CancellationToken));
@@ -53,6 +55,9 @@ namespace XYHHumanPlugin.Stores
 
         Task<string> GetOrganizationFullName(string departmentid);
         Task<List<Organizations>> GetAllOrganization();
+
+        Task<List<TResult>> GetRewardPunishmentListAsync<TResult>(Func<IQueryable<RewardPunishmentInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken));
+        Task<List<TResult>> GetAttendenceListAsync<TResult>(Func<IQueryable<AttendanceInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken));
 
         Task<SocialInsurance> GetSocialInfoAsync(string idcard);
         Task<TResult> GetHumanAsync<TResult>(Func<IQueryable<HumanInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken));

@@ -104,7 +104,7 @@ namespace XYHContractPlugin.Controllers
                 exarequest.ContentName = "UploadFiles";
                 exarequest.SubmitDefineId = strModifyGuid;
                 exarequest.Source = "";
-                exarequest.CallbackUrl = ApplicationContext.Current.UpdateExamineCallbackUrl;
+                exarequest.CallbackUrl = "";
                 exarequest.Action = "TEST";/* exarequest.ContentType*/;
                 exarequest.TaskName = $"{user.UserName}添加合同附件{exarequest.ContentName}的动态{exarequest.ContentType}";
 

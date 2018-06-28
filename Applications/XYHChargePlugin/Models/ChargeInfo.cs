@@ -101,6 +101,8 @@ namespace XYHChargePlugin.Models
 
         public DateTime? LastReimbursedTime { get; set; }
 
+        public int RecordingStatus { get; set; }
+
         [NotMapped]
         public Organizations BranchInfo { get; set; }
 
@@ -124,6 +126,9 @@ namespace XYHChargePlugin.Models
 
         [NotMapped]
         public List<ModifyInfo> History { get; set; }
+
+        [NotMapped]
+        public List<ChargeInfo> ChargeList { get; set; }
         //public DateTime? PostTime { get; set; }
         //[MaxLength(127)]
         // public string PostDepartment { get; set; }

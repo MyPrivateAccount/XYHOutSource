@@ -5,6 +5,7 @@ import moment from 'moment';
 import {getworkNumbar, postHumanInfo, setSocialEN} from '../../actions/actionCreator';
 import './staff.less';
 import SocialSecurity from './form/socialSecurity'
+import Layer from '../../../components/Layer'
 const Option = Select.Option;
 const FormItem = Form.Item;
 
@@ -64,7 +65,8 @@ class OnBoarding extends Component {
 
     render() {
         return (
-            <div className="insureBlock">
+            <Layer >
+                <div className="page-title" style={{marginBottom: '10px'}}>转正</div>
                 <Row>
                     <Col span={7}>员工编号:<Input style={{width: '200px'}} disabled /></Col>
                     <Col span={7}>姓名:<Input style={{width: '200px'}} disabled /></Col>
@@ -109,7 +111,7 @@ class OnBoarding extends Component {
                         </Col>
                     </Row>
                 */}
-            </div>
+            </Layer>
         );
     }
 };

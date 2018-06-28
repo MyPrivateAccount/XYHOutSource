@@ -59,9 +59,8 @@ namespace XYHHumanPlugin.Managers
                 var lst = new List<MonthFormResponse>();
                 var month = await _Store.GetMonthAsync(a => a.Where(b => b.SettleTime.Value.ToString("Y") == tf.SettleTime.Value.ToString("Y")));
                 
-                if (await GetMonthSalaryForm(lst, month.ID))
+                if (await GetMonthSalaryFormAndAttendanceForm(lst, month.ID, month.SettleTime.GetValueOrDefault()))
                 {
-                    await GetMonthAttendanceForm(lst, month.ID);
                     return lst;
                 }
             }
@@ -115,7 +114,7 @@ namespace XYHHumanPlugin.Managers
             await _Store.CreateMonthAsync(_mapper.Map<SimpleUser>(user), month, cancellationToken);
 
 
-            List<HumanInfo> humanlist = await _Store.GetHumanListAsync(a => a.Where(b => b.StaffStatus > 1 && b.ID != ""));//入职员工
+            List<HumanInfo> humanlist = await _Store.GetHumanListAsync(a => a.Where(b => b.StaffStatus == StaffStatus.Regular && b.Id != ""));//入职员工
             if (await CreateMonthSalaryForm(month.ID, month.SalaryForm, humanlist))
             {
                 if (await CreateMonthAttendanceForm(month.ID, month.AttendanceForm, humanlist))
@@ -126,12 +125,12 @@ namespace XYHHumanPlugin.Managers
             return false;
         }
 
-        private async Task<bool> GetMonthSalaryForm(List<MonthFormResponse> lst, string monthid, CancellationToken cle = default(CancellationToken))
+        private async Task<bool> GetMonthSalaryFormAndAttendanceForm(List<MonthFormResponse> lst, string monthid, DateTime settletime, CancellationToken cle = default(CancellationToken))
         {
             var salarylst = await _Store.GetListSalaryFormAsync(a => a.Where(b => b.MonthID == monthid));
             foreach (var item in salarylst)
             {
-                var human = await _Store.GetHumanAsync(a => a.Where(b => b.ID == item.HumanID));
+                var human = await _Store.GetHumanAsync(a => a.Where(b => b.Id == item.HumanID));
                 if (human != null)
                 {
                     var tf = await _Store.GetStationAsync(a => a.Where(b => b.ID == human.Position));
@@ -141,23 +140,58 @@ namespace XYHHumanPlugin.Managers
                         var it = new MonthFormResponse();
                         it.A1 = lst.Count;
                         it.A2 = human.IDCard;
-                        it.A3 = human.ID;
+                        it.A3 = human.Id;
                         it.A4 = human.Name;
                         it.A5 = await _Store.GetOrganizationFullName(human.DepartmentId);
                         it.A6 = tf.PositionName;
-                        it.A8 = human.BaseSalary.GetValueOrDefault();
-                        it.A9 = 0;//暂无
-                        it.A10 = 0;//暂无
-                        it.A11 = human.Subsidy.GetValueOrDefault();//岗位补贴
-                        it.A17 = human.AdministrativeBack.GetValueOrDefault();
+                        it.A8 = item.BaseSalary.GetValueOrDefault();
+                        it.A9 = 0;//交通补贴暂无
+                        it.A10 = 0;//通信补贴暂无
+                        it.A11 = item.Subsidy.GetValueOrDefault();//岗位补贴
+                        var trp = await _Store.GetRewardPunishmentListAsync(a => a.Where(b => b.UserID == human.Id&&(b.WorkDate.Value.Year==settletime.Year&& b.WorkDate.Value.Month == settletime.Month)));
+                        it.A131 = trp.Sum(a => { if (a.Type == 1) { return a.Money; } return 0; });
+                        it.A161 = trp.Sum(a => { if (a.Type == 2) { return a.Money; } return 0; });
+                        it.A17 = trp.Sum(a => { if (a.Type == 3) { return a.Money; } return 0; });
                         it.A18 = human.PortBack.GetValueOrDefault();
-                        it.A20 = 0;////暂无
+                        it.A20 = 0;////意外险暂无
                         it.A21 = human.ClothesBack.GetValueOrDefault();
                         it.A22 = sc.Pension.GetValueOrDefault();
                         it.A23 = sc.Unemployment.GetValueOrDefault();
                         it.A24 = sc.Medical.GetValueOrDefault();
                         it.A25 = sc.WorkInjury.GetValueOrDefault();
-                        it.A26 = 0;////暂无
+                        it.A26 = 0;////公积金暂无
+
+                        var att = await _Store.GetAttendenceListAsync(a => a.Where(b => b.UserID == human.Id&& b.Date.Value.Year == settletime.Year&& b.Date.Value.Month == settletime.Month));
+                        it.A7 = att[0].Normal;
+                        it.A12 = 0;//加班暂无
+                        it.A13 = 0;//效绩奖励暂无
+                        it.A14 = att[0].Late;
+                        it.A15 = att[0].Matter;
+                        it.A16 = att[0].Absent;
+
+                        var atts = await _Store.GetListAttendanceSettingAsync();
+
+                        int a1 = 0, a2 = 0, a3 = 0;
+                        //只算迟到 事假 旷工的扣薪
+                        foreach (var attsitem in atts)
+                        {
+                            if (attsitem.Type == 7)
+                            {
+                                a1 = (attsitem.Money* it.A14)/attsitem.Times;
+                            }
+                            else if (attsitem.Type == 2)
+                            {
+                                a2 = (attsitem.Money * it.A15) / attsitem.Times;
+                            }
+                            else if (attsitem.Type == 8)
+                            {
+                                a3 = (attsitem.Money * it.A16) / attsitem.Times;
+                            }
+                        }
+
+                        //算总
+                        it.A19 = it.A8 + it.A9 + it.A10 + it.A11 + it.A12 + it.A13 + it.A131 - it.A14 - it.A15 - it.A16 - it.A161 - it.A17 - it.A18-a1-a2-a3;
+                        it.A27 = it.A19 - it.A20 - it.A21 - it.A22 - it.A23 - it.A24 - it.A25 - it.A26;
 
                         lst.Add(it);
                     }
@@ -166,28 +200,7 @@ namespace XYHHumanPlugin.Managers
 
             return lst.Count > 0;
         }
-
-        private async Task<bool> GetMonthAttendanceForm(List<MonthFormResponse> lst, string monthid, CancellationToken cle = default(CancellationToken))
-        {
-            var it = new MonthFormResponse();
-
-            foreach (var item in lst)
-            {
-                //it.A7;
-                //it.A12;
-                //it.A13;
-                //it.A14;
-                //it.A15;
-                //it.A16;
-
-                //算总
-                item.A19 = item.A8+ item.A9+ item.A10 + item.A11+item.A12+item.A13 - item.A14- item.A15- item.A16- item.A17- item.A18;
-                item.A27 = item.A19 - item.A20 - item.A21 - item.A22 - item.A23 - item.A24 - item.A25 - item.A26;
-
-            }
-
-            return true;
-        }
+        
 
         private async Task<bool> CreateMonthSalaryForm(string monthid, string salaryid, List<HumanInfo> humaninfolist, CancellationToken cle = default(CancellationToken))
         {
@@ -198,9 +211,9 @@ namespace XYHHumanPlugin.Managers
                     SalaryFormInfo salary = new SalaryFormInfo();
                     salary.ID = salaryid;
                     salary.MonthID = monthid;
-                    salary.HumanID = item.ID;
-                    salary.BaseSalary = item.BaseSalary;
-                    salary.Subsidy = item.Subsidy;
+                    salary.HumanID = item.Id;
+                    //salary.BaseSalary = item.BaseSalary;
+                    //salary.Subsidy = item.Subsidy;
                     salary.ClothesBack = item.ClothesBack;
                     salary.AdministrativeBack = item.AdministrativeBack;
                     salary.PortBack = item.PortBack;

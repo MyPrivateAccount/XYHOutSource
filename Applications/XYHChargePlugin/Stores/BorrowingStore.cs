@@ -72,6 +72,7 @@ namespace XYHChargePlugin.Stores
                             LastReimbursedTime = c.LastReimbursedTime,
                             ExpectedPaymentDate = c.ExpectedPaymentDate,
                             ChargeId = c.ChargeId,
+                            RecordingStatus = c.RecordingStatus,
                             CreateUserInfo = new SimpleUser()
                             {
                                 Id = cu.Id,
@@ -211,6 +212,13 @@ namespace XYHChargePlugin.Stores
                      };
             ci.History = await hq.ToListAsync();
 
+            //报销单
+            var sq = SimpleQuery;
+            sq = sq.Where(x => x.IsDeleted == false && x.ChargeId == id).OrderByDescending(x=>x.CreateTime);
+
+            ci.ChargeList = await sq.ToListAsync();
+
+
             return ci;
         }
 
@@ -318,6 +326,41 @@ namespace XYHChargePlugin.Stores
                 entry.Property(c => c.SubmitTime).IsModified = true;
                 entry.Property(c => c.SubmitUser).IsModified = true;
             }
+
+            ModifyInfo mi = new ModifyInfo()
+            {
+                Id = Guid.NewGuid().ToString("N").ToLower(),
+                ChargeId = id,
+                CreateTime = DateTime.Now,
+                CreateUser = user.Id,
+                Department = user.OrganizationId,
+                Status = status,
+                Type = mtype,
+                TypeMemo = mtypememo
+            };
+            Context.ModifyInfos.Add(mi);
+
+            await Context.SaveChangesAsync();
+        }
+
+        public async Task UpdateRecordingStatus(SimpleUser user, string id, int status, string message, ModifyTypeEnum mtype, string mtypememo)
+        {
+            string cn = await Context.ChargeInfos.Where(x => x.ID == id).Select(x => x.ChargeNo).FirstOrDefaultAsync();
+
+            ChargeInfo ci = new ChargeInfo()
+            {
+                ID = id,
+                RecordingStatus = status,
+                UpdateTime = DateTime.Now,
+                UpdateUser = user.Id,
+                ChargeNo = cn
+            };
+
+            var entry = Context.ChargeInfos.Attach(ci);
+            entry.Property(c => c.RecordingStatus).IsModified = true;
+            entry.Property(c => c.UpdateUser).IsModified = true;
+            entry.Property(c => c.UpdateTime).IsModified = true;
+            
 
             ModifyInfo mi = new ModifyInfo()
             {

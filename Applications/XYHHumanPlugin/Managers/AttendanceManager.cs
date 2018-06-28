@@ -32,14 +32,14 @@ namespace XYHHumanPlugin.Managers
             if (tlst == null && tlst.Count < 1)//返回空的设置表
             {
                 List<AttendanceSettingInfoResponse> templst = new List<AttendanceSettingInfoResponse>();
-                templst.Add(new AttendanceSettingInfoResponse() { Type = 1, Times = 0, Money = 0 });//调休
-                templst.Add(new AttendanceSettingInfoResponse() { Type = 2, Times = 0, Money = 0 });//事假
-                templst.Add(new AttendanceSettingInfoResponse() { Type = 3, Times = 0, Money = 0 });//病假
-                templst.Add(new AttendanceSettingInfoResponse() { Type = 4, Times = 0, Money = 0 });//年假
-                templst.Add(new AttendanceSettingInfoResponse() { Type = 5, Times = 0, Money = 0 });//婚假
-                templst.Add(new AttendanceSettingInfoResponse() { Type = 6, Times = 0, Money = 0 });//丧假
-                templst.Add(new AttendanceSettingInfoResponse() { Type = 7, Times = 0, Money = 0 });//迟到
-                templst.Add(new AttendanceSettingInfoResponse() { Type = 8, Times = 0, Money = 0 });//旷工
+                templst.Add(new AttendanceSettingInfoResponse() { Type = 1, Times = 1, Money = 0 });//调休
+                templst.Add(new AttendanceSettingInfoResponse() { Type = 2, Times = 1, Money = 0 });//事假
+                templst.Add(new AttendanceSettingInfoResponse() { Type = 3, Times = 1, Money = 0 });//病假
+                templst.Add(new AttendanceSettingInfoResponse() { Type = 4, Times = 1, Money = 0 });//年假
+                templst.Add(new AttendanceSettingInfoResponse() { Type = 5, Times = 1, Money = 0 });//婚假
+                templst.Add(new AttendanceSettingInfoResponse() { Type = 6, Times = 1, Money = 0 });//丧假
+                templst.Add(new AttendanceSettingInfoResponse() { Type = 7, Times = 1, Money = 0 });//迟到
+                templst.Add(new AttendanceSettingInfoResponse() { Type = 8, Times = 1, Money = 0 });//旷工
                 return templst;
             }
             return tlst;

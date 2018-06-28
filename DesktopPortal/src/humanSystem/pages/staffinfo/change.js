@@ -4,6 +4,7 @@ import React, {Component} from 'react'
 import {InputNumber, Input, Form, Select, Button, Row, Col, Checkbox, DatePicker, Cascader} from 'antd'
 import SocialSecurity from './form/socialSecurity'
 import Salary from './form/salary'
+import Layer from '../../../components/Layer'
 const FormItem = Form.Item;
 const Option = Select.Option;
 const ButtonGroup = Button.Group;
@@ -94,7 +95,8 @@ class Change extends Component {
         let len = this.props.selHumanList.length;
         const {getFieldDecorator, getFieldsError, getFieldsValue, isFieldTouched} = this.props.form;
         return (
-            <div>
+            <Layer>
+                <div className="page-title" style={{marginBottom: '10px'}}>异动调薪</div>
                 <Form onSubmit={this.handleSubmit}>
                     <Row style={{marginTop: '10px'}}>
                         <Col span={7}>
@@ -363,7 +365,7 @@ class Change extends Component {
                         <Col span={6}><Button type="primary" htmlType="submit" disabled={this.hasErrors(getFieldsValue())} >提交</Button></Col>
                     </FormItem> */}
                 </Form>
-            </div>
+            </Layer>
 
         );
     }

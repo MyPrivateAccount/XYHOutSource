@@ -51,6 +51,7 @@ export function* getSearchConditionAsync(state) {
     let url = WebApiConfig.search.searchHumanList;
     try {
         let res = yield call(ApiClient.post, url, state.payload);
+        console.log("查询结果:",res);
          if (res.data.code == 0) {
              result.isOk = true;
              let lv = res.data.extension;
@@ -281,6 +282,52 @@ export function* postAttendeceSettingAsync(state) {
     }
 }
 
+export function* getHumanlistByorgid(state) {
+    let result = {isOk: false, extension: {}, msg: '获取组织下员工信息失败！'};
+    let url = WebApiConfig.server.getHumanlistByorg;
+
+    try {
+        let res = yield call(ApiClient.post, url, state.payload);
+        if (res.data.code == 0) {
+            result.isOk = true;
+            yield put ({type: actionUtils.getActionType(actionTypes.UPDATE_REWARDPUNISHHUMANLIST), payload: res.data.extension});
+
+        }
+    } catch (e) {
+        result.msg = '获取组织下员工信息异常';
+    }
+
+    if (!result.isOk) {
+        notification.error({
+            description: result.msg,
+            duration: 3
+        });
+    }
+}
+
+export function* searchRewardPunishmentLst(state) {
+    let result = {isOk: false, extension: {}, msg: '查询奖惩信息失败！'};
+    let url = WebApiConfig.server.getRPInfoList;
+
+    try {
+        let res = yield call(ApiClient.post, url, state.payload);
+        if (res.data.code == 0) {
+            result.isOk = true;
+            yield put ({type: actionUtils.getActionType(actionTypes.UPDATE_REWARDPUNISHMENTLIST), payload: res.data.extension});
+
+        }
+    } catch (e) {
+        result.msg = '查询奖惩信息异常';
+    }
+
+    if (!result.isOk) {
+        notification.error({
+            description: result.msg,
+            duration: 3
+        });
+    }
+}
+
 export default function* watchAllSearchAsync() {
     yield takeLatest(actionUtils.getActionType(actionTypes.SEARCH_CUSTOMER), getCustomerListAsync);
     yield takeLatest(actionUtils.getActionType(actionTypes.SEARCH_CONDITION), getSearchConditionAsync);
@@ -291,4 +338,7 @@ export default function* watchAllSearchAsync() {
     yield takeLatest(actionUtils.getActionType(actionTypes.GET_SALARYITEM), getSalaryItemAsync);
     yield takeLatest(actionUtils.getActionType(actionTypes.GET_ATTENDANCESETTINGLST), getAttendenceSettingAsync);
     yield takeLatest(actionUtils.getActionType(actionTypes.POST_ATTENDANCESETTINGLST), postAttendeceSettingAsync);
+    yield takeLatest(actionUtils.getActionType(actionTypes.GETSELHUMANLIST_BYORGID), getHumanlistByorgid);
+
+    yield takeLatest(actionUtils.getActionType(actionTypes.SEARCH_REWARDPUNISHMENT), searchRewardPunishmentLst);
 }

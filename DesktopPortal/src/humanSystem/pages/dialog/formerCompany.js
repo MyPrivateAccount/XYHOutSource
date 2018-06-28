@@ -86,7 +86,6 @@ class FormerCompany extends Component {
                 </Row>
 
                 <Row>
-
                     <Col span={12}>
                         <FormItem {...formItemLayout} label="起始时间">
                             {getFieldDecorator('startTime', {
