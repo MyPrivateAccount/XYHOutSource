@@ -220,6 +220,8 @@ class OnBoarding extends Component {
             dicDegree: dicDegree,
             dicPositions: dicPositions
         });
+
+        this.getWorkNumber();
         console.log("字典列表:", dicNation, dicHouseRegister);
     }
 
@@ -309,7 +311,7 @@ class OnBoarding extends Component {
         let url = WebApiConfig.server.GetWorkNumber;
         ApiClient.get(url).then(function (f) {
             if (f.data.code == 0) {
-                tempthis.props.form.setFieldsValue({id: f.data.extension});
+                tempthis.props.form.setFieldsValue({userID: f.data.extension});
             }
         });
     }
@@ -670,8 +672,8 @@ class OnBoarding extends Component {
                                         {
                                             (self.props.stationList && self.props.stationList.length > 0) ?
                                                 self.props.stationList.map(
-                                                    function (params) {
-                                                        return <Option key={params.key} value={params.id}>{params.stationname}</Option>;
+                                                    function (params, key) {
+                                                        return <Option key={key} value={params.id}>{params.stationname}</Option>;
                                                     }
                                                 ) : null
                                         }
