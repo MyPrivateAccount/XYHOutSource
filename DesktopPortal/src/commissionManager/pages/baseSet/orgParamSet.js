@@ -76,7 +76,7 @@ class OrgParamSet extends Component {
         this.setState({ pagination: paginationInfo });
         if (newProps.operInfo.operType === 'org_update') {
             console.log('org_update')
-            this.setState({ isDataLoading: true, branchId: newProps.permissionOrgTree.AddUserTree[0].key })
+            this.setState({ isDataLoading: true, branchId: newProps.permissionOrgTree.BaseSetOrgTree[0].key })
             this.handleSearch(newProps.permissionOrgTree.BaseSetOrgTree[0].key)
             newProps.operInfo.operType = ''
         }
