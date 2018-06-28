@@ -92,17 +92,6 @@ const menuDefine = [
         ]
     },
     {
-<<<<<<< HEAD
-        menuID:"menu_bset",
-        displayName:"基本设置",
-        menuIcon:'appstore-o',
-        type:'subMenu',
-        menuItems:[
-            {menuID:"menu_yjftxsz",displayName:"业绩分摊项设置",menuIcon:'contacts',type:'item',requirePermission:['YJ_YJFTSZ_CK']},
-            {menuID:"menu_rsftzzsz",displayName:"人数分摊组织设置",menuIcon:'contacts',type:'item',requirePermission:['YJ_RSFTZZSZ_CK']},
-            {menuID:"menu_tcblsz",displayName:"提成比例设置",menuIcon:'contacts',type:'item',requirePermission:['YJ_SZ_TCBLSZ_CK']},
-            {menuID:"menu_zzcssz",displayName:"组织参数设置",menuIcon:'contacts',type:'item',requirePermission:['YJ_ZZCSSZ_CK']}
-=======
         menuID: "menu_bset",
         displayName: "基本设置",
         menuIcon: 'appstore-o',
@@ -112,7 +101,6 @@ const menuDefine = [
             { menuID: "menu_rsftzzsz", path: '/sz_rsft', permissionKeys: [permission.shareQuery], displayName: "人数分摊组织设置", menuIcon: 'contacts', type: 'item' },
             { menuID: "menu_tcblsz", path: '/sz_fcbl', permissionKeys: [permission.ruleQuery], displayName: "提成比例设置", menuIcon: 'contacts', type: 'item' },
             { menuID: "menu_zzcssz", path: '/sz_zzcs', permissionKeys: [permission.parSetQuery], displayName: "组织参数设置", menuIcon: 'contacts', type: 'item' }
->>>>>>> 7787954a295a31ce54431b8bf009b65e6ef27895
         ]
     }
 ];
@@ -329,26 +317,26 @@ class CommissionManagerIndex extends Component {
                     <Content className={className}>
                         <ConnectedRouter history={history}>
                             <Layer>
-                                <Route path='/sz_yjft' render={(...props) => <LoadableAcmentPage user={this.props.user} {...props} />} />
-                                <Route path='/sz_rsft' render={(...props) => <LoadablePeopleSetPage user={this.props.user} {...props} />} />
-                                <Route path='/sz_fcbl' render={(...props) => <LoadableInComeScaleSetPage user={this.props.user} {...props} />} />
-                                <Route path='/sz_zzcs' render={(...props) => <LoadableOrgParamSetPage user={this.props.user} {...props} />} />
+                                <Route path='/sz_yjft' render={(...props) => <LoadableAcmentPage user={this.props.user} judgePermissions={this.props.judgePermissions} {...props} />} />
+                                <Route path='/sz_rsft' render={(...props) => <LoadablePeopleSetPage user={this.props.user} judgePermissions={this.props.judgePermissions} {...props} />} />
+                                <Route path='/sz_fcbl' render={(...props) => <LoadableInComeScaleSetPage user={this.props.user} judgePermissions={this.props.judgePermissions} {...props} />} />
+                                <Route path='/sz_zzcs' render={(...props) => <LoadableOrgParamSetPage user={this.props.user} judgePermissions={this.props.judgePermissions} {...props} />} />
 
-                                <Route path='/yj' render={(...props) => <LoadableMonthPage user={this.props.user} {...props} />} />
-                                <Route path='/ryft' render={(...props) => <LoadablePPFTPage user={this.props.user} {...props} />} />
-                                <Route path='/yftc' render={(...props) => <LoadableYFTCPage user={this.props.user} {...props} />} />
-                                <Route path='/sftc' render={(...props) => <LoadableSFTCPage user={this.props.user} {...props} />} />
-                                <Route path='/tccb' render={(...props) => <LoadableTCCBPage user={this.props.user} {...props} />} />
-                                <Route path='/yftccj' render={(...props) => <LoadableYFTCCJPage user={this.props.user} {...props} />} />
-                                <Route path='/lzryyj' render={(...props) => <LoadableLZRYYJPage user={this.props.user} {...props} />} />
-                                <Route path='/sfkj' render={(...props) => <LoadableSFKJQRJPage user={this.props.user} {...props} />} />
+                                <Route path='/yj' render={(...props) => <LoadableMonthPage user={this.props.user} judgePermissions={this.props.judgePermissions} {...props} />} />
+                                <Route path='/ryft' render={(...props) => <LoadablePPFTPage user={this.props.user} judgePermissions={this.props.judgePermissions} {...props} />} />
+                                <Route path='/yftc' render={(...props) => <LoadableYFTCPage user={this.props.user} judgePermissions={this.props.judgePermissions} {...props} />} />
+                                <Route path='/sftc' render={(...props) => <LoadableSFTCPage user={this.props.user} judgePermissions={this.props.judgePermissions} {...props} />} />
+                                <Route path='/tccb' render={(...props) => <LoadableTCCBPage user={this.props.user} judgePermissions={this.props.judgePermissions} {...props} />} />
+                                <Route path='/yftccj' render={(...props) => <LoadableYFTCCJPage user={this.props.user} judgePermissions={this.props.judgePermissions} {...props} />} />
+                                <Route path='/lzryyj' render={(...props) => <LoadableLZRYYJPage user={this.props.user} judgePermissions={this.props.judgePermissions} {...props} />} />
+                                <Route path='/sfkj' render={(...props) => <LoadableSFKJQRJPage user={this.props.user} judgePermissions={this.props.judgePermissions} {...props} />} />
                                 
-                                <Route path='/fyxq' render={(...props) => <LoadableFYXQBPage user={this.props.user} {...props} />} />
-                                <Route path='/yjtzmxhz' render={(...props) => <LoadableYJTZHZPage user={this.props.user} {...props} />} />
-                                <Route path='/tyxq' render={(...props) => <LoadableTYXQPage user={this.props.user} {...props} />} />
+                                <Route path='/fyxq' render={(...props) => <LoadableFYXQBPage user={this.props.user} judgePermissions={this.props.judgePermissions} {...props} />} />
+                                <Route path='/yjtzmxhz' render={(...props) => <LoadableYJTZHZPage user={this.props.user} judgePermissions={this.props.judgePermissions} {...props} />} />
+                                <Route path='/tyxq' render={(...props) => <LoadableTYXQPage user={this.props.user} judgePermissions={this.props.judgePermissions} {...props} />} />
 
-                                <Route path='/myreport' render={(...props) => <LoadableDealRpPage user={this.props.user} {...props} />} />
-                                <Route path='/reportquery' render={(...props) => <LoadableDealRpQueryPage user={this.props.user} {...props} />} />
+                                <Route path='/myreport' render={(...props) => <LoadableDealRpPage user={this.props.user} judgePermissions={this.props.judgePermissions} {...props} />} />
+                                <Route path='/reportquery' render={(...props) => <LoadableDealRpQueryPage user={this.props.user} judgePermissions={this.props.judgePermissions} {...props} />} />
 
                             </Layer>
                         </ConnectedRouter>
