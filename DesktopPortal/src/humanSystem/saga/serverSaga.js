@@ -16,7 +16,7 @@ export function* postHumanInfoAsync(state) {
     let humanResult = {isOk: false, msg: '人事信息提交失败！'};
     try {
         humanResult = yield call(ApiClient.post, urlhuman, state.payload, null, 'PUT');
-        console.log("人事信息提交结果:",urlhuman,humanResult);
+        console.log("人事信息提交结果:", urlhuman, humanResult);
         //弹消息，返回
         if (humanResult.data.code == 0) {
             humanResult.isOk = true;
@@ -199,23 +199,30 @@ export function* setStation(state) {
 export function* deleteStation(state) {
     let url = WebApiConfig.server.DeleteStation;
     let huResult = {isOk: false, msg: '删除职位失败！'};
-
+    let entity = (state.payload || {}).entity;
+    let notifyType = 'success';
+    let message = '删除职位成功';
     try {
-        huResult = yield call(ApiClient.post, url, state.payload);
-        if (huResult.data.code == 0) {
-            huResult.data.message = '删除职位成功';
+        huResult = yield call(ApiClient.post, url, entity);
+        if (huResult && huResult.data && huResult.data.code == 0) {
+            // notification.success({
+            //     message: '删除职位成功',
+            //     duration: 3
+            // });
             //yield put({ type: actionUtils.getActionType(actionTypes.UPDATE_STATIONLIST), payload: huResult.data.extension});
+        } else {
+            notifyType = 'error';
+            message = "删除职位失败!";
         }
     } catch (e) {
-        huResult.data.message = "删除职位接口调用异常!";
+        notifyType = 'error';
+        message = "删除职位接口调用异常!";
     }
+    notification[notifyType]({
+        description: message,
+        duration: 3
+    });
 
-    if (huResult.data.code != 0) {
-        notification.error({
-            message: huResult.data.message,
-            duration: 3
-        });
-    }
 }
 
 export function* setSalary(state) {
@@ -675,7 +682,7 @@ export function* deleteAttendenceItem(state) {
 
 export function* addRewardPunishment(state) {
     let url = WebApiConfig.server.addRPInfo;
-    let huResult = { isOk: false, msg: '添加行政奖惩失败!'};
+    let huResult = {isOk: false, msg: '添加行政奖惩失败!'};
 
     try {
         huResult = yield call(ApiClient.post, url, state.payload);
@@ -691,7 +698,7 @@ export function* addRewardPunishment(state) {
     } catch (e) {
         huResult.data.message = "添加行政奖惩接口调用异常!";
     }
-    
+
     if (huResult.data.code != 0) {
         notification.error({
             message: huResult.data.message,
@@ -701,8 +708,8 @@ export function* addRewardPunishment(state) {
 }
 
 export function* deleteRewardPunishment(state) {
-    let url = WebApiConfig.server.addRPInfo+"/"+state.payload;
-    let huResult = { isOk: false, msg: '删除行政奖惩失败!'};
+    let url = WebApiConfig.server.addRPInfo + "/" + state.payload;
+    let huResult = {isOk: false, msg: '删除行政奖惩失败!'};
 
     try {
         huResult = yield call(ApiClient.post, url, state.payload);
@@ -718,7 +725,7 @@ export function* deleteRewardPunishment(state) {
     } catch (e) {
         huResult.data.message = "删除行政奖惩接口调用异常!";
     }
-    
+
     if (huResult.data.code != 0) {
         notification.error({
             message: huResult.data.message,
