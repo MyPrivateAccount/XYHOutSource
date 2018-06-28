@@ -10,7 +10,7 @@ namespace XYHHumanPlugin.Models
         [Key]
         [MaxLength(127)]
         public string ID { get; set; }
-        public int Type { get; set; }
+        public int Type { get; set; }//1 奖励 2惩罚 3扣款
         public int Detail { get; set; }
         [MaxLength(127)]
         public string DepartmentID { get; set; }

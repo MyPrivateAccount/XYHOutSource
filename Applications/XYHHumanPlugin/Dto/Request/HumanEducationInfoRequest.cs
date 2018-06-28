@@ -1,11 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 
 namespace XYHHumanPlugin.Dto.Request
 {
     public class HumanEducationInfoRequest
     {
+        /// <summary>
+        /// 主键Id
+        /// </summary>
+        [StringLength(127)]
+        public string Id { get; set; }
+
+        /// <summary>
+        /// 人事Id
+        /// </summary>
+        public string HumanId { get; set; }
         /// <summary>
         /// 学历
         /// </summary>

@@ -116,6 +116,7 @@ namespace XYHHumanPlugin.Stores
                             Nationality = h.Nationality,
                             Picture = h.Picture,
                             Position = h.Position,
+                            Phone = h.Phone,
                             PolicitalStatus = h.PolicitalStatus,
                             Sex = h.Sex,
                             UserID = h.UserID,
@@ -246,199 +247,301 @@ namespace XYHHumanPlugin.Stores
             {
                 throw new ArgumentNullException(nameof(humanInfo));
             }
-            if (!Context.HumanInfos.Any(x => x.Id == humanInfo.Id))
-            {
-                humanInfo.IsDeleted = false;
-                humanInfo.CreateTime = DateTime.Now;
-                humanInfo.CreateUser = user.Id;
-                Context.Add(humanInfo);
-                Context.Add(humanInfo.HumanSalaryStructure);
-                Context.Add(humanInfo.HumanSocialSecurity);
-                var HumanTitleInfos = humanInfo.HumanTitleInfos?.ToList();
-                if (HumanTitleInfos != null)
-                {
-                    for (int i = 0; i < HumanTitleInfos.Count; i++)
-                    {
-                        HumanTitleInfos[i].IsDeleted = false;
-                        HumanTitleInfos[i].CreateTime = DateTime.Now;
-                        HumanTitleInfos[i].CreateUser = user.Id;
-                    }
-                    Context.AddRange(HumanTitleInfos);
-                }
-                var HumanWorkHistories = humanInfo.HumanWorkHistories?.ToList();
-                if (HumanWorkHistories != null)
-                {
-                    for (int i = 0; i < HumanWorkHistories.Count; i++)
-                    {
-                        HumanWorkHistories[i].IsDeleted = false;
-                        HumanWorkHistories[i].CreateTime = DateTime.Now;
-                        HumanWorkHistories[i].CreateUser = user.Id;
-                    }
-                    Context.AddRange(HumanWorkHistories);
-                }
-                var HumanEducationInfos = humanInfo.HumanEducationInfos?.ToList();
-                if (HumanEducationInfos != null)
-                {
-                    for (int i = 0; i < HumanEducationInfos.Count; i++)
-                    {
-                        HumanEducationInfos[i].IsDeleted = false;
-                        HumanEducationInfos[i].CreateTime = DateTime.Now;
-                        HumanEducationInfos[i].CreateUser = user.Id;
-                    }
-                    Context.AddRange(HumanEducationInfos);
-                }
-            }
-            else
-            {
-                var old = await GetDetailQuery().Where(x => x.Id == humanInfo.Id).FirstOrDefaultAsync(cancellationToken);
-
-                old.Id = humanInfo.Id;
-                old.BankAccount = humanInfo.BankAccount;
-                old.BankName = humanInfo.BankName;
-                old.DepartmentId = humanInfo.DepartmentId;
-                old.EmailAddress = humanInfo.EmailAddress;
-                old.Desc = humanInfo.Desc;
-                old.EmergencyContact = humanInfo.EmergencyContact;
-                old.EmergencyContactPhone = humanInfo.EmergencyContactPhone;
-                old.EmergencyContactType = humanInfo.EmergencyContactType;
-                old.EntryTime = humanInfo.EntryTime;
-                old.HighestEducation = humanInfo.HighestEducation;
-                old.HealthCondition = humanInfo.HealthCondition;
-                old.DomicilePlace = humanInfo.DomicilePlace;
-                old.HouseholdType = humanInfo.HouseholdType;
-                old.IDCard = humanInfo.IDCard;
-                old.FamilyAddress = humanInfo.FamilyAddress;
-                old.LeaveTime = humanInfo.LeaveTime;
-                old.BecomeTime = humanInfo.BecomeTime;
-                old.Name = humanInfo.Name;
-                old.NativePlace = humanInfo.NativePlace;
-                old.Nationality = humanInfo.Nationality;
-                old.Picture = humanInfo.Picture;
-                old.Position = humanInfo.Position;
-                old.PolicitalStatus = humanInfo.PolicitalStatus;
-                old.Sex = humanInfo.Sex;
-                old.UserID = humanInfo.UserID;
-                old.UpdateTime = humanInfo.UpdateTime;
-                old.CreateUser = humanInfo.CreateUser;
-                old.IsDeleted = humanInfo.IsDeleted;
-                old.StaffStatus = humanInfo.StaffStatus;
-                old.UpdateUser = humanInfo.UpdateUser;
-                old.Company = humanInfo.Company;
-
-                old.AdministrativeBack = humanInfo.AdministrativeBack;
-                old.ClothesBack = humanInfo.ClothesBack;
-                old.Modify = humanInfo.Modify;
-                old.OtherBack = humanInfo.OtherBack;
-                old.PortBack = humanInfo.PortBack;
-                old.RecentModify = humanInfo.RecentModify;
-
-                Context.Attach(old);
-                Context.Update(old);
-
-                if (old.HumanContractInfo != null)
-                {
-                    old.HumanContractInfo.ContractEndDate = humanInfo.HumanContractInfo.ContractEndDate;
-                    old.HumanContractInfo.ContractNo = humanInfo.HumanContractInfo.ContractNo;
-                    old.HumanContractInfo.ContractSignDate = humanInfo.HumanContractInfo.ContractSignDate;
-                    old.HumanContractInfo.ContractStartDate = humanInfo.HumanContractInfo.ContractStartDate;
-                    old.HumanContractInfo.ContractType = humanInfo.HumanContractInfo.ContractType;
-
-                    Context.Attach(old.HumanContractInfo);
-                    Context.Update(old.HumanContractInfo);
-                }
-                if (old.HumanSalaryStructure != null)
-                {
-                    old.HumanSalaryStructure.BaseWages = humanInfo.HumanSalaryStructure.BaseWages;
-                    old.HumanSalaryStructure.CommunicationAllowance = humanInfo.HumanSalaryStructure.CommunicationAllowance;
-                    old.HumanSalaryStructure.OtherAllowance = humanInfo.HumanSalaryStructure.OtherAllowance;
-                    old.HumanSalaryStructure.PostWages = humanInfo.HumanSalaryStructure.PostWages;
-                    old.HumanSalaryStructure.TrafficAllowance = humanInfo.HumanSalaryStructure.TrafficAllowance;
-
-                    Context.Attach(old.HumanSalaryStructure);
-                    Context.Update(old.HumanSalaryStructure);
-                }
-                if (old.HumanSocialSecurity != null)
-                {
-                    old.HumanSocialSecurity.EmploymentInjuryInsurance = humanInfo.HumanSocialSecurity.EmploymentInjuryInsurance;
-                    old.HumanSocialSecurity.EndowmentInsurance = humanInfo.HumanSocialSecurity.EndowmentInsurance;
-                    old.HumanSocialSecurity.HousingProvidentFund = humanInfo.HumanSocialSecurity.HousingProvidentFund;
-                    old.HumanSocialSecurity.HousingProvidentFundAccount = humanInfo.HumanSocialSecurity.HousingProvidentFundAccount;
-                    old.HumanSocialSecurity.InsuredAddress = humanInfo.HumanSocialSecurity.InsuredAddress;
-                    old.HumanSocialSecurity.InsuredTime = humanInfo.HumanSocialSecurity.InsuredTime;
-                    old.HumanSocialSecurity.IsGiveUp = humanInfo.HumanSocialSecurity.IsGiveUp;
-                    old.HumanSocialSecurity.IsSignCommitment = humanInfo.HumanSocialSecurity.IsSignCommitment;
-                    old.HumanSocialSecurity.MaternityInsurance = humanInfo.HumanSocialSecurity.MaternityInsurance;
-                    old.HumanSocialSecurity.MedicalInsurance = humanInfo.HumanSocialSecurity.MedicalInsurance;
-                    old.HumanSocialSecurity.MedicalInsuranceAccount = humanInfo.HumanSocialSecurity.MedicalInsuranceAccount;
-                    old.HumanSocialSecurity.SocialSecurityAccount = humanInfo.HumanSocialSecurity.SocialSecurityAccount;
-                    old.HumanSocialSecurity.UnemploymentInsurance = humanInfo.HumanSocialSecurity.UnemploymentInsurance;
-
-                    Context.Attach(old.HumanSocialSecurity);
-                    Context.Update(old.HumanSocialSecurity);
-                }
-                if (old?.HumanEducationInfos.Count() > 0)
-                {
-                    var HumanEducationInfos = old.HumanEducationInfos.ToList();
-                    for (int i = 0; i < HumanEducationInfos.Count; i++)
-                    {
-                        var newEducationInfo = humanInfo.HumanEducationInfos?.FirstOrDefault(a => a.Id == HumanEducationInfos[i].Id);
-                        if (newEducationInfo != null)
-                        {
-                            HumanEducationInfos[i].GetDegreeCompany = newEducationInfo.GetDegreeCompany;
-                            HumanEducationInfos[i].GetDegree = newEducationInfo.GetDegree;
-                            HumanEducationInfos[i].Education = newEducationInfo.Education;
-                            HumanEducationInfos[i].EnrolmentTime = newEducationInfo.EnrolmentTime;
-                            HumanEducationInfos[i].GetDegreeTime = newEducationInfo.GetDegreeTime;
-                            HumanEducationInfos[i].GraduationCertificate = newEducationInfo.GraduationCertificate;
-                            HumanEducationInfos[i].GraduationSchool = newEducationInfo.GraduationSchool;
-                            HumanEducationInfos[i].GraduationTime = newEducationInfo.GraduationTime;
-                            HumanEducationInfos[i].HumanId = newEducationInfo.HumanId;
-                            HumanEducationInfos[i].Id = newEducationInfo.Id;
-                            HumanEducationInfos[i].LearningType = newEducationInfo.LearningType;
-                            HumanEducationInfos[i].Major = newEducationInfo.Major;
-                            HumanEducationInfos[i].UpdateTime = newEducationInfo.UpdateTime;
-                            HumanEducationInfos[i].UpdateUser = newEducationInfo.UpdateUser;
-                        }
-                        else
-                        {
-                            HumanEducationInfos[i].IsDeleted = true;
-                            HumanEducationInfos[i].DeleteTime = DateTime.Now;
-                            HumanEducationInfos[i].DeleteUser = user.Id;
-                        }
-                        humanInfo.HumanEducationInfos = humanInfo.HumanEducationInfos.Where(a => a.Id != HumanEducationInfos[i].Id);
-                        Context.Attach(HumanEducationInfos[i]);
-                        Context.Update(HumanEducationInfos[i]);
-                    }
-
-                    if (humanInfo.HumanEducationInfos.Count() > 0)
-                    {
-                        var oldHumanEducationInfos = humanInfo.HumanEducationInfos.ToList();
-                        for (int i = 0; i < oldHumanEducationInfos.Count; i++)
-                        {
-                            oldHumanEducationInfos[i].IsDeleted = false;
-                            oldHumanEducationInfos[i].CreateTime = DateTime.Now;
-                            oldHumanEducationInfos[i].CreateUser = user.Id;
-                        }
-                        Context.AddRange(oldHumanEducationInfos);
-                    }
-                }
-                else if (humanInfo?.HumanEducationInfos?.Count() > 0)
-                {
-                    var HumanEducationInfos = humanInfo.HumanEducationInfos.ToList();
-                    for (int i = 0; i < HumanEducationInfos.Count; i++)
-                    {
-                        HumanEducationInfos[i].IsDeleted = false;
-                        HumanEducationInfos[i].CreateTime = DateTime.Now;
-                        HumanEducationInfos[i].CreateUser = user.Id;
-                    }
-                    Context.AddRange(HumanEducationInfos);
-                }
-
-
-
-            }
             try
             {
+                if (!Context.HumanInfos.Any(x => x.Id == humanInfo.Id))
+                {
+                    humanInfo.IsDeleted = false;
+                    humanInfo.CreateTime = DateTime.Now;
+                    humanInfo.CreateUser = user.Id;
+                    Context.Add(humanInfo);
+                    Context.Add(humanInfo.HumanSalaryStructure);
+                    Context.Add(humanInfo.HumanSocialSecurity);
+                    var HumanTitleInfos = humanInfo.HumanTitleInfos?.ToList();
+                    if (HumanTitleInfos != null)
+                    {
+                        for (int i = 0; i < HumanTitleInfos.Count; i++)
+                        {
+                            HumanTitleInfos[i].Id = string.IsNullOrEmpty(HumanTitleInfos[i].Id) ? Guid.NewGuid().ToString() : HumanTitleInfos[i].Id;
+                            HumanTitleInfos[i].IsDeleted = false;
+                            HumanTitleInfos[i].CreateTime = DateTime.Now;
+                            HumanTitleInfos[i].CreateUser = user.Id;
+                        }
+                        Context.AddRange(HumanTitleInfos);
+                    }
+                    var HumanWorkHistories = humanInfo.HumanWorkHistories?.ToList();
+                    if (HumanWorkHistories != null)
+                    {
+                        for (int i = 0; i < HumanWorkHistories.Count; i++)
+                        {
+                            HumanWorkHistories[i].Id = string.IsNullOrEmpty(HumanWorkHistories[i].Id) ? Guid.NewGuid().ToString() : HumanWorkHistories[i].Id;
+
+                            HumanWorkHistories[i].IsDeleted = false;
+                            HumanWorkHistories[i].CreateTime = DateTime.Now;
+                            HumanWorkHistories[i].CreateUser = user.Id;
+                        }
+                        Context.AddRange(HumanWorkHistories);
+                    }
+                    var HumanEducationInfos = humanInfo.HumanEducationInfos?.ToList();
+                    if (HumanEducationInfos != null)
+                    {
+                        for (int i = 0; i < HumanEducationInfos.Count; i++)
+                        {
+                            HumanEducationInfos[i].Id = string.IsNullOrEmpty(HumanEducationInfos[i].Id) ? Guid.NewGuid().ToString() : HumanEducationInfos[i].Id;
+                            HumanEducationInfos[i].IsDeleted = false;
+                            HumanEducationInfos[i].CreateTime = DateTime.Now;
+                            HumanEducationInfos[i].CreateUser = user.Id;
+                        }
+                        Context.AddRange(HumanEducationInfos);
+                    }
+                }
+                else//更新
+                {
+                    var old = await GetDetailQuery().Where(x => x.Id == humanInfo.Id).FirstOrDefaultAsync(cancellationToken);
+                    old.BankAccount = humanInfo.BankAccount;
+                    old.BankName = humanInfo.BankName;
+                    old.DepartmentId = humanInfo.DepartmentId;
+                    old.EmailAddress = humanInfo.EmailAddress;
+                    old.Desc = humanInfo.Desc;
+                    old.EmergencyContact = humanInfo.EmergencyContact;
+                    old.EmergencyContactPhone = humanInfo.EmergencyContactPhone;
+                    old.EmergencyContactType = humanInfo.EmergencyContactType;
+                    old.EntryTime = humanInfo.EntryTime;
+                    old.HighestEducation = humanInfo.HighestEducation;
+                    old.HealthCondition = humanInfo.HealthCondition;
+                    old.DomicilePlace = humanInfo.DomicilePlace;
+                    old.HouseholdType = humanInfo.HouseholdType;
+                    old.IDCard = humanInfo.IDCard;
+                    old.FamilyAddress = humanInfo.FamilyAddress;
+                    old.LeaveTime = humanInfo.LeaveTime;
+                    old.BecomeTime = humanInfo.BecomeTime;
+                    old.Name = humanInfo.Name;
+                    old.NativePlace = humanInfo.NativePlace;
+                    old.Nationality = humanInfo.Nationality;
+                    old.Picture = humanInfo.Picture;
+                    old.Phone = humanInfo.Phone;
+                    old.Position = humanInfo.Position;
+                    old.PolicitalStatus = humanInfo.PolicitalStatus;
+                    old.Sex = humanInfo.Sex;
+                    old.UserID = humanInfo.UserID;
+                    old.UpdateTime = DateTime.Now;
+                    old.UpdateUser = user.Id;
+                    old.StaffStatus = humanInfo.StaffStatus;
+                    old.Company = humanInfo.Company;
+
+                    old.AdministrativeBack = humanInfo.AdministrativeBack;
+                    old.ClothesBack = humanInfo.ClothesBack;
+                    old.Modify = humanInfo.Modify;
+                    old.OtherBack = humanInfo.OtherBack;
+                    old.PortBack = humanInfo.PortBack;
+                    old.RecentModify = humanInfo.RecentModify;
+
+                    Context.Attach(old);
+                    Context.Update(old);
+
+                    if (old.HumanContractInfo != null)
+                    {
+                        old.HumanContractInfo.ContractEndDate = humanInfo.HumanContractInfo.ContractEndDate;
+                        old.HumanContractInfo.ContractNo = humanInfo.HumanContractInfo.ContractNo;
+                        old.HumanContractInfo.ContractSignDate = humanInfo.HumanContractInfo.ContractSignDate;
+                        old.HumanContractInfo.ContractStartDate = humanInfo.HumanContractInfo.ContractStartDate;
+                        old.HumanContractInfo.ContractType = humanInfo.HumanContractInfo.ContractType;
+
+                        Context.Attach(old.HumanContractInfo);
+                        Context.Update(old.HumanContractInfo);
+                    }
+                    else if (humanInfo.HumanContractInfo != null)
+                    {
+                        Context.Add(humanInfo.HumanContractInfo);
+                    }
+                    if (old.HumanSalaryStructure != null)
+                    {
+                        old.HumanSalaryStructure.BaseWages = humanInfo.HumanSalaryStructure.BaseWages;
+                        old.HumanSalaryStructure.CommunicationAllowance = humanInfo.HumanSalaryStructure.CommunicationAllowance;
+                        old.HumanSalaryStructure.OtherAllowance = humanInfo.HumanSalaryStructure.OtherAllowance;
+                        old.HumanSalaryStructure.PostWages = humanInfo.HumanSalaryStructure.PostWages;
+                        old.HumanSalaryStructure.TrafficAllowance = humanInfo.HumanSalaryStructure.TrafficAllowance;
+
+                        Context.Attach(old.HumanSalaryStructure);
+                        Context.Update(old.HumanSalaryStructure);
+                    }
+                    else if (humanInfo.HumanSalaryStructure != null)
+                    {
+                        Context.Add(humanInfo.HumanSalaryStructure);
+                    }
+                    if (old.HumanSocialSecurity != null)
+                    {
+                        old.HumanSocialSecurity.EmploymentInjuryInsurance = humanInfo.HumanSocialSecurity.EmploymentInjuryInsurance;
+                        old.HumanSocialSecurity.EndowmentInsurance = humanInfo.HumanSocialSecurity.EndowmentInsurance;
+                        old.HumanSocialSecurity.HousingProvidentFund = humanInfo.HumanSocialSecurity.HousingProvidentFund;
+                        old.HumanSocialSecurity.HousingProvidentFundAccount = humanInfo.HumanSocialSecurity.HousingProvidentFundAccount;
+                        old.HumanSocialSecurity.InsuredAddress = humanInfo.HumanSocialSecurity.InsuredAddress;
+                        old.HumanSocialSecurity.InsuredTime = humanInfo.HumanSocialSecurity.InsuredTime;
+                        old.HumanSocialSecurity.IsGiveUp = humanInfo.HumanSocialSecurity.IsGiveUp;
+                        old.HumanSocialSecurity.IsSignCommitment = humanInfo.HumanSocialSecurity.IsSignCommitment;
+                        old.HumanSocialSecurity.MaternityInsurance = humanInfo.HumanSocialSecurity.MaternityInsurance;
+                        old.HumanSocialSecurity.MedicalInsurance = humanInfo.HumanSocialSecurity.MedicalInsurance;
+                        old.HumanSocialSecurity.MedicalInsuranceAccount = humanInfo.HumanSocialSecurity.MedicalInsuranceAccount;
+                        old.HumanSocialSecurity.SocialSecurityAccount = humanInfo.HumanSocialSecurity.SocialSecurityAccount;
+                        old.HumanSocialSecurity.UnemploymentInsurance = humanInfo.HumanSocialSecurity.UnemploymentInsurance;
+
+                        Context.Attach(old.HumanSocialSecurity);
+                        Context.Update(old.HumanSocialSecurity);
+                    }
+                    else if (humanInfo.HumanSocialSecurity != null)
+                    {
+                        Context.Add(humanInfo.HumanSocialSecurity);
+                    }
+                    if (old?.HumanEducationInfos?.Count() > 0)
+                    {
+                        var HumanEducationInfos = old.HumanEducationInfos.ToList();
+                        for (int i = 0; i < HumanEducationInfos.Count; i++)
+                        {
+                            var newEducationInfo = humanInfo.HumanEducationInfos?.FirstOrDefault(a => a.Id == HumanEducationInfos[i].Id);
+                            if (newEducationInfo != null)
+                            {
+                                HumanEducationInfos[i].GetDegreeCompany = newEducationInfo.GetDegreeCompany;
+                                HumanEducationInfos[i].GetDegree = newEducationInfo.GetDegree;
+                                HumanEducationInfos[i].Education = newEducationInfo.Education;
+                                HumanEducationInfos[i].EnrolmentTime = newEducationInfo.EnrolmentTime;
+                                HumanEducationInfos[i].GetDegreeTime = newEducationInfo.GetDegreeTime;
+                                HumanEducationInfos[i].GraduationCertificate = newEducationInfo.GraduationCertificate;
+                                HumanEducationInfos[i].GraduationSchool = newEducationInfo.GraduationSchool;
+                                HumanEducationInfos[i].GraduationTime = newEducationInfo.GraduationTime;
+                                HumanEducationInfos[i].HumanId = newEducationInfo.HumanId;
+                                HumanEducationInfos[i].Id = newEducationInfo.Id;
+                                HumanEducationInfos[i].LearningType = newEducationInfo.LearningType;
+                                HumanEducationInfos[i].Major = newEducationInfo.Major;
+                                HumanEducationInfos[i].UpdateTime = newEducationInfo.UpdateTime;
+                                HumanEducationInfos[i].UpdateUser = newEducationInfo.UpdateUser;
+                            }
+                            else
+                            {
+                                HumanEducationInfos[i].IsDeleted = true;
+                                HumanEducationInfos[i].DeleteTime = DateTime.Now;
+                                HumanEducationInfos[i].DeleteUser = user.Id;
+                            }
+                            humanInfo.HumanEducationInfos = humanInfo.HumanEducationInfos.Where(a => a.Id != HumanEducationInfos[i].Id)?.ToList();
+                            Context.Attach(HumanEducationInfos[i]);
+                            Context.Update(HumanEducationInfos[i]);
+                        }
+                        if (humanInfo.HumanEducationInfos.Count() > 0)
+                        {
+                            var oldHumanEducationInfos = humanInfo.HumanEducationInfos.ToList();
+                            for (int i = 0; i < oldHumanEducationInfos.Count; i++)
+                            {
+                                oldHumanEducationInfos[i].IsDeleted = false;
+                                oldHumanEducationInfos[i].CreateTime = DateTime.Now;
+                                oldHumanEducationInfos[i].CreateUser = user.Id;
+                            }
+                            Context.AddRange(oldHumanEducationInfos);
+                        }
+                    }
+                    else if (humanInfo?.HumanEducationInfos?.Count() > 0)
+                    {
+                        var HumanEducationInfos = humanInfo.HumanEducationInfos.ToList();
+                        for (int i = 0; i < HumanEducationInfos.Count; i++)
+                        {
+                            HumanEducationInfos[i].IsDeleted = false;
+                            HumanEducationInfos[i].CreateTime = DateTime.Now;
+                            HumanEducationInfos[i].CreateUser = user.Id;
+                        }
+                        Context.AddRange(HumanEducationInfos);
+                    }
+                    //职称信息处理
+                    if (old?.HumanTitleInfos.Count() > 0)
+                    {
+                        var HumanTitleInfos = old.HumanTitleInfos.ToList();
+                        for (int i = 0; i < HumanTitleInfos.Count; i++)
+                        {
+                            var newHumanTitleInfos = humanInfo.HumanTitleInfos?.FirstOrDefault(a => a.Id == HumanTitleInfos[i].Id);
+                            if (newHumanTitleInfos != null)
+                            {
+                                HumanTitleInfos[i].GetTitleTime = newHumanTitleInfos.GetTitleTime;
+                                HumanTitleInfos[i].TitleName = newHumanTitleInfos.TitleName;
+                            }
+                            else
+                            {
+                                HumanTitleInfos[i].IsDeleted = true;
+                                HumanTitleInfos[i].DeleteTime = DateTime.Now;
+                                HumanTitleInfos[i].DeleteUser = user.Id;
+                            }
+                            humanInfo.HumanTitleInfos = humanInfo.HumanTitleInfos.Where(a => a.Id != HumanTitleInfos[i].Id)?.ToList();
+                            Context.Attach(HumanTitleInfos[i]);
+                            Context.Update(HumanTitleInfos[i]);
+                        }
+                        if (humanInfo?.HumanTitleInfos?.Count() > 0)
+                        {
+                            var oldHumanTitleInfos = humanInfo.HumanTitleInfos.ToList();
+                            for (int i = 0; i < oldHumanTitleInfos.Count; i++)
+                            {
+                                oldHumanTitleInfos[i].IsDeleted = false;
+                                oldHumanTitleInfos[i].CreateTime = DateTime.Now;
+                                oldHumanTitleInfos[i].CreateUser = user.Id;
+                            }
+                            Context.AddRange(oldHumanTitleInfos);
+                        }
+                    }
+                    else if (humanInfo?.HumanTitleInfos?.Count() > 0)
+                    {
+                        var HumanTitleInfos = humanInfo.HumanTitleInfos.ToList();
+                        for (int i = 0; i < HumanTitleInfos.Count; i++)
+                        {
+                            HumanTitleInfos[i].IsDeleted = false;
+                            HumanTitleInfos[i].CreateTime = DateTime.Now;
+                            HumanTitleInfos[i].CreateUser = user.Id;
+                        }
+                        Context.AddRange(HumanTitleInfos);
+                    }
+                    //工作经历信息处理
+                    if (old?.HumanWorkHistories?.Count() > 0)
+                    {
+                        var HumanWorkHistories = old.HumanWorkHistories.ToList();
+                        for (int i = 0; i < HumanWorkHistories.Count; i++)
+                        {
+                            var newHumanWorkHistories = humanInfo.HumanWorkHistories?.FirstOrDefault(a => a.Id == HumanWorkHistories[i].Id);
+                            if (newHumanWorkHistories != null)
+                            {
+                                HumanWorkHistories[i].Company = newHumanWorkHistories.Company;
+                                HumanWorkHistories[i].EndTime = newHumanWorkHistories.EndTime;
+                                HumanWorkHistories[i].Position = newHumanWorkHistories.Position;
+                                HumanWorkHistories[i].StartTime = newHumanWorkHistories.StartTime;
+                            }
+                            else
+                            {
+                                HumanWorkHistories[i].IsDeleted = true;
+                                HumanWorkHistories[i].DeleteTime = DateTime.Now;
+                                HumanWorkHistories[i].DeleteUser = user.Id;
+                            }
+                            humanInfo.HumanWorkHistories = humanInfo.HumanWorkHistories.Where(a => a.Id != HumanWorkHistories[i].Id)?.ToList();
+                            Context.Attach(HumanWorkHistories[i]);
+                            Context.Update(HumanWorkHistories[i]);
+                        }
+                        if (humanInfo.HumanWorkHistories?.Count() > 0)
+                        {
+                            var oldHumanWorkHistories = humanInfo.HumanWorkHistories.ToList();
+                            for (int i = 0; i < oldHumanWorkHistories.Count; i++)
+                            {
+                                oldHumanWorkHistories[i].IsDeleted = false;
+                                oldHumanWorkHistories[i].CreateTime = DateTime.Now;
+                                oldHumanWorkHistories[i].CreateUser = user.Id;
+                            }
+                            Context.AddRange(oldHumanWorkHistories);
+                        }
+                    }
+                    else if (humanInfo?.HumanWorkHistories?.Count() > 0)
+                    {
+                        var HumanWorkHistories = humanInfo.HumanWorkHistories.ToList();
+                        for (int i = 0; i < HumanWorkHistories.Count; i++)
+                        {
+                            HumanWorkHistories[i].IsDeleted = false;
+                            HumanWorkHistories[i].CreateTime = DateTime.Now;
+                            HumanWorkHistories[i].CreateUser = user.Id;
+                        }
+                        Context.AddRange(HumanWorkHistories);
+                    }
+                }
+
                 await Context.SaveChangesAsync(cancellationToken);
             }
             catch (DbUpdateException) { throw; }

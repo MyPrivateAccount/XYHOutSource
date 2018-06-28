@@ -7,7 +7,11 @@ namespace XYHHumanPlugin.Dto.Request
 {
     public class HumanTitleInfoRequest
     {
-
+        /// <summary>
+        /// 主键Id
+        /// </summary>
+        [StringLength(127)]
+        public string Id { get; set; }
         /// <summary>
         /// 人事Id
         /// </summary>

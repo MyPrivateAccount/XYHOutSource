@@ -76,7 +76,7 @@ class HumanIndex extends Component {
         menuList: []
     }
     componentDidMount() {
-        const dicArray = ['HUMEN_Nation', 'HUMEN_HOUSE_REGISTER', 'HUMEN_EDUCATION', 'HUMENT_HEALTH', 'HUMEN_POLITICS', 'CONTRACT_CATEGORIES', 'HUMEN_DEGREE'];
+        const dicArray = ['HUMEN_Nation', 'HUMEN_HOUSE_REGISTER', 'HUMEN_EDUCATION', 'HUMENT_HEALTH', 'HUMEN_POLITICS', 'CONTRACT_CATEGORIES', 'HUMEN_DEGREE','POSITION_TYPE'];
         this.props.dispatch(globalAction(getDicParList([...dicArray])));
         let ml = [];
         menuDefine.map(menu => {

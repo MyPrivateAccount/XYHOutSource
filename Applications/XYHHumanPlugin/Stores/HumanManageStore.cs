@@ -495,6 +495,8 @@ namespace XYHHumanPlugin.Stores
 
         }
 
+        
+
         public async Task DeleteSalaryAsync(SalaryInfo monthinfo, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (monthinfo == null)
@@ -716,7 +718,7 @@ namespace XYHHumanPlugin.Stores
 
         public Task<List<AttendanceSettingInfo>> GetListAttendanceSettingAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-          
+
             return Context.AttendanceSettingInfos.ToListAsync(cancellationToken);
         }
 
@@ -727,6 +729,24 @@ namespace XYHHumanPlugin.Stores
                 throw new ArgumentNullException(nameof(query));
             }
             return query.Invoke(Context.SalaryFormInfos.AsNoTracking()).ToListAsync(cancellationToken);
+        }
+
+        public Task<List<TResult>> GetRewardPunishmentListAsync<TResult>(Func<IQueryable<RewardPunishmentInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (query == null)
+            {
+                throw new ArgumentNullException(nameof(query));
+            }
+            return query.Invoke(Context.RewardPunishmentInfos.AsNoTracking()).ToListAsync(cancellationToken);
+        }
+
+        public Task<List<TResult>> GetAttendenceListAsync<TResult>(Func<IQueryable<AttendanceInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (query == null)
+            {
+                throw new ArgumentNullException(nameof(query));
+            }
+            return query.Invoke(Context.AttendanceInfos.AsNoTracking()).ToListAsync(cancellationToken);
         }
         public Task<List<TResult>> GetListAttendanceFormAsync<TResult>(Func<IQueryable<AttendanceFormInfo>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken))
         {
@@ -774,7 +794,7 @@ namespace XYHHumanPlugin.Stores
         {
 
         }
-        
+
         public async Task<ModifyInfo> UpdateExamineStatus(string modifyId, ExamineStatusEnum status, CancellationToken cancellationToken = default(CancellationToken))
         {
             var modify = await GetModifyAsync(a => a.Where(b => b.ID == modifyId));
