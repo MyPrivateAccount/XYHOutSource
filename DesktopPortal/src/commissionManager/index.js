@@ -36,6 +36,7 @@ import {
     LoadableFYXQBPage, //分佣详情表
     LoadableYJTZHZPage, //业绩调整明细汇总表
     LoadableTYXQPage, //调整佣
+
 } from './pages/contentPage'
 
 
@@ -59,8 +60,8 @@ const menuDefine = [
         menuIcon: 'contacts',
         type: 'subMenu',
         menuItems: [
-            { menuID: "menu_myrp", permissionKeys: [permission.myReport], displayName: "我录入的成交报告", menuIcon: 'contacts', type: 'item' },
-            { menuID: "menu_query", permissionKeys: [permission.reportQuery], displayName: "成交报告综合查询", menuIcon: 'contacts', type: 'item' }
+            { menuID: "menu_myrp",path:'/myreport',  permissionKeys: [permission.myReport], displayName: "我录入的成交报告", menuIcon: 'contacts', type: 'item' },
+            { menuID: "menu_query",path:'/reportquery',  permissionKeys: [permission.reportQuery], displayName: "成交报告综合查询", menuIcon: 'contacts', type: 'item' }
         ]
     },
     {
@@ -333,6 +334,9 @@ class CommissionManagerIndex extends Component {
                                 <Route path='/fyxq' render={(...props) => <LoadableFYXQBPage user={this.props.user} {...props} />} />
                                 <Route path='/yjtzmxhz' render={(...props) => <LoadableYJTZHZPage user={this.props.user} {...props} />} />
                                 <Route path='/tyxq' render={(...props) => <LoadableTYXQPage user={this.props.user} {...props} />} />
+
+                                <Route path='/myreport' render={(...props) => <LoadableDealRpPage user={this.props.user} {...props} />} />
+                                <Route path='/reportquery' render={(...props) => <LoadableDealRpQueryPage user={this.props.user} {...props} />} />
 
                             </Layer>
                         </ConnectedRouter>
