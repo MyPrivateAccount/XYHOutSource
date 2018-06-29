@@ -47,7 +47,7 @@ const WebApiConfig = {
         getSalaryItem: basicDataBaseApiUrl + 'humansalary/salaryitem',
         getAttendenceSettingList: basicDataBaseApiUrl + 'humanattendance/attendancesetting',
         getAttendenceList: basicDataBaseApiUrl + 'humanattendance/searchattendancelst',
-        getRPInfoList: basicDataBaseApiUrl + 'humanattendance/searchrewardpunishment',
+        getRPInfoList: basicDataBaseApiUrl + 'rewardpunishment/searchrewardpunishment',
         getHumanlistByorg: basicDataBaseApiUrl + 'humaninfo/hulistbyorg',
     },
     attach: {

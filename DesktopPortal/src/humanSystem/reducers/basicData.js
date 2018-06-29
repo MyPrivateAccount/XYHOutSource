@@ -22,6 +22,7 @@ const initState = {
     administrativereward: [],
     administrativepunishment: [],
     administrativededuct:[],
+    worknumber: "",
 };
 let reducerMap = {};
 //字典数据
@@ -277,8 +278,8 @@ reducerMap[actionTypes.ADD_USER_BREAD] = function(state, action) {
 }
 
 reducerMap[actionTypes.SET_HUMANINFONUMBER] = function(state, action) {
-    let f = {...state.userinfo, worknumber: action.payload}
-    return Object.assign({}, state, {userinfo: f});
+    //let f = {...state.userinfo, }
+    return Object.assign({}, state, {worknumber: action.payload});
 }
 
 reducerMap[actionTypes.MONTH_UPDATEMONTHLIST] = function(state, action) {

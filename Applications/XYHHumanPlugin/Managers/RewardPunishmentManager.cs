@@ -67,7 +67,7 @@ namespace XYHHumanPlugin.Managers
                 connectstr = " and ";
             }
 
-            if (condition?.CreateDate != null)
+            if (condition?.CreateDate != null && condition.CreateDate.Year > 2017)
             {
                 sql += connectstr + @"(a.`WorkDate`='" + condition.CreateDate + "'";
                 connectstr = " and ";

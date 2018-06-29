@@ -76,7 +76,7 @@ class HumanIndex extends Component {
         menuList: []
     }
     componentDidMount() {
-        const dicArray = ['HUMEN_Nation', 'HUMEN_HOUSE_REGISTER', 'HUMEN_EDUCATION', 'HUMENT_HEALTH', 'HUMEN_POLITICS', 'CONTRACT_CATEGORIES', 'HUMEN_DEGREE','POSITION_TYPE'];
+        const dicArray = ['HUMEN_Nation', 'HUMEN_HOUSE_REGISTER', 'HUMEN_EDUCATION', 'HUMENT_HEALTH', 'HUMEN_POLITICS', 'CONTRACT_CATEGORIES', 'HUMEN_DEGREE','POSITION_TYPE','HUMEN_EMP_STATUS'];
         this.props.dispatch(globalAction(getDicParList([...dicArray])));
         let ml = [];
         menuDefine.map(menu => {
@@ -323,8 +323,8 @@ class HumanIndex extends Component {
                                     <Route path='/achievement' component={Achievement} />
                                     <Route path='/attendance' component={Attendance} />
                                     <Route path='/organization' component={Organization} />
-                                    <Route path='/statistics' component={Statistics} />
-                                    <Route path='/set' component={Set} />
+                                    {/* <Route path='/statistics' component={Statistics} /> 由于前端报错，暂时注释，等界面写了再取消注释 
+                                    <Route path='/set' component={Set} />*/}
                                     <Route path='/rewardpunishment' component={Rewardpunishment}/>
                                 </Layer>
                             </ConnectedRouter>

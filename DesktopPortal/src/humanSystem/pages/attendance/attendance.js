@@ -51,7 +51,7 @@ class MainIndex extends Component {
         let self = this;
         let reader = new FileReader();
         reader.onload  = function (e) {
-            this.props.dispatch(importAttendenceList(exceltoattendenceobj(e.target.result)));
+            self.props.dispatch(importAttendenceList(exceltoattendenceobj(e.target.result, 4)));
         }
         reader.readAsArrayBuffer(file);
     }
@@ -98,20 +98,30 @@ class MainIndex extends Component {
                             visible={this.state.showModal}
                             onOk={this.handleOk}
                             onCancel={this.handleCancel}>
+                            
+                                <Row style={{ margin: '6px' }}>
+                                    <Col span={3}></Col>
+                                    <Col span={10} >
+                                        <span>次数</span>
+                                    </Col>
+                                    <Col span={10}>
+                                        <span>金额</span>
+                                    </Col>
+                                </Row>
                             {
                                 this.state.attendanceList.map(
                                     function(dv, i) {
                                         return (
-                                            <Row style={{ margin: '6px' }}>
-                                                <Col span={3}>typeDic[v.type]</Col>
-                                                <Col span={12}>
-                                                    <InputNumber 
+                                            <Row key={i} style={{ margin: '6px' }}>
+                                                <Col span={3}>{typeDic[dv.type]+":"}</Col>
+                                                <Col span={10} >
+                                                    <InputNumber  style={{width: '90%'}}
                                                         onChange={(v)=>{dv.times = v.target.value;this.forceUpdate();}} 
                                                         value={dv.times}>
                                                     </InputNumber>
                                                 </Col>
-                                                <Col span={12}>
-                                                    <InputNumber 
+                                                <Col span={10}>
+                                                    <InputNumber style={{width: '100%'}}
                                                         onChange={(v)=>{dv.money = v.target.value;this.forceUpdate();}} 
                                                         value={dv.money}>
                                                     </InputNumber>
@@ -152,7 +162,7 @@ class MainIndex extends Component {
 function mapStateToProps(state) {
     return {
         selAttendanceList: state.basicData.selAttendanceList,
-        attendanceList: state.search.attendanceList,
+        attendanceList: state.search.attendanceList.extension,
         attendanceSettingList: state.search.attendanceSettingList,
         showLoading: state.search.showLoading,
     }
