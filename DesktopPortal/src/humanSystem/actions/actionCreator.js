@@ -33,8 +33,8 @@ export const searchIndex = createAction(actionTypes.SET_SEARCHINDEX);
 
 export const saveSearchCondition = createAction(actionTypes.SAVE_SEARCH_CONDITION);
 // export const expandSearchbox = createAction(actionTypes.SEARCH_BOX_EXPAND);
-export const getHumenDetail = createAction(actionTypes.GET_HUMEN_DETAIL);
-export const getHumenDetailEnd = createAction(actionTypes.GET_HUMEN_DETAIL_END);
+export const getHumanDetail = createAction(actionTypes.HUMAN_GET_DETAIL);
+export const getHumanDetailEnd = createAction(actionTypes.HUMAN_GET_DETAIL_END);
 //面包屑
 export const setbreadPageIndex = createAction(actionTypes.SET_USER_BREADINDEX);
 export const setbreadPageItemIndex = createAction(actionTypes.SET_USER_BREADITEMINDEX);
@@ -54,7 +54,7 @@ export const setHumanInfo = createAction(actionTypes.SET_SELHUMANINFO);
 export const getHumanImage = createAction(actionTypes.GET_HUMANIMAGE);
 
 //转正
-export const setSocialEN = createAction(actionTypes.POST_SOCIALINSURANCE);
+export const becomeStaff = createAction(actionTypes.HUMAN_BECOME_STAFF);
 
 //月结
 export const getAllMonthList = createAction(actionTypes.MONTH_GETALLMONTHLIST);
@@ -86,6 +86,9 @@ export const deleteSalaryInfo = createAction(actionTypes.DELETE_SALARYINFO);
 //离职
 export const leavePosition = createAction(actionTypes.LEAVE_POSITON);
 
+//兼职
+export const savePartTimeJob = createAction(actionTypes.HUMAN_PARTTIME_JOB_SAVE);
+export const savePartTimeJobEnd = createAction(actionTypes.HUMAN_PARTTIME_JOB_SAVE_END);
 //异动
 export const postChangeHuman = createAction(actionTypes.POST_CHANGEHUMAN);
 

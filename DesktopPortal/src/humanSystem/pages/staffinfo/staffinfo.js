@@ -1,10 +1,10 @@
 import {connect} from 'react-redux';
-import {postBlackLst, setHumanInfo, searchConditionType, setSearchLoadingVisible, getHumanImage, exportHumanForm, setbreadPageIndex, searchHumanType, searchAgeType, searchOrderType, adduserPage} from '../../actions/actionCreator';
+import {postBlackLst, setHumanInfo, searchConditionType, setSearchLoadingVisible, getHumanImage, exportHumanForm, getHumanDetail, adduserPage} from '../../actions/actionCreator';
 import React, {Component} from 'react'
-import {Table, Input, Select, Icon, Button, Row, Col, Slider, TreeSelect, Pagination, Spin, notification} from 'antd'
+import {Table, Input, Select, Icon, Button, Row, Col, Slider, TreeSelect, Spin, notification} from 'antd'
 import '../search.less'
 // import SearchCondition from '../../constants/searchCondition'
-import {SearchHumanTypes, AgeRanges} from '../../constants/tools'
+// import {SearchHumanTypes, AgeRanges} from '../../constants/tools'
 import Layer, {LayerRouter} from '../../../components/Layer'
 import {Route} from 'react-router'
 import OnBoarding from './onboarding'
@@ -14,7 +14,6 @@ import Leave from './leave'
 import PartTimeJob from './partTimeJob'
 import {getDicPars} from '../../../utils/utils'
 
-const ButtonGroup = Button.Group;
 const styles = {
     conditionRow: {
         width: '80px',
@@ -80,9 +79,10 @@ class Staffinfo extends Component {
 
     show = (record) => {
         //this.props.dispatch(adduserPage({menuID: 'chargedetailinfo', disname: '费用信息', type:'item', extra: e.id}));
-        this.props.dispatch(setHumanInfo([record]));
-        this.props.dispatch(getHumanImage(record.id));
-        this.props.dispatch(adduserPage({id: "4", menuID: "OnboardingShow", displayName: '详情', type: 'item'}));
+        // this.props.dispatch(setHumanInfo([record]));
+        // this.props.dispatch(getHumanImage(record.id));
+        // this.props.dispatch(adduserPage({id: "4", menuID: "OnboardingShow", displayName: '详情', type: 'item'}));
+        this.props.dispatch(getHumanDetail(record.id))
         this.gotoSubPage('onBoarding', record);
     }
 
@@ -142,15 +142,14 @@ class Staffinfo extends Component {
     }
 
     handleOnboarding = (e) => {
-        // this.props.dispatch(adduserPage({id: "0", menuID: "Onboarding", displayName: '入职', type: 'item'}));
         this.gotoSubPage('onBoarding', {});
     }
 
     handleBecome = () => {
         if (this.state.checkedList.length > 0) {
             //this.props.dispatch(adduserPage({id: "1", menuID: "BecomeStaff", displayName: '转正', type: 'item'}));
-            let humenInfo = this.state.checkedList[0];
-            if (humenInfo.staffStatus != 3) {
+            let humanInfo = this.state.checkedList[0];
+            if (humanInfo.staffStatus != 3) {
                 this.gotoSubPage('becomeStaff', this.state.checkedList[0])
             } else {
                 notification.error({
@@ -168,7 +167,7 @@ class Staffinfo extends Component {
 
     handleChangeSalary = () => {
         if (this.state.checkedList.length > 0) {
-            // this.props.dispatch(adduserPage({id: "2", menuID: "changestation", displayName: '异动调薪', type: 'item'}));
+            this.props.dispatch(getHumanDetail(this.state.checkedList[0].id))
             this.gotoSubPage('change', this.state.checkedList[0])
         } else {
             notification.error({
@@ -179,8 +178,7 @@ class Staffinfo extends Component {
     }
 
     handleLeft = () => {
-        if (this.props.selHumanList.length > 0) {
-            // this.props.dispatch(adduserPage({id: "3", menuID: "leftstation", displayName: '离职', type: 'item'}));
+        if (this.state.checkedList.length > 0) {
             this.gotoSubPage('leave', this.state.checkedList[0])
         } else {
             notification.error({
@@ -193,8 +191,7 @@ class Staffinfo extends Component {
 
     handlePartTimeJob = () => {
         if (this.state.checkedList.length > 0) {
-            // this.props.dispatch(adduserPage({id: "3", menuID: "partTimeJob", displayName: '离职', type: 'item'}));
-            this.gotoSubPage('partTimeJob', this.state.checkedList[0])
+            this.props.dispatch(getHumanDetail(this.state.checkedList[0].id))
         } else {
             notification.error({
                 message: "请选择员工",

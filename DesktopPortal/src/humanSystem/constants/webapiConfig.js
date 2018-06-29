@@ -33,6 +33,7 @@ const WebApiConfig = {
         deleteAttendenceList: basicDataBaseApiUrl + 'humanattendance/deleteattendanceitem',
         addRPInfo: basicDataBaseApiUrl + 'rewardpunishment/addrewardpunishment',
         deleteRPInfo: basicDataBaseApiUrl + 'rewardpunishment/deleterewardpunishment',
+        savePartTimeJob: basicDataBaseApiUrl + ''//兼职保存
     },
     search: {
         searchHumanList: basicDataBaseApiUrl + 'humaninfo/searchhumaninfo',
@@ -49,6 +50,7 @@ const WebApiConfig = {
         getAttendenceList: basicDataBaseApiUrl + 'humanattendance/searchattendancelst',
         getRPInfoList: basicDataBaseApiUrl + 'humanattendance/searchrewardpunishment',
         getHumanlistByorg: basicDataBaseApiUrl + 'humaninfo/hulistbyorg',
+        getHumanDetail: basicDataBaseApiUrl + 'humaninfo/'
     },
     attach: {
         uploadUrl: `${UploadUrl}/file/upload/`,

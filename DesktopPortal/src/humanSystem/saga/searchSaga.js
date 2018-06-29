@@ -6,6 +6,7 @@ import WebApiConfig from '../constants/webapiConfig';
 import appAction from '../../utils/appUtils';
 import getApiResult from './sagaUtil';
 import {notification} from 'antd';
+import {getHumanDetailEnd, setSearchLoadingVisible} from '../actions/actionCreator';
 
 const actionUtils = appAction(actionTypes.ACTION_ROUTE)
 const PositionStatus = ["未入职", "离职", "入职", "转正"];
@@ -163,23 +164,18 @@ export function* getMonthListAsync(state) {
     }
 }
 
-export function* getHumenDetailAsync(state) {
+export function* getHumanDetailAsync(state) {
     let result = {isOk: false, extension: {}, msg: '获取员工详情失败!'};
-    let url = WebApiConfig.search.getBlackList;
-
+    let url = WebApiConfig.search.getHumanDetail + state.payload;
+    yield put(actionUtils.action(setSearchLoadingVisible(true)));
     try {
-        let res = yield call(ApiClient.post, url, state.payload);
+        let res = yield call(ApiClient.get, url);
         if (res.data.code == 0) {
             result.isOk = true;
-            let lv = res.data.extension;
-            yield put({
-                type: actionUtils.getActionType(actionTypes.UPDATE_BLACKLST),
-                payload: {
-                    extension: lv.extension.map(function (v, i) {
-                        return Object.assign({key: i}, v);
-                    }), pageIndex: lv.pageIndex, pageSize: lv.pageSize, totalCount: lv.totalCount, lastTime: lv.lastTime
-                }
-            });
+            result.msg = "获取员工详情成功";
+            let detailInfo = res.data.extension;
+            yield put(actionUtils.action(getHumanDetailEnd(detailInfo)));
+            yield put(actionUtils.action(setSearchLoadingVisible(false)));
         }
     } catch (e) {
         result.msg = '获取员工详情接口异常!';
@@ -389,4 +385,5 @@ export default function* watchAllSearchAsync() {
     yield takeLatest(actionUtils.getActionType(actionTypes.GETSELHUMANLIST_BYORGID), getHumanlistByorgid);
 
     yield takeLatest(actionUtils.getActionType(actionTypes.SEARCH_REWARDPUNISHMENT), searchRewardPunishmentLst);
+    yield takeLatest(actionUtils.getActionType(actionTypes.HUMAN_GET_DETAIL), getHumanDetailAsync);
 }

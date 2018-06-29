@@ -27,6 +27,7 @@ const initState = {
     lstChildren: [],
     organizate: "",
     searchResult: {extension: [{key: '1', id: 'tt', username: 'test', idcard: 'hhee'}], pageIndex: 0, pageSize: 10, totalCount: 1},//搜索结果
+    curHumanDetail: null//当前选中员工信息
 };
 let reducerMap = {};
 
@@ -169,7 +170,11 @@ reducerMap[actionTypes.UPDATE_ATTENDANCESETTINGLST] = function (state, action) {
 reducerMap[actionTypes.UPDATE_REWARDPUNISHHUMANLIST] = function (state, action) {
     return Object.assign({}, state, {rewardpunishhumanlst: action.payload});
 }
-reducerMap[actionTypes.UPDATE_REWARDPUNISHMENTLIST] = function(state, action) {
-    return Object.assign({}, state, {rewardpunishmenList: action.payload, showLoading:false} );
+reducerMap[actionTypes.UPDATE_REWARDPUNISHMENTLIST] = function (state, action) {
+    return Object.assign({}, state, {rewardpunishmenList: action.payload, showLoading: false});
+}
+
+reducerMap[actionTypes.HUMAN_GET_DETAIL_END] = function (state, action) {
+    return Object.assign({}, state, {curHumanDetail: action.payload});
 }
 export default handleActions(reducerMap, initState);

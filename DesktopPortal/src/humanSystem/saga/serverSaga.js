@@ -728,6 +728,26 @@ export function* deleteRewardPunishment(state) {
         });
     }
 }
+//保存兼职信息
+export function* savePartTimeJob(state) {
+    // let url = WebApiConfig.server.addRPInfo + "/" + state.payload;
+    let url = WebApiConfig.server.savePartTimeJob;
+    let huResult = {isOk: false, msg: '保存兼职信息失败!'};
+    try {
+        let res = yield call(ApiClient.post, url, state.payload);
+        if (res.data.code == 0) {
+            huResult.isOk = true;
+            huResult.message = '保存兼职信息成功';
+
+        }
+    } catch (e) {
+        huResult.message = "保存兼职信息接口调用异常!";
+    }
+    notification[huResult.isOk ? "success" : "error"]({
+        message: huResult.message,
+        duration: 3
+    });
+}
 
 export default function* watchDicAllAsync() {
     yield takeLatest(actionUtils.getActionType(actionTypes.POST_HUMANINFO), postHumanInfoAsync);
@@ -743,9 +763,10 @@ export default function* watchDicAllAsync() {
     yield takeLatest(actionUtils.getActionType(actionTypes.DELETE_SALARYINFO), deleteSalary);
     yield takeLatest(actionUtils.getActionType(actionTypes.GET_HUMANIMAGE), getHumanImage);
     yield takeLatest(actionUtils.getActionType(actionTypes.DELETE_BLACKINFO), deleteBlackInfo);
-    yield takeLatest(actionUtils.getActionType(actionTypes.POST_SOCIALINSURANCE), setSocialInsure);
+    yield takeLatest(actionUtils.getActionType(actionTypes.HUMAN_BECOME_STAFF), setSocialInsure);
     yield takeLatest(actionUtils.getActionType(actionTypes.LEAVE_POSITON), leavePosition);
     yield takeLatest(actionUtils.getActionType(actionTypes.POST_CHANGEHUMAN), changeHuman);
+    yield takeLatest(actionUtils.getActionType(actionTypes.HUMAN_PARTTIME_JOB_SAVE), savePartTimeJob)
     //导表
     yield takeLatest(actionUtils.getActionType(actionTypes.EXPORT_MONTHFORM), exportMonthForm);
     yield takeLatest(actionUtils.getActionType(actionTypes.EXPORT_HUMANFORM), exportHumanForm);

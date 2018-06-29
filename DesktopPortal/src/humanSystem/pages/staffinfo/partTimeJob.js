@@ -1,8 +1,10 @@
 import {connect} from 'react-redux';
-import {createStation, getOrgList, leavePosition} from '../../actions/actionCreator';
+import {createStation, getOrgList, savePartTimeJob} from '../../actions/actionCreator';
 import React, {Component} from 'react'
-import {Select, Input, Form, Cascader, Button, Row, Col, Checkbox, DatePicker, Spin, Table} from 'antd'
+import {Select, Input, Form, Cascader, Button, Row, Col, TreeSelect, DatePicker, notification, Table, Modal} from 'antd'
 import Layer from '../../../components/Layer'
+import moment from 'moment';
+import {NewGuid} from '../../../utils/appUtils';
 const FormItem = Form.Item;
 const Option = Select.Option;
 const formItemLayout = {
@@ -32,7 +34,11 @@ const formerCompanyColumns = [{
 class PartTimeJob extends Component {
     state = {
         department: '',
-        columns: []
+        columns: [],
+        isModify: false,
+        isDialogShow: false,
+        addRowList: [],//新增的兼职列表
+        curRowInfo: null//当前行对象
     }
 
     componentWillMount() {
@@ -55,87 +61,135 @@ class PartTimeJob extends Component {
     }
     //兼职失效
     Invalid = (record) => {
+        let addRowList = this.state.addRowList;
+        let index = addRowList.findIndex(item => item.id == record.id);
+        if (index != -1) {
+            addRowList.splice(index, 1);
+            this.setState({addRowList: addRowList});
+        } else {
 
+        }
     }
 
     handleSubmit = (e) => {
-        e.preventDefault();
+        this.props.dispatch(savePartTimeJob({}));
+    }
+    AddRow = (e) => {
+        // e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                values.id = this.props.selHumanList[this.props.selHumanList.length - 1].id;
-                values.idCard = this.props.selHumanList[this.props.selHumanList.length - 1].idcard;
-                this.props.dispatch(leavePosition(values));
+                let addRowList = this.state.addRowList;
+                values.id = NewGuid();
+                addRowList.push(values);
+                this.setState({addRowList: addRowList});
             }
         });
     }
 
     render() {
-        const {getFieldDecorator, getFieldsError, getFieldsValue, isFieldTouched} = this.props.form;
+        let humanInfo = this.props.curHumanDetail;
+        const {getFieldDecorator} = this.props.form;
         let tableColumns = this.state.columns || [];
+        let tableDataSource = (this.state.addRowList || []);
         return (
             <Layer>
                 <div className="page-title" style={{marginBottom: '10px'}}>兼职</div>
-                <Form onSubmit={this.handleSubmit}>
-                    <Row style={{marginTop: '10px'}}>
-                        <Col span={6}>
-                            <FormItem {...formItemLayout} label="员工编号">
-                                {getFieldDecorator('id', {
-                                    reules: [{
-                                        required: true, message: '请输入员工编号',
-                                    }]
-                                })(
-                                    <Input disabled={true} placeholder="请输入员工编号" />
-                                )}
-                            </FormItem>
-                        </Col>
-                        <Col span={6}>
-                            <FormItem {...formItemLayout} label="姓名">
-                                {getFieldDecorator('name', {
-                                    reules: [{
-                                        required: true, message: '请输入姓名',
-                                    }]
-                                })(
-                                    <Input disabled={true} placeholder="请输入姓名" />
-                                )}
-                            </FormItem>
-                        </Col>
-                        <Col span={6}>
-                            <FormItem {...formItemLayout} label="部门">
-                                {getFieldDecorator('orgDepartmentId', {
-                                    reules: [{
-                                        required: true,
-                                        message: 'please entry',
-                                    }]
-                                })(
-                                    <Cascader disabled={true} options={this.props.setDepartmentOrgTree} onChange={this.handleChooseDepartmentChange} onPopupVisibleChange={this.handleDepartmentChange} changeOnSelect placeholder="归属部门" />
-                                )}
-                            </FormItem>
-                        </Col>
-                        <Col span={6}>
-                            <FormItem {...formItemLayout} label="职位">
-                                {getFieldDecorator('orgStation', {
-                                    reules: [{
-                                        required: true, message: 'please entry',
-                                    }],
-                                    initialValue: null
-                                })(
-                                    <Select disabled={true} onChange={this.handleSelectChange} placeholder="选择职位">
+                <Row style={{marginTop: '10px'}}>
+                    <Col span={6}>
+                        <label class="ant-form-item-label">员工编号：</label>
+                        <Input disabled={true} style={{width: '200px'}} value={humanInfo.userID} />
+                    </Col>
+                    <Col span={6}>
+                        <label class="ant-form-item-label">姓名：</label>
+                        <Input disabled={true} style={{width: '200px'}} value={humanInfo.name} />
+                    </Col>
+                    <Col span={6}>
+                        <label class="ant-form-item-label">部门：</label>
+                        <TreeSelect disabled={true} style={{width: '200px'}} value={humanInfo.departmentId} treeData={this.props.setDepartmentOrgTree} />
+                    </Col>
+                    <Col span={6}>
+                        <label class="ant-form-item-label">职位：</label>
+                        <Select style={{width: '200px'}} disabled={true} onChange={this.handleSelectChange} placeholder="选择职位">
 
-                                    </Select>
-                                )}
-                            </FormItem>
-                        </Col>
-                    </Row>
+                        </Select>
+                    </Col>
+                </Row>
+                <Row style={{marginTop: '10px', marginBottom: '10px'}}>
+                    <Col>
+                        <Button type="primary" onClick={() => this.setState({isDialogShow: true})} >添加</Button>
+                    </Col>
+                </Row>
 
-                    <Table dataSource={[]} columns={tableColumns} />
+                <Table dataSource={tableDataSource} columns={tableColumns} />
 
-                    <Row>
-                        <Col span={20} style={{textAlign: 'center', marginTop: '10px'}}>
-                            <Button type="primary" htmlType="submit" disabled={this.hasErrors(getFieldsValue())} >提交</Button>
-                        </Col>
-                    </Row>
+                <Row>
+                    <Col span={20} style={{textAlign: 'center', marginTop: '10px'}}>
+                        <Button type="primary" onClick={() => this.handleSubmit()}  >提交</Button>
+                    </Col>
+                </Row>
 
-                </Form>
+                <Modal title={this.state.isModify ? "修改" : "新增兼职"}
+                    visible={this.state.isDialogShow}
+                    onOk={() => this.AddRow()} onCancel={() => this.setState({isDialogShow: false})}>
+                    <Form onSubmit={this.handleSubmit}>
+                        <Row>
+                            <Col span={12}>
+                                <FormItem {...formItemLayout} label="部门">
+                                    {getFieldDecorator('departmentId', {
+                                        rules: [{
+                                            required: true,
+                                            message: '选择部门',
+                                        }]
+                                    })(
+                                        // <Cascader disabled={true} options={this.props.setDepartmentOrgTree} onChange={this.handleChooseDepartmentChange} onPopupVisibleChange={this.handleDepartmentChange} changeOnSelect placeholder="归属部门" />
+                                        <TreeSelect allowClear treeData={this.props.setDepartmentOrgTree} />
+                                    )}
+                                </FormItem>
+                            </Col>
+                            <Col span={12}>
+                                <FormItem {...formItemLayout} label="职位">
+                                    {getFieldDecorator('position', {
+                                        rules: [{
+                                            required: true, message: '请选择职位',
+                                        }]
+                                    })(
+                                        <Select onChange={this.handleSelectChange} placeholder="选择职位">
+
+                                        </Select>
+                                    )}
+                                </FormItem>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span={12}>
+                                <FormItem {...formItemLayout} label="开始时间">
+                                    {getFieldDecorator('startTime', {
+                                        initialValue: moment(),
+                                        rules: [{
+                                            required: true,
+                                            message: '请选择开始时间'
+                                        }]
+                                    })(
+                                        <DatePicker format='YYYY-MM-DD' style={{width: '100%'}} />
+                                    )}
+                                </FormItem>
+                            </Col>
+                            <Col span={12}>
+                                <FormItem {...formItemLayout} label="结束时间">
+                                    {getFieldDecorator('endTime', {
+                                        initialValue: moment(),
+                                        rules: [{
+                                            required: true,
+                                            message: '请选择结束时间'
+                                        }]
+                                    })(
+                                        <DatePicker format='YYYY-MM-DD' style={{width: '100%'}} />
+                                    )}
+                                </FormItem>
+                            </Col>
+                        </Row>
+                    </Form>
+                </Modal>
             </Layer >
 
         );
@@ -144,7 +198,8 @@ class PartTimeJob extends Component {
 
 function tableMapStateToProps(state) {
     return {
-        selHumanList: state.basicData.selHumanList,
+        setDepartmentOrgTree: state.basicData.searchOrgTree,
+        curHumanDetail: state.search.curHumanDetail
     }
 }
 
