@@ -5,6 +5,9 @@ using System.Text;
 
 namespace XYHHumanPlugin.Models
 {
+    /// <summary>
+    /// 奖惩信息？
+    /// </summary>
     public class RewardPunishmentInfo
     {
         [Key]

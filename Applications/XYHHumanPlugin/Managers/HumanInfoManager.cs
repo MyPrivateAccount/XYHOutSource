@@ -1,5 +1,6 @@
 ﻿using ApplicationCore;
 using ApplicationCore.Dto;
+using ApplicationCore.Managers;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -18,19 +19,34 @@ namespace XYHHumanPlugin.Managers
 {
     public class HumanInfoManager
     {
-        public HumanInfoManager(IHumanInfoStore humanInfoStore, IMapper mapper, RestClient restClient)
+        public HumanInfoManager(IHumanInfoStore humanInfoStore,
+            IMapper mapper,
+            PermissionExpansionManager permissionExpansionManager,
+            RestClient restClient)
         {
             Store = humanInfoStore;
             _mapper = mapper;
             _restClient = restClient;
+            _permissionExpansionManager = permissionExpansionManager;
         }
 
         protected IHumanInfoStore Store { get; }
         protected IMapper _mapper { get; }
         protected RestClient _restClient { get; }
+        protected PermissionExpansionManager _permissionExpansionManager { get; }
 
         private readonly ILogger Logger = LoggerManager.GetLogger("HumanInfoManager");
 
+        public async Task<ResponseMessage<HumanInfoResponse>> GetHumanInfoAsync(UserInfo user, string id, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            ResponseMessage<HumanInfoResponse> response = new ResponseMessage<HumanInfoResponse>();
+
+            var q = await Store.GetDetailQuery().Where(a => !a.IsDeleted && a.Id == id).SingleOrDefaultAsync(cancellationToken);
+
+            response.Extension = _mapper.Map<HumanInfoResponse>(q);
+
+            return response;
+        }
 
         public async Task<ResponseMessage<HumanInfoResponse>> SaveHumanInfo(UserInfo user, HumanInfoRequest humanInfoRequest, CancellationToken cancellationToken = default(CancellationToken))
         {

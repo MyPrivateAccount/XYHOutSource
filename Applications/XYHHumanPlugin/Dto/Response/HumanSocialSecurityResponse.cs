@@ -17,6 +17,10 @@ namespace XYHHumanPlugin.Dto.Response
         public string HumanId { get; set; }
 
         /// <summary>
+        /// 是否参加社保
+        /// </summary>
+        public bool IsHave { get; set; }
+        /// <summary>
         /// 参保时间
         /// </summary>
         public DateTime? InsuredTime { get; set; }

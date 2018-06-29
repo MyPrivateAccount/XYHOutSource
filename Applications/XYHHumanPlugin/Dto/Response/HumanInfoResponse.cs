@@ -160,7 +160,19 @@ namespace XYHHumanPlugin.Dto.Response
 
         public OrganizationExpansion OrganizationExpansion { get; set; }
 
+        public HumanContractInfoResponse HumanContractInfoResponse { get; set; }
 
+        public HumanSalaryStructureResponse HumanSalaryStructureResponse { get; set; }
+
+        public HumanSocialSecurityResponse HumanSocialSecurityResponse { get; set; }
+
+        public IEnumerable<HumanEducationInfoResponse> HumanEducationInfosResponse { get; set; }
+
+        public IEnumerable<HumanTitleInfoResponse> HumanTitleInfosResponse { get; set; }
+
+        public IEnumerable<HumanWorkHistoryResponse> HumanWorkHistoriesResponse { get; set; }
+
+        public IEnumerable<FileInfo> FileInfos { get; set; }
 
 
 
