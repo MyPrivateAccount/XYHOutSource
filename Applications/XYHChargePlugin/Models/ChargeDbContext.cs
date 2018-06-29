@@ -90,7 +90,7 @@ namespace XYHChargePlugin.Models
             });
 
             modelBuilder.Entity<HumanInfo>(b => {
-                b.ToTable("xyh_hu_humanmanage");
+                b.ToTable("xyh_hu_humaninfo");
                 b.HasKey(k => new { k.ID });
             });
             modelBuilder.Entity<PaymentInfo>(b => {
