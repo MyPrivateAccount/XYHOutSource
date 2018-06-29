@@ -106,8 +106,8 @@ class Station extends Component {
     }
 
     componentWillMount() {
-        // this.props.dispatch(getDicParList(["POSITION_TYPE"]));
-        // this.props.dispatch(setSearchLoadingVisible(false));
+        this.props.dispatch(getDicParList(["POSITION_TYPE"]));
+        this.props.dispatch(setSearchLoadingVisible(false));
     }
 
     componentDidMount() {

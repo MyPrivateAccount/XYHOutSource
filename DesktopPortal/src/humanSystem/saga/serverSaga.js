@@ -570,7 +570,7 @@ export function* updateOrg(state) {
     let huResult = {isOk: false, msg: '更新组织失败!'};
 
     try {
-        huResult = yield call(ApiClient.post, url, state.payload.Original);
+        huResult = yield call(ApiClient.put, url, state.payload.Original);
         if (huResult.data.code == 0) {
             huResult.data.message = '更新组织成功';
 
