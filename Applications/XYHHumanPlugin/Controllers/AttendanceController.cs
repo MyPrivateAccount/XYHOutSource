@@ -76,9 +76,9 @@ namespace XYHHumanPlugin.Controllers
 
         [HttpPost("importattendancelst")]
         [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
-        public async Task<ResponseMessage> ImportAttendenceLst(UserInfo User, [FromBody]List<AttendanceInfoRequest> lst)
+        public async Task<ResponseMessage<HumanSearchResponse<AttendanceInfoResponse>>> ImportAttendenceLst(UserInfo User, [FromBody]List<AttendanceInfoRequest> lst)
         {
-            var pagingResponse = new ResponseMessage();
+            var pagingResponse = new ResponseMessage<HumanSearchResponse<AttendanceInfoResponse>>();
             if (!ModelState.IsValid)
             {
                 pagingResponse.Code = ResponseCodeDefines.ModelStateInvalid;
@@ -89,7 +89,9 @@ namespace XYHHumanPlugin.Controllers
             try
             {
                 await _attendanceManage.AddAttendence(lst, HttpContext.RequestAborted);
-                pagingResponse.Message = "importattendenceLst ok";
+                AttendenceSearchRequest condition = new AttendenceSearchRequest() { pageIndex = 0, pageSize = 10, CreateDate = lst[0].Date.GetValueOrDefault() };
+                pagingResponse.Extension = await _attendanceManage.SearchAttendenceInfo(User, condition, HttpContext.RequestAborted);
+
             }
             catch (Exception e)
             {

@@ -4,7 +4,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using ApplicationCore;
 using ApplicationCore.Dto;
@@ -45,31 +44,6 @@ namespace XYHContractPlugin.Controllers
             _restClient = rsc;
         }
 
-
-        [HttpGet("testinfo")]
-        [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
-        public async Task<ResponseMessage<List<int>>> GetTestInfo(UserInfo user)//[FromRoute]string testinfo
-        {
-            var Response = new ResponseMessage<List<int>>();
-            //if (string.IsNullOrEmpty(testinfo))
-            //{
-            //    Response.Code = ResponseCodeDefines.ModelStateInvalid;
-            //    Response.Message = "请求参数不正确";
-            //}
-            try
-            {
-                return Response;
-                //Response.Extension = await _userTypeValueManager.FindByTypeAsync(user.Id, type, HttpContext.RequestAborted);
-            }
-            catch (Exception e)
-            {
-                Response.Code = ResponseCodeDefines.ServiceError;
-                Response.Message = "服务器错误：" + e.ToString();
-                Logger.Error("error");
-            }
-            return Response;
-        }
-
         [HttpGet("{contractId}")]
         [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
         public async Task<ResponseMessage<ContractContentResponse>> GetContractByid(UserInfo user, [FromRoute] string contractId)
@@ -102,7 +76,6 @@ namespace XYHContractPlugin.Controllers
                         break;
                     }
                 }
-
                 foreach (var itm in ret.AnnexInfo)
                 {
                     int annextype = int.Parse(itm.Group);
@@ -123,13 +96,11 @@ namespace XYHContractPlugin.Controllers
                         ret.BaseInfo.IsSubmmitNet = true;
                     }
                 }
-
                 if (!string.IsNullOrEmpty(Response.Extension.BaseInfo.CreateUser))
                 {
                     var resp = await _restClient.Get<ResponseMessage<string>>($"http://localhost:5000/api/user/{Response.Extension.BaseInfo.CreateUser}", null);
                     Response.Extension.BaseInfo.CreateUserName = resp.Extension;
                 }
-
                 List<FileInfo> fileInfos = new List<FileInfo>();
                 List<FileItemResponse> fileItems = new List<FileItemResponse>();
                 fileInfos = await _fileScopeManager.FindByContractIdAsync(user.Id, contractId);
@@ -144,7 +115,6 @@ namespace XYHContractPlugin.Controllers
                             fileItems.Add(ConvertToFileItem(item, f1));
                         }
                     }
-
                     Response.Extension.FileList = fileItems;
                 }
             }
@@ -193,19 +163,7 @@ namespace XYHContractPlugin.Controllers
         [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
         public async Task<ResponseMessage<List<ContractContentResponse>>> GetAllContractByUser(UserInfo user)
         {
-            //if (user.Id == null)
-            //{
-            //    {
-            //        user.Id = "66df64cb-67c5-4645-904f-704ff92b3e81";
-            //        user.UserName = "wqtest";
-            //        user.KeyWord = "";
-            //        user.OrganizationId = "270";
-            //        user.PhoneNumber = "18122132334";
-            //    };
-            //}
-
             var Response = new ResponseMessage<List<ContractContentResponse>>();
-
             try
             {
                 Response.Extension = await _contractInfoManager.GetAllListinfoByUserIdAsync(user.Id, HttpContext.RequestAborted);

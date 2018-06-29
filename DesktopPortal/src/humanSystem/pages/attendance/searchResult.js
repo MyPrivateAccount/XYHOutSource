@@ -7,7 +7,6 @@ import {Button, Row, Col, Table} from 'antd';
 const columns = [
     {title: '工号',dataIndex: 'userID',key: 'userID',},
     {title: '考勤月份',dataIndex: 'date',key: 'date'},
-    {title: '身份证号',dataIndex: 'idcard',key: 'idcard'},
     {title: '姓名',dataIndex: 'name',key: 'name'},
     {title: '正常出勤',dataIndex: 'normal',key: 'normal'},
     {title: '调休',dataIndex: 'relaxation',key: 'relaxation'},
@@ -56,7 +55,7 @@ class SearchResult extends Component {
         
         return (
             <div>
-                {<p style={{marginBottom: '10px'}}>目前已为你筛选出<b>{this.props.searchInfoResult.attendanceList.extension.length}</b>条考勤信息</p>}
+                {<p style={{marginBottom: '10px'}}>目前已为你筛选出<b>{this.props.searchInfoResult.attendanceList.totalCount}</b>条考勤信息</p>}
                 <div id="searchResult">
                     <Table id= {"table"} rowKey={record => record.key} 
                     columns={columns} 

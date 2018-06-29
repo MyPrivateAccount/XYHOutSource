@@ -351,7 +351,7 @@ export function* getHumanlistByorgid(state) {
 
 export function* searchRewardPunishmentLst(state) {
     let result = {isOk: false, extension: {}, msg: '查询奖惩信息失败！'};
-    let url = WebApiConfig.server.getRPInfoList;
+    let url = WebApiConfig.search.getRPInfoList;
 
     try {
         let res = yield call(ApiClient.post, url, state.payload);
@@ -372,6 +372,30 @@ export function* searchRewardPunishmentLst(state) {
     }
 }
 
+export function* searchtAttendenceLst(state) {
+    let url = WebApiConfig.search.getAttendenceList
+    let huResult = {isOk: false, msg: '查询考勤列表失败!'};
+
+    try {
+        huResult = yield call(ApiClient.post, url, state.payload);
+        if (huResult.data.code == 0) {
+            huResult.data.message = '查询考勤列表成功';
+
+            yield put({type: actionUtils.getActionType(actionTypes.UPDATE_ATTENDANCELST), payload: huResult.data.extension});
+            
+            return;
+        }
+    } catch (e) {
+        huResult.data.message = "查询考勤列表接口调用异常!";
+    }
+
+    if (huResult.data.code != 0) {
+        notification.error({
+            message: huResult.data.message,
+            duration: 3
+        });
+    }
+}
 export default function* watchAllSearchAsync() {
     yield takeLatest(actionUtils.getActionType(actionTypes.SEARCH_CUSTOMER), getCustomerListAsync);
     yield takeLatest(actionUtils.getActionType(actionTypes.SEARCH_CONDITION), getSearchConditionAsync);
@@ -380,6 +404,7 @@ export default function* watchAllSearchAsync() {
     yield takeLatest(actionUtils.getActionType(actionTypes.GET_BLACKLST), getBlackListAsync);
     yield takeLatest(actionUtils.getActionType(actionTypes.GET_SALARYLIST), getSalaryListAsync);
     yield takeLatest(actionUtils.getActionType(actionTypes.GET_SALARYITEM), getSalaryItemAsync);
+    yield takeLatest(actionUtils.getActionType(actionTypes.SEARCH_ATTENDANCELST), searchtAttendenceLst);
     yield takeLatest(actionUtils.getActionType(actionTypes.GET_ATTENDANCESETTINGLST), getAttendenceSettingAsync);
     yield takeLatest(actionUtils.getActionType(actionTypes.POST_ATTENDANCESETTINGLST), postAttendeceSettingAsync);
     yield takeLatest(actionUtils.getActionType(actionTypes.GETSELHUMANLIST_BYORGID), getHumanlistByorgid);

@@ -39,13 +39,13 @@ export function* getWorkNumber(state) {
     try {
         huResult = yield call(ApiClient.get, url);
         //弹消息，返回
-        if (huResult.isOk) {
-            huResult.message = '人事信息提交成功';
+        if (huResult.data.code) {
+            huResult.message = '人事获取工号成功';
 
-            yield put({type: actionUtils.getActionType(actionTypes.SET_HUMANINFONUMBER), payload: {worknumber: huResult}});
+            yield put({type: actionUtils.getActionType(actionTypes.SET_HUMANINFONUMBER), payload: huResult.data.extension});
         }
     } catch (e) {
-        huResult.msg = "部门用户获取接口调用异常!";
+        huResult.msg = "获取工号接口调用异常!";
     }
 
     if (!huResult.isOk) {
@@ -570,7 +570,7 @@ export function* updateOrg(state) {
     let huResult = {isOk: false, msg: '更新组织失败!'};
 
     try {
-        huResult = yield call(ApiClient.post, url, state.payload.Original);
+        huResult = yield call(ApiClient.put, url, state.payload.Original);
         if (huResult.data.code == 0) {
             huResult.data.message = '更新组织成功';
 
@@ -602,6 +602,7 @@ export function* importAttendenceLst(state) {
         if (huResult.data.code == 0) {
             huResult.data.message = '导入考勤成功';
 
+            yield put({type: actionUtils.getActionType(actionTypes.UPDATE_ATTENDANCELST), payload: huResult.data.extension});
             notification.success({
                 message: huResult.data.message,
                 duration: 3
@@ -620,33 +621,6 @@ export function* importAttendenceLst(state) {
     }
 }
 
-export function* searchtAttendenceLst(state) {
-    let url = WebApiConfig.search.getAttendenceList
-    let huResult = {isOk: false, msg: '查询考勤列表失败!'};
-
-    try {
-        huResult = yield call(ApiClient.post, url, state.payload);
-        if (huResult.data.code == 0) {
-            huResult.data.message = '查询考勤列表成功';
-
-            yield put({type: actionUtils.getActionType(actionTypes.UPDATE_ATTENDANCELST), payload: huResult.data.extension});
-            notification.success({
-                message: huResult.data.message,
-                duration: 3
-            });
-            return;
-        }
-    } catch (e) {
-        huResult.data.message = "查询考勤列表接口调用异常!";
-    }
-
-    if (huResult.data.code != 0) {
-        notification.error({
-            message: huResult.data.message,
-            duration: 3
-        });
-    }
-}
 
 export function* deleteAttendenceItem(state) {
     let url = WebApiConfig.server.deleteAttendenceList + "/" + state.payload;
@@ -776,7 +750,7 @@ export default function* watchDicAllAsync() {
     yield takeLatest(actionUtils.getActionType(actionTypes.UPDATE_ORG), updateOrg);
     //考勤
     yield takeLatest(actionUtils.getActionType(actionTypes.IMPORT_ATTENDANCELST), importAttendenceLst);
-    yield takeLatest(actionUtils.getActionType(actionTypes.SEARCH_ATTENDANCELST), searchtAttendenceLst);
+    
     yield takeLatest(actionUtils.getActionType(actionTypes.DELETE_ATTENDANCEITEM), deleteAttendenceItem);
     //行政惩罚
     yield takeLatest(actionUtils.getActionType(actionTypes.ADD_REWARDPUNISHMENT), addRewardPunishment);

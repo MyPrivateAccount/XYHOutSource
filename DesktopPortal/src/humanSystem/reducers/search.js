@@ -3,14 +3,14 @@ import * as actionTypes from '../constants/actionType';
 import moment from 'moment';
 
 const initState = {
-    rewardpunishmenList: {extension: [{key: "1", time: "tt", name: "tt", idcard: "tta", signed: "today"}], pageIndex: 0, pageSize: 10, totalCount: 1},
+    rewardpunishmenList: {extension: [{key: "1", time: "tt", name: "tt", idcard: "tta", signed: "today"}], pageIndex: 0, pageSize: 10, total: 1},
     rewardpunishhumanlst: [],
-    attendanceList: {extension: [{key: "1", time: "tt", name: "tt", idcard: "tta", signed: "today"}], pageIndex: 0, pageSize: 10, totalCount: 1},
+    attendanceList: {extension: [{key: "1", time: "tt", name: "tt", idcard: "tta", signed: "today"}], pageIndex: 0, pageSize: 10, total: 1},
     attendanceSettingList: [],
-    achievementList: {extension: [], pageIndex: 0, pageSize: 10, totalCount: 1},
+    achievementList: {extension: [], pageIndex: 0, pageSize: 10, total: 1},
     stationList: [],//选中的部门职位
     orgstationList: [],//选中的部门职位
-    blackList: {extension: [{key: '1', idcard: 'tt', name: 'test', reason: "tta"}], pageIndex: 0, pageSize: 10, totalCount: 1},//黑名单结果
+    blackList: {extension: [{key: '1', idcard: 'tt', name: 'test', reason: "tta"}], pageIndex: 0, pageSize: 10, total: 1},//黑名单结果
     showLoading: false,
     showOrgSelect: false,//部门选择
     navigator: [],//导航记录
@@ -24,9 +24,11 @@ const initState = {
     // expandSearchBox: true,
     pageIndex: 0,
     pageSize: 10,
+    total: 1,
+    current: 0,
     lstChildren: [],
     organizate: "",
-    searchResult: {extension: [{key: '1', id: 'tt', username: 'test', idcard: 'hhee'}], pageIndex: 0, pageSize: 10, totalCount: 1},//搜索结果
+    searchResult: {extension: [{key: '1', id: 'tt', username: 'test', idcard: 'hhee'}], pageIndex: 0, pageSize: 10, total: 1},//搜索结果
     curHumanDetail: null//当前选中员工信息
 };
 let reducerMap = {};
@@ -88,7 +90,7 @@ reducerMap[actionTypes.SEARCH_CUSTOMER_COMPLETE] = function (state, action) {
     let list = action.payload.extension;
     let result = action.payload;
     if (!action.payload) {
-        result = {extension: [], pageIndex: 0, pageSize: 10, totalCount: 0};
+        result = {extension: [], pageIndex: 0, pageSize: 10, total: 0};
     }
     result.extension.map(c => {
         if (c.createTime) {
@@ -99,18 +101,23 @@ reducerMap[actionTypes.SEARCH_CUSTOMER_COMPLETE] = function (state, action) {
 }
 
 reducerMap[actionTypes.UPDATE_STATIONLIST] = function (state, action) {
-    // let f = action.payload.map(function(v, i) {
-    //     return {key: i+"", stationname: v.positionName, isnew: false, positionType:v.positionType, id: v.id};
-    // });
-    console.log("shai::", action.payload);
-    return Object.assign({}, state, {stationList: action.payload, showLoading: false});
+    return Object.assign({}, state, {stationList: action.payload.map(function (v, i) {return {key: i, ...v}}), showLoading: false});
 }
 
 reducerMap[actionTypes.UPDATE_ATTENDANCELST] = function (state, action) {
-    let f = action.payload.map(function (v, i) {
-        return {key: i + "", ...v};
+    let f = [];
+    if (action.payload.extension && action.payload.extension instanceof Array) {
+        f = action.payload.extension.map(function (v, i) {
+            return {key: i + "", ...v, date: moment(v.date).format('MMM YYYY')};
+        });
+    }
+
+    action.payload.extension = f;
+    return Object.assign({}, state, {
+        attendanceList: action.payload, showLoading: false,
+        current: action.payload.pageIndex,
+        pageIndex: action.payload.pageIndex, pageSize: action.payload.pageSize, total: action.payload.totalCount
     });
-    return Object.assign({}, state, {attendanceList: f, showLoading: false});
 }
 
 reducerMap[actionTypes.SET_SEARCHINDEX] = function (state, action) {
@@ -118,9 +125,13 @@ reducerMap[actionTypes.SET_SEARCHINDEX] = function (state, action) {
 }
 
 reducerMap[actionTypes.UPDATE_ORGSTATIONLIST] = function (state, action) {
-    let f = action.payload.map(function (v, i) {
-        return {key: i + "", stationname: v.positionName, isnew: false, positionType: v.positionType, id: v.id};
-    });
+    let f = [];
+    if (action.payload && action.payload instanceof Array) {
+        f = action.payload.map(function (v, i) {
+            return {key: i + "", stationname: v.positionName, isnew: false, positionType: v.positionType, id: v.id};
+        });
+    }
+
     return Object.assign({}, state, {orgstationList: f, showLoading: false});
 }
 
@@ -144,6 +155,10 @@ reducerMap[actionTypes.SAVE_SEARCH_CONDITION] = function (state, action) {
 // reducerMap[actionTypes.SEARCH_ORDERTYPE] = function (state, action) {
 //     return Object.assign({}, state, {orderRule: action.payload});
 // }
+
+reducerMap[actionTypes.HUMAN_GET_DETAIL_END] = function (state, action) {
+    return Object.assign({}, state, {curHumanDetail: action.payload});
+}
 
 reducerMap[actionTypes.UPDATE_ALLHUMANINFO] = function (state, action) {
     return Object.assign({}, state, {searchResult: action.payload, showLoading: false});
@@ -171,10 +186,11 @@ reducerMap[actionTypes.UPDATE_REWARDPUNISHHUMANLIST] = function (state, action) 
     return Object.assign({}, state, {rewardpunishhumanlst: action.payload});
 }
 reducerMap[actionTypes.UPDATE_REWARDPUNISHMENTLIST] = function (state, action) {
-    return Object.assign({}, state, {rewardpunishmenList: action.payload, showLoading: false});
-}
 
-reducerMap[actionTypes.HUMAN_GET_DETAIL_END] = function (state, action) {
-    return Object.assign({}, state, {curHumanDetail: action.payload});
+    return Object.assign({}, state, {
+        rewardpunishmenList: action.payload, showLoading: false,
+        current: action.payload.pageIndex,
+        pageIndex: action.payload.pageIndex, pageSize: action.payload.pageSize, total: action.payload.totalCount
+    });
 }
 export default handleActions(reducerMap, initState);

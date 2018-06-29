@@ -23,7 +23,7 @@ namespace XYHHumanPlugin.Managers
 {
     public class HumanManager
     {
-        
+
         public HumanManager(IHumanManageStore stor, IMapper mapper,
             IOrganizationExpansionStore organizationExpansionStore,
             PermissionExpansionManager permissionExpansionManager)
@@ -49,7 +49,7 @@ namespace XYHHumanPlugin.Managers
             await _Store.CreateAsync(_mapper.Map<SimpleUser>(info), _mapper.Map<HumanInfo>(req), modify, checktion, cancellationToken);
         }
 
-        public virtual async Task CreateFileScopeAsync(string userId,  string humanid, FileInfoRequest fileInfoRequest, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual async Task CreateFileScopeAsync(string userId, string humanid, FileInfoRequest fileInfoRequest, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (fileInfoRequest == null)
             {
@@ -78,7 +78,7 @@ namespace XYHHumanPlugin.Managers
             }
             return null;
         }
-        
+
         private FileItemResponse ConvertToFileItem(string fileGuid, List<FileInfo> fl)
         {
             FileItemResponse fi = new FileItemResponse();
@@ -235,29 +235,33 @@ namespace XYHHumanPlugin.Managers
             {
                 switch (condition?.HumanType)
                 {
-                    case 1: 
-                    {
-                        sql += connectstr + @"a.`StaffStatus`=0";
-                        connectstr = " and ";
-                    } break;
+                    case 1:
+                        {
+                            sql += connectstr + @"a.`StaffStatus`=0";
+                            connectstr = " and ";
+                        }
+                        break;
 
-                    case 2: 
-                    {
-                        sql += connectstr + @"a.`StaffStatus`>1";
-                        connectstr = " and ";
-                    } break;
+                    case 2:
+                        {
+                            sql += connectstr + @"a.`StaffStatus`>1";
+                            connectstr = " and ";
+                        }
+                        break;
 
-                    case 3: 
-                    {
-                        sql += connectstr + @"a.`StaffStatus`=1";
-                        connectstr = " and ";
-                    } break;
+                    case 3:
+                        {
+                            sql += connectstr + @"a.`StaffStatus`=1";
+                            connectstr = " and ";
+                        }
+                        break;
 
-                    case 4: 
-                    {
-                        sql += connectstr + @"a.`StaffStatus`=-1";
-                        connectstr = " and ";
-                    } break;
+                    case 4:
+                        {
+                            sql += connectstr + @"a.`StaffStatus`=-1";
+                            connectstr = " and ";
+                        }
+                        break;
                 }
             }
 
@@ -265,11 +269,13 @@ namespace XYHHumanPlugin.Managers
             {
                 switch (condition?.SearchTimeType)
                 {
-                    case 1: {
+                    case 1:
+                        {
                             sql += connectstr + @"(a.`CreateTime`<='" + condition.CreateDateStart.Value + "'";
                             connectstr = " and ";
                             sql += connectstr + @"a.`CreateTime`>='" + condition.CreateDateEnd.Value + "')";
-                        } break;
+                        }
+                        break;
                     case 2:
                         {
                             sql += connectstr + @"(a.`EntryTime`<='" + condition.CreateDateStart.Value + "'";
@@ -296,7 +302,7 @@ namespace XYHHumanPlugin.Managers
                 }
 
             }
-            
+
             if (condition?.CheckStatu > 0)
             {
                 string head = "(", tail = ")";
@@ -328,7 +334,7 @@ namespace XYHHumanPlugin.Managers
                 sql += tail;
                 connectstr = " and ";
             }
-            
+
             if (condition?.AgeCondition > 0)
             {
                 if (condition?.AgeCondition == 1)
@@ -347,7 +353,7 @@ namespace XYHHumanPlugin.Managers
                     connectstr = " and ";
                 }
             }
-            
+
             if (condition?.OrderRule == 0 || condition?.OrderRule == null)
             {
                 sql += @" ORDER BY a.`Name`";
@@ -386,7 +392,7 @@ namespace XYHHumanPlugin.Managers
 
                 for (; begin < end; begin++)
                 {
-                    
+
                     result.Add(query.ElementAt(begin));
                 }
 
@@ -401,7 +407,7 @@ namespace XYHHumanPlugin.Managers
                     {
                         item.PositionName = tf.PositionName;
                     }
-                    
+
                 }
             }
             catch (Exception e)
@@ -409,12 +415,15 @@ namespace XYHHumanPlugin.Managers
 
                 throw;
             }
-            
+
             return Response;
         }
         #endregion
+        
 
-        public virtual async Task<PagingResponseMessage<HumanInfoResponse>> SimpleSearch(UserInfo user, string permissionId, string keyword,string branchId, int pageSize, int pageIndex)
+
+
+        public virtual async Task<PagingResponseMessage<HumanInfoResponse>> SimpleSearch(UserInfo user, string permissionId, string keyword, string branchId, int pageSize, int pageIndex)
         {
             PagingResponseMessage<HumanInfoResponse> r = new PagingResponseMessage<HumanInfoResponse>();
 
@@ -432,13 +441,13 @@ namespace XYHHumanPlugin.Managers
             {
                 //query = query.Where(hr => ( hr.Name.Contains(keyword) || hr.UserID.Contains(keyword) || hr.ID==keyword ));
             }
-            if(pageSize>0 && pageIndex > 0)
+            if (pageSize > 0 && pageIndex > 0)
             {
                 //r.TotalCount = await query.CountAsync();
                 r.PageIndex = pageIndex;
                 r.PageSize = pageSize;
                 query = query.Skip((pageIndex - 1) * pageSize).Take(pageSize);
-                
+
             }
             //var ul = await query.ToListAsync();
             //r.Extension = new List<HumanInfRequest>();
@@ -447,11 +456,11 @@ namespace XYHHumanPlugin.Managers
             //    var u2 = _mapper.Map<HumanInfoResponse>(u);
             //    if (u.OrganizationExpansion != null && !String.IsNullOrEmpty(u.OrganizationExpansion.FullName))
             //    {
-                    //u2.OrganizationFullName = u.OrganizationExpansion.FullName;
-                //}else if (u.Organizations != null)
-                //{
-                    //u2.OrganizationFullName = u.Organizations.OrganizationName;
-                //}
+            //u2.OrganizationFullName = u.OrganizationExpansion.FullName;
+            //}else if (u.Organizations != null)
+            //{
+            //u2.OrganizationFullName = u.Organizations.OrganizationName;
+            //}
             //    r.Extension.Add(u2);
             //});
 

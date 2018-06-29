@@ -22,6 +22,7 @@ const initState = {
     administrativereward: [],
     administrativepunishment: [],
     administrativededuct:[],
+    worknumber: "",
 };
 let reducerMap = {};
 //字典数据
@@ -100,9 +101,12 @@ function getAllChildrenNode(node, parentId, formatNodeLit) {
         return [];
     }
     nodeList.map(n => {
-        n.children = getAllChildrenNode(n, n.key, formatNodeLit);
+        let fl = getAllChildrenNode(n, n.key, formatNodeLit);
+        if (fl&&fl.length>0) {n.children = fl;}
     });
-    node.children = nodeList;
+
+    if (nodeList&&nodeList.length>0)
+        node.children = nodeList;
     return nodeList;
 }
 
@@ -137,6 +141,7 @@ function findChildupdate(v, i, lst, c) {
         v.label = c.label;
         v.organizationName = c.organizationName;
         v.Original = c.Original;
+        v.isnew = false;
         return true;
     }
     else if (v.children) {
@@ -166,7 +171,7 @@ reducerMap[actionTypes.DIC_GET_ALL_ORG_LIST_COMPLETE] = function(state, action) 
     let formatNodeList = [];
     for (var i in action.payload.extension) {
         var node = action.payload.extension[i];
-        var orgNode = {key: node.id, value: node.id, children: [], Original: node};
+        var orgNode = {key: node.id, value: node.id, Original: node};
         orgNode.name = node.organizationName;
         orgNode.label = node.organizationName;
         orgNode.id = node.id;
@@ -277,8 +282,8 @@ reducerMap[actionTypes.ADD_USER_BREAD] = function(state, action) {
 }
 
 reducerMap[actionTypes.SET_HUMANINFONUMBER] = function(state, action) {
-    let f = {...state.userinfo, worknumber: action.payload}
-    return Object.assign({}, state, {userinfo: f});
+    //let f = {...state.userinfo, }
+    return Object.assign({}, state, {worknumber: action.payload});
 }
 
 reducerMap[actionTypes.MONTH_UPDATEMONTHLIST] = function(state, action) {

@@ -42,7 +42,6 @@ namespace XYHHumanPlugin.Controllers
                 Response.Code = ResponseCodeDefines.ModelStateInvalid;
                 Response.Message = "请求参数不正确";
             }
-
             try
             {
                 Response.Extension = await _stationManage.GetStationListByDepartment(department, HttpContext.RequestAborted);

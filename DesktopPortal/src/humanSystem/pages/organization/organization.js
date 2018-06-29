@@ -85,7 +85,7 @@ class Station extends Component {
     handleOk = () => {
         this.state.tempModalItem.label = this.state.tempModalItem.name;
         this.state.tempModalItem.organizationName = this.state.tempModalItem.name;
-        this.state.tempModalItem.isnew = false;
+        
         if (this.state.tempModalItem.isnew) {
             this.state.tempModalItem.Original.organizationName = this.state.tempModalItem.name;
             this.props.dispatch(addOrg(this.state.tempModalItem));
@@ -93,6 +93,7 @@ class Station extends Component {
             this.state.tempModalItem.Original.organizationName = this.state.tempModalItem.name;
             this.props.dispatch(updateOrg(this.state.tempModalItem));
         }
+        this.state.tempModalItem.isnew = false;
 
         this.setState({
             confirmLoading: false,
@@ -103,7 +104,7 @@ class Station extends Component {
     handleCancel = () => {
         this.setState({
             showModal: false,
-            tempModalItem: null,
+            tempModalItem: {},
         });
     }
 
@@ -120,7 +121,8 @@ class Station extends Component {
 
     addsub(item, e) {
         let guid = NewGuid();
-        this.props.dispatch(upaddOrg({key: guid, value: guid, children:[], name:"", label:"", id:guid, organizationName:"", parentId:item.key, isnew:true}));
+        this.props.dispatch(upaddOrg({key: guid, value: guid, name:" ", label:" ",
+         id:guid, organizationName:" ", parentId:item.key, isnew:true, Original: {parentId: item.key, organizationName: " "}}));
         e.stopPropagation();
         this.setState({selectedKeys: [guid], expandedKeys:[item.key, ...this.state.expandedKeys], tempText: ""});
     }
@@ -132,8 +134,7 @@ class Station extends Component {
     renderTreeNodes = (data) => {
         let self = this;
         return data.map((item) => {
-            if (item.children) {
-                const nodetitle = (
+            const nodetitle = (
                 <div>
                     <a>{item.name}&nbsp;&nbsp;</a>
                     {
@@ -146,13 +147,14 @@ class Station extends Component {
                         :null
                     }
                 </div>);
+            if (item.children) {
                 return (
                     <TreeNode title={nodetitle} key={item.key} dataRef={item}>
                         {this.renderTreeNodes(item.children)}
                     </TreeNode>
                 );
             }
-            return <TreeNode {...item} />;
+            return <TreeNode title={nodetitle} key={item.key} dataRef={item} />;
         });
     }
 

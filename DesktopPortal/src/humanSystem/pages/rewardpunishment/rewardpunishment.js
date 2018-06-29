@@ -86,13 +86,13 @@ class MainIndex extends Component {
         let lst =["","行政奖励","行政惩罚","行政扣款"];
         let datalist = this.props.searchInfo.rewardpunishmenList.extension.map(function(v, i) {
             let detailtype = null;
-            switch (this.state.type) {
+            switch (v.type) {
                 case 1:detailtype = this.props.administrativereward;break;
                 case 2:detailtype = this.props.administrativepunishment;break;
                 case 3:detailtype = this.props.administrativededuct;break;
-                default:detailtype = [];break;
+                default:;break;
             }
-            return {key: i+"", ...v, typename:lst[v.type], detailname:detailtype[v.detail].key};
+            return {key: i+"", ...v, typename:lst[v.type], detailname:detailtype?detailtype[v.detail].key:null};
         });
         
         const rowSelection = {
@@ -121,7 +121,7 @@ class MainIndex extends Component {
                     {
                         buttonDef.map(
                             (button, i) => this.hasPermission(button) ?
-                                <Button id={button.buttonID}
+                                <Button key={i} id={button.buttonID} style={{ marginTop:"10px",marginBottom: '10px', marginRight: '10px', border:0}}
                                     onClick={this.handleClickFucButton}
                                     icon={button.icon} size={button.size} type={button.type}>{button.buttonName}</Button>
                                 : null)

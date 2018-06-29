@@ -29,7 +29,7 @@ namespace XYHHumanPlugin.Managers
         public virtual async Task<List<AttendanceSettingInfoResponse>> GetAttendenceSetting(CancellationToken cancellationToken = default(CancellationToken))
         {
             var tlst = _mapper.Map<List<AttendanceSettingInfoResponse>>(await _Store.GetListAttendanceSettingAsync(cancellationToken));
-            if (tlst == null && tlst.Count < 1)//返回空的设置表
+            if (tlst == null || tlst.Count < 1)//返回空的设置表
             {
                 List<AttendanceSettingInfoResponse> templst = new List<AttendanceSettingInfoResponse>();
                 templst.Add(new AttendanceSettingInfoResponse() { Type = 1, Times = 1, Money = 0 });//调休
@@ -99,10 +99,9 @@ namespace XYHHumanPlugin.Managers
                 sql += connectstr + @"a.`ID`!=''";
                 connectstr = " and ";
             }
-
-            if (condition?.CreateDate != null)
+            if (condition?.CreateDate != null  && condition.CreateDate.Year>2017)
             {
-                sql += connectstr + @"(a.`CreateTime`='" + condition.CreateDate + "'";
+                sql += connectstr + @"(a.`Date`='" + condition.CreateDate + "')";
                 connectstr = " and ";
             }
            

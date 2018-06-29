@@ -13,6 +13,10 @@ namespace XYHHumanPlugin.Dto.Request
         public string Id { get; set; }
 
         /// <summary>
+        /// 是否参加社保
+        /// </summary>
+        public bool IsHave { get; set; }
+        /// <summary>
         /// 参保时间
         /// </summary>
         public DateTime? InsuredTime { get; set; }

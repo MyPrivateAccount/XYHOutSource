@@ -48,7 +48,7 @@ const WebApiConfig = {
         getSalaryItem: basicDataBaseApiUrl + 'humansalary/salaryitem',
         getAttendenceSettingList: basicDataBaseApiUrl + 'humanattendance/attendancesetting',
         getAttendenceList: basicDataBaseApiUrl + 'humanattendance/searchattendancelst',
-        getRPInfoList: basicDataBaseApiUrl + 'humanattendance/searchrewardpunishment',
+        getRPInfoList: basicDataBaseApiUrl + 'rewardpunishment/searchrewardpunishment',
         getHumanlistByorg: basicDataBaseApiUrl + 'humaninfo/hulistbyorg',
         getHumanDetail: basicDataBaseApiUrl + 'humaninfo/'
     },
@@ -56,8 +56,8 @@ const WebApiConfig = {
         uploadUrl: `${UploadUrl}/file/upload/`,
     },
     auth: {
-        deleteOrg: BaseApiUrl + '/Organization/',
-        addupdateOrg: BaseApiUrl + '/Organization/',
+        deleteOrg: BaseApiUrl + 'Organization/',
+        addupdateOrg: BaseApiUrl + 'Organization/',
     },
 }
 export default WebApiConfig;
