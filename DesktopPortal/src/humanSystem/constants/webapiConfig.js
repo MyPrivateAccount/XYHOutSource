@@ -54,8 +54,8 @@ const WebApiConfig = {
         uploadUrl: `${UploadUrl}/file/upload/`,
     },
     auth: {
-        deleteOrg: BaseApiUrl + '/Organization/',
-        addupdateOrg: BaseApiUrl + '/Organization/',
+        deleteOrg: BaseApiUrl + 'Organization/',
+        addupdateOrg: BaseApiUrl + 'Organization/',
     },
 }
 export default WebApiConfig;
