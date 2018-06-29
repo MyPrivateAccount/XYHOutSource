@@ -4,7 +4,7 @@ import {connect} from 'react-redux';
 import moment from 'moment';
 import WebApiConfig from '../../constants/webapiConfig';
 import './staff.less';
-import {postHumanInfo, getcreateOrgStation, getcreateStation, getSalaryItem, getHumenDetail} from '../../actions/actionCreator';
+import {postHumanInfo, getcreateOrgStation, getcreateStation, getSalaryItem, getHumanDetail} from '../../actions/actionCreator';
 import {NewGuid} from '../../../utils/appUtils';
 import ApiClient from '../../../utils/apiClient';
 import FormerCompany from '../dialog/formerCompany';
@@ -165,7 +165,7 @@ class OnBoarding extends Component {
         }
         //this.props.dispatch(getallOrgTree('PublicRoleOper'));
         if (this.props.humenId) {
-            this.props.dispatch(getHumenDetail(this.props.humenId));
+            this.props.dispatch(getHumanDetail(this.props.humenId));
         }
     }
 
@@ -495,13 +495,14 @@ class OnBoarding extends Component {
             </div>
         );
         let judgePermissions = this.props.judgePermissions || [];
-        let empInfo = this.props.location.state;
-        empInfo.humanContractInfo = empInfo.humanContractInfo || {};
-        empInfo.humanSalaryStructure = empInfo.humanSalaryStructure || {};
-        empInfo.humanSocialSecurity = empInfo.humanSocialSecurity || {};
-        empInfo.humanTitleInfos = empInfo.humanTitleInfos || [];
-        empInfo.humanEducationInfos = empInfo.humanEducationInfos || [];
-        empInfo.humanWorkHistories = empInfo.humanWorkHistories || [];
+        let humanInfo = this.props.curHumanDetail || {};
+        humanInfo.humanContractInfo = humanInfo.humanContractInfo || {};
+        humanInfo.humanSalaryStructure = humanInfo.humanSalaryStructure || {};
+        humanInfo.humanSocialSecurity = humanInfo.humanSocialSecurity || {};
+        humanInfo.humanTitleInfos = humanInfo.humanTitleInfos || [];
+        humanInfo.humanEducationInfos = humanInfo.humanEducationInfos || [];
+        humanInfo.humanWorkHistories = humanInfo.humanWorkHistories || [];
+        console.log("客户详情:",humanInfo);
         return (
             <Layer>
                 <div className="page-title" style={{marginBottom: '10px'}}>员工信息表</div>
@@ -513,7 +514,7 @@ class OnBoarding extends Component {
                                 <Col span={12}>
                                     <FormItem {...formItemLayout} label="工号">
                                         {getFieldDecorator('userID', {
-                                            initialValue: empInfo.userID,
+                                            initialValue: humanInfo.userID,
                                             rules: [{
                                                 required: true,
                                                 message: 'please entry Worknumber',
@@ -526,7 +527,7 @@ class OnBoarding extends Component {
                                 <Col span={12}>
                                     <FormItem {...formItemLayout} label="姓名">
                                         {getFieldDecorator('name', {
-                                            initialValue: empInfo.name,
+                                            initialValue: humanInfo.name,
                                             rules: [{
                                                 required: true, message: '请填写姓名',
                                             }]
@@ -540,7 +541,7 @@ class OnBoarding extends Component {
                                 <Col span={12}>
                                     <FormItem {...formItemLayout} label="身份证号" >
                                         {getFieldDecorator('idCard', {
-                                            initialValue: empInfo.idCard,
+                                            initialValue: humanInfo.idCard,
                                             rules: [{
                                                 required: true, message: '请输入身份证号',
                                             }, {
@@ -568,7 +569,7 @@ class OnBoarding extends Component {
                                 <Col span={12}>
                                     <FormItem {...formItemLayout} label="性别">
                                         {getFieldDecorator('sex', {
-                                            initialValue: empInfo.sex,
+                                            initialValue: humanInfo.sex,
                                             rules: [{
                                                 required: true, message: '请选择性别',
                                             }]
@@ -583,7 +584,7 @@ class OnBoarding extends Component {
                                 <Col span={12}>
                                     <FormItem {...formItemLayout} label="手机号码" >
                                         {getFieldDecorator('phone', {
-                                            initialValue: empInfo.phone,
+                                            initialValue: humanInfo.phone,
                                             rules: [{
                                                 required: true, message: '请输入手机号码',
                                             }, {pattern: '^((1[0-9][0-9])|(14[5|7])|(15([0-3]|[5-9]))|(18[0,5-9]))\\d{8}$', message: '不是有效的手机号码!'}]
@@ -622,7 +623,7 @@ class OnBoarding extends Component {
                         <Col span={7}>
                             <FormItem {...formItemLayout} label="公司" >
                                 {getFieldDecorator('company', {
-                                    initialValue: empInfo.company,
+                                    initialValue: humanInfo.company,
                                     rules: [{
                                         required: true, message: '请输入公司',
                                     }]
@@ -634,7 +635,7 @@ class OnBoarding extends Component {
                         <Col span={7}>
                             <FormItem {...formItemLayout} label="所属部门">
                                 {getFieldDecorator('departmentId', {
-                                    initialValue: empInfo.departmentId,
+                                    initialValue: humanInfo.departmentId,
                                     rules: [{
                                         required: true,
                                         message: 'please entry',
@@ -647,7 +648,7 @@ class OnBoarding extends Component {
                         <Col span={7}>
                             <FormItem {...formItemLayout} label="年龄">
                                 {getFieldDecorator('age', {
-                                    initialValue: empInfo.age,
+                                    initialValue: humanInfo.age,
                                     rules: [{
                                         required: true, message: 'please entry Age',
                                     }]
@@ -661,7 +662,7 @@ class OnBoarding extends Component {
                         <Col span={7}>
                             <FormItem {...formItemLayout} label="职位名称">
                                 {getFieldDecorator('position', {
-                                    initialValue: empInfo.position,
+                                    initialValue: humanInfo.position,
                                     rules: [{
                                         required: true,
                                         message: 'please entry Position',
@@ -684,7 +685,7 @@ class OnBoarding extends Component {
                         <Col span={7}>
                             <FormItem {...formItemLayout} label="入职类型">
                                 {getFieldDecorator('positionType', {
-                                    initialValue: empInfo.positionType,
+                                    initialValue: humanInfo.positionType,
                                     rules: [{
                                         required: true,
                                         message: '请选择入职类型',
@@ -718,7 +719,7 @@ class OnBoarding extends Component {
                         <Col span={7}>
                             <FormItem {...formItemLayout} label="婚姻状况">
                                 {getFieldDecorator('position', {
-                                    initialValue: empInfo.position,
+                                    initialValue: humanInfo.position,
                                     rules: [{
                                         required: true,
                                         message: '请选择婚姻状况',
@@ -736,7 +737,7 @@ class OnBoarding extends Component {
                         <Col span={7}>
                             <FormItem {...formItemLayout} label="民族">
                                 {getFieldDecorator('nationality', {
-                                    initialValue: empInfo.nationality,
+                                    initialValue: humanInfo.nationality,
                                     rules: [{
                                         required: true,
                                         message: '请选择民族',
@@ -753,7 +754,7 @@ class OnBoarding extends Component {
                         <Col span={7}>
                             <FormItem {...formItemLayout} label="户籍类型">
                                 {getFieldDecorator('householdType', {
-                                    initialValue: empInfo.householdType,
+                                    initialValue: humanInfo.householdType,
                                     rules: [{
                                         required: true,
                                         message: '请选择户籍类型',
@@ -773,7 +774,7 @@ class OnBoarding extends Component {
                         <Col span={7}>
                             <FormItem {...formItemLayout} label="最高学历">
                                 {getFieldDecorator('highestEducation', {
-                                    initialValue: empInfo.highestEducation,
+                                    initialValue: humanInfo.highestEducation,
                                     rules: [{
                                         required: true,
                                         message: '请选择最高学历',
@@ -790,7 +791,7 @@ class OnBoarding extends Component {
                         <Col span={7}>
                             <FormItem {...formItemLayout} label="健康状况">
                                 {getFieldDecorator('healthCondition', {
-                                    initialValue: empInfo.healthCondition,
+                                    initialValue: humanInfo.healthCondition,
                                     rules: [{
                                         required: true,
                                         message: '请选择健康状况',
@@ -808,7 +809,7 @@ class OnBoarding extends Component {
                         <Col span={7}>
                             <FormItem {...formItemLayout} label="籍贯" >
                                 {getFieldDecorator('nativePlace', {
-                                    initialValue: empInfo.nativePlace,
+                                    initialValue: humanInfo.nativePlace,
                                     rules: [{
                                         required: true, message: '请输入籍贯',
                                     }]
@@ -822,7 +823,7 @@ class OnBoarding extends Component {
                         <Col span={14}>
                             <FormItem labelCol={{span: 6}} wrapperCol={{span: 12}} label="家庭住址" >
                                 {getFieldDecorator('familyAddress', {
-                                    initialValue: empInfo.familyAddress,
+                                    initialValue: humanInfo.familyAddress,
                                     rules: [{
                                         required: true, message: '请输入家庭住址',
                                     }]
@@ -837,7 +838,7 @@ class OnBoarding extends Component {
                         <Col span={7}>
                             <FormItem {...formItemLayout} label="政治面貌">
                                 {getFieldDecorator('policitalStatus', {
-                                    initialValue: empInfo.policitalStatus,
+                                    initialValue: humanInfo.policitalStatus,
                                 })(
                                     <Select disabled={this.props.ismodify == 1} onChange={this.handleSelectChange} placeholder="选择职位">
                                         {
@@ -850,7 +851,7 @@ class OnBoarding extends Component {
                         <Col span={7}>
                             <FormItem {...formItemLayout} label="户口地址" >
                                 {getFieldDecorator('domicilePlace', {
-                                    initialValue: empInfo.domicilePlace,
+                                    initialValue: humanInfo.domicilePlace,
                                     rules: [{
                                     }]
                                 })(
@@ -864,7 +865,7 @@ class OnBoarding extends Component {
                         <Col span={7}>
                             <FormItem {...formItemLayout} label="紧急联系人" >
                                 {getFieldDecorator('emergencyContact', {
-                                    initialValue: empInfo.emergencyContact,
+                                    initialValue: humanInfo.emergencyContact,
                                     rules: [{
                                         required: true, message: '请输入紧急联系人',
                                     }]
@@ -876,7 +877,7 @@ class OnBoarding extends Component {
                         <Col span={7}>
                             <FormItem {...formItemLayout} label="紧急联系人电话" >
                                 {getFieldDecorator('emergencyContactPhone', {
-                                    initialValue: empInfo.emergencyContactPhone,
+                                    initialValue: humanInfo.emergencyContactPhone,
                                     rules: [{
                                         required: true, message: '请输入手机号码',
                                     }, {pattern: '^((1[0-9][0-9])|(14[5|7])|(15([0-3]|[5-9]))|(18[0,5-9]))\\d{8}$', message: '不是有效的手机号码!'}]
@@ -888,7 +889,7 @@ class OnBoarding extends Component {
                         <Col span={7}>
                             <FormItem {...formItemLayout} label="紧急联系人关系" >
                                 {getFieldDecorator('emergencyContactType', {
-                                    initialValue: empInfo.emergencyContactType,
+                                    initialValue: humanInfo.emergencyContactType,
                                     rules: [{
                                         required: true, message: '请输入紧急联系人关系',
                                     }]
@@ -902,7 +903,7 @@ class OnBoarding extends Component {
                         <Col span={14}>
                             <FormItem labelCol={{span: 6}} wrapperCol={{span: 12}} label="Email地址" >
                                 {getFieldDecorator('emailAddress', {
-                                    initialValue: empInfo.emailAddress,
+                                    initialValue: humanInfo.emailAddress,
                                     rules: [{
                                         required: true, message: 'Email地址',
                                     }, {type: 'email', message: '请输入正确的email地址'}]
@@ -917,7 +918,7 @@ class OnBoarding extends Component {
                         <Col span={7}>
                             <FormItem {...formItemLayout} label="银行名称" >
                                 {getFieldDecorator('bankName', {
-                                    initialValue: empInfo.bankName,
+                                    initialValue: humanInfo.bankName,
                                     rules: []
                                 })(
                                     <Input disabled={this.props.ismodify == 1} placeholder="请输入银行名称" />
@@ -927,7 +928,7 @@ class OnBoarding extends Component {
                         <Col span={7}>
                             <FormItem {...formItemLayout} label="银行账号" >
                                 {getFieldDecorator('bankAccount', {
-                                    initialValue: empInfo.bankAccount,
+                                    initialValue: humanInfo.bankAccount,
                                     rules: []
                                 })(
                                     <Input disabled={this.props.ismodify == 1} placeholder="请输入银行账号" />
@@ -940,7 +941,7 @@ class OnBoarding extends Component {
                         <Col span={14}>
                             <FormItem labelCol={{span: 6}} wrapperCol={{span: 12}} label="备注" >
                                 {getFieldDecorator('desc', {
-                                    initialValue: empInfo.desc,
+                                    initialValue: humanInfo.desc,
                                     rules: []
                                 })(
                                     <TextArea rows={4} disabled={this.props.ismodify == 1} placeholder="请输入备注" />
@@ -965,7 +966,7 @@ class OnBoarding extends Component {
                         <Col span={7}>
                             <FormItem {...formItemLayout} label="合同编号" >
                                 {getFieldDecorator('contractNo', {
-                                    initialValue: empInfo.humanContractInfo.contractNo,
+                                    initialValue: humanInfo.humanContractInfo.contractNo,
                                     rules: [{
                                         required: true, message: '请输入合同编号',
                                     }]
@@ -977,7 +978,7 @@ class OnBoarding extends Component {
                         <Col span={7}>
                             <FormItem {...formItemLayout} label="签订单位" >
                                 {getFieldDecorator('contractCompany', {
-                                    initialValue: empInfo.humanContractInfo.contractCompany,
+                                    initialValue: humanInfo.humanContractInfo.contractCompany,
                                     rules: [{
                                         required: true, message: '请输入签订单位',
                                     }]
@@ -989,7 +990,7 @@ class OnBoarding extends Component {
                         <Col span={7}>
                             <FormItem {...formItemLayout} label="合同类型">
                                 {getFieldDecorator('contractType', {
-                                    initialValue: empInfo.humanContractInfo.contractType,
+                                    initialValue: humanInfo.humanContractInfo.contractType,
                                 })(
                                     <Select disabled={this.props.ismodify == 1} onChange={this.handleSelectChange} placeholder="选择职位">
                                         {
@@ -1125,7 +1126,8 @@ function stafftableMapStateToProps(state) {
         selHumanList: state.basicData.selHumanList,
         humanImage: state.basicData.humanImage,
         rootBasicData: (state.rootBasicData || {}).dicList,
-        judgePermissions: state.judgePermissions
+        judgePermissions: state.judgePermissions,
+        curHumanDetail: state.search.curHumanDetail
     }
 }
 

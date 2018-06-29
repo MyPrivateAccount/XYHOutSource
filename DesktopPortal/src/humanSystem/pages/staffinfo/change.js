@@ -1,14 +1,13 @@
 import {connect} from 'react-redux';
 import {createStation, postChangeHuman, getDicParList, getcreateStation, getcreateOrgStation, getSalaryItem} from '../../actions/actionCreator';
 import React, {Component} from 'react'
-import {InputNumber, Input, Form, Select, Button, Row, Col, Checkbox, DatePicker, Cascader} from 'antd'
+import {TreeSelect, Input, Form, Select, Button, Row, Col, Checkbox, DatePicker, Cascader} from 'antd'
 import SocialSecurity from './form/socialSecurity'
 import Salary from './form/salary'
 import Layer from '../../../components/Layer'
 const FormItem = Form.Item;
 const Option = Select.Option;
-const ButtonGroup = Button.Group;
-const formItemLayout1 = {
+const formItemLayout = {
     labelCol: {span: 6},
     wrapperCol: {span: 17},
 };
@@ -20,8 +19,8 @@ class Change extends Component {
     }
 
     componentWillMount() {
-        this.props.dispatch(getDicParList(["HUMAN_CHANGE_TYPE", "HUMAN_CHANGEREASON_TYPE"]));
-        this.props.dispatch(getcreateOrgStation(this.props.selHumanList[this.props.selHumanList.length - 1].departmentId));
+        // this.props.dispatch(getDicParList(["HUMAN_CHANGE_TYPE", "HUMAN_CHANGEREASON_TYPE"]));
+        // this.props.dispatch(getcreateOrgStation(this.props.selHumanList[this.props.selHumanList.length - 1].departmentId));
     }
 
     componentDidMount() {
@@ -54,7 +53,23 @@ class Change extends Component {
     handleSubmit = (e) => {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
-            if (!err) {
+            let {salaryForm, socialSecurityForm} = this.state;
+            salaryForm.validateFields();
+            socialSecurityForm.validateFields();
+            let salaryErrs = salaryForm.getFieldsError();
+            let socialSecurityErrs = socialSecurityForm.getFieldsError();
+            let hasErr = false;
+            for (let err in salaryErrs) {
+                if (err) {
+                    hasErr = true;
+                }
+            }
+            for (let err in socialSecurityErrs) {
+                if (err) {
+                    hasErr = true;
+                }
+            }
+            if (!err && !hasErr) {
                 this.props.dispatch(postChangeHuman(values));
             }
         });
@@ -89,10 +104,20 @@ class Change extends Component {
         return false;
     }
 
+    //子页面回调
+    subPageLoadCallback = (formObj, pageName) => {
+        console.log("表单对象:", formObj, pageName);
+        if (pageName == "socialSecurity") {
+            this.setState({socialSecurityForm: formObj});
+        } else if (pageName == "salary") {
+            this.setState({salaryForm: formObj});
+        }
+    }
+
     render() {
         let self = this;
-
-        let len = this.props.selHumanList.length;
+        let humanInfo = this.props.location.state;
+        // let len = this.props.selHumanList.length;
         const {getFieldDecorator, getFieldsError, getFieldsValue, isFieldTouched} = this.props.form;
         return (
             <Layer>
@@ -100,8 +125,9 @@ class Change extends Component {
                 <Form onSubmit={this.handleSubmit}>
                     <Row style={{marginTop: '10px'}}>
                         <Col span={7}>
-                            <FormItem {...formItemLayout1} label="员工编号">
-                                {getFieldDecorator('id', {
+                            <FormItem {...formItemLayout} label="员工编号">
+                                {getFieldDecorator('userID', {
+                                    initialValue: humanInfo.userID,
                                     reules: [{
                                         required: true, message: '请输入员工编号',
                                     }]
@@ -111,8 +137,9 @@ class Change extends Component {
                             </FormItem>
                         </Col>
                         <Col span={7}>
-                            <FormItem {...formItemLayout1} label="姓名">
+                            <FormItem {...formItemLayout} label="姓名">
                                 {getFieldDecorator('name', {
+                                    initialValue: humanInfo.name,
                                     reules: [{
                                         required: true, message: '请输入姓名',
                                     }]
@@ -125,11 +152,12 @@ class Change extends Component {
                     </Row>
                     <Row>
                         <Col span={7}>
-                            <FormItem {...formItemLayout1} label="原部门">
-                                {getFieldDecorator('orgDepartmentId', {
+                            <FormItem {...formItemLayout} label="原部门">
+                                {getFieldDecorator('departmentId', {
+                                    initialValue: humanInfo.departmentId,
                                     reules: [{
                                         required: true,
-                                        message: 'please entry',
+                                        message: '',
                                     }]
                                 })(
                                     <Cascader disabled={true} options={this.props.setDepartmentOrgTree} onChange={this.handleChooseDepartmentChange} onPopupVisibleChange={this.handleDepartmentChange} changeOnSelect placeholder="归属部门" />
@@ -137,12 +165,12 @@ class Change extends Component {
                             </FormItem>
                         </Col>
                         <Col span={7}>
-                            <FormItem {...formItemLayout1} label="原职位">
-                                {getFieldDecorator('orgStation', {
+                            <FormItem {...formItemLayout} label="原职位">
+                                {getFieldDecorator('position', {
+                                    initialValue: humanInfo.position,
                                     reules: [{
                                         required: true, message: 'please entry',
                                     }],
-                                    initialValue: this.props.selHumanList[len - 1].position ? this.props.selHumanList[len - 1].position : null
                                 })(
                                     <Select disabled={true} onChange={this.handleSelectChange} placeholder="选择职位">
                                         {
@@ -161,11 +189,11 @@ class Change extends Component {
                     </Row>
                     <Row>
                         <Col span={7}>
-                            <FormItem {...formItemLayout1} label="新部门">
+                            <FormItem {...formItemLayout} label="新部门">
                                 {getFieldDecorator('newDepartmentId', {
                                     reules: [{
                                         required: true,
-                                        message: 'please entry',
+                                        message: '请选择新部门',
                                     }]
                                 })(
                                     <Cascader options={this.props.setDepartmentOrgTree} onChange={this.handleChooseDepartmentChange} onPopupVisibleChange={this.handleDepartmentChange} changeOnSelect placeholder="归属部门" />
@@ -173,7 +201,7 @@ class Change extends Component {
                             </FormItem>
                         </Col>
                         <Col span={7}>
-                            <FormItem {...formItemLayout1} label="新职位">
+                            <FormItem {...formItemLayout} label="新职位">
                                 {getFieldDecorator('newStation', {
                                     reules: [{
                                         required: true, message: 'please entry',
@@ -195,8 +223,8 @@ class Change extends Component {
                         <Col span={7}></Col>
                     </Row>
 
-                    <SocialSecurity />
-                    <Salary />
+                    <SocialSecurity subPageLoadCallback={(formObj, pageName) => this.subPageLoadCallback(formObj, pageName)} />
+                    <Salary subPageLoadCallback={(formObj, pageName) => this.subPageLoadCallback(formObj, pageName)} />
 
                     <Row>
                         <Col span={20} style={{textAlign: 'center'}}>

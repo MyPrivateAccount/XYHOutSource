@@ -6,22 +6,44 @@ using System.Text;
 namespace XYHHumanPlugin.Models
 {
     /// <summary>
-    /// 社保信息
+    /// 异动调薪表
     /// </summary>
-    public class HumanSocialSecurity
+    public class HumanInfoAdjustment
     {
         /// <summary>
-        /// 主键Id
+        /// 主键Id 
         /// </summary>
         [Key]
         [MaxLength(127)]
         public string Id { get; set; }
 
         /// <summary>
+        /// 人事Id
+        /// </summary>
+        [MaxLength(127)]
+        public string HumanId { get; set; }
+
+        /// <summary>
+        /// 部门Id
+        /// </summary>
+        [MaxLength(127)]
+        public string DepartmentId { get; set; }
+
+        /// <summary>
+        /// 职位
+        /// </summary>
+        [MaxLength(127)]
+        public string Position { get; set; }
+
+        /// <summary>
+        /// 调整生效时间
+        /// </summary>
+        public DateTime AdjustmentTime { get; set; }
+
+        /// <summary>
         /// 是否参加社保
         /// </summary>
-        public bool IsHave { get; set; } = true;
-
+        public bool IsHave { get; set; }
         /// <summary>
         /// 参保时间
         /// </summary>
@@ -87,5 +109,46 @@ namespace XYHHumanPlugin.Models
         public string HousingProvidentFundAccount { get; set; }
 
 
+        /// <summary>
+        /// 基本工资
+        /// </summary>
+        public decimal BaseWages { get; set; } = 0;
+        /// <summary>
+        /// 岗位工资
+        /// </summary>
+        public decimal PostWages { get; set; } = 0;
+        /// <summary>
+        /// 交通补贴
+        /// </summary>
+        public decimal TrafficAllowance { get; set; } = 0;
+        /// <summary>
+        /// 通讯补贴
+        /// </summary>
+        public decimal CommunicationAllowance { get; set; } = 0;
+        /// <summary>
+        /// 其他补贴
+        /// </summary>
+        public decimal OtherAllowance { get; set; } = 0;
+        /// <summary>
+        /// 应发工资
+        /// </summary>
+        public decimal GrossPay { get; set; } = 0;
+        /// <summary>
+        /// 试用期工资
+        /// </summary>
+        public decimal ProbationaryPay { get; set; } = 0;
+
+        public bool IsCurrent { get; set; }
+
+        public DateTime CreateTime { get; set; }
+        [MaxLength(127)]
+        public string CreateUser { get; set; }
+        [MaxLength(127)]
+        public string UpdateUser { get; set; }
+        public DateTime? UpdateTime { get; set; }
+        public bool IsDeleted { get; set; }
+        [MaxLength(127)]
+        public string DeleteUser { get; set; }
+        public DateTime? DeleteTime { get; set; }
     }
 }

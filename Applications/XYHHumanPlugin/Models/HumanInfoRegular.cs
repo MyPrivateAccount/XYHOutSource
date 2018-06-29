@@ -6,9 +6,9 @@ using System.Text;
 namespace XYHHumanPlugin.Models
 {
     /// <summary>
-    /// 社保信息
+    /// 转正表
     /// </summary>
-    public class HumanSocialSecurity
+    public class HumanInfoRegular
     {
         /// <summary>
         /// 主键Id
@@ -16,12 +16,20 @@ namespace XYHHumanPlugin.Models
         [Key]
         [MaxLength(127)]
         public string Id { get; set; }
+        /// <summary>
+        /// 人事Id
+        /// </summary>
+        [MaxLength(127)]
+        public string HumanId { get; set; }
+        /// <summary>
+        /// 转正时间
+        /// </summary>
+        public DateTime RegularTime { get; set; }
 
         /// <summary>
         /// 是否参加社保
         /// </summary>
-        public bool IsHave { get; set; } = true;
-
+        public bool IsHave { get; set; }
         /// <summary>
         /// 参保时间
         /// </summary>
@@ -85,7 +93,20 @@ namespace XYHHumanPlugin.Models
         /// </summary>
         [MaxLength(127)]
         public string HousingProvidentFundAccount { get; set; }
+        /// <summary>
+        /// 是否有效
+        /// </summary>
+        public bool IsCurrent { get; set; }
 
-
+        public DateTime CreateTime { get; set; }
+        [MaxLength(127)]
+        public string CreateUser { get; set; }
+        [MaxLength(127)]
+        public string UpdateUser { get; set; }
+        public DateTime? UpdateTime { get; set; }
+        public bool IsDeleted { get; set; }
+        [MaxLength(127)]
+        public string DeleteUser { get; set; }
+        public DateTime? DeleteTime { get; set; }
     }
 }
