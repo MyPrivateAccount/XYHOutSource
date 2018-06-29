@@ -100,11 +100,7 @@ reducerMap[actionTypes.SEARCH_CUSTOMER_COMPLETE] = function (state, action) {
 }
 
 reducerMap[actionTypes.UPDATE_STATIONLIST] = function (state, action) {
-    // let f = action.payload.map(function(v, i) {
-    //     return {key: i+"", stationname: v.positionName, isnew: false, positionType:v.positionType, id: v.id};
-    // });
-    console.log("shai::", action.payload);
-    return Object.assign({}, state, {stationList: action.payload, showLoading: false});
+    return Object.assign({}, state, {stationList: action.payload.map(function(v, i) {return {key: i, ...v}}), showLoading: false});
 }
 
 reducerMap[actionTypes.UPDATE_ATTENDANCELST] = function (state, action) {

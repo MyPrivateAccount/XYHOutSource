@@ -80,7 +80,7 @@ class Station extends Component {
                         })(
                             <Select>
                                 {
-                                    (this.state.dicPositions || []).map(item => <Option key={item.key} value={item.value}>{item.key}</Option>)
+                                    (this.state.dicPositions || []).map((item,i) => <Option key={i} value={item.value}>{item.key}</Option>)
                                 }
                             </Select>
                         )}
