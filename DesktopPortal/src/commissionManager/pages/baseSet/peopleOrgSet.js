@@ -5,6 +5,7 @@ import { Layout, Table, Button, Checkbox, Popconfirm, Tooltip, Row, Col, Input, 
 import { orgFtParamAdd, orgFtParamUpdate, orgFtParamSave, orgFtDialogClose, orgGetPermissionTree, orgFtParamDelete, orgFtParamListGet } from '../../actions/actionCreator'
 import PeopleOrgFtEditor from './peopleOrgFtEditor'
 import SearchCondition from '../../constants/searchCondition'
+import {keepTwoDecimalFull} from '../../constants/utils'
 
 const { Header, Content } = Layout;
 const Option = Select.Option;
@@ -78,8 +79,8 @@ class PeopleSet extends Component {
         };
         console.log("分页信息：", paginationInfo);
         this.setState({ pagination: paginationInfo });
-        if (newProps.operInfo.operType === 'org_update') {
-            console.log('org_update')
+        if (newProps.operInfo.operType === 'YJ_RSFTZZSZ_CK') {
+            console.log('YJ_RSFTZZSZ_CK')
             this.setState({isDataLoading: true ,branchId:newProps.permissionOrgTree.BaseSetOrgTree[0].key})
             this.handleSearch(newProps.permissionOrgTree.BaseSetOrgTree[0].key)
             newProps.operInfo.operType = ''
@@ -104,7 +105,8 @@ class PeopleSet extends Component {
             return data
         }
             for(let i=0;i<data.length;i++){
-                data[i].shareRatio = data[i].shareRatio*100+'%'
+                let percent = keepTwoDecimalFull(data[i].shareRatio*100)
+                data[i].shareRatio = percent + '%'
                 data[i].shareName = data[i].shareName
             }
         return data

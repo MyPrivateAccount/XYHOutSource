@@ -5,6 +5,7 @@ import { Layout, Table, Button, Checkbox, Popconfirm, Tooltip, Row, Col, Input, 
 import { incomeScaleAdd,incomeScaleDlgClose, incomeScaleEdit, incomeScaleDel, incomeScaleListGet, orgGetPermissionTree, getDicParList } from '../../actions/actionCreator'
 import SearchCondition from '../../constants/searchCondition'
 import InComeScaleEditor from './incomeScaleEditor'
+import {keepTwoDecimalFull} from '../../constants/utils'
 
 const Option = Select.Option;
 
@@ -83,8 +84,8 @@ class InComeScaleSet extends Component {
         console.log("分页信息：", paginationInfo);
         this.setState({ pagination: paginationInfo });
 
-        if (newProps.operInfo.operType === 'org_update') {
-            console.log('org_update')
+        if (newProps.operInfo.operType === 'YJ_TCBLSZ') {
+            console.log('YJ_TCBLSZ')
             let params = { ...this.state.params }
             params.branchId = newProps.permissionOrgTree.BaseSetOrgTree[0].key
             params.branchName = newProps.permissionOrgTree.BaseSetOrgTree[0].label
@@ -140,7 +141,8 @@ class InComeScaleSet extends Component {
         this.props.incomeOp.operType = ''
 
         for (let i = 0; i < data.length; i++) {
-            data[i].percent = data[i].percent*100+'%'
+            let percent = keepTwoDecimalFull(data[i].percent*100)
+            data[i].percent = percent + '%'
         }
         return data
     }

@@ -14,7 +14,8 @@ const initState = {
         AddPublicRoleTree: [],//添加公共角色时
         AddRolePermissionTree: [],//角色授权时
         BaseSetOrgTree:[],
-        RSFTZZOrgTree:[]//人数分摊组织页面的树
+        RSFTZZOrgTree:[],//人数分摊组织页面的树
+        YJOrgTree:[],//月结页面的组织树
     },
     areaList: [],
     humanList:[]
@@ -27,6 +28,7 @@ treeReducerMap[actionTypes.ORG_GET_PERMISSION_TREE_UPDATE] = function (state, ac
     let AddPublicRoleTree = state.permissionOrgTree.AddPublicRoleTree, AddRolePermissionTree = state.permissionOrgTree.AddRolePermissionTree;
     let BaseSetOrgTree = state.permissionOrgTree.BaseSetOrgTree
     let RSFTZZOrgTree = state.permissionOrgTree.RSFTZZOrgTree
+    let YJOrgTree = state.permissionOrgTree.YJOrgTree
     let formatNodeList = [];
     for (var i in action.payload.extension) {
         var node = action.payload.extension[i];
@@ -71,7 +73,10 @@ treeReducerMap[actionTypes.ORG_GET_PERMISSION_TREE_UPDATE] = function (state, ac
     else if(action.payload.permissionType === "YJ_SZ_KXFTZZ"){
         RSFTZZOrgTree = orgTreeSource
     }
-    return Object.assign({}, state, {permissionOrgTree: {AddUserTree: AddUserTree, AddNormalRoleTree: AddNormalRoleTree, AddPublicRoleTree: AddPublicRoleTree, AddRolePermissionTree: AddRolePermissionTree,BaseSetOrgTree:BaseSetOrgTree,RSFTZZOrgTree:RSFTZZOrgTree},operInfo:{operType:'org_update'}});
+    else if(action.payload.permissionType === "YJ_CW_YJ"){
+        YJOrgTree  = getContractOrg(orgTreeSource,null)
+    }
+    return Object.assign({}, state, {permissionOrgTree: {AddUserTree: AddUserTree, AddNormalRoleTree: AddNormalRoleTree, AddPublicRoleTree: AddPublicRoleTree, AddRolePermissionTree: AddRolePermissionTree,BaseSetOrgTree:BaseSetOrgTree,RSFTZZOrgTree:RSFTZZOrgTree,YJOrgTree:YJOrgTree},operInfo:{operType:action.payload.permissionType}});
 }
 function getContractOrg(orgTree,sArray) {
     if(sArray === null){
