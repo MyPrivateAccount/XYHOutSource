@@ -105,6 +105,9 @@ namespace XYHHumanPlugin
             CreateMap<SimpleUser, UserInfo>().ReverseMap();
             CreateMap<SimpleUser, UserInfo>();
 
+
+            CreateMap<RewardPunishmentInfo, RewardPunishmentResponse>();
+            CreateMap<RewardPunishmentResponse, RewardPunishmentInfo>();
         }
     }
 }

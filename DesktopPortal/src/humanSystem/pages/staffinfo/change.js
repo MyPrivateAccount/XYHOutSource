@@ -128,7 +128,7 @@ class Change extends Component {
                             <FormItem {...formItemLayout} label="员工编号">
                                 {getFieldDecorator('userID', {
                                     initialValue: humanInfo.userID,
-                                    reules: [{
+                                    rules: [{
                                         required: true, message: '请输入员工编号',
                                     }]
                                 })(
@@ -140,7 +140,7 @@ class Change extends Component {
                             <FormItem {...formItemLayout} label="姓名">
                                 {getFieldDecorator('name', {
                                     initialValue: humanInfo.name,
-                                    reules: [{
+                                    rules: [{
                                         required: true, message: '请输入姓名',
                                     }]
                                 })(
@@ -155,7 +155,7 @@ class Change extends Component {
                             <FormItem {...formItemLayout} label="原部门">
                                 {getFieldDecorator('departmentId', {
                                     initialValue: humanInfo.departmentId,
-                                    reules: [{
+                                    rules: [{
                                         required: true,
                                         message: '',
                                     }]
@@ -168,7 +168,7 @@ class Change extends Component {
                             <FormItem {...formItemLayout} label="原职位">
                                 {getFieldDecorator('position', {
                                     initialValue: humanInfo.position,
-                                    reules: [{
+                                    rules: [{
                                         required: true, message: 'please entry',
                                     }],
                                 })(
@@ -191,7 +191,7 @@ class Change extends Component {
                         <Col span={7}>
                             <FormItem {...formItemLayout} label="新部门">
                                 {getFieldDecorator('newDepartmentId', {
-                                    reules: [{
+                                    rules: [{
                                         required: true,
                                         message: '请选择新部门',
                                     }]
@@ -203,8 +203,8 @@ class Change extends Component {
                         <Col span={7}>
                             <FormItem {...formItemLayout} label="新职位">
                                 {getFieldDecorator('newStation', {
-                                    reules: [{
-                                        required: true, message: 'please entry',
+                                    rules: [{
+                                        required: true, message: '请选择新职位',
                                     }]
                                 })(
                                     <Select disabled={this.props.ismodify == 1} onChange={this.handleSelectChange} placeholder="选择职位">
@@ -234,7 +234,7 @@ class Change extends Component {
 
                     {/* <FormItem {...formItemLayout1} label="姓名">
                         {getFieldDecorator('name', {
-                            reules: [{
+                            rules: [{
                                 required:true, message: 'please entry',
                             }]
                         })(
@@ -243,7 +243,7 @@ class Change extends Component {
                     </FormItem>
                     <FormItem {...formItemLayout1} label="身份证号">
                         {getFieldDecorator('idCard', {
-                            reules: [{
+                            rules: [{
                                 required:true, message: 'please entry',
                             }]
                         })(
@@ -252,7 +252,7 @@ class Change extends Component {
                     </FormItem>
                     <FormItem {...formItemLayout1} label="异动类型">
                         {getFieldDecorator('changeType', {
-                            reules: [{
+                            rules: [{
                                 required:true, message: 'please entry',
                             }]
                         })(
@@ -270,7 +270,7 @@ class Change extends Component {
                     </FormItem>
                     <FormItem {...formItemLayout1} label="异动原因">
                         {getFieldDecorator('changeReason', {
-                            reules: [{
+                            rules: [{
                                 required:true, message: 'please entry',
                             }]
                         })(
@@ -288,7 +288,7 @@ class Change extends Component {
                     </FormItem>
                     <FormItem {...formItemLayout1} label="其他原因简述">
                         {getFieldDecorator('otherReason', {
-                            reules: [{
+                            rules: [{
                                 required:true, message: 'please entry',
                             }]
                         })(
@@ -297,7 +297,7 @@ class Change extends Component {
                     </FormItem>
                     <FormItem {...formItemLayout1} label="所属部门">
                         {getFieldDecorator('orgDepartmentId', {
-                                    reules: [{
+                                    rules: [{
                                         required:true,
                                         message: 'please entry',
                                     }]
@@ -307,7 +307,7 @@ class Change extends Component {
                     </FormItem>
                     <FormItem {...formItemLayout1} label="原职位">
                         {getFieldDecorator('orgStation', {
-                            reules: [{
+                            rules: [{
                                 required:true, message: 'please entry',
                             }],
                             initialValue: this.props.selHumanList[len-1].position? this.props.selHumanList[len-1].position:null
@@ -326,7 +326,7 @@ class Change extends Component {
                     </FormItem>
                     <FormItem {...formItemLayout1} label="新部门">
                         {getFieldDecorator('newDepartmentId', {
-                            reules: [{
+                            rules: [{
                                 required:true,
                                 message: 'please entry',
                             }]
@@ -336,7 +336,7 @@ class Change extends Component {
                     </FormItem>
                     <FormItem {...formItemLayout1} label="新职位">
                         {getFieldDecorator('newStation', {
-                            reules: [{
+                            rules: [{
                                 required:true, message: 'please entry',
                             }]
                         })(

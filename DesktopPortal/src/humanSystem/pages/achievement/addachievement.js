@@ -83,8 +83,8 @@ class Achievement extends Component {
                         <Col span={7}>
                             <FormItem {...formItemLayout} label="选择组织">
                                 {getFieldDecorator('organize', {
-                                    reules: [{
-                                        required: true, message: 'please entry',
+                                    rules: [{
+                                        required: true, message: '请选择组织',
                                     }]
                                 })(
                                     <Cascader disabled={this.props.ismodify == 1} options={this.props.setContractOrgTree} onChange={this.handleChooseDepartmentChange} onPopupVisibleChange={this.handleDepartmentChange} changeOnSelect placeholder="归属部门" />
@@ -94,8 +94,8 @@ class Achievement extends Component {
                         <Col span={7}>
                             <FormItem {...formItemLayout} label="选择职位">
                                 {getFieldDecorator('position', {
-                                    reules: [{
-                                        required: true, message: 'please entry',
+                                    rules: [{
+                                        required: true, message: '请选择职位',
                                     }]
                                 })(
                                     <Select disabled={this.props.ismodify == 1} placeholder="选择职位">
@@ -116,8 +116,8 @@ class Achievement extends Component {
                         <Col span={7}>
                             <FormItem {...formItemLayout} label="基本工资">
                                 {getFieldDecorator('baseSalary', {
-                                    reules: [{
-                                        required: true, message: 'please entry',
+                                    rules: [{
+                                        required: true, message: '请输入基本工资',
                                     }]
                                 })(
                                     <InputNumber placeholder="请输入基本工资" style={{width: '100%'}} />
@@ -127,8 +127,8 @@ class Achievement extends Component {
                         <Col span={7}>
                             <FormItem {...formItemLayout} label="岗位补贴">
                                 {getFieldDecorator('subsidy', {
-                                    reules: [{
-                                        required: true, message: 'please entry',
+                                    rules: [{
+                                        required: true, message: '请输入岗位补贴',
                                     }]
                                 })(
                                     <InputNumber placeholder="请输入岗位补贴" style={{width: '100%'}} />
@@ -140,7 +140,7 @@ class Achievement extends Component {
                         <Col span={7}>
                             <FormItem {...formItemLayout} label="交通补贴">
                                 {getFieldDecorator('trafficAllowance', {
-                                    reules: [{
+                                    rules: [{
                                         required: true, message: '请输入交通补贴',
                                     }]
                                 })(
@@ -151,7 +151,7 @@ class Achievement extends Component {
                         <Col span={7}>
                             <FormItem {...formItemLayout} label="通讯补贴">
                                 {getFieldDecorator('communicationAllowance', {
-                                    reules: [{
+                                    rules: [{
                                         required: true, message: '请输入通讯补贴',
                                     }]
                                 })(
@@ -164,8 +164,8 @@ class Achievement extends Component {
                         <Col span={7}>
                             <FormItem {...formItemLayout} label="其他补贴">
                                 {getFieldDecorator('otherAllowance', {
-                                    reules: [{
-                                        required: true, message: '请输入其他补贴',
+                                    rules: [{
+                                        required: false, message: '请输入其他补贴',
                                     }]
                                 })(
                                     <InputNumber placeholder="请输入其他补贴" style={{width: '100%'}} />
@@ -178,7 +178,7 @@ class Achievement extends Component {
 
                     {/* <FormItem {...formItemLayout1} label="工装扣款">
                         {getFieldDecorator('clothesBack', {
-                            reules: [{
+                            rules: [{
                                 required: true, message: 'please entry',
                             }]
                         })(
@@ -187,7 +187,7 @@ class Achievement extends Component {
                     </FormItem> 
                      <FormItem {...formItemLayout1} label="行政扣款">
                         {getFieldDecorator('administrativeBack', {
-                            reules: [{
+                            rules: [{
                                 required: true, message: 'please entry',
                             }]
                         })(
@@ -196,7 +196,7 @@ class Achievement extends Component {
                     </FormItem> 
                      <FormItem {...formItemLayout1} label="端口扣款">
                         {getFieldDecorator('portBack', {
-                            reules: [{
+                            rules: [{
                                 required: true, message: 'please entry',
                             }]
                         })(
