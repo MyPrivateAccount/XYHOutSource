@@ -5,6 +5,7 @@ import { Layout, Table, Button, Checkbox, Popconfirm, Tooltip, Row, Col, Input, 
 import { incomeScaleAdd,incomeScaleDlgClose, incomeScaleEdit, incomeScaleDel, incomeScaleListGet, orgGetPermissionTree, getDicParList } from '../../actions/actionCreator'
 import SearchCondition from '../../constants/searchCondition'
 import InComeScaleEditor from './incomeScaleEditor'
+import {keepTwoDecimalFull} from '../../constants/utils'
 
 const Option = Select.Option;
 
@@ -140,7 +141,8 @@ class InComeScaleSet extends Component {
         this.props.incomeOp.operType = ''
 
         for (let i = 0; i < data.length; i++) {
-            data[i].percent = data[i].percent*100+'%'
+            let percent = keepTwoDecimalFull(data[i].percent*100)
+            data[i].percent = percent + '%'
         }
         return data
     }

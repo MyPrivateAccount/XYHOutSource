@@ -1,40 +1,48 @@
 //月结页面
 import React, { Component } from 'react'
-import { Layout, Row, Col, Button, TreeSelect,Input } from 'antd';
+import { Layout, Row, Col, Button, TreeSelect, Input } from 'antd';
 import { connect } from 'react-redux';
-import { orgGetPermissionTree,yjGetMonth } from '../../actions/actionCreator'
+import { orgGetPermissionTree, yjGetMonth } from '../../actions/actionCreator'
 
 class MonthSum extends Component {
     //内部状态
-    state={
-        monthData:{}
+    state = {
+        monthData: {}
     }
     componentDidMount() {
         //获取权限组织
         this.props.dispatch(orgGetPermissionTree("YJ_CW_YJ"));
     }
     componentWillReceiveProps(newProps) {
-        if(newProps.operInfo.operType === 'YJ_MONTH_GETUPDATE'){
-            this.setState({monthData:newProps.result.extension})
+        if (newProps.operInfo.operType === 'YJ_MONTH_GETUPDATE') {
+            this.setState({ monthData: newProps.result.extension })
             newProps.operInfo.operType = ''
         }
     }
     //组织改变
-    handleOrgChange=(e)=>{
+    handleOrgChange = (e) => {
         //查询月结月份
-        let searchCondition={}
+        let searchCondition = {}
         searchCondition.branchId = e
         this.props.dispatch(yjGetMonth(searchCondition))
     }
     //根据月结的状态显示不同的按钮
-    showButtonByState=()=>{
+    showButtonByState = () => {
         let stage = this.state.monthData.stage
-        if(stage){
-            if(stage === 'STAGE_UNSTART'||
-               stage === 'STAGE_ROLLBACK'||
-               stage === 'STAGE_CANCEL'){
-                   //显示开始月结按钮
-                   return <span><Button type="primiary">开始月结</Button></span>
+        if (stage) {
+            if (stage === 'STAGE_UNSTART' ||
+                stage === 'STAGE_ROLLBACK' ||
+                stage === 'STAGE_CANCEL') {
+                //显示开始月结按钮
+                return <span><Button type="primiary">开始月结</Button></span>
+            }
+            else if (stage === 'STAGE_FINISH') {
+                //显示月结回滚按钮
+                return <span><Button type="primiary">月结回滚</Button></span>
+            }
+            else if(stage === 'STAGE_ERROR'){
+                //显示月结重试按钮
+                return <span><Button type="primiary">月结重试</Button></span>
             }
         }
     }
@@ -90,9 +98,9 @@ class MonthSum extends Component {
                     </Row>
                     <Row style={{ marginTop: 10 }}>
                         <Col span={24} style={{ textAlign: 'center' }}>
-                        {
-                            this.showButtonByState()
-                        }
+                            {
+                                this.showButtonByState()
+                            }
                         </Col>
                     </Row>
                 </Layout.Content>
@@ -103,8 +111,8 @@ class MonthSum extends Component {
 function monthSumaryMapStateToProps(state) {
     return {
         permissionOrgTree: state.org.permissionOrgTree,
-        result:state.month.result,
-        operInfo:state.month.operInfo
+        result: state.month.result,
+        operInfo: state.month.operInfo
     }
 }
 

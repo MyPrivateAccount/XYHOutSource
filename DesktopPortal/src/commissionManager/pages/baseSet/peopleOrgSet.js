@@ -5,6 +5,7 @@ import { Layout, Table, Button, Checkbox, Popconfirm, Tooltip, Row, Col, Input, 
 import { orgFtParamAdd, orgFtParamUpdate, orgFtParamSave, orgFtDialogClose, orgGetPermissionTree, orgFtParamDelete, orgFtParamListGet } from '../../actions/actionCreator'
 import PeopleOrgFtEditor from './peopleOrgFtEditor'
 import SearchCondition from '../../constants/searchCondition'
+import {keepTwoDecimalFull} from '../../constants/utils'
 
 const { Header, Content } = Layout;
 const Option = Select.Option;
@@ -104,7 +105,8 @@ class PeopleSet extends Component {
             return data
         }
             for(let i=0;i<data.length;i++){
-                data[i].shareRatio = data[i].shareRatio*100+'%'
+                let percent = keepTwoDecimalFull(data[i].shareRatio*100)
+                data[i].shareRatio = percent + '%'
                 data[i].shareName = data[i].shareName
             }
         return data
