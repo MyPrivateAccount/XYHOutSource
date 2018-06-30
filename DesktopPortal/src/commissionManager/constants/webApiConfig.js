@@ -70,6 +70,9 @@ const WebApiConfig = {
     fina:{
         searchPPFt:basicDataBaseApiUrl+'yj/ppft/search'
     },
+    yj:{
+        monthlyMonth:basicDataBaseApiUrl+'yj/monthly/'//月结月份
+    },
     attach: {
         uploadUrl: `${UploadUrl}/file/upload/`
     },

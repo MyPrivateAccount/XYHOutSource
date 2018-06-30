@@ -15,7 +15,7 @@ class AcmentEditor extends Component {
         visible: false,
         iedVisible: false,
         isEdit: false,
-        paramInfo: { id: '', isfixed: true, branchId: '', code: '', type: 1, percent: '', items: [] }
+        paramInfo: { id: '', isfixed: true, branchId: '', code: '', type: "1", percent: '', items: [] }
     }
     componentWillMount() {
 
@@ -48,6 +48,8 @@ class AcmentEditor extends Component {
             newProps.operInfo.operType = ""
             let paramInfo = { ...this.state.paramInfo }
             paramInfo.items = newProps.ext
+            paramInfo.type = paramInfo.items.length>0?paramInfo.items[0].type:"1"
+            paramInfo.code = paramInfo.items.length>0?paramInfo.items[0].code:''
             this.setState({ paramInfo })
         }
     }
@@ -72,6 +74,13 @@ class AcmentEditor extends Component {
                 if (this.state.isEdit) {
                     values.id = this.state.paramInfo.id
                 }
+                if(values.type === '外部佣金')
+                {
+                    values.type  = 1
+                }
+                if(values.type === '内部分配项'){
+                    values.type = 2
+                }
                 console.log(values);
                 this.props.dispatch(acmentParamSave(values))
                 this.props.dispatch(acmentParamDlgClose())
@@ -91,7 +100,7 @@ class AcmentEditor extends Component {
         paramInfo.name = e.name
         paramInfo.code = e.code
         paramInfo.percent = e.percent * 100 + '%'
-        paramInfo.type = e.type === "1" ? '外部佣金' : '内部分配项'
+        paramInfo.type = e.type
         paramInfo.isfixed = e.isfixed
         let item = {}
         item.name = e.name;
@@ -104,10 +113,21 @@ class AcmentEditor extends Component {
         this.setState({ iedVisible: false });
     }
     handleSelect = (e, type) => {
-        let paramInfo = { ...this.state.paramInfo }
-        paramInfo.name = e.name
-        paramInfo.code = e.code
-        this.setState({ paramInfo });
+        let selectItem = null
+        for(let i=0;i<this.state.paramInfo.items.length;i++){
+            if(this.state.paramInfo.items[i].name === e){
+                selectItem = this.state.paramInfo.items[i]
+                break;
+            }
+        }
+        if(selectItem){
+            let paramInfo = { ...this.state.paramInfo }
+            paramInfo.name = selectItem.name
+            paramInfo.code = selectItem.code
+            paramInfo.type = selectItem.type+''
+            this.setState({ paramInfo });
+        }
+
     }
     getPercent = (e) => {
         let pp = e
@@ -172,9 +192,9 @@ class AcmentEditor extends Component {
                                 )}
                                 hasFeedback>
                                 {getFieldDecorator('type', {
-                                    initialValue: this.state.paramInfo.type === '外部佣金' ? "1" : "2",
+                                    initialValue: !this.isEdit?this.state.paramInfo.type+'' :this.state.paramInfo.type === '外部佣金' ? "1" : "2",
                                 })(
-                                    <Select initialValue="1" value={this.state.paramInfo.type === '外部佣金' ? "1" : "2"} style={{ width: 200 }} disabled={this.state.isEdit}>
+                                    <Select initialValue="1"  style={{ width: 200 }} disabled={true}>
                                         <Option value="1">外部佣金</Option>
                                         <Option value="2">内部分摊项</Option>
                                     </Select>

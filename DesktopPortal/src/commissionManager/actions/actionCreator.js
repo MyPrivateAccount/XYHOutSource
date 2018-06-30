@@ -114,3 +114,5 @@ export const rpClear = createAction(actionTypes.DEALRP_RP_CLEAR)
 export const searchHuman = createAction(actionTypes.SEARCH_HUMAN_INFO)
 //删除报告
 export const dealRpDelete = createAction(actionTypes.DEALRP_RP_DELETE)
+//月结相关
+export const yjGetMonth = createAction(actionTypes.YJ_MONTH_GET)//获取月结月份

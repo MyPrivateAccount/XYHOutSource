@@ -81,8 +81,8 @@ class OrgParamSet extends Component {
         };
         console.log("分页信息：", paginationInfo);
         this.setState({ pagination: paginationInfo });
-        if (newProps.operInfo.operType === 'org_update') {
-            console.log('org_update')
+        if (newProps.operInfo.operType === 'YJ_ZZCSSZ_CK') {
+            console.log('YJ_ZZCSSZ_CK')
             this.setState({ isDataLoading: true, branchId: newProps.permissionOrgTree.BaseSetOrgTree[0].key })
             this.handleSearch(newProps.permissionOrgTree.BaseSetOrgTree[0].key,newProps.permissionOrgTree.BaseSetOrgTree[0].label)
             newProps.operInfo.operType = ''

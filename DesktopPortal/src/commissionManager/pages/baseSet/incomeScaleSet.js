@@ -83,8 +83,8 @@ class InComeScaleSet extends Component {
         console.log("分页信息：", paginationInfo);
         this.setState({ pagination: paginationInfo });
 
-        if (newProps.operInfo.operType === 'org_update') {
-            console.log('org_update')
+        if (newProps.operInfo.operType === 'YJ_TCBLSZ') {
+            console.log('YJ_TCBLSZ')
             let params = { ...this.state.params }
             params.branchId = newProps.permissionOrgTree.BaseSetOrgTree[0].key
             params.branchName = newProps.permissionOrgTree.BaseSetOrgTree[0].label

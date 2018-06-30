@@ -82,8 +82,8 @@ class AcmentSet extends Component {
             newProps.operInfo.operType = ''
         }
 
-        if (newProps.operInfo.operType === 'org_update') {
-            console.log('org_update')
+        if (newProps.operInfo.operType === 'YJ_YJFTSZ_CK') {
+            console.log('YJ_YJFTSZ_CK')
             this.handleSearch(newProps.permissionOrgTree.BaseSetOrgTree[0].key)
             this.setState({ branchId: newProps.permissionOrgTree.BaseSetOrgTree[0].key })
             newProps.operInfo.operType = ''
