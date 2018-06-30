@@ -223,10 +223,11 @@ CREATE TABLE `XYH_HU_CHANGE` (
 DROP TABLE IF EXISTS `XYH_HU_MONTH`;/*月结*/
 CREATE TABLE `XYH_HU_MONTH` (
   `ID` varchar(127) NOT NULL DEFAULT '',/**/
-  `SettleTime` datetime DEFAULT NULL,/*月结时间*/
+  `SettleTime` datetime NOT NULL DEFAULT NULL,/*月结时间*/
   `OperName` varchar(127) NOT NULL DEFAULT '',/*操作人*/
-  `AttendanceForm` varchar(127) NOT NULL DEFAULT '',/*月结考勤表-链接到XYH_HU_ATTENDANCEFORM.ID*/
-  `SalaryForm` varchar(127) NOT NULL DEFAULT '',/*月结工资表-链接外面*/
+  `OperID` varchar(127) NOT NULL DEFAULT '',/*操作人*/
+  `AttendanceForm` varchar(127) DEFAULT '',/*月结考勤表-链接到XYH_HU_ATTENDANCEFORM.ID*/
+  `SalaryForm` varchar(127) DEFAULT '',/*月结工资表-链接外面*/
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

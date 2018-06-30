@@ -23,6 +23,7 @@ const initState = {
     administrativepunishment: [],
     administrativededuct:[],
     worknumber: "",
+    showLoading: false,
 };
 let reducerMap = {};
 //字典数据

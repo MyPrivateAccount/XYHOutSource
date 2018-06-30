@@ -1389,11 +1389,17 @@ export function createColumData(head, data) {
         let i = 0;
         let va = {};
         for (const key in itm) {
-            if (itm[key].constructor === String) {
-                va[Letter[i++]+row] = {t: 's', v: itm[key]};
-            } else {
-                va[Letter[i++]+row] = {t: 'n', v: itm[key]};
+            if (itm[key] !== null) {
+                if (itm[key].constructor === String) {
+                    va[Letter[i++]+row] = {t: 's', v: itm[key]};
+                } else {
+                    va[Letter[i++]+row] = {t: 'n', v: itm[key]};
+                }
             }
+            else {
+                va[Letter[i++]+row] = {t: 'n', v: ""};
+            }
+            
         }
         ret.push(va);
         row++;
@@ -1460,6 +1466,7 @@ export function writeMonthFile(merge, data, sheetname,name) {
         obj = Object.assign(obj, it);
     }
     let sh = {
+        "!cols": [{wch: 6},{wch: 6},{wch: 6},{wch: 6},{wch: 26},{wch: 26}],
         "!ref": na,
         ...merge.head,
         ...obj,

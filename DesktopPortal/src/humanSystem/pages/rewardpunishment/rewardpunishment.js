@@ -97,7 +97,7 @@ class MainIndex extends Component {
         
         const rowSelection = {
             onChange: (selectedRowKeys, selectedRows) => {
-                self.setState({selList: selectedRowKeys});
+                self.setState({selList: selectedRows});
             },
             getCheckboxProps: record => ({
                 disabled: record.name === 'Disabled User', // Column configuration not to be checked

@@ -5,6 +5,8 @@ using System.Text;
 using XYHHumanPlugin.Models;
 using XYHHumanPlugin.Dto.Response;
 using XYHHumanPlugin.Dto.Request;
+using ApplicationCore.Models;
+using ApplicationCore.Dto;
 
 namespace XYHHumanPlugin
 {
@@ -99,6 +101,9 @@ namespace XYHHumanPlugin
             CreateMap<HumanInfo, HumanInfoResponse>().ReverseMap();
             CreateMap<HumanInfo, HumanInfoRequest>();
             CreateMap<HumanInfoRequest, HumanInfo>();
+
+            CreateMap<SimpleUser, UserInfo>().ReverseMap();
+            CreateMap<SimpleUser, UserInfo>();
 
         }
     }
