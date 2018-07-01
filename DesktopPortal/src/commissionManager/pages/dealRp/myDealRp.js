@@ -1,13 +1,14 @@
 //合同列表
 import { connect } from 'react-redux';
 import React, { Component } from 'react';
-import { Layout, Table, Button, Checkbox, Popconfirm, Tooltip, Row, Col, Input, Spin, Select, TreeSelect } from 'antd'
+import { Layout, notification, Button, Checkbox, Popconfirm, Tooltip, Row, Col, Input, Spin, Select, TreeSelect } from 'antd'
 import TradeManager from './rpdetails/tradeManager'
 import DealRpTable from './dealRpTable'
 import SearchCondition from '../../constants/searchCondition'
 import { rpClear,syncRp,syncWy,syncYz,syncKh,syncFp } from '../../actions/actionCreator'
 import Layer, { LayerRouter } from '../../../components/Layer'
 import {Route } from 'react-router'
+import uuid from 'uuid'
 
 const { Header, Content } = Layout;
 const Option = Select.Option;
@@ -26,7 +27,21 @@ class MyDealRp extends Component {
 
     }
     handleNew = (info) => {
-        this.props.history.push(`${this.props.match.url}/reportInfo`, {entity: {}, op: 'add', pagePar: this.state.pagePar})
+        if(!this.props.user.Filiale){
+            notification.error({message:'您没有归属于任何分公司，无法录入成交报告'})
+            return;
+        }
+
+        var newEntity = {
+            id: uuid.v1(),
+            gsmc: this.props.user.Filiale,
+            gsmcName: this.props.user.FilialeName,
+            bswylx:"1",
+            cjbglx:"1",
+            jylx: "1",
+           
+        }
+        this.props.history.push(`${this.props.match.url}/reportInfo`, {entity: newEntity, op: 'add', pagePar: this.state.pagePar})
 
       //  this.setState({ isShowManager: true, rpId: '', editReport: false })
       //  this.clearRp()
@@ -51,10 +66,10 @@ class MyDealRp extends Component {
     }
     componentWillReceiveProps = (newProps) => {
 
-        if (newProps.operInfo.operType === 'DEALRP_OPEN_RP_DETAIL') {
-            this.setState({ isShowManager: true, rpId: newProps.rpOpenParam.id, editReport: true })
-            newProps.operInfo.operType = ''
-        }
+        // if (newProps.operInfo.operType === 'DEALRP_OPEN_RP_DETAIL') {
+        //     this.setState({ isShowManager: true, rpId: newProps.rpOpenParam.id, editReport: true })
+        //     newProps.operInfo.operType = ''
+        // }
     }
     onRpTable = (ref) => {
         this.rptb = ref
@@ -88,8 +103,10 @@ class MyDealRp extends Component {
 function MapStateToProps(state) {
 
     return {
-        operInfo: state.rp.operInfo,
-        rpOpenParam: state.rp.rpOpenParam,
+        // operInfo: state.rp.operInfo,
+        // rpOpenParam: state.rp.rpOpenParam,
+        dic: state.basicData.dicList,
+        user: state.oidc.user.profile||{}
     }
 }
 

@@ -1,88 +1,119 @@
 //成交物业组件
 import { connect } from 'react-redux';
 import React, { Component } from 'react';
-import moment from 'moment'
-import { getDicParList ,dealWySave} from '../../../actions/actionCreator'
-import {DatePicker, notification,Form, Span, Layout, Table, Button, Radio, Popconfirm, Tooltip, Row, Col, Input, Spin, Select, TreeSelect } from 'antd'
-import { getThisProjectIndex } from '../../../../houseResource/actions/actionCreator';
+import {DatePicker, Form, Layout,  Row, Col, Input, Spin, Select,  InputNumber } from 'antd'
+import { getDicPars } from '../../../../utils/utils'
+import { dicKeys } from '../../../constants/const'
+import WebApiConfig from '../../../constants/webApiConfig'
+import ApiClient from '../../../../utils/apiClient'
 
 const FormItem = Form.Item;
 const Option = Select.Option;
 
+let now = new Date();
+let zxndList =[];
+for(let i = 1990;i<=now.getFullYear();i++){
+    zxndList.push({key: i, value: i})
+}
+
 class TradeEstate extends Component {
     state = {
-        isDataLoading:false,
+        loading:false,
         wyCqzqdsj:'',
-        rpData:{}
+        rpData:{},
+        districtList:[],
+        areaList:[]
     }
     componentWillMount = () => {
-
-        this.setState({isDataLoading:true,tip:'信息初始化中...'})
-        //获取字典项
-        this.props.dispatch(getDicParList(['COMMISSION_WY_CQ', 'COMMISSION_WY_PQ', 'COMMISSION_WY_WYLX', 'COMMISSION_WY_KJLX', 'COMMISSION_WY_ZXZK', 'COMMISSION_WY_ZXND', 'COMMISSION_WY_ZXJJ', 'COMMISSION_WY_WYCX','COMMISSION_PAY_TYPE']));
     }
     componentDidMount=()=>{
+        this.initEntity(this.props);
     }
-    componentWillReceiveProps(newProps) {
-        this.setState({ isDataLoading: false });
-        if(newProps.operInfo.operType === 'WYSAVE_UPDATE'){
-            notification.success({
-                message: '提示',
-                description: '保存成交报告物业信息成功!',
-                duration: 3
-            });
-            newProps.operInfo.operType = ''
-        }
-        else if(newProps.operInfo.operType === 'WYGET_UPDATE'){//信息获取成功
-            this.setState({ rpData: newProps.ext});
-            newProps.operInfo.operType = ''
-        }
-        else if(newProps.syncWyOp.operType === 'DEALRP_SYNC_WY'){
-            let newdata = newProps.syncWyData
-            this.props.form.setFieldsValue({'wyCq':newdata.wyCq})
-            this.props.form.setFieldsValue({'wyPq':newdata.wyPq})
-            this.props.form.setFieldsValue({'wyMc':newdata.wyMc})
-            newProps.syncWyOp.operType = ''
-            this.setState({rpData:newdata})
+    componentWillReceiveProps = (nextProps) => {
+        if (this.props.entity !== nextProps.entity && nextProps.entity) {
+
+            this.initEntity(nextProps)
         }
     }
-    handleSave = (e) => {
-        e.preventDefault();
-        this.props.form.validateFields((err, values) => {
-            if (!err) {
-                values.id = this.props.rpId;
-                console.log(values);
-                if(values.wySfhz === '1'){
-                    values.wySfhz = 1
+
+    initEntity = (nextProps)=>{
+             if(!nextProps.showBbSelector){
+            this.getDistrictList();
                 }
-                else{
-                    values.wySfhz = 2
-                }
-                if(this.state.wyCqzqdsj!==''){
-                    values.wyCqzqdsj = this.state.wyCqzqdsj;
-                }
-                else{
-                    values.wyCqzqdsj = this.state.rpData.wyCqzqdsj;
-                }
-                this.setState({isDataLoading:true,tip:'保存信息中...'})
-                this.props.dispatch(dealWySave(values));
+        
+        var entity = nextProps.entity;
+        if(!entity){
+            return;
+        }
+
+        if(nextProps.showBbSelector){
+            let codes = [];
+            if(entity.wyCq){
+                codes.push(entity.wyCq)
             }
-        });
-    }
-    wyCqzqdsj_dateChange=(value,dateString)=>{
-        this.setState({wyCqzqdsj:dateString})
-    }
-    getInvalidDate=(dt)=>{
-        var newdt = ''+dt;
-        if(newdt.indexOf('T')!==-1){
-            newdt = newdt.substr(0,newdt.length-9);
-            console.log("newdt:"+newdt)
-            return newdt;
+            if(entity.wyPq){
+                codes.push(entity.wyPq)
+            }
+            if(codes.length>0){
+                this.getInitAreaList(codes);
+            }
         }
-        return dt
+
+   
+            let mv = {};
+            Object.keys(entity).map(key => {
+                mv[key] = entity[key];
+            })
+            this.props.form.setFieldsValue(mv); 
     }
+
+    getInitAreaList = async (codes)=>{
+        let url = `${WebApiConfig.area.list}`
+        let r = await ApiClient.post(url, {codes: codes});
+        r = (r||{}).data||{};
+        if(r.code==='0' && r.extension){
+            let dl = [],al = [];
+            r.extension.forEach(item=>{
+                if(item.level=='2'){
+                    dl.push(item);
+                }else if(item.level=='3'){
+                    al.push(item)
+                }
+            })
+            this.setState({districtList: dl, areaList: al})
+        }
+    }
+
+    getDistrictList = async ()=>{
+        let city  = this.props.user.City;
+        if(!city){
+            return;
+        }
+
+        let url = `${WebApiConfig.area.get}${city}`
+        let r = await ApiClient.get(url);
+        r = (r||{}).data||{};
+        if(r.code==='0' && r.extension){
+            this.setState({districtList: r.extension})
+           
+        }
+    }
+
+    getAreaList = async (value)=>{
+        this.props.form.setFieldsValue({wyPq:null})
+        let url = `${WebApiConfig.area.get}${value}`
+        let r = await ApiClient.get(url);
+        r = (r||{}).data||{};
+        if(r.code==='0' && r.extension){
+            this.setState({areaList: r.extension})
+        }
+    }
+
+
     render() {
         const { getFieldDecorator } = this.props.form;
+        const { showBbSelector } = this.props;
+        const {districtList, areaList} = this.state;
         const formItemLayout = {
             labelCol: { span: 6 },
             wrapperCol: { span: 14 },
@@ -91,19 +122,16 @@ class TradeEstate extends Component {
             labelCol: { span: 10 },
             wrapperCol: { span: 10 }
         }
-        let wyCqTypes = this.props.basicData.wyCqTypes;
-        let wyPqTypes = this.props.basicData.wyPqTypes;
-        let wyWylxTypes = this.props.basicData.wyWylxTypes;
-        let wyKjlxTypes = this.props.basicData.wyKjlxTypes;
-        let wyZxTypes = this.props.basicData.wyZxTypes;
-        let wyZxndTypes = this.props.basicData.wyZxndTypes;
-        let wyJjTypes = this.props.basicData.wyJjTypes;
-        let wyCxTypes = this.props.basicData.wyCxTypes;
-        let payTypes = this.props.basicData.payTypes;
+
+        let wyWylxTypes = getDicPars(dicKeys.wylx, this.props.dic);
+        let wyKjlxTypes = getDicPars(dicKeys.kjlx, this.props.dic);
+        let wyJjTypes = getDicPars(dicKeys.jj, this.props.dic);
+
+        let payTypes = getDicPars(dicKeys.fkfs, this.props.dic);;
         return (
             <Layout>
                 <div>
-                <Spin spinning={this.state.isDataLoading} tip={this.state.tip}>
+                <Spin spinning={this.state.loading} tip={this.state.tip}>
                     <Row style={{ textAlign: 'center', marginLeft: 30 }}>
                         <Col span={3}><span>城区</span></Col>
                         <Col span={3}><span>片区</span></Col>
@@ -118,12 +146,11 @@ class TradeEstate extends Component {
                             <FormItem {...formItemLayout2} label={(<span>物业地址</span>)}>
                                 {
                                     getFieldDecorator('wyCq', {
-                                        rules: [{ required: true,message:'请选择城区' }],
-                                        initialValue: this.state.rpData.wyCq,
+                                        rules: [{ required: true,message:'请选择城区' }]
                                     })(
-                                        <Select style={{ width: 80 }}>
+                                        <Select onChange={this.getAreaList} disabled={showBbSelector}  style={{ width: 80 }}>
                                             {
-                                                wyCqTypes.map(tp => <Option key={tp.key} value={tp.key}>{tp.key}</Option>)
+                                                districtList.map(tp => <Option key={tp.code} value={tp.code}>{tp.name}</Option>)
                                             }
                                         </Select>
                                     )
@@ -134,12 +161,11 @@ class TradeEstate extends Component {
                             <FormItem>
                                 {
                                     getFieldDecorator('wyPq', {
-                                        rules: [{ required: true,message:'请选择片区' }],
-                                        initialValue: this.state.rpData.wqRq,
+                                        rules: [{ required: true,message:'请选择片区' }]
                                     })(
-                                        <Select style={{ width: 80 }}>
+                                        <Select disabled={showBbSelector}  style={{ width: 80 }}>
                                             {
-                                                wyPqTypes.map(tp => <Option key={tp.key} value={tp.key}>{tp.key}</Option>)
+                                                areaList.map(tp => <Option key={tp.code} value={tp.code}>{tp.name}</Option>)
                                             }
                                         </Select>
                                     )
@@ -150,10 +176,9 @@ class TradeEstate extends Component {
                             <FormItem>
                                 {
                                     getFieldDecorator('wyMc', {
-                                        rules: [{ required: true,message:'请填写物业名称'}],
-                                        initialValue: this.state.rpData.wqMc,
+                                        rules: [{ required: true,message:'请填写物业名称'}]
                                     })(
-                                        <Input style={{ width: 80 }}></Input>
+                                        <Input disabled={showBbSelector} style={{ width: 80 }}></Input>
                                     )
                                 }
                             </FormItem>
@@ -162,10 +187,9 @@ class TradeEstate extends Component {
                             <FormItem>
                                 {
                                     getFieldDecorator('wyWz', {
-                                        rules: [{ required: true,message:'请填写物业位置'}],
-                                        initialValue: this.state.rpData.wyWz,
+                                        rules: [{ required: true,message:'楼栋'}]
                                     })(
-                                        <Input style={{ width: 80 }}></Input>
+                                        <Input disabled={showBbSelector} style={{ width: 80 }}></Input>
                                     )
                                 }
                             </FormItem>
@@ -174,10 +198,9 @@ class TradeEstate extends Component {
                             <FormItem>
                                 {
                                     getFieldDecorator('wyLc', {
-                                        rules: [{ required: true,message:'请填写物业楼层'}],
-                                        initialValue: this.state.rpData.wyLc,
+                                        rules: [{ required: true,message:'请填写物业楼层'}]
                                     })(
-                                        <Input style={{ width: 80 }}></Input>
+                                        <InputNumber disabled={showBbSelector} style={{ width: 80 }}></InputNumber>
                                     )
                                 }
                             </FormItem>
@@ -186,10 +209,9 @@ class TradeEstate extends Component {
                             <FormItem>
                                 {
                                     getFieldDecorator('wyFh', {
-                                        rules: [{ required: true,message:'请填写房号'}],
-                                        initialValue: this.state.rpData.wyFh,
+                                        rules: [{ required: true,message:'请填写房号'}]
                                     })(
-                                        <Input style={{ width: 80 }}></Input>
+                                        <Input disabled={showBbSelector}  style={{ width: 80 }}></Input>
                                     )
                                 }
                             </FormItem>
@@ -198,10 +220,9 @@ class TradeEstate extends Component {
                             <FormItem>
                                 {
                                     getFieldDecorator('wyZlc', {
-                                        rules: [{ required: false }],
-                                        initialValue: this.state.rpData.wyZlc,
+                                        rules: [{ required: false }]
                                     })(
-                                        <Input style={{ width: 80 }}></Input>
+                                        <InputNumber   style={{ width: 80 }}></InputNumber>
                                     )
                                 }
                             </FormItem>
@@ -212,8 +233,7 @@ class TradeEstate extends Component {
                             <FormItem {...formItemLayout} label={(<span>产证物业地址</span>)}>
                                 {
                                     getFieldDecorator('wyCzwydz', {
-                                        rules: [{ required: true,message:'请填写产证物业地址'}],
-                                        initialValue: this.state.rpData.wyCzwydz,
+                                        rules: [{ required: true,message:'请填写产证物业地址'}]
                                     })(
                                         <Input style={{ width: 300 }}></Input>
                                     )
@@ -226,10 +246,9 @@ class TradeEstate extends Component {
                             <FormItem {...formItemLayout2} label={(<span>房</span>)}>
                                 {
                                     getFieldDecorator('wyF', {
-                                        rules: [{ required: false }],
-                                        initialValue: this.state.rpData.wyF,
+                                        rules: [{ required: false }]
                                     })(
-                                        <Input style={{ width: 40 }}></Input>
+                                        <InputNumber  style={{ width: 40 }}></InputNumber>
                                     )
                                 }
                             </FormItem>
@@ -238,10 +257,9 @@ class TradeEstate extends Component {
                             <FormItem {...formItemLayout2} label={(<span>厅</span>)}>
                                 {
                                     getFieldDecorator('wyT', {
-                                        rules: [{ required: false }],
-                                        initialValue: this.state.rpData.wyT,
+                                        rules: [{ required: false }]
                                     })(
-                                        <Input style={{ width: 40 }}></Input>
+                                        <InputNumber style={{ width: 40 }}></InputNumber>
                                     )
                                 }
                             </FormItem>
@@ -250,10 +268,9 @@ class TradeEstate extends Component {
                             <FormItem {...formItemLayout2} label={(<span>卫</span>)}>
                                 {
                                     getFieldDecorator('wyW', {
-                                        rules: [{ required: false }],
-                                        initialValue: this.state.rpData.wyW,
+                                        rules: [{ required: false }]
                                     })(
-                                        <Input style={{ width: 40 }}></Input>
+                                        <InputNumber style={{ width: 40 }}></InputNumber>
                                     )
                                 }
                             </FormItem>
@@ -262,10 +279,9 @@ class TradeEstate extends Component {
                             <FormItem {...formItemLayout2} label={(<span>阳台</span>)}>
                                 {
                                     getFieldDecorator('wyYt', {
-                                        rules: [{ required: false }],
-                                        initialValue: this.state.rpData.wyYt,
+                                        rules: [{ required: false }]
                                     })(
-                                        <Input style={{ width: 40 }}></Input>
+                                        <InputNumber style={{ width: 40 }}></InputNumber>
                                     )
                                 }
                             </FormItem>
@@ -274,10 +290,9 @@ class TradeEstate extends Component {
                             <FormItem {...formItemLayout2} label={(<span>露台</span>)}>
                                 {
                                     getFieldDecorator('wyLt', {
-                                        rules: [{ required: false }],
-                                        initialValue: this.state.rpData.wyLt,
+                                        rules: [{ required: false }]
                                     })(
-                                        <Input style={{ width: 40 }}></Input>
+                                        <InputNumber style={{ width: 40 }}></InputNumber>
                                     )
                                 }
                             </FormItem>
@@ -286,10 +301,9 @@ class TradeEstate extends Component {
                             <FormItem {...formItemLayout2} label={(<span>观景台</span>)}>
                                 {
                                     getFieldDecorator('wyJgf', {
-                                        rules: [{ required: false }],
-                                        initialValue: this.state.rpData.wyJgf,
+                                        rules: [{ required: false }]
                                     })(
-                                        <Input style={{ width: 40 }}></Input>
+                                        <InputNumber style={{ width: 40 }}></InputNumber>
                                     )
                                 }
                             </FormItem>
@@ -300,8 +314,7 @@ class TradeEstate extends Component {
                             <FormItem {...formItemLayout} label={(<span>物业类型</span>)}>
                                 {
                                     getFieldDecorator('wyWylx', {
-                                        rules: [{ required: false }],
-                                        initialValue: this.state.rpData.wyWylx,
+                                        rules: [{ required: false }]
                                     })(
                                         <Select style={{ width: 80 }}>
                                             {
@@ -318,8 +331,7 @@ class TradeEstate extends Component {
                             <FormItem {...formItemLayout} label={(<span>空间类型</span>)}>
                                 {
                                     getFieldDecorator('wyKjlx', {
-                                        rules: [{ required: false }],
-                                        initialValue: this.state.rpData.wyKjlx,
+                                        rules: [{ required: false }]
                                     })(
                                         <Select style={{ width: 80 }}>
                                             {
@@ -336,10 +348,9 @@ class TradeEstate extends Component {
                             <FormItem {...formItemLayout} label={(<span>建筑面积</span>)}>
                                 {
                                     getFieldDecorator('wyJzmj', {
-                                        rules: [{ required: true,message:'请填写建筑面积'}],
-                                        initialValue: this.state.rpData.wyJzmj,
+                                        rules: [{ required: true,message:'请填写建筑面积'}]
                                     })(
-                                        <Input style={{ width: 200 }}></Input>
+                                        <InputNumber disabled={showBbSelector}  precision={2}  style={{ width: 200 }}></InputNumber>
                                     )
                                 }
                             </FormItem>
@@ -348,10 +359,9 @@ class TradeEstate extends Component {
                             <FormItem {...formItemLayout} label={(<span>均价</span>)}>
                                 {
                                     getFieldDecorator('wyWyJj', {
-                                        rules: [{ required: true,message:'请填写均价'}],
-                                        initialValue: this.state.rpData.wyJj,
+                                        rules: [{ required: true,message:'请填写均价'}]
                                     })(
-                                        <Input style={{ width: 200 }}></Input>
+                                        <InputNumber disabled precision={2} style={{ width: 200 }}></InputNumber>
                                     )
                                 }
                             </FormItem>
@@ -362,10 +372,9 @@ class TradeEstate extends Component {
                             <FormItem {...formItemLayout} label={(<span>电梯数</span>)}>
                                 {
                                     getFieldDecorator('wyDts', {
-                                        rules: [{ required: false }],
-                                        initialValue: this.state.rpData.wyDts,
+                                        rules: [{ required: false }]
                                     })(
-                                        <Input style={{ width: 120 }}></Input>
+                                        <InputNumber style={{ width: 120 }}></InputNumber>
                                     )
                                 }
                             </FormItem>
@@ -374,10 +383,9 @@ class TradeEstate extends Component {
                             <FormItem {...formItemLayout} label={(<span>每层户数</span>)}>
                                 {
                                     getFieldDecorator('wyMchs', {
-                                        rules: [{ required: false }],
-                                        initialValue: this.state.rpData.wyMchs,
+                                        rules: [{ required: false }]
                                     })(
-                                        <Input style={{ width: 120 }}></Input>
+                                        <InputNumber style={{ width: 120 }}></InputNumber>
                                     )
                                 }
                             </FormItem>
@@ -388,12 +396,11 @@ class TradeEstate extends Component {
                             <FormItem {...formItemLayout} label={(<span>装修年代</span>)}>
                                 {
                                     getFieldDecorator('wyZxnd', {
-                                        rules: [{ required: false }],
-                                        initialValue: this.state.rpData.wyZxnd,
+                                        rules: [{ required: false }]
                                     })(
                                         <Select style={{ width: 80 }}>
                                             {
-                                                wyZxndTypes.map(tp => <Option key={tp.key} value={tp.key}>{tp.key}</Option>)
+                                                zxndList.map(tp => <Option key={tp.key} value={tp.value}>{tp.key}</Option>)
                                             }
                                         </Select>
                                     )
@@ -404,8 +411,7 @@ class TradeEstate extends Component {
                             <FormItem {...formItemLayout} label={(<span>家具</span>)}>
                                 {
                                     getFieldDecorator('wyJj', {
-                                        rules: [{ required: false }],
-                                        initialValue: this.state.rpData.wyJj,
+                                        rules: [{ required: false }]
                                     })(
                                         <Select style={{ width: 80 }}>
                                             {
@@ -422,10 +428,9 @@ class TradeEstate extends Component {
                             <FormItem {...formItemLayout} label={(<span>产权取得时间</span>)}>
                                 {
                                     getFieldDecorator('wyCqzqdsj', {
-                                        rules: [{ required: false, message: '请填写分行名称!' }],
-                                        initialValue: moment(this.getInvalidDate(this.state.rpData.wyCqzqdsj)),
+                                        rules: [{ required: false, message: '请填写产权取得时间!' }]
                                     })(
-                                        <DatePicker style={{ width: 180 }} onChange={this.wyCqzqdsj_dateChange}></DatePicker>
+                                        <DatePicker style={{ width: 180 }} ></DatePicker>
                                     )
                                 }
                             </FormItem>
@@ -434,8 +439,7 @@ class TradeEstate extends Component {
                             <FormItem {...formItemLayout} label={(<span>房产按揭号码</span>)}>
                                 {
                                     getFieldDecorator('wyFcajhm', {
-                                        rules: [{ required: false, message: '请填写成交人!' }],
-                                        initialValue: this.state.rpData.wyFcajhm,
+                                        rules: [{ required: false, message: '请填写房产按揭号码!' }]
                                     })(
                                         <Input style={{ width: 180 }}></Input>
                                     )
@@ -446,8 +450,7 @@ class TradeEstate extends Component {
                             <FormItem {...formItemLayout} label={(<span>是否合租</span>)}>
                                 {
                                     getFieldDecorator('wySfhz', {
-                                        rules: [{ required: false, message: '请选择成交日期!' }],
-                                        initialValue: this.state.rpData.wySfhz===1?'1':'2',
+                                        rules: [{ required: false, message: '请选择是否合租' }]
                                     })(
                                         <Select style={{ width: 180 }}>
                                             <Option key='1' value='1'>是</Option>
@@ -463,8 +466,7 @@ class TradeEstate extends Component {
                             <FormItem {...formItemLayout} label={(<span>房源付款方式</span>)}>
                                 {
                                     getFieldDecorator('wyFyfkfs', {
-                                        rules: [{ required: false, message: '请填写分行名称!' }],
-                                        initialValue: this.state.rpData.wyFyfkfs,
+                                        rules: [{ required: false, message: '请选择房源付款方式' }]
                                     })(
                                         <Select style={{ width: 80 }}>
                                             {
@@ -479,10 +481,9 @@ class TradeEstate extends Component {
                             <FormItem {...formItemLayout} label={(<span>房源贷款年限</span>)}>
                                 {
                                     getFieldDecorator('wyFydknx', {
-                                        rules: [{ required: false, message: '请填写成交人!' }],
-                                        initialValue: this.state.rpData.wyFydknx,
+                                        rules: [{ required: false, message: '请填写房源贷款年限!' }]
                                     })(
-                                        <Input style={{ width: 180 }}></Input>
+                                        <InputNumber style={{ width: 180 }}></InputNumber>
                                     )
                                 }
                             </FormItem>
@@ -491,10 +492,9 @@ class TradeEstate extends Component {
                             <FormItem {...formItemLayout2} label={(<span>房源贷款剩余年限</span>)}>
                                 {
                                     getFieldDecorator('wyFydksynx', {
-                                        rules: [{ required: false, message: '请选择成交日期!' }],
-                                        initialValue: this.state.rpData.wyFydksynx,
+                                        rules: [{ required: false, message: '请填写房源贷款剩余年限!' }]
                                     })(
-                                        <Input style={{ width: 80 }}></Input>
+                                        <InputNumber style={{ width: 80 }}></InputNumber>
                                     )
                                 }
                             </FormItem>
@@ -505,10 +505,9 @@ class TradeEstate extends Component {
                             <FormItem {...formItemLayout} label={(<span>房源贷款金额</span>)}>
                                 {
                                     getFieldDecorator('wyFydkje', {
-                                        rules: [{ required: false }],
-                                        initialValue: this.state.rpData.wyFydkje,
+                                        rules: [{ required: false }]
                                     })(
-                                        <Input style={{ width: 120 }}></Input>
+                                        <InputNumber precision={2} style={{ width: 120 }}></InputNumber>
                                     )
                                 }
                             </FormItem>
@@ -517,20 +516,19 @@ class TradeEstate extends Component {
                             <FormItem {...formItemLayout} label={(<span>房源已还金额</span>)}>
                                 {
                                     getFieldDecorator('wyFyyhje', {
-                                        rules: [{ required: false }],
-                                        initialValue: this.state.rpData.wyFyyhje,
+                                        rules: [{ required: false }]
                                     })(
-                                        <Input style={{ width: 120 }}></Input>
+                                        <InputNumber precision={2} style={{ width: 120 }}></InputNumber>
                                     )
                                 }
                             </FormItem>
                         </Col>
                     </Row>
-                    <Row>
+                    {/* <Row>
                         <Col span={24} style={{ textAlign: 'center' }}>
                             <Button type='primary' onClick={this.handleSave}>保存</Button>
                         </Col>
-                    </Row>
+                    </Row> */}
                     </Spin>
                 </div>
             </Layout>
@@ -540,11 +538,12 @@ class TradeEstate extends Component {
 function MapStateToProps(state) {
 
     return {
-        basicData: state.base,
-        operInfo:state.rp.operInfo,
-        ext:state.rp.ext,
-        syncWyOp:state.rp.syncWyOp,
-        syncWyData:state.rp.syncWyData
+        // basicData: state.base,
+        // operInfo:state.rp.operInfo,
+        // ext:state.rp.ext,
+        // syncWyOp:state.rp.syncWyOp,
+        // syncWyData:state.rp.syncWyData
+        user: state.oidc.user.profile||{}
     }
 }
 

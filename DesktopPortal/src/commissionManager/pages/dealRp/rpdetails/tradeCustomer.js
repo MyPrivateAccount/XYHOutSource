@@ -1,61 +1,43 @@
 //客户信息组件
 import { connect } from 'react-redux';
-import { getDicParList, dealKhSave } from '../../../actions/actionCreator'
 import React, { Component } from 'react';
-import moment from 'moment'
-import { notification, Form, Span, Layout, Table, Button, Radio, Popconfirm, Tooltip, Row, Col, Input, Spin, Select, TreeSelect } from 'antd'
+import { Form, Layout, Row, Col, Input, Spin, Select, InputNumber } from 'antd'
+import { getDicPars } from '../../../../utils/utils'
+import { dicKeys } from '../../../constants/const'
 
 const FormItem = Form.Item;
 const Option = Select.Option;
 
 class TradeCustomer extends Component {
   state = {
-    isDataLoading: false,
+    loading: false,
     rpData: {}
   }
-  componentWillMount = () => {
-    this.setState({ isDataLoading: true, tip: '信息初始化中...' })
-    this.props.dispatch(getDicParList(['COMMISSION_KH_KHXZ', 'COMMISSION_YZ_QHTSC']));
-  }
+
   componentDidMount = () => {
+    this.initEntity(this.props);
   }
-  componentWillReceiveProps(newProps) {
-    this.setState({ isDataLoading: false });
-    if (newProps.operInfo.operType === 'KHSAVE_UPDATE') {
-      notification.success({
-        message: '提示',
-        description: '保存成交报告客户信息成功!',
-        duration: 3
-      });
-      newProps.operInfo.operType = ''
-    }
-    else if (newProps.operInfo.operType === 'KHGET_UPDATE') {//信息获取成功
-      this.setState({ rpData: newProps.ext });
-      newProps.operInfo.operType = ''
-    }
-    else if (newProps.syncKhOp.operType === 'DEALRP_SYNC_KH') {
-      let newdata = newProps.syncKhData
-      this.props.form.setFieldsValue({ 'khMc': newdata.khMc })
-      this.props.form.setFieldsValue({ 'khSj': newdata.khSj })
-      newProps.syncKhOp.operType = ''
-      this.setState({rpData:newdata})
-    }
-    else if (newProps.operInfo.operType === 'DEALRP_RP_CLEAR') {
-      this.setState({ rpData: {} })
-      newProps.operInfo.operType = ''
+  componentWillReceiveProps = (nextProps) => {
+    if (this.props.entity !== nextProps.entity && nextProps.entity) {
+
+      this.initEntity(nextProps)
     }
   }
-  handleSave = (e) => {
-    e.preventDefault();
-    this.props.form.validateFields((err, values) => {
-      if (!err) {
-        values.id = this.props.rpId;
-        console.log(values);
-        this.setState({ isDataLoading: true, tip: '保存信息中...' })
-        this.props.dispatch(dealKhSave(values))
-      }
-    });
+
+  initEntity = (nextProps) => {
+    var entity = nextProps.entity;
+    if (!entity) {
+      return;
+    }
+
+    let mv = {};
+    Object.keys(entity).map(key => {
+      mv[key] = entity[key];
+    })
+    this.props.form.setFieldsValue(mv);
   }
+
+
   render() {
     const { getFieldDecorator } = this.props.form;
     const formItemLayout = {
@@ -70,18 +52,17 @@ class TradeCustomer extends Component {
       labelCol: { span: 7 },
       wrapperCol: { span: 14 },
     };
-    let yzChtscTypes = this.props.basicData.yzChtscTypes
-    let khKhxzTypes = this.props.basicData.khKhxzTypes
+    //  let yzChtscTypes = this.props.basicData.yzChtscTypes
+    let khKhxzTypes = getDicPars(dicKeys.khxz, this.props.dic);
     return (
       <Layout>
-        <Spin spinning={this.state.isDataLoading} tip={this.state.tip}>
+        <Spin spinning={this.state.loading} tip={this.state.tip}>
           <Row>
             <Col span={8}>
               <FormItem {...formItemLayout} label={(<span>名称</span>)}>
                 {
                   getFieldDecorator('khMc', {
-                    rules: [{ required: true, message: '请填写客户名称' }],
-                    initialValue: this.state.rpData.khMc,
+                    rules: [{ required: true, message: '请填写客户名称' }]
                   })(
                     <Input style={{ width: 200 }}></Input>
                   )
@@ -92,8 +73,7 @@ class TradeCustomer extends Component {
               <FormItem {...formItemLayout} label={(<span>身份证</span>)}>
                 {
                   getFieldDecorator('khZjhm', {
-                    rules: [{ required: true, message: '请填写客户身份证' }],
-                    initialValue: this.state.rpData.khZjhm,
+                    rules: [{ required: true, message: '请填写客户身份证' }]
                   })(
                     <Input style={{ width: 200 }}></Input>
                   )
@@ -106,8 +86,7 @@ class TradeCustomer extends Component {
               <FormItem {...formItemLayout} label={(<span>地址</span>)}>
                 {
                   getFieldDecorator('khDz', {
-                    rules: [{ required: false, message: '请填写分行名称!' }],
-                    initialValue: this.state.rpData.khDz,
+                    rules: [{ required: false, message: '请填写地址!' }]
                   })(
                     <Input style={{ width: 200 }}></Input>
                   )
@@ -118,8 +97,7 @@ class TradeCustomer extends Component {
               <FormItem {...formItemLayout} label={(<span>手机</span>)}>
                 {
                   getFieldDecorator('khSj', {
-                    rules: [{ required: true, message: '请填写手机号码!' }],
-                    initialValue: this.state.rpData.khSj,
+                    rules: [{ required: true, message: '请填写手机号码!' }]
                   })(
                     <Input style={{ width: 200 }}></Input>
                   )
@@ -130,8 +108,7 @@ class TradeCustomer extends Component {
               <FormItem {...formItemLayout} label={(<span>客户来源</span>)}>
                 {
                   getFieldDecorator('khKhly', {
-                    rules: [{ required: true, message: '请选择客户来源!' }],
-                    initialValue: this.state.rpData.khKhly,
+                    rules: [{ required: true, message: '请选择客户来源!' }]
                   })(
                     <Input style={{ width: 200 }}></Input>
                   )
@@ -144,7 +121,7 @@ class TradeCustomer extends Component {
               <FormItem {...formItemLayout} label={(<span>客户性质</span>)}>
                 {
                   getFieldDecorator('khKhxz', {
-                    rules: [{ required: false, message: '请填写分行名称!' }],
+                    rules: [{ required: false, message: '请选择客户性质!' }],
                     initialValue: this.state.rpData.khKhxz,
                   })(
                     <Select style={{ width: 80 }}>
@@ -160,7 +137,7 @@ class TradeCustomer extends Component {
               <FormItem {...formItemLayout} label={(<span>客源号</span>)}>
                 {
                   getFieldDecorator('khKyh', {
-                    rules: [{ required: false, message: '请填写成交人!' }],
+                    rules: [{ required: false, message: '请填写客源号!' }],
                     initialValue: this.state.rpData.khKyh,
                   })(
                     <Input style={{ width: 200 }}></Input>
@@ -172,10 +149,9 @@ class TradeCustomer extends Component {
               <FormItem {...formItemLayout} label={(<span>置业次数</span>)}>
                 {
                   getFieldDecorator('khZycs', {
-                    rules: [{ required: false, message: '请选择成交日期!' }],
-                    initialValue: this.state.rpData.khZycs,
+                    rules: [{ required: false, message: '请填写置业次数' }]
                   })(
-                    <Input style={{ width: 200 }}></Input>
+                    <InputNumber style={{ width: 200 }}></InputNumber>
                   )
                 }
               </FormItem>
@@ -186,8 +162,7 @@ class TradeCustomer extends Component {
               <FormItem {...formItemLayout} label={(<span>Email</span>)}>
                 {
                   getFieldDecorator('khEmail', {
-                    rules: [{ required: false }],
-                    initialValue: this.state.rpData.khEmail,
+                    rules: [{ required: false }]
                   })(
                     <Input style={{ width: 200 }}></Input>
                   )
@@ -200,8 +175,7 @@ class TradeCustomer extends Component {
               <FormItem {...formItemLayout} label={(<span>代理人</span>)}>
                 {
                   getFieldDecorator('khDlr', {
-                    rules: [{ required: false, message: '请填写分行名称!' }],
-                    initialValue: this.state.rpData.khDlr,
+                    rules: [{ required: false, message: '请填写代理人!' }]
                   })(
                     <Input style={{ width: 200 }}></Input>
                   )
@@ -212,8 +186,7 @@ class TradeCustomer extends Component {
               <FormItem {...formItemLayout3} label={(<span>代理人联系方式</span>)}>
                 {
                   getFieldDecorator('khDlrlxfs', {
-                    rules: [{ required: false, message: '请填写成交人!' }],
-                    initialValue: this.state.rpData.khDlrlxfs,
+                    rules: [{ required: false, message: '请填写代理人联系方式!' }]
                   })(
                     <Input style={{ width: 200 }}></Input>
                   )
@@ -224,8 +197,7 @@ class TradeCustomer extends Component {
               <FormItem {...formItemLayout3} label={(<span>代理人证件号码</span>)}>
                 {
                   getFieldDecorator('khDlrzjhm', {
-                    rules: [{ required: false, message: '请选择成交日期!' }],
-                    initialValue: this.state.rpData.khDlrzjhm,
+                    rules: [{ required: false, message: '请填写代理人证件号码!' }]
                   })(
                     <Input style={{ width: 200 }}></Input>
                   )
@@ -233,7 +205,7 @@ class TradeCustomer extends Component {
               </FormItem>
             </Col>
           </Row>
-          <Row>
+          {/* <Row>
             <Col span={8}>
               <FormItem {...formItemLayout} label={(<span>成交原因</span>)}>
                 {
@@ -262,12 +234,12 @@ class TradeCustomer extends Component {
                 }
               </FormItem>
             </Col>
-          </Row>
-          <Row>
+          </Row> */}
+          {/* <Row>
             <Col span={24} style={{ textAlign: 'center' }}>
               <Button type='primary' onClick={this.handleSave}>保存</Button>
             </Col>
-          </Row>
+          </Row> */}
         </Spin>
       </Layout>
     )
@@ -276,11 +248,11 @@ class TradeCustomer extends Component {
 function MapStateToProps(state) {
 
   return {
-    basicData: state.base,
-    operInfo: state.rp.operInfo,
-    ext: state.rp.ext,
-    syncKhOp: state.rp.syncKhOp,
-    syncKhData: state.rp.syncKhData
+    // basicData: state.base,
+    // operInfo: state.rp.operInfo,
+    // ext: state.rp.ext,
+    // syncKhOp: state.rp.syncKhOp,
+    // syncKhData: state.rp.syncKhData
   }
 }
 

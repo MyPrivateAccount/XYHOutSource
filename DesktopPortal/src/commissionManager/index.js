@@ -14,6 +14,7 @@ import Layer from '../components/Layer'
 import { permission } from './constants/const'
 import WebApiConfig from './constants/webApiConfig'
 import ApiClient from '../utils/apiClient'
+import {getDicParList} from '../actions/actionCreators'
 
 import {
     LoadableAcmentPage, //业绩分摊项设置
@@ -352,12 +353,14 @@ function mapStateToProps(state, props) {
     return {
         judgePermissions: state.judgePermissions,
         oidc: state.oidc,
-        user: state.oidc.user
+        user: state.oidc.user,
+        dic: state.basicData.dicList,
     }
 }
 function mapDispatchToProps(dispatch) {
     return {
-        dispatch
+        dispatch,
+        getDicParList: (...args) => dispatch(getDicParList(...args))
     }
 }
-export default withReducer(reducers, 'CommissionManagerIndex', { mapExtraState: (state, rootState) => ({ oidc: rootState.oidc, judgePermissions: rootState.app.judgePermissions }) })(connect(mapStateToProps, mapDispatchToProps)(CommissionManagerIndex));
+export default withReducer(reducers, 'CommissionManagerIndex', { mapExtraState: (state, rootState) => ({ oidc: rootState.oidc, judgePermissions: rootState.app.judgePermissions, basicData: rootState.basicData }) })(connect(mapStateToProps, mapDispatchToProps)(CommissionManagerIndex));
