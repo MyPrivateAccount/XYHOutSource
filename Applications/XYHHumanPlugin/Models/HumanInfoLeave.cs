@@ -13,10 +13,12 @@ namespace XYHHumanPlugin.Models
         /// <summary>
         /// 主键Id
         /// </summary>
+        [MaxLength(127)]
         public string Id { get; set; }
         /// <summary>
         /// 人事Id
         /// </summary>
+        [MaxLength(127)]
         public string HumanId { get; set; }
         /// <summary>
         /// 离职时间
@@ -25,6 +27,7 @@ namespace XYHHumanPlugin.Models
         /// <summary>
         /// 交接人
         /// </summary>
+        [MaxLength(127)]
         public string NewHumanId { get; set; }
 
         /// <summary>

@@ -25,6 +25,14 @@ namespace XYHHumanPlugin.Models
         public DbSet<HumanEducationInfo> HumanEducationInfos { get; set; }
 
         public DbSet<HumanFileScope> HumanFileScopes { get; set; }
+        public DbSet<HumanInfoBlack> HumanInfoBlacks { get; set; }
+        public DbSet<HumanInfoChange> HumanInfoChanges { get; set; }
+        public DbSet<HumanInfoLeave> HumanInfoLeaves { get; set; }
+        public DbSet<HumanInfoPartPosition> HumanInfoPartPostions { get; set; }
+        public DbSet<HumanInfoRegular> HumanInfoRegulars { get; set; }
+        public DbSet<HumanInfoAdjustment> HumanInfoAdjustments { get; set; }
+
+
 
         public DbSet<BlackInfo> BlackInfos { get; set; }
         public DbSet<AttendanceInfo> AttendanceInfos { get; set; }
@@ -46,7 +54,6 @@ namespace XYHHumanPlugin.Models
         public DbSet<Organizations> Organizations { get; set; }
         public DbSet<OrganizationExpansion> OrganizationExpansions { get; set; }
 
-        public DbSet<HumanInfoBlack> HumanInfoBlacks { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
