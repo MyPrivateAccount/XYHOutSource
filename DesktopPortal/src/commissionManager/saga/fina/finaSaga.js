@@ -11,7 +11,7 @@ const actionUtils = appAction(actionTypes.ACTION_ROUTE);
 //人员分摊表
 export function* searchPPFtDataAsync(state){
     let result = { isOk: false, extension: [], msg: '查询人员分摊表信息成功' };
-    let url = WebApiConfig.fina.searchPPFt;
+    let url = WebApiConfig.fina.searchRYFT;
     try {
         console.log(url)
         console.log('searchPPFtDataAsync:', state);
@@ -39,7 +39,7 @@ export function* searchPPFtDataAsync(state){
 //应发提成表
 export function* searchYftcbDataAsync(state){
     let result = { isOk: false, extension: [], msg: '查询应发提成表信息成功' };
-    let url = WebApiConfig.fina.searchPPFt;
+    let url = WebApiConfig.fina.searchYFTC;
     try {
         console.log(url)
         console.log('searchYftcbDataAsync:', state);
@@ -67,7 +67,7 @@ export function* searchYftcbDataAsync(state){
 //实发提成表
 export function* searchSftcbDataAsync(state){
     let result = { isOk: false, extension: [], msg: '查询实发提成表信息成功' };
-    let url = WebApiConfig.fina.searchPPFt;
+    let url = WebApiConfig.fina.searchSFTC;
     try {
         console.log(url)
         console.log('searchSftcbDataAsync:', state);
@@ -95,7 +95,7 @@ export function* searchSftcbDataAsync(state){
 //提成成本表
 export function* searchTccbbDataAsync(state){
     let result = { isOk: false, extension: [], msg: '查询提成成本表信息成功' };
-    let url = WebApiConfig.fina.searchPPFt;
+    let url = WebApiConfig.fina.searchTCCB;
     try {
         console.log(url)
         console.log('searchTccbbDataAsync:', state);
@@ -123,7 +123,7 @@ export function* searchTccbbDataAsync(state){
 //应发提成冲减表
 export function* searchYftccjbDataAsync(state){
     let result = { isOk: false, extension: [], msg: '查询应发提成冲减表成功' };
-    let url = WebApiConfig.fina.searchPPFt;
+    let url = WebApiConfig.fina.searchYFTCCJ;
     try {
         console.log(url)
         console.log('searchYftccjbDataAsync:', state);
@@ -151,11 +151,11 @@ export function* searchYftccjbDataAsync(state){
 //离职人员业绩确认表
 export function* searchLzryyjqrbDataAsync(state){
     let result = { isOk: false, extension: [], msg: '查询离职人员业绩确认表信息成功' };
-    let url = WebApiConfig.fina.searchPPFt;
+    let url = WebApiConfig.fina.searchLZYJQR+state.payload.branchId+'/'+state.payload.yyyymm;
     try {
         console.log(url)
         console.log('searchLzryyjqrbDataAsync:', state);
-        let res = yield call(ApiClient.post, url,state.payload);
+        let res = yield call(ApiClient.get, url);
        
         //console.log(res, '获取参数列表');
         getApiResult(res, result);
@@ -179,11 +179,11 @@ export function* searchLzryyjqrbDataAsync(state){
 //实发扣减确认表
 export function* searchSfkjqrbDataAsync(state){
     let result = { isOk: false, extension: [], msg: '查询实发扣减业绩确认表信息成功' };
-    let url = WebApiConfig.fina.searchPPFt;
+    let url = WebApiConfig.fina.searchSKQR+state.payload.branchId+'/'+state.payload.yyyymm;
     try {
         console.log(url)
         console.log('searchSfkjqrbDataAsync:', state);
-        let res = yield call(ApiClient.post, url,state.payload);
+        let res = yield call(ApiClient.get, url);
        
         //console.log(res, '获取参数列表');
         getApiResult(res, result);

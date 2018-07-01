@@ -25,6 +25,8 @@ class LZRYTJTable extends Component {
     state = {
         isDataLoading: false,
         pagination: {},
+        dataSource:{extension:[]},
+        searchCondition:{}
     }
     handleInclude = (key, dataIndex) => {
         return (value) => {
@@ -38,15 +40,16 @@ class LZRYTJTable extends Component {
         };
     }
     handleSearch = (e) => {
-        this.setState({ isDataLoading: true });
+        this.setState({ isDataLoading: true ,searchCondition:e});
         this.props.dispatch(searchLzryyjqrb(e))
     }
     handleTableChange = (pagination, filters, sorter) => {
-        let cd = this.props.SearchCondition;
+        let cd = {...this.state.searchCondition};
         cd.pageIndex = (pagination.current - 1);
         cd.pageSize = pagination.pageSize;
         console.log("table改变，", pagination);
         this.setState({ isDataLoading: true });
+        this.handleSearch(cd)
     };
     getCheckEmps=()=>{
         var dt = []
@@ -62,16 +65,28 @@ class LZRYTJTable extends Component {
     componentWillReceiveProps(newProps) {
         console.log("new Props:" + newProps.dataSource)
         this.setState({ isDataLoading: false });
-
-        let paginationInfo = {
-            pageSize: newProps.dataSource.pageSize,
-            current: newProps.dataSource.pageIndex,
-            total: newProps.dataSource.totalCount
-        };
-        console.log("分页信息：", paginationInfo);
-        this.setState({ pagination: paginationInfo });
-
-        this.setState({dataSource:newProps.dataSource})
+        if(newProps.dataSource){
+            let paginationInfo = {
+                pageSize: newProps.dataSource.pageSize,
+                current: newProps.dataSource.pageIndex,
+                total: newProps.dataSource.totalCount
+            };
+            console.log("分页信息：", paginationInfo);
+            this.setState({ pagination: paginationInfo });
+    
+            this.setState({dataSource:newProps.dataSource})
+        }
+        if(newProps.ext){
+            let paginationInfo = {
+                pageSize: newProps.ext.pageSize,
+                current: newProps.ext.pageIndex,
+                total: newProps.ext.totalCount
+            };
+            console.log("分页信息：", paginationInfo);
+            this.setState({ pagination: paginationInfo });
+    
+            this.setState({dataSource:newProps.ext})
+        }
 
         if(newProps.operInfo.operType === 'FINA_QUERY_YJQR_EMP'){
             //月结页面查询勾选的确认业绩的员工
@@ -89,7 +104,7 @@ class LZRYTJTable extends Component {
                     {
                         this.props.showSearch ? <Row style={{ margin: 10 }}>
                             <Col span={24}>
-                                <SearchCondition handleSearch={this.handleSearch} />
+                                <SearchCondition handleSearch={this.handleSearch} orgPermission={'YJ_CW_LZRYYJQRB'}/>
                             </Col>
                         </Row> : null
                     }
@@ -97,7 +112,7 @@ class LZRYTJTable extends Component {
                     <Row style={{ margin: 10 }}>
                         <Col span={24}>
                             <Spin spinning={this.state.isDataLoading}>
-                                <Table columns={this.appTableColumns} dataSource={this.state.dataSource} pagination={this.state.pagination} onChange={this.handleTableChange}></Table>
+                                <Table columns={this.appTableColumns} dataSource={this.state.dataSource.extension} pagination={this.state.pagination} onChange={this.handleTableChange}></Table>
                             </Spin>
                         </Col>
                     </Row>
@@ -110,7 +125,8 @@ function MapStateToProps(state) {
 
     return {
         searchCondition: state.fina.SearchCondition,
-        operInfo:state.fina.operInfo
+        operInfo:state.fina.operInfo,
+        ext:state.fina.ext
     }
 }
 

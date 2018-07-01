@@ -271,7 +271,7 @@ class MonthSum extends Component {
                     <Modal width={800} title={this.state.monthData.stage === 'STAGE_YJQR'?'离职人员业绩确认表':'实发扣减表'} maskClosable={false} visible={(this.state.monthData.stage === 'STAGE_YJQR' || this.state.monthData.stage === 'STAGE_KKQR') ? true : false}
                         onOk={this.handleOk} onCancel={this.handleCancel} >
                         {
-                            this.state.monthData.stage === 'STAGE_YJQR' ? <LZRYTJTable showSearch={false} dataSource={this.state.yjqrResult.extension}/> : <SFKJQRTable showSearch={false} dataSource={this.state.yjskResult.extension}/>
+                            this.state.monthData.stage === 'STAGE_YJQR' ? <LZRYTJTable showSearch={false} dataSource={this.state.yjqrResult}/> : <SFKJQRTable showSearch={false} dataSource={this.state.yjskResult}/>
                         }
                     </Modal>
                 </Layout.Content>
