@@ -13,10 +13,11 @@ public class MonthFormResponse
     public string A5 { get; set; }//部门
     public string A6 { get; set; }//职位
     public int A7 { get; set; }//正常出勤天数
-    public int A8 { get; set; }//基本工资
-    public int A9 { get; set; }//交通补贴
-    public int A10 { get; set; }//通信补贴
-    public int A11 { get; set; }//其它补贴
+    public decimal A8 { get; set; }//基本工资
+    public decimal A81 { get; set; }//岗位补贴
+    public decimal A9 { get; set; }//交通补贴
+    public decimal A10 { get; set; }//通信补贴
+    public decimal A11 { get; set; }//其它补贴
     public int A12 { get; set; }//加班
     public int A13 { get; set; }//效绩奖励
     public int A131 {get;set;}//行政奖励

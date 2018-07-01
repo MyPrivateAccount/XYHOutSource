@@ -32,11 +32,11 @@ finaReducerMap[actionTypes.FINA_QUERY_YFTCCJB_SUCCESS] = function (state, action
 }
 finaReducerMap[actionTypes.FINA_QUERY_LZRYYJQRB_SUCCESS] = function (state, action) {
     console.log("readucer离职人员业绩确认表" + JSON.stringify(action.payload));
-    return Object.assign({}, state, { dataSource:action.payload ,operInfo:{operType:'FINA_QUERY_LZRYYJQRB_SUCCESS'}});
+    return Object.assign({}, state, { ext:action.payload ,operInfo:{operType:'FINA_QUERY_LZRYYJQRB_SUCCESS'}});
 }
 finaReducerMap[actionTypes.FINA_QUERY_SFKJQRB_SUCCESS] = function (state, action) {
     console.log("readucer实发扣减确认表" + JSON.stringify(action.payload));
-    return Object.assign({}, state, { dataSource:action.payload ,operInfo:{operType:'FINA_QUERY_SFKJQRB_SUCCESS'}});
+    return Object.assign({}, state, { ext:action.payload ,operInfo:{operType:'FINA_QUERY_SFKJQRB_SUCCESS'}});
 }
 finaReducerMap[actionTypes.FINA_QUERY_FYXQB_SUCCESS] = function (state, action) {
     console.log("readucer分佣详情表" + JSON.stringify(action.payload));
@@ -49,5 +49,13 @@ finaReducerMap[actionTypes.FINA_QUERY_YJTZHZ_SUCCESS] = function (state, action)
 finaReducerMap[actionTypes.FINA_QUERY_TYXQ_SUCCESS] = function (state, action) {
     console.log("readucer调佣详情表" + JSON.stringify(action.payload));
     return Object.assign({}, state, { dataSource:action.payload ,operInfo:{operType:'FINA_QUERY_TYXQ_SUCCESS'}});
+}
+finaReducerMap[actionTypes.FINA_QUERY_YJQR_EMP] = function (state, action) {
+    console.log("readucer查询业绩确认人员" + JSON.stringify(action.payload));
+    return Object.assign({}, state, {operInfo:{operType:'FINA_QUERY_YJQR_EMP'}});
+}
+finaReducerMap[actionTypes.FINA_QUERY_SKQR_EMP] = function (state, action) {
+    console.log("readucer查询实扣确认人员" + JSON.stringify(action.payload));
+    return Object.assign({}, state, {operInfo:{operType:'FINA_QUERY_SKQR_EMP'}});
 }
 export default handleActions(finaReducerMap, initState)

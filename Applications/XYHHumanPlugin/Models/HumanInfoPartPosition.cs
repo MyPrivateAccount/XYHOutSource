@@ -8,7 +8,7 @@ namespace XYHHumanPlugin.Models
     /// <summary>
     /// 兼职表
     /// </summary>
-    public class HumanInfoPartPostion
+    public class HumanInfoPartPosition
     {
         /// <summary>
         /// 主键Id

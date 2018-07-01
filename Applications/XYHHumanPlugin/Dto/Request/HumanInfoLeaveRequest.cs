@@ -3,22 +3,22 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 
-namespace XYHHumanPlugin.Models
+namespace XYHHumanPlugin.Dto.Request
 {
     /// <summary>
-    /// 离职表
+    /// 离职
     /// </summary>
-    public class HumanInfoLeave
+    public class HumanInfoLeaveRequest
     {
         /// <summary>
         /// 主键Id
         /// </summary>
-        [MaxLength(127)]
+        [StringLength(127)]
         public string Id { get; set; }
         /// <summary>
         /// 人事Id
         /// </summary>
-        [MaxLength(127)]
+        [StringLength(127)]
         public string HumanId { get; set; }
         /// <summary>
         /// 离职时间
@@ -27,25 +27,13 @@ namespace XYHHumanPlugin.Models
         /// <summary>
         /// 交接人
         /// </summary>
-        [MaxLength(127)]
+        [StringLength(127)]
         public string NewHumanId { get; set; }
 
         /// <summary>
         /// 是否办理离职手续
         /// </summary>
         public bool IsProcedure { get; set; }
-
-        public bool IsCurrent { get; set; }
-
-        public DateTime CreateTime { get; set; }
-        [MaxLength(127)]
-        public string CreateUser { get; set; }
-        [MaxLength(127)]
-        public string UpdateUser { get; set; }
-        public DateTime? UpdateTime { get; set; }
-        public bool IsDeleted { get; set; }
-        [MaxLength(127)]
-        public string DeleteUser { get; set; }
-        public DateTime? DeleteTime { get; set; }
+        
     }
 }

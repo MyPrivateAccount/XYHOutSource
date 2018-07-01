@@ -18,6 +18,7 @@ using LeaveInfoRequest = XYHHumanPlugin.Dto.Response.LeaveInfoResponse;
 using ChangeInfoRequest = XYHHumanPlugin.Dto.Response.ChangeInfoResponse;
 using ApplicationCore;
 using ApplicationCore.Stores;
+using Microsoft.EntityFrameworkCore;
 
 namespace XYHHumanPlugin.Managers
 {
@@ -449,20 +450,21 @@ namespace XYHHumanPlugin.Managers
                 query = query.Skip((pageIndex - 1) * pageSize).Take(pageSize);
 
             }
-            //var ul = await query.ToListAsync();
-            //r.Extension = new List<HumanInfRequest>();
-            //ul.ForEach(u =>
-            //{
-            //    var u2 = _mapper.Map<HumanInfoResponse>(u);
-            //    if (u.OrganizationExpansion != null && !String.IsNullOrEmpty(u.OrganizationExpansion.FullName))
-            //    {
-            //u2.OrganizationFullName = u.OrganizationExpansion.FullName;
-            //}else if (u.Organizations != null)
-            //{
-            //u2.OrganizationFullName = u.Organizations.OrganizationName;
-            //}
-            //    r.Extension.Add(u2);
-            //});
+            var ul = await query.ToListAsync();
+            r.Extension = new List<HumanInfoResponse>();
+            ul.ForEach(u =>
+            {
+                var u2 = _mapper.Map<HumanInfoResponse>(u);
+                if (u.OrganizationExpansion != null && !String.IsNullOrEmpty(u.OrganizationExpansion.FullName))
+                {
+                    u2.OrganizationFullName = u.OrganizationExpansion.FullName;
+                }
+                else if (u.Organizations != null)
+                {
+                    u2.OrganizationFullName = u.Organizations.OrganizationName;
+                }
+                r.Extension.Add(u2);
+            });
 
             if (r.TotalCount == 0)
             {
