@@ -311,7 +311,7 @@ class Staffinfo extends Component {
                             </Row>
                             <Row className="normalInfo">
                                 <Col>
-                                    <label style={styles.conditionRow}>排序 ：</label>
+                                    <label style={styles.conditionRow}>部门 ：</label>
                                     <TreeSelect allowClear style={{width: '200px'}} treeData={this.props.setDepartmentOrgTree || []} onChange={(e) => this.handleSearchConditionChange(e, 'departmentId')} />
                                 </Col>
                             </Row>

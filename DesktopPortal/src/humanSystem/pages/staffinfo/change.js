@@ -1,15 +1,15 @@
-import {connect} from 'react-redux';
-import {createStation, postChangeHuman, getDicParList, getcreateStation, getcreateOrgStation, getSalaryItem} from '../../actions/actionCreator';
-import React, {Component} from 'react'
-import {TreeSelect, Input, Form, Select, Button, Row, Col, Checkbox, DatePicker, Cascader} from 'antd'
-import SocialSecurity from './form/socialSecurity'
-import Salary from './form/salary'
+import { connect } from 'react-redux';
+import { createStation, postChangeHuman, getDicParList, getcreateStation, getcreateOrgStation, getSalaryItem } from '../../actions/actionCreator';
+import React, { Component } from 'react'
+import { TreeSelect, Input, Form, Select, Button, Row, Col, Checkbox, DatePicker, Cascader } from 'antd'
+import SocialSecurity from '../../../businessComponents/humanSystem/socialSecurity'
+import Salary from '../../../businessComponents/humanSystem/salary'
 import Layer from '../../../components/Layer'
 const FormItem = Form.Item;
 const Option = Select.Option;
 const formItemLayout = {
-    labelCol: {span: 6},
-    wrapperCol: {span: 17},
+    labelCol: { span: 6 },
+    wrapperCol: { span: 17 },
 };
 
 
@@ -33,9 +33,9 @@ class Change extends Component {
             //this.findCascaderLst(this.props.selHumanList[len-1].departmentId, this.props.setDepartmentOrgTree, lstvalue);
 
             this.state.id = this.props.selHumanList[len - 1].id;
-            this.props.form.setFieldsValue({name: this.props.selHumanList[len - 1].name});
-            this.props.form.setFieldsValue({idCard: this.props.selHumanList[len - 1].idCard});
-            this.props.form.setFieldsValue({orgDepartmentId: lstvalue});
+            this.props.form.setFieldsValue({ name: this.props.selHumanList[len - 1].name });
+            this.props.form.setFieldsValue({ idCard: this.props.selHumanList[len - 1].idCard });
+            this.props.form.setFieldsValue({ orgDepartmentId: lstvalue });
 
             // this.props.form.setFieldsValue({baseSalary: this.props.selHumanList[len-1].baseSalary});
             // this.props.form.setFieldsValue({subsidy: this.props.selHumanList[len-1].subsidy});
@@ -53,7 +53,7 @@ class Change extends Component {
     handleSubmit = (e) => {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
-            let {salaryForm, socialSecurityForm} = this.state;
+            let { salaryForm, socialSecurityForm } = this.state;
             salaryForm.validateFields();
             socialSecurityForm.validateFields();
             let salaryErrs = salaryForm.getFieldsError();
@@ -108,9 +108,9 @@ class Change extends Component {
     subPageLoadCallback = (formObj, pageName) => {
         console.log("表单对象:", formObj, pageName);
         if (pageName == "socialSecurity") {
-            this.setState({socialSecurityForm: formObj});
+            this.setState({ socialSecurityForm: formObj });
         } else if (pageName == "salary") {
-            this.setState({salaryForm: formObj});
+            this.setState({ salaryForm: formObj });
         }
     }
 
@@ -118,12 +118,12 @@ class Change extends Component {
         let self = this;
         let humanInfo = this.props.location.state;
         // let len = this.props.selHumanList.length;
-        const {getFieldDecorator, getFieldsError, getFieldsValue, isFieldTouched} = this.props.form;
+        const { getFieldDecorator, getFieldsError, getFieldsValue, isFieldTouched } = this.props.form;
         return (
             <Layer>
-                <div className="page-title" style={{marginBottom: '10px'}}>异动调薪</div>
+                <div className="page-title" style={{ marginBottom: '10px' }}>异动调薪</div>
                 <Form onSubmit={this.handleSubmit}>
-                    <Row style={{marginTop: '10px'}}>
+                    <Row style={{ marginTop: '10px' }}>
                         <Col span={7}>
                             <FormItem {...formItemLayout} label="员工编号">
                                 {getFieldDecorator('userID', {
@@ -227,7 +227,7 @@ class Change extends Component {
                     <Salary subPageLoadCallback={(formObj, pageName) => this.subPageLoadCallback(formObj, pageName)} />
 
                     <Row>
-                        <Col span={20} style={{textAlign: 'center'}}>
+                        <Col span={20} style={{ textAlign: 'center' }}>
                             <Button type="primary" htmlType="submit" disabled={this.hasErrors(getFieldsValue())} >提交</Button>
                         </Col>
                     </Row>
