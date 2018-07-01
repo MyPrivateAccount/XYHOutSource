@@ -172,3 +172,28 @@ export const SEARCH_HUMAN_INFO_SUCCESS = 'SEARCH_HUMAN_INFO_SUCCESS'
 //删除成交报告
 export const DEALRP_RP_DELETE = 'DEALRP_RP_DELETE'
 export const DEALRP_RP_DELETE_SUCCESS = 'DEALRP_RP_DELETE_SUCCESS'
+//月结页面相关
+export const YJ_MONTH_GET = 'YJ_MONTH_GET'//获取月结月份
+export const YJ_MONTH_GETUPDATE = 'YJ_MONTH_GETUPDATE'//获取月结月份返回
+export const YJ_MONTH_START = 'YJ_MONTH_START'//开始月结
+export const YJ_MONTH_START_UPDATE = 'YJ_MONTH_START_UPDATE'//开始月结返回
+export const YJ_MONTH_CHECK = 'YJ_MONTH_CHECK'//月结进度检查接口
+export const YJ_MONTH_CHECK_UPDATE = 'YJ_MONTH_CHECK_UPDATE'//月结进度检查接口返回
+export const YJ_MONTH_CANCEL = 'YJ_MONTH_CANCEL'//取消月结
+export const YJ_MONTH_CANCEL_UPDATE = 'YJ_MONTH_CANCEL_UPDATE'//取消月结返回
+export const YJ_MONTH_YJQR_QUERY = 'YJ_MONTH_YJQR_QUERY'//业绩确认查询
+export const YJ_MONTH_YJQR_QUERY_UPDATE = 'YJ_MONTH_YJQR_QUERY_UPDATE'//业绩确认查询返回
+export const YJ_MONTH_YJQR_COMMIT='YJ_MONTH_YJQR_COMMIT'//业绩确认提交请求
+export const YJ_MONTH_YJQR_COMMIT_UPDATE='YJ_MONTH_YJQR_COMMIT_UPDATE'//业绩确认提交请求返回
+export const YJ_MONTH_SKQR_QUERY = 'YJ_MONTH_SKQR_QUERY'//实扣查询
+export const YJ_MONTH_SKQR_QUERY_UPDATE = 'YJ_MONTH_SKQR_QUERY_UPDATE'//实扣查询返回
+export const YJ_MONTH_SKQR_COMMIT = 'YJ_MONTH_SKQR_COMMIT'//实扣查询提交
+export const YJ_MONTH_SKQR_COMMIT_UPDATE = 'YJ_MONTH_SKQR_COMMIT_UPDATE'//实扣查询提交返回
+export const YJ_MONTH_ROLLBACK = 'YJ_MONTH_ROLLBACK'//月结回滚
+export const YJ_MONTH_ROLLBACK_UPDATE = 'YJ_MONTH_ROLLBACK_UPDATE'//月结回滚返回
+///////////////////////////////////////////////////////////
+export const FINA_QUERY_YJQR_EMP = 'FINA_QUERY_YJQR_EMP'
+export const YJ_MONTH_EMP = 'YJ_MONTH_EMP'
+///////////////////////////////////////////////////////////
+export const FINA_QUERY_SKQR_EMP = 'FINA_QUERY_SKQR_EMP'
+export const YJ_MONTH_SKQR_EMP = 'YJ_MONTH_SKQR_EMP'

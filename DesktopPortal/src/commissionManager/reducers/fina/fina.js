@@ -50,4 +50,12 @@ finaReducerMap[actionTypes.FINA_QUERY_TYXQ_SUCCESS] = function (state, action) {
     console.log("readucer调佣详情表" + JSON.stringify(action.payload));
     return Object.assign({}, state, { dataSource:action.payload ,operInfo:{operType:'FINA_QUERY_TYXQ_SUCCESS'}});
 }
+finaReducerMap[actionTypes.FINA_QUERY_YJQR_EMP] = function (state, action) {
+    console.log("readucer查询业绩确认人员" + JSON.stringify(action.payload));
+    return Object.assign({}, state, {operInfo:{operType:'FINA_QUERY_YJQR_EMP'}});
+}
+finaReducerMap[actionTypes.FINA_QUERY_SKQR_EMP] = function (state, action) {
+    console.log("readucer查询实扣确认人员" + JSON.stringify(action.payload));
+    return Object.assign({}, state, {operInfo:{operType:'FINA_QUERY_SKQR_EMP'}});
+}
 export default handleActions(finaReducerMap, initState)

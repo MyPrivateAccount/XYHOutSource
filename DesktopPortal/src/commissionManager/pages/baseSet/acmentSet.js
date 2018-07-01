@@ -5,6 +5,7 @@ import { Layout, Table, Button, Checkbox, Popconfirm, Tooltip, Row, Col, Input, 
 import { acmentParamAdd, acmentParamEdit, acmentParamDel, acmentParamListGet, orgGetPermissionTree } from '../../actions/actionCreator'
 import SearchCondition from '../../constants/searchCondition'
 import AcmentEditor from './acmentEditor'
+import {keepTwoDecimalFull} from '../../constants/utils'
 
 class AcmentSet extends Component {
     state = {
@@ -82,8 +83,8 @@ class AcmentSet extends Component {
             newProps.operInfo.operType = ''
         }
 
-        if (newProps.operInfo.operType === 'org_update') {
-            console.log('org_update')
+        if (newProps.operInfo.operType === 'YJ_YJFTSZ_CK') {
+            console.log('YJ_YJFTSZ_CK')
             this.handleSearch(newProps.permissionOrgTree.BaseSetOrgTree[0].key)
             this.setState({ branchId: newProps.permissionOrgTree.BaseSetOrgTree[0].key })
             newProps.operInfo.operType = ''
@@ -130,7 +131,8 @@ class AcmentSet extends Component {
             else {
                 data[i].type = '内部分配项'
             }
-            data[i].percent = data[i].percent * 100 + '%'
+            let percent = keepTwoDecimalFull(data[i].percent*100)
+            data[i].percent = percent + '%'
         }
         return data
     }

@@ -1,7 +1,7 @@
 import {connect} from 'react-redux';
 import {createStation, getOrgList, leavePosition} from '../../actions/actionCreator';
 import React, {Component} from 'react'
-import {Select, Input, Form, Cascader, Button, Row, Col, Checkbox, DatePicker, Spin} from 'antd'
+import {Select, Input, Form, Cascader, Button, Row, Col, Checkbox, DatePicker, TreeSelect} from 'antd'
 import Layer from '../../../components/Layer'
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -25,10 +25,11 @@ class Left extends Component {
 
     handleSubmit = (e) => {
         e.preventDefault();
+        let humanInfo = this.props.location.state;
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                values.id = this.props.selHumanList[this.props.selHumanList.length - 1].id;
-                values.idCard = this.props.selHumanList[this.props.selHumanList.length - 1].idcard;
+                values.id = humanInfo.id;
+                values.idCard = humanInfo.idcard;
                 this.props.dispatch(leavePosition(values));
             }
         });
@@ -36,7 +37,8 @@ class Left extends Component {
 
     render() {
         const {getFieldDecorator, getFieldsError, getFieldsValue, isFieldTouched} = this.props.form;
-        let humenInfo = this.props.location.state;
+        let humanInfo = this.props.location.state;
+        console.log("部门id:",humanInfo.departmentId);
         return (
             <Layer>
                 <div className="page-title" style={{marginBottom: '10px'}}>离职</div>
@@ -45,8 +47,8 @@ class Left extends Component {
                         <Col span={7}>
                             <FormItem {...formItemLayout} label="员工编号">
                                 {getFieldDecorator('userID', {
-                                    initialValue: humenInfo.userID,
-                                    reules: [{
+                                    initialValue: humanInfo.userID,
+                                    rules: [{
                                         required: true, message: '请输入员工编号',
                                     }]
                                 })(
@@ -57,8 +59,8 @@ class Left extends Component {
                         <Col span={7}>
                             <FormItem {...formItemLayout} label="姓名">
                                 {getFieldDecorator('name', {
-                                    initialValue: humenInfo.name,
-                                    reules: [{
+                                    initialValue: humanInfo.name,
+                                    rules: [{
                                         required: true, message: '请输入姓名',
                                     }]
                                 })(
@@ -69,13 +71,14 @@ class Left extends Component {
                         <Col span={7}>
                             <FormItem {...formItemLayout} label="部门">
                                 {getFieldDecorator('departmentId', {
-                                    initialValue: humenInfo.departmentId,
-                                    reules: [{
+                                    initialValue: humanInfo.departmentId,
+                                    rules: [{
                                         required: true,
                                         message: 'please entry',
                                     }]
                                 })(
-                                    <Cascader disabled={true} options={this.props.setDepartmentOrgTree} onChange={this.handleChooseDepartmentChange} onPopupVisibleChange={this.handleDepartmentChange} changeOnSelect placeholder="归属部门" />
+                                    // <Cascader disabled={true} options={this.props.setDepartmentOrgTree} onChange={this.handleChooseDepartmentChange} onPopupVisibleChange={this.handleDepartmentChange} changeOnSelect placeholder="归属部门" />
+                                    <TreeSelect disabled={true} treeData={this.props.setDepartmentOrgTree} />
                                 )}
                             </FormItem>
                         </Col>
@@ -84,8 +87,8 @@ class Left extends Component {
                         <Col span={7}>
                             <FormItem {...formItemLayout} label="离职日期">
                                 {getFieldDecorator('leaveTime', {
-                                    reules: [{
-                                        required: true, message: 'please entry',
+                                    rules: [{
+                                        required: true, message: '请输入离职日期',
                                     }]
                                 })(
                                     <DatePicker format='YYYY-MM-DD' style={{width: '100%'}} />
@@ -108,8 +111,8 @@ class Left extends Component {
                         <Col span={7}>
                             <FormItem {...formItemLayout} colon={false} label=" ">
                                 {getFieldDecorator('isFormalities', {
-                                    reules: [{
-                                        required: true, message: 'please entry',
+                                    rules: [{
+                                        required: false, message: 'please entry',
                                     }]
                                 })(
                                     <Checkbox >是否办理手续</Checkbox>
@@ -124,7 +127,7 @@ class Left extends Component {
                     </Row>
                     {/* <FormItem {...formItemLayout1} label="离职办理时间">
                         {getFieldDecorator('leaveTime', {
-                            reules: [{
+                            rules: [{
                                 required:true, message: 'please entry',
                             }]
                         })(
@@ -133,7 +136,7 @@ class Left extends Component {
                     </FormItem>
                     <FormItem {...formItemLayout1} colon={false} label=" ">
                         {getFieldDecorator('isFormalities', {
-                            reules: [{
+                            rules: [{
                                 required:true, message: 'please entry',
                             }]
                         })(
@@ -142,7 +145,7 @@ class Left extends Component {
                     </FormItem>
                     <FormItem {...formItemLayout1} colon={false} label=" ">
                         {getFieldDecorator('isReduceSocialEnsure', {
-                            reules: [{
+                            rules: [{
                                 required:true, message: 'please entry',
                             }]
                         })(
@@ -162,6 +165,8 @@ class Left extends Component {
 function tableMapStateToProps(state) {
     return {
         selHumanList: state.basicData.selHumanList,
+        setDepartmentOrgTree: state.basicData.searchOrgTree,
+
     }
 }
 

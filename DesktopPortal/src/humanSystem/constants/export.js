@@ -701,6 +701,30 @@ export const MonthHead = [//以第一层为基准, 必须平行
                         }
                     },
                     {
+                        t: "s", v: "岗位补贴",row: 1, col: 1,
+                        s: {
+                            fill: {
+                                patternType: "solid",
+                                bgColor: { indexed: 64 },
+                                fgColor: {rgb: "BFBFBF"}
+                            },
+                            font: {
+                                name: "Calibri",
+                                sz: 10,
+                                color: {rgb: "FFFF00"},
+                                bold: false,
+                                italic: false,
+                                underline: false
+                            },
+                            border: {
+                                top: {style: "thin", color: {auto: 1}},
+                                right: {style: "thin", color: {auto: 1}},
+                                bottom: {style: "thin", color: {auto: 1}},
+                                left: {style: "thin", color: {auto: 1}}
+                            }
+                        }
+                    },
+                    {
                         t: "s", v: "交通补贴",row: 1, col: 1,
                         s: {
                             fill: {
@@ -1389,11 +1413,17 @@ export function createColumData(head, data) {
         let i = 0;
         let va = {};
         for (const key in itm) {
-            if (itm[key].constructor === String) {
-                va[Letter[i++]+row] = {t: 's', v: itm[key]};
-            } else {
-                va[Letter[i++]+row] = {t: 'n', v: itm[key]};
+            if (itm[key] !== null) {
+                if (itm[key].constructor === String) {
+                    va[Letter[i++]+row] = {t: 's', v: itm[key]};
+                } else {
+                    va[Letter[i++]+row] = {t: 'n', v: itm[key]};
+                }
             }
+            else {
+                va[Letter[i++]+row] = {t: 'n', v: ""};
+            }
+            
         }
         ret.push(va);
         row++;
@@ -1460,6 +1490,7 @@ export function writeMonthFile(merge, data, sheetname,name) {
         obj = Object.assign(obj, it);
     }
     let sh = {
+        "!cols": [{wch: 6},{wch: 6},{wch: 6},{wch: 6},{wch: 26},{wch: 26}],
         "!ref": na,
         ...merge.head,
         ...obj,

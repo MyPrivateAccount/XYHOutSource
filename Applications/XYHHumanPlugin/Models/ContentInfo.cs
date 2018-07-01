@@ -194,6 +194,8 @@ namespace XYHHumanPlugin.Models
         [MaxLength(127)]
         public string OperName { get; set; }
         [MaxLength(127)]
+        public string OperID { get; set; }
+        [MaxLength(127)]
         public string AttendanceForm { get; set; }
         [MaxLength(127)]
         public string SalaryForm { get; set; }

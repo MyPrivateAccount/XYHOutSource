@@ -10,6 +10,7 @@ import acmReducer from './acm'
 import basicDataReducer from './basicData';
 import rpReducerMap from './dealRp/rp'
 import finaReducerMap from './fina/fina'
+import monthReducerMap from './fina/month'
 export default combineReducers({
     router: routerReducer,
     ppft: ppFtReducer,
@@ -19,5 +20,6 @@ export default combineReducers({
     acm:acmReducer,
     base:basicDataReducer,
     rp:rpReducerMap,
-    fina:finaReducerMap
+    fina:finaReducerMap,
+    month:monthReducerMap
 });

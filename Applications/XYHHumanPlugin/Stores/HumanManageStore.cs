@@ -716,6 +716,17 @@ namespace XYHHumanPlugin.Stores
             return query.Invoke(Context.HumanInfos.AsNoTracking()).ToListAsync(cancellationToken);
         }
 
+        public Task CreateMonthSalaryListAsync(List<SalaryFormInfo> forminfolst, CancellationToken cle = default(CancellationToken))
+        {
+            if (forminfolst == null)
+            {
+                throw new ArgumentNullException(nameof(forminfolst));
+            }
+
+            Context.AddRange(forminfolst);
+            return Context.SaveChangesAsync(cle);
+        }
+
         public Task<List<AttendanceSettingInfo>> GetListAttendanceSettingAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
 

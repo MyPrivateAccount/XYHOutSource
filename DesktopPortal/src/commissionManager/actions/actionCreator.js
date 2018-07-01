@@ -114,3 +114,27 @@ export const rpClear = createAction(actionTypes.DEALRP_RP_CLEAR)
 export const searchHuman = createAction(actionTypes.SEARCH_HUMAN_INFO)
 //删除报告
 export const dealRpDelete = createAction(actionTypes.DEALRP_RP_DELETE)
+//月结相关
+export const yjGetMonth = createAction(actionTypes.YJ_MONTH_GET)//获取月结月份
+//开始月结
+export const yjStart = createAction(actionTypes.YJ_MONTH_START)
+//月结检查
+export const yjCheckState = createAction(actionTypes.YJ_MONTH_CHECK)
+//月结取消
+export const yjCancel = createAction(actionTypes.YJ_MONTH_CANCEL)
+//业绩确认查询
+export const yjQrQuery = createAction(actionTypes.YJ_MONTH_YJQR_QUERY)
+//业绩确认提交
+export const yjYjQrCommit = createAction(actionTypes.YJ_MONTH_YJQR_COMMIT)
+//实扣查询
+export const yjSkQuery = createAction(actionTypes.YJ_MONTH_SKQR_QUERY)
+//实扣确认
+export const yjSkCommit = createAction(actionTypes.YJ_MONTH_SKQR_COMMIT)
+//月结回滚
+export const yjRollBack = createAction(actionTypes.YJ_MONTH_ROLLBACK)
+//查询业绩确认的员工
+export const yjQrEmpQuery = createAction(actionTypes.FINA_QUERY_YJQR_EMP)
+export const yjQrEmpResult = createAction(actionTypes.YJ_MONTH_EMP)
+//查询实际扣减的员工
+export const yjSkEmpQuery = createAction(actionTypes.FINA_QUERY_SKQR_EMP)
+export const yjSkEmpResult = createAction(actionTypes.YJ_MONTH_SKQR_EMP)

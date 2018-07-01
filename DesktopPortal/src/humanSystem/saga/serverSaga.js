@@ -89,6 +89,7 @@ export function* createMonth(state) {
             huResult.data.message = '创建月结成功';
 
             yield put({type: actionUtils.getActionType(actionTypes.MONTH_GETALLMONTHLIST), payload: state.payload.result});
+            yield put({type: actionUtils.getActionType(actionTypes.SET_SEARCH_LOADING), payload: false});
         }
     } catch (e) {
         huResult.data.message = "创建月结接口调用异常!";
@@ -417,22 +418,32 @@ export function* exportMonthForm(state) {
     let huResult = {isOk: false, msg: '获取月结表信息异动失败！'};
 
     try {
-        huResult = yield call(ApiClient.get, url);
+        huResult = yield call(ApiClient.post, url, state.payload);
         if (huResult.data.code == 0) {
-            huResult.data.message = '获取月结表信息异动成功';
+            huResult.data.message = '获取月结接口成功,导出表格失败';
 
             if (huResult.data.extension) {
-                MonthHead[0].v = MonthHead[0].v + state.payload + "月结表";
+                let strmonth = state.payload.getFullYear() + "." + (state.payload.getMonth()+1);
+                MonthHead[0].v = MonthHead[0].v + strmonth + "月结表";
                 let f = createMergeHead(MonthHead);
                 let ret = createColumData(f, huResult.data.extension);
                 writeMonthFile(f, ret, "工资表", "月结.xlsx");
+
+                yield put({type: actionUtils.getActionType(actionTypes.SET_SEARCH_LOADING), payload: false});
+                huResult.data.message = '获取月结接口成功,导出表格成功';
+                notification.success({
+                    message: huResult.data.message,
+                    duration: 3
+                });
+                return;
             }
 
-            notification.success({
+            notification.error({
                 message: huResult.data.message,
                 duration: 3
             });
 
+            yield put({type: actionUtils.getActionType(actionTypes.SET_SEARCH_LOADING), payload: false});
             return;
         }
     } catch (e) {
@@ -444,7 +455,9 @@ export function* exportMonthForm(state) {
             message: huResult.data.message,
             duration: 3
         });
+        yield put({type: actionUtils.getActionType(actionTypes.SET_SEARCH_LOADING), payload: false});
     }
+
 }
 
 function findCascaderLst(id, tree, lst) {
@@ -702,6 +715,26 @@ export function* deleteRewardPunishment(state) {
         });
     }
 }
+//保存兼职信息
+export function* savePartTimeJob(state) {
+    // let url = WebApiConfig.server.addRPInfo + "/" + state.payload;
+    let url = WebApiConfig.server.savePartTimeJob;
+    let huResult = {isOk: false, msg: '保存兼职信息失败!'};
+    try {
+        let res = yield call(ApiClient.post, url, state.payload);
+        if (res.data.code == 0) {
+            huResult.isOk = true;
+            huResult.message = '保存兼职信息成功';
+
+        }
+    } catch (e) {
+        huResult.message = "保存兼职信息接口调用异常!";
+    }
+    notification[huResult.isOk ? "success" : "error"]({
+        message: huResult.message,
+        duration: 3
+    });
+}
 
 export default function* watchDicAllAsync() {
     yield takeLatest(actionUtils.getActionType(actionTypes.POST_HUMANINFO), postHumanInfoAsync);
@@ -717,9 +750,10 @@ export default function* watchDicAllAsync() {
     yield takeLatest(actionUtils.getActionType(actionTypes.DELETE_SALARYINFO), deleteSalary);
     yield takeLatest(actionUtils.getActionType(actionTypes.GET_HUMANIMAGE), getHumanImage);
     yield takeLatest(actionUtils.getActionType(actionTypes.DELETE_BLACKINFO), deleteBlackInfo);
-    yield takeLatest(actionUtils.getActionType(actionTypes.POST_SOCIALINSURANCE), setSocialInsure);
+    yield takeLatest(actionUtils.getActionType(actionTypes.HUMAN_BECOME_STAFF), setSocialInsure);
     yield takeLatest(actionUtils.getActionType(actionTypes.LEAVE_POSITON), leavePosition);
     yield takeLatest(actionUtils.getActionType(actionTypes.POST_CHANGEHUMAN), changeHuman);
+    yield takeLatest(actionUtils.getActionType(actionTypes.HUMAN_PARTTIME_JOB_SAVE), savePartTimeJob)
     //导表
     yield takeLatest(actionUtils.getActionType(actionTypes.EXPORT_MONTHFORM), exportMonthForm);
     yield takeLatest(actionUtils.getActionType(actionTypes.EXPORT_HUMANFORM), exportHumanForm);

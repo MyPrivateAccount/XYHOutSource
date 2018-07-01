@@ -9,6 +9,7 @@ namespace XYHHumanPlugin.Dto.Response
         public string ID { get; set; }
         public DateTime? SettleTime { get; set; }
         public string OperName { get; set; }
+        public string OperID { get; set; }
         public string AttendanceForm { get; set; }
         public string SalaryForm { get; set; }
     }

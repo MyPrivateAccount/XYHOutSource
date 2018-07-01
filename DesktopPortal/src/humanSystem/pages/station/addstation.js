@@ -64,7 +64,7 @@ class Station extends Component {
                     <FormItem {...formItemLayout1} label="职位名称">
                         {getFieldDecorator('positionName', {
                             initialValue: editPositionObj.positionName,
-                            reules: [{
+                            rules: [{
                                 required: true, message: '请输入职位名称',
                             }]
                         })(
@@ -74,7 +74,7 @@ class Station extends Component {
                     <FormItem {...formItemLayout1} label="职位类型">
                         {getFieldDecorator('positionType', {
                             initialValue: editPositionObj.positionType,
-                            reules: [{
+                            rules: [{
                                 required: true, message: '请选择职位类型',
                             }]
                         })(
@@ -88,7 +88,7 @@ class Station extends Component {
                     <FormItem {...formItemLayout1} label="所属分公司">
                         {getFieldDecorator('parentID', {
                             initialValue: editPositionObj.parentID,
-                            reules: [{
+                            rules: [{
                                 required: true, message: '请选择所属分公司',
                             }]
                         })(

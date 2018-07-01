@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {Form, Input, InputNumber, DatePicker, Select, Button, Row, Col, Checkbox, } from 'antd'
 import {connect} from 'react-redux';
 import moment from 'moment';
-import {getworkNumbar, postHumanInfo, setSocialEN} from '../../actions/actionCreator';
+import {getworkNumbar, postHumanInfo, becomeStaff} from '../../actions/actionCreator';
 import './staff.less';
 import SocialSecurity from './form/socialSecurity'
 import Layer from '../../../components/Layer'
@@ -46,7 +46,7 @@ class OnBoarding extends Component {
                     }
                 }
                 if (!err && hasErr) {
-                    this.props.dispatch(setSocialEN(this.state));
+                    this.props.dispatch(becomeStaff(this.state));
                 }
                 console.log("转正表单:", curErrs);
             });
@@ -62,7 +62,7 @@ class OnBoarding extends Component {
     }
 
     render() {
-        let humenInfo = this.props.location.state;
+        let humanInfo = this.props.location.state;
         const {getFieldDecorator} = this.props.form;
         return (
             <Layer >
@@ -73,10 +73,10 @@ class OnBoarding extends Component {
                 </Row>
                 <Row>
                     <Col span={7}>
-                        <label class="ant-form-item-label">员工编号:</label><Input style={{width: '200px'}} disabled value={humenInfo.userID} />
+                        <label class="ant-form-item-label">员工编号:</label><Input style={{width: '200px'}} disabled value={humanInfo.userID} />
                     </Col>
                     <Col span={7}>
-                        <label class="ant-form-item-label">姓名:</label><Input style={{width: '200px'}} disabled value={humenInfo.name} />
+                        <label class="ant-form-item-label">姓名:</label><Input style={{width: '200px'}} disabled value={humanInfo.name} />
                     </Col>
                     <Col span={7}>
                         <FormItem {...formItemLayout} label="转正实际生效时间">

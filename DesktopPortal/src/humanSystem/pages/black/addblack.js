@@ -48,8 +48,8 @@ class Black extends Component {
                     <FormItem {...formItemLayout1} />
                     <FormItem {...formItemLayout1} label="身份证号码">
                         {getFieldDecorator('idCard', {
-                            reules: [{
-                                required: true, message: 'please entry idCard',
+                            rules: [{
+                                required: true, message: '请输入身份证号',
                             }]
                         })(
                             <Input disabled={this.props.ismodify == 1} placeholder="请输入身份证号码" />
@@ -57,8 +57,8 @@ class Black extends Component {
                     </FormItem>
                     <FormItem {...formItemLayout1} label="姓名">
                         {getFieldDecorator('name', {
-                            reules: [{
-                                required: true, message: 'please entry name',
+                            rules: [{
+                                required: true, message: '请输入姓名',
                             }]
                         })(
                             <Input placeholder="请输入姓名" />
@@ -66,8 +66,8 @@ class Black extends Component {
                     </FormItem>
                     <FormItem {...formItemLayout1} label="备注">
                         {getFieldDecorator('reason', {
-                            reules: [{
-                                required: true, message: 'please entry name',
+                            rules: [{
+                                required: false, message: 'please entry name',
                             }]
                         })(
                             <Input placeholder="请输入备注" />
