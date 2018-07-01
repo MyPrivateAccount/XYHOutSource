@@ -1,51 +1,49 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Text;
 
-namespace XYHHumanPlugin.Models
+namespace XYHHumanPlugin.Dto.Response
 {
-    /// <summary>
-    /// 离职表
-    /// </summary>
-    public class HumanInfoLeave
+    public class HumanInfoPartPositionResponse
     {
         /// <summary>
         /// 主键Id
         /// </summary>
-        [MaxLength(127)]
         public string Id { get; set; }
         /// <summary>
         /// 人事Id
         /// </summary>
-        [MaxLength(127)]
         public string HumanId { get; set; }
         /// <summary>
-        /// 离职时间
+        /// 部门Id
         /// </summary>
-        public DateTime LeaveTime { get; set; }
+        public string DepartmentId { get; set; }
         /// <summary>
-        /// 交接人
+        /// 职位
         /// </summary>
-        [MaxLength(127)]
-        public string NewHumanId { get; set; }
-
+        public string Position { get; set; }
         /// <summary>
-        /// 是否办理离职手续
+        /// 开始时间
         /// </summary>
-        public bool IsProcedure { get; set; }
-
+        public DateTime StartTime { get; set; }
+        /// <summary>
+        /// 结束时间
+        /// </summary>
+        public DateTime? EndTime { get; set; }
+        /// <summary>
+        /// 备注
+        /// </summary>
+        public string Desc { get; set; }
+        /// <summary>
+        /// 是否有效
+        /// </summary>
         public bool IsCurrent { get; set; }
 
+
         public DateTime CreateTime { get; set; }
-        [MaxLength(127)]
         public string CreateUser { get; set; }
-        [MaxLength(127)]
         public string UpdateUser { get; set; }
         public DateTime? UpdateTime { get; set; }
         public bool IsDeleted { get; set; }
-        [MaxLength(127)]
-        public string DeleteUser { get; set; }
-        public DateTime? DeleteTime { get; set; }
     }
 }

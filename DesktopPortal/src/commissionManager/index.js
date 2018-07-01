@@ -329,8 +329,8 @@ class CommissionManagerIndex extends Component {
                                 <Route path='/sftc' render={(props) => <LoadableSFTCPage user={this.props.user} judgePermissions={this.props.judgePermissions} {...props} />} />
                                 <Route path='/tccb' render={(props) => <LoadableTCCBPage user={this.props.user} judgePermissions={this.props.judgePermissions} {...props} />} />
                                 <Route path='/yftccj' render={(props) => <LoadableYFTCCJPage user={this.props.user} judgePermissions={this.props.judgePermissions} {...props} />} />
-                                <Route path='/lzryyj' render={(props) => <LoadableLZRYYJPage user={this.props.user} judgePermissions={this.props.judgePermissions} {...props} />} />
-                                <Route path='/sfkj' render={(props) => <LoadableSFKJQRJPage user={this.props.user} judgePermissions={this.props.judgePermissions} {...props} />} />
+                                <Route path='/lzryyj' render={(props) => <LoadableLZRYYJPage user={this.props.user} showSearch={true} judgePermissions={this.props.judgePermissions} {...props} />} />
+                                <Route path='/sfkj' render={(props) => <LoadableSFKJQRJPage user={this.props.user} showSearch={true} judgePermissions={this.props.judgePermissions} {...props} />} />
                                 
                                 <Route path='/fyxq' render={(props) => <LoadableFYXQBPage user={this.props.user} judgePermissions={this.props.judgePermissions} {...props} />} />
                                 <Route path='/yjtzmxhz' render={(props) => <LoadableYJTZHZPage user={this.props.user} judgePermissions={this.props.judgePermissions} {...props} />} />

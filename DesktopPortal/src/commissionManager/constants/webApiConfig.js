@@ -77,7 +77,14 @@ const WebApiConfig = {
         rpDel:basicDataBaseApiUrl+'yj/report/',
     },
     fina:{
-        searchPPFt:basicDataBaseApiUrl+'yj/ppft/search'
+        searchPPFt:basicDataBaseApiUrl+'yj/ppft/search',
+        searchRYFT:basicDataBaseApiUrl+'yj/report/rsft',
+        searchYFTC:basicDataBaseApiUrl+'yj/report/yftc',
+        searchSFTC:basicDataBaseApiUrl+'yj/report/sftc',
+        searchTCCB:basicDataBaseApiUrl+'yj/report/tccb',
+        searchYFTCCJ:basicDataBaseApiUrl+'yj/report/cbcj',
+        searchLZYJQR:basicDataBaseApiUrl+'yj/report/yjqr/',
+        searchSKQR:basicDataBaseApiUrl+'yj/report/skqr/'
     },
     yj:{
         monthlyMonth:basicDataBaseApiUrl+'yj/monthly/'//月结月份

@@ -30,7 +30,7 @@ class MainIndex extends Component {
     componentWillMount() {//ADMINISTRATIVE_REWARD  ADMINISTRATIVE_PUNISHMENT  ADMINISTRATIVE_DEDUCT
         this.props.dispatch(setSearchLoadingVisible(true));
         this.props.dispatch(searchRewardPunishment(this.props.searchInfo));
-        this.props.dispatch(getDicParList(["ADMINISTRATIVE_REWARD, ADMINISTRATIVE_PUNISHMENT, ADMINISTRATIVE_DEDUCT"]));
+        this.props.dispatch(getDicParList(["ADMINISTRATIVE_REWARD", "ADMINISTRATIVE_PUNISHMENT", "ADMINISTRATIVE_DEDUCT"]));
     }
     
     handleClickFucButton = (e) => {

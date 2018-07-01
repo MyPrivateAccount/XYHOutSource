@@ -105,6 +105,23 @@ namespace XYHHumanPlugin
             CreateMap<SimpleUser, UserInfo>().ReverseMap();
             CreateMap<SimpleUser, UserInfo>();
 
+            CreateMap<RewardPunishmentInfo, RewardPunishmentResponse>();
+            CreateMap<RewardPunishmentResponse, RewardPunishmentInfo>();
+
+            CreateMap<HumanInfoAdjustment, HumanInfoAdjustmentResponse>().ReverseMap();
+            CreateMap<HumanInfoAdjustment, HumanInfoAdjustmentResponse>().ReverseMap();
+
+            CreateMap<HumanInfoChange, HumanInfoChangeRequest>().ReverseMap();
+            CreateMap<HumanInfoChange, HumanInfoChangeResponse>().ReverseMap();
+
+            CreateMap<HumanInfoLeave, HumanInfoLeaveRequest>().ReverseMap();
+            CreateMap<HumanInfoLeave, HumanInfoLeaveResponse>().ReverseMap();
+
+            CreateMap<HumanInfoPartPosition, HumanInfoPartPositionRequest>().ReverseMap();
+            CreateMap<HumanInfoPartPosition, HumanInfoPartPositionResponse>().ReverseMap();
+
+            CreateMap<HumanInfoRegular, HumanInfoRegularRequest>().ReverseMap();
+            CreateMap<HumanInfoRegular, HumanInfoRegularResponse>().ReverseMap();
         }
     }
 }

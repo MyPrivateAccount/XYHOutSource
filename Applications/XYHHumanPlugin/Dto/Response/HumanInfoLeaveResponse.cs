@@ -1,24 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Text;
 
-namespace XYHHumanPlugin.Models
+namespace XYHHumanPlugin.Dto.Response
 {
-    /// <summary>
-    /// 离职表
-    /// </summary>
-    public class HumanInfoLeave
+    public class HumanInfoLeaveResponse
     {
         /// <summary>
         /// 主键Id
         /// </summary>
-        [MaxLength(127)]
         public string Id { get; set; }
         /// <summary>
         /// 人事Id
         /// </summary>
-        [MaxLength(127)]
         public string HumanId { get; set; }
         /// <summary>
         /// 离职时间
@@ -27,7 +21,6 @@ namespace XYHHumanPlugin.Models
         /// <summary>
         /// 交接人
         /// </summary>
-        [MaxLength(127)]
         public string NewHumanId { get; set; }
 
         /// <summary>
@@ -38,14 +31,9 @@ namespace XYHHumanPlugin.Models
         public bool IsCurrent { get; set; }
 
         public DateTime CreateTime { get; set; }
-        [MaxLength(127)]
         public string CreateUser { get; set; }
-        [MaxLength(127)]
         public string UpdateUser { get; set; }
         public DateTime? UpdateTime { get; set; }
         public bool IsDeleted { get; set; }
-        [MaxLength(127)]
-        public string DeleteUser { get; set; }
-        public DateTime? DeleteTime { get; set; }
     }
 }

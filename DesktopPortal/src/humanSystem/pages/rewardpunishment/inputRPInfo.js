@@ -12,7 +12,7 @@ const formItemLayout1 = {
 };
 
 //ADMINISTRATIVE_REWARD  ADMINISTRATIVE_PUNISHMENT  ADMINISTRATIVE_DEDUCT
-class Black extends Component {
+class InputRPInfo extends Component {
     state = {
         type: 0,
         tempname: "",
@@ -34,6 +34,9 @@ class Black extends Component {
         this.props.form.validateFields((err, values) => {
             if (!err) {
                 values.name = this.state.tempname;
+                if (values.departmentID instanceof Array) {
+                    values.departmentID = values.departmentID[values.departmentID.length-1];
+                }
                 this.props.dispatch(addRewardPunishment(values));
             }
         });
@@ -74,10 +77,10 @@ class Black extends Component {
         const { getFieldDecorator, getFieldsError, getFieldsValue, isFieldTouched } = this.props.form;
 
         let detailtype = null;
-        switch (this.state.type) {
-            case 1:detailtype = this.props.administrativereward;break;
-            case 2:detailtype = this.props.administrativepunishment;break;
-            case 3:detailtype = this.props.administrativededuct;break;
+        switch (this.state.type+"") {
+            case "1":detailtype = this.props.administrativereward;break;
+            case "2":detailtype = this.props.administrativepunishment;break;
+            case "3":detailtype = this.props.administrativededuct;break;
             default:detailtype = [];break;
         }
 
@@ -88,9 +91,7 @@ class Black extends Component {
                     <FormItem {...formItemLayout1}/>
                     <FormItem {...formItemLayout1} label="行政类型">
                         {getFieldDecorator('type', {
-                            reules: [{
-                                required:true, message: 'please entry idCard',
-                            }]
+                            rules: [{required:true, message: 'please entry idCard'}],
                         })(
                             <Select placeholder="选择类型" onChange={this.onHandleChange}>
                                 <Option key='1' value="1">行政奖励</Option>
@@ -101,9 +102,7 @@ class Black extends Component {
                     </FormItem>
                     <FormItem {...formItemLayout1} label="详细类型">
                         {getFieldDecorator('detail', {
-                            reules: [{
-                                required:true, message: 'please entry name',
-                            }]
+                            rules: [{required:true, message: 'please entry name'}],
                         })(
                             <Select placeholder="选择类型">
                             {
@@ -118,20 +117,16 @@ class Black extends Component {
                     </FormItem>
                     <FormItem {...formItemLayout1} label="部门">
                         {getFieldDecorator('departmentID', {
-                            reules: [{
-                                required:true, message: 'please entry name',
-                            }]
+                            rules: [{required:true, message: '归属部门'}],
                         })(
                             <Cascader options={this.props.setDepartmentOrgTree} onChange={this.handleChooseDepartmentChange} onPopupVisibleChange={this.handleDepartmentChange} changeOnSelect placeholder="归属部门" />
                         )}
                     </FormItem>
                     <FormItem {...formItemLayout1} label="员工">
                         {getFieldDecorator('userID', {
-                            reules: [{
-                                required:true, message: 'please entry name',
-                            }]
+                            rules: [{required:true, message: '请选择员工'}],
                         })(
-                            <Select placeholder="选择员工" onChange={this.onHandleHumanChange}>
+                            <Select placeholder="请选择员工" onChange={this.onHandleHumanChange}>
                             {
                                 this.props.rewardpunishhumanlst.map(function(v, i) {
                                     return (
@@ -144,33 +139,35 @@ class Black extends Component {
                     </FormItem>
                     <FormItem {...formItemLayout1} label="有效日期">
                         {getFieldDecorator('workDate', {
-                            reules: [{
-                                required:true, message: 'please entry',
-                            }]
+                            rules: [{
+                                required:true, message: '请选择有效日期'
+                            }],
                         })(
-                            <MonthPicker format='YYYY-MM-DD' style={{width: '100%'}} />
+                            <MonthPicker placeholder="请选择有效日期" format='YYYY-MM-DD' style={{width: '100%'}} />
                         )}
                     </FormItem>
                     <FormItem {...formItemLayout1} label="金额">
                         {getFieldDecorator('money', {
-                            reules: [{
-                                required:true, message: 'please entry',
-                            }]
+                            rules: [{
+                                required:true,
+                                message: '请输入金额',
+                            }],
                         })(
-                            <InputNumber style={{width: '100%'}} />
+                            <InputNumber style={{width: '100%'}} placeholder="请输入金额" />
                         )}
                     </FormItem>
                     <FormItem {...formItemLayout1} label="备注">
                         {getFieldDecorator('comments', {
-                            reules: [{
-                                required:true, message: 'please entry',
-                            }]
+                            rules: [{
+                            required: false,
+                            message: '请输入备注',
+                            }],
                         })(
                             <Input placeholder="请输入备注" />
                         )}
                     </FormItem>
                     <FormItem wrapperCol={{ span: 12, offset: 6 }}>
-                        <Col span={6}><Button type="primary" htmlType="submit" disabled={this.hasErrors(getFieldsValue())} >提交</Button></Col>
+                        <Col span={6}><Button type="primary" onClick={this.handleSubmit} >提交</Button></Col>
                     </FormItem>
                 </Form>
             </Layer>
@@ -194,4 +191,4 @@ function tableMapDispatchToProps(dispatch) {
         dispatch
     };
 }
-export default connect(tableMapStateToProps, tableMapDispatchToProps)(Form.create()(Black));
+export default connect(tableMapStateToProps, tableMapDispatchToProps)(Form.create()(InputRPInfo));
