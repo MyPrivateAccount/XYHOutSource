@@ -161,7 +161,7 @@ namespace XYHHumanPlugin.Controllers
         /// <param name=""></param>
         /// <returns></returns>
         [HttpPost("regular")]
-        public async Task<ResponseMessage> HumanRegular(UserInfo user, HumanRegularRequest humanRegularRequest)
+        public async Task<ResponseMessage> HumanRegular(UserInfo user, HumanInfoRegularRequest humanRegularRequest)
         {
             ResponseMessage response = new ResponseMessage();
 
@@ -180,7 +180,7 @@ namespace XYHHumanPlugin.Controllers
         /// <param name=""></param>
         /// <returns></returns>
         [HttpPost("adjustment")]
-        public async Task<ResponseMessage> HumanAdjustment(UserInfo user, HumanAdjustmentRequest humanAdjustmentRequest)
+        public async Task<ResponseMessage> HumanAdjustment(UserInfo user, HumanInfoAdjustmentRequest humanAdjustmentRequest)
         {
             ResponseMessage response = new ResponseMessage();
 
@@ -199,7 +199,7 @@ namespace XYHHumanPlugin.Controllers
         /// <param name=""></param>
         /// <returns></returns>
         [HttpPost("leave")]
-        public async Task<ResponseMessage> HumanLeave(UserInfo user, HumanLeaveRequest humanLeaveRequest)
+        public async Task<ResponseMessage> HumanLeave(UserInfo user, HumanInfoLeaveRequest humanLeaveRequest)
         {
             ResponseMessage response = new ResponseMessage();
 
@@ -217,7 +217,7 @@ namespace XYHHumanPlugin.Controllers
         /// <param name=""></param>
         /// <returns></returns>
         [HttpPost("parttime")]
-        public async Task<ResponseMessage> HumanParttime(UserInfo user, HumanInfoPartPostionRequest humanParttimeRequest)
+        public async Task<ResponseMessage> HumanParttime(UserInfo user, HumanInfoPartPositionRequest humanParttimeRequest)
         {
             ResponseMessage response = new ResponseMessage();
 
