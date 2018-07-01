@@ -146,10 +146,11 @@ namespace XYHHumanPlugin.Managers
                         it.A4 = human.Name;
                         it.A5 = await _Store.GetOrganizationFullName(human.DepartmentId);
                         it.A6 = tf.PositionName;
-                        it.A8 = item.BaseSalary.GetValueOrDefault();
-                        it.A9 = 0;//交通补贴暂无
-                        it.A10 = 0;//通信补贴暂无
-                        it.A11 = item.Subsidy.GetValueOrDefault();//岗位补贴
+                        it.A8 = human.HumanSalaryStructure.BaseWages;
+                        it.A81 = human.HumanSalaryStructure.PostWages;
+                        it.A9 = human.HumanSalaryStructure.TrafficAllowance;//交通补贴
+                        it.A10 = human.HumanSalaryStructure.CommunicationAllowance;//通信补贴暂无
+                        it.A11 = human.HumanSalaryStructure.OtherAllowance;//其它补贴
                         var trp = await _Store.GetRewardPunishmentListAsync(a => a.Where(b => b.UserID == human.Id&&(b.WorkDate.Value.Year==settletime.Year&& b.WorkDate.Value.Month == settletime.Month)));
                         it.A131 = trp.Sum(a => { if (a.Type == 1) { return a.Money; } return 0; });
                         it.A161 = trp.Sum(a => { if (a.Type == 2) { return a.Money; } return 0; });
@@ -197,7 +198,7 @@ namespace XYHHumanPlugin.Managers
                         }
 
                         //算总
-                        it.A19 = it.A8 + it.A9 + it.A10 + it.A11 + it.A12 + it.A13 + it.A131 - it.A14 - it.A15 - it.A16 - it.A161 - it.A17 - it.A18-a1-a2-a3;
+                        it.A19 = float.Parse(it.A8.ToString()) + float.Parse(it.A81.ToString()) + float.Parse(it.A9.ToString()) + float.Parse(it.A10.ToString())+ float.Parse(it.A11.ToString()) + it.A12 + it.A13 + it.A131 - it.A14 - it.A15 - it.A16 - it.A161 - it.A17 - it.A18-a1-a2-a3;
                         it.A27 = it.A19 - it.A20 - float.Parse(it.A21.ToString()) - float.Parse(it.A22.ToString())
                             - float.Parse(it.A23.ToString()) - float.Parse(it.A24.ToString()) - float.Parse(it.A25.ToString()) - it.A26;
 
