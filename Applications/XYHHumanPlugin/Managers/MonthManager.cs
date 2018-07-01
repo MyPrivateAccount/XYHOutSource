@@ -51,18 +51,22 @@ namespace XYHHumanPlugin.Managers
             }
         }
 
-        public async Task<List<MonthFormResponse>> GetMonthForm()
+        public async Task<List<MonthFormResponse>> GetMonthForm(DateTime tf)
         {
-            var tf = await GetLastMonth();
+            //var tf = await GetLastMonth();
             if (tf != null)
             {
                 var lst = new List<MonthFormResponse>();
-                var month = await _Store.GetMonthAsync(a => a.Where(b => b.SettleTime.Value.ToString("Y") == tf.SettleTime.Value.ToString("Y")));
-                
-                if (await GetMonthSalaryFormAndAttendanceForm(lst, month.ID, month.SettleTime.GetValueOrDefault()))
+                var month = await _Store.GetMonthAsync(a => a.Where(b => b.SettleTime.Value.ToString("Y") == tf.ToString("Y")));
+
+                if (month != null)
                 {
-                    return lst;
+                    if (await GetMonthSalaryFormAndAttendanceForm(lst, month.ID, month.SettleTime.GetValueOrDefault()))
+                    {
+                        return lst;
+                    }
                 }
+                
             }
             return null;
         }
@@ -108,14 +112,12 @@ namespace XYHHumanPlugin.Managers
             month.ID = Guid.NewGuid().ToString();
             month.SettleTime = date;
             month.OperName = user.UserName;
-            month.SalaryForm = Guid.NewGuid().ToString();
-            month.AttendanceForm = Guid.NewGuid().ToString();
-
+            month.OperID = user.Id;
+            
             await _Store.CreateMonthAsync(_mapper.Map<SimpleUser>(user), month, cancellationToken);
 
-
             List<HumanInfo> humanlist = await _Store.GetHumanListAsync(a => a.Where(b => b.StaffStatus == StaffStatus.Regular && b.Id != ""));//入职员工
-            if (await CreateMonthSalaryForm(month.ID, month.SalaryForm, humanlist))
+            if (await CreateMonthSalaryForm(month.ID, humanlist))
             {
                 if (await CreateMonthAttendanceForm(month.ID, month.AttendanceForm, humanlist))
                 {
@@ -134,7 +136,7 @@ namespace XYHHumanPlugin.Managers
                 if (human != null)
                 {
                     var tf = await _Store.GetStationAsync(a => a.Where(b => b.ID == human.Position));
-                    var sc = await _Store.GetSocialInfoAsync(human.IDCard);
+                    //var sc = await _Store.GetSocialInfoAsync(human.IDCard);
                     if (tf != null)
                     {
                         var it = new MonthFormResponse();
@@ -155,43 +157,49 @@ namespace XYHHumanPlugin.Managers
                         it.A18 = human.PortBack.GetValueOrDefault();
                         it.A20 = 0;////意外险暂无
                         it.A21 = human.ClothesBack.GetValueOrDefault();
-                        it.A22 = sc.Pension.GetValueOrDefault();
-                        it.A23 = sc.Unemployment.GetValueOrDefault();
-                        it.A24 = sc.Medical.GetValueOrDefault();
-                        it.A25 = sc.WorkInjury.GetValueOrDefault();
+                        it.A22 = human.HumanSocialSecurity!=null? human.HumanSocialSecurity.EndowmentInsurance:0;
+                        it.A23 = human.HumanSocialSecurity != null ? human.HumanSocialSecurity.UnemploymentInsurance:0;
+                        it.A24 = human.HumanSocialSecurity != null ? human.HumanSocialSecurity.MedicalInsurance:0;
+                        it.A25 = human.HumanSocialSecurity != null ? human.HumanSocialSecurity.EmploymentInjuryInsurance:0;
                         it.A26 = 0;////公积金暂无
 
                         var att = await _Store.GetAttendenceListAsync(a => a.Where(b => b.UserID == human.Id&& b.Date.Value.Year == settletime.Year&& b.Date.Value.Month == settletime.Month));
-                        it.A7 = att[0].Normal;
-                        it.A12 = 0;//加班暂无
-                        it.A13 = 0;//效绩奖励暂无
-                        it.A14 = att[0].Late;
-                        it.A15 = att[0].Matter;
-                        it.A16 = att[0].Absent;
-
-                        var atts = await _Store.GetListAttendanceSettingAsync();
-
-                        int a1 = 0, a2 = 0, a3 = 0;
-                        //只算迟到 事假 旷工的扣薪
-                        foreach (var attsitem in atts)
+                        if (att!= null && att.Count > 0)
                         {
-                            if (attsitem.Type == 7)
+                            it.A7 = att[0].Normal;
+                            it.A12 = 0;//加班暂无
+                            it.A13 = 0;//效绩奖励暂无
+                            it.A14 = att[0].Late;
+                            it.A15 = att[0].Matter;
+                            it.A16 = att[0].Absent;
+                        }
+
+                        float a1 = 0, a2 = 0, a3 = 0;
+                        //只算迟到 事假 旷工的扣薪
+                        var atts = await _Store.GetListAttendanceSettingAsync();
+                        if (atts != null && atts.Count > 0)
+                        {
+                            foreach (var attsitem in atts)
                             {
-                                a1 = (attsitem.Money* it.A14)/attsitem.Times;
-                            }
-                            else if (attsitem.Type == 2)
-                            {
-                                a2 = (attsitem.Money * it.A15) / attsitem.Times;
-                            }
-                            else if (attsitem.Type == 8)
-                            {
-                                a3 = (attsitem.Money * it.A16) / attsitem.Times;
+                                if (attsitem.Type == 7)
+                                {
+                                    a1 = (attsitem.Money * it.A14) / attsitem.Times;
+                                }
+                                else if (attsitem.Type == 2)
+                                {
+                                    a2 = (attsitem.Money * it.A15) / attsitem.Times;
+                                }
+                                else if (attsitem.Type == 8)
+                                {
+                                    a3 = (attsitem.Money * it.A16) / attsitem.Times;
+                                }
                             }
                         }
 
                         //算总
                         it.A19 = it.A8 + it.A9 + it.A10 + it.A11 + it.A12 + it.A13 + it.A131 - it.A14 - it.A15 - it.A16 - it.A161 - it.A17 - it.A18-a1-a2-a3;
-                        it.A27 = it.A19 - it.A20 - it.A21 - it.A22 - it.A23 - it.A24 - it.A25 - it.A26;
+                        it.A27 = it.A19 - it.A20 - float.Parse(it.A21.ToString()) - float.Parse(it.A22.ToString())
+                            - float.Parse(it.A23.ToString()) - float.Parse(it.A24.ToString()) - float.Parse(it.A25.ToString()) - it.A26;
 
                         lst.Add(it);
                     }
@@ -202,26 +210,27 @@ namespace XYHHumanPlugin.Managers
         }
         
 
-        private async Task<bool> CreateMonthSalaryForm(string monthid, string salaryid, List<HumanInfo> humaninfolist, CancellationToken cle = default(CancellationToken))
+        private async Task<bool> CreateMonthSalaryForm(string monthid,List<HumanInfo> humaninfolist, CancellationToken cle = default(CancellationToken))
         {
             try
             {
+                List<SalaryFormInfo> lst = new List<SalaryFormInfo>();
                 foreach (var item in humaninfolist)
                 {
                     SalaryFormInfo salary = new SalaryFormInfo();
-                    salary.ID = salaryid;
+                    salary.ID = Guid.NewGuid().ToString();
                     salary.MonthID = monthid;
                     salary.HumanID = item.Id;
-                    //salary.BaseSalary = item.BaseSalary;
-                    //salary.Subsidy = item.Subsidy;
                     salary.ClothesBack = item.ClothesBack;
                     salary.AdministrativeBack = item.AdministrativeBack;
                     salary.PortBack = item.PortBack;
                     salary.OtherBack = item.OtherBack;
 
-                    await _Store.CreateMonthSalaryAsync(salary, cle);
+                    lst.Add(salary);
                 }
-                return false;
+
+                await _Store.CreateMonthSalaryListAsync(lst, cle);
+                return true;
             }
             catch (Exception e)
             {

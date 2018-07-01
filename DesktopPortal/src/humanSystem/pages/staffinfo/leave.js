@@ -48,7 +48,7 @@ class Left extends Component {
                             <FormItem {...formItemLayout} label="员工编号">
                                 {getFieldDecorator('userID', {
                                     initialValue: humanInfo.userID,
-                                    reules: [{
+                                    rules: [{
                                         required: true, message: '请输入员工编号',
                                     }]
                                 })(
@@ -60,7 +60,7 @@ class Left extends Component {
                             <FormItem {...formItemLayout} label="姓名">
                                 {getFieldDecorator('name', {
                                     initialValue: humanInfo.name,
-                                    reules: [{
+                                    rules: [{
                                         required: true, message: '请输入姓名',
                                     }]
                                 })(
@@ -72,7 +72,7 @@ class Left extends Component {
                             <FormItem {...formItemLayout} label="部门">
                                 {getFieldDecorator('departmentId', {
                                     initialValue: humanInfo.departmentId,
-                                    reules: [{
+                                    rules: [{
                                         required: true,
                                         message: 'please entry',
                                     }]
@@ -87,7 +87,7 @@ class Left extends Component {
                         <Col span={7}>
                             <FormItem {...formItemLayout} label="离职日期">
                                 {getFieldDecorator('leaveTime', {
-                                    reules: [{
+                                    rules: [{
                                         required: true, message: '请输入离职日期',
                                     }]
                                 })(
@@ -111,8 +111,8 @@ class Left extends Component {
                         <Col span={7}>
                             <FormItem {...formItemLayout} colon={false} label=" ">
                                 {getFieldDecorator('isFormalities', {
-                                    reules: [{
-                                        required: true, message: 'please entry',
+                                    rules: [{
+                                        required: false, message: 'please entry',
                                     }]
                                 })(
                                     <Checkbox >是否办理手续</Checkbox>
@@ -127,7 +127,7 @@ class Left extends Component {
                     </Row>
                     {/* <FormItem {...formItemLayout1} label="离职办理时间">
                         {getFieldDecorator('leaveTime', {
-                            reules: [{
+                            rules: [{
                                 required:true, message: 'please entry',
                             }]
                         })(
@@ -136,7 +136,7 @@ class Left extends Component {
                     </FormItem>
                     <FormItem {...formItemLayout1} colon={false} label=" ">
                         {getFieldDecorator('isFormalities', {
-                            reules: [{
+                            rules: [{
                                 required:true, message: 'please entry',
                             }]
                         })(
@@ -145,7 +145,7 @@ class Left extends Component {
                     </FormItem>
                     <FormItem {...formItemLayout1} colon={false} label=" ">
                         {getFieldDecorator('isReduceSocialEnsure', {
-                            reules: [{
+                            rules: [{
                                 required:true, message: 'please entry',
                             }]
                         })(

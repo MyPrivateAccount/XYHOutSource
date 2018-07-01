@@ -27,6 +27,7 @@ namespace XYHHumanPlugin.Stores
 
         Task CreateMonthAsync(SimpleUser userinfo, MonthInfo monthinf, CancellationToken cancellationToken = default(CancellationToken));
         Task CreateMonthSalaryAsync(SalaryFormInfo forminfo, CancellationToken cle = default(CancellationToken));
+        Task CreateMonthSalaryListAsync(List<SalaryFormInfo> forminfolst, CancellationToken cle = default(CancellationToken));
         Task CreateMonthAttendanceAsync(AttendanceFormInfo forminfo , CancellationToken cle = default(CancellationToken));
 
         Task CreateListAsync(List<FileInfo> fileInfoList, CancellationToken cancellationToken = default(CancellationToken));

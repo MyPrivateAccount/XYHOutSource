@@ -54,9 +54,9 @@ namespace XYHHumanPlugin.Controllers
             return Response;
         }
 
-        [HttpGet("monthformdata")]
+        [HttpPost("monthformdata")]
         [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
-        public async Task<ResponseMessage<List<MonthFormResponse>>> GetMonthFormData(UserInfo User)
+        public async Task<ResponseMessage<List<MonthFormResponse>>> GetMonthFormData(UserInfo User, [FromBody]DateTime date)
         {
             var Response = new ResponseMessage<List<MonthFormResponse>>();
             if (!ModelState.IsValid)
@@ -68,7 +68,7 @@ namespace XYHHumanPlugin.Controllers
 
             try
             {
-                Response.Extension = await _monthManage.GetMonthForm();
+                Response.Extension = await _monthManage.GetMonthForm(date);
             }
             catch (Exception e)
             {
@@ -151,7 +151,8 @@ namespace XYHHumanPlugin.Controllers
                     return pagingResponse;
                 }
 
-                await _monthManage.CreateMonth(User, now, HttpContext.RequestAborted);
+                if (!await _monthManage.CreateMonth(User, now, HttpContext.RequestAborted))
+                    pagingResponse.Code = ResponseCodeDefines.ServiceError;
             }
             catch (Exception e)
             {

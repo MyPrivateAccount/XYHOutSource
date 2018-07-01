@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
-import { searchConditionType,getAllMonthList, recoverMonth, createMonth,exportMonthForm} from '../../actions/actionCreator';
+import { setSearchLoadingVisible, getAllMonthList, recoverMonth, createMonth,exportMonthForm} from '../../actions/actionCreator';
 import React, { Component } from 'react'
-import {Table, Layout, Input, Select, Icon, Button, Row, Col, Checkbox, Tag, Pagination, Spin} from 'antd'
+import {Table, Layout, Input, Select, Icon, Button, Row, Col, Checkbox, Tag, notification, Spin} from 'antd'
 import SearchCondition from '../../constants/searchCondition'
 import { MonthListColums} from '../../constants/tools'
 import { Test, } from '../../constants/export';
@@ -24,17 +24,9 @@ const styles = {
     }
 }
 
-const rowSelection = {
-    onChange: (selectedRowKeys, selectedRows) => {
-      console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-    },
-    getCheckboxProps: record => ({
-      disabled: record.name === 'Disabled User', // Column configuration not to be checked
-      name: record.name,
-    }),
-};
-
 class Staffinfo extends Component {
+    state = {selList: []};
+
     componentWillMount() {
         this.props.dispatch(getAllMonthList(this.props.monthresult));
     }
@@ -52,8 +44,18 @@ class Staffinfo extends Component {
     }
 
     createMonthForm = () => {
-        let nextMonth = new Date(this.props.monthLast);
-        this.props.dispatch(exportMonthForm(nextMonth.getFullYear() + "." + (nextMonth.getMonth()+1)));
+        if (this.state.selList&&this.state.selList.length> 0) {
+            this.props.dispatch(setSearchLoadingVisible(true));
+            let nextMonth = new Date(this.state.selList[0].monthtime);
+            nextMonth.setDate(nextMonth.getDate()+1);
+            this.props.dispatch(exportMonthForm(nextMonth));
+        }
+        else {
+            notification.error({
+                message: "请选择月结月份",
+                duration: 3
+            });
+        }
     }
 
     render() {
@@ -69,6 +71,17 @@ class Staffinfo extends Component {
         }
         nextMonth = nextMonth.getFullYear() + "." + (nextMonth.getMonth()+1);
         
+
+        let self = this;
+        const rowSelection = {
+            onChange: (selectedRowKeys, selectedRows) => {
+                self.setState({selList: selectedRows});
+            },
+            getCheckboxProps: record => ({
+              disabled: record.name === 'Disabled User',
+              name: record.name,
+            }),
+        };
 
         return (
             <div>
