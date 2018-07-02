@@ -1,6 +1,7 @@
 ﻿using ApplicationCore;
 using ApplicationCore.Dto;
 using ApplicationCore.Filters;
+using ApplicationCore.Managers;
 using AspNet.Security.OAuth.Validation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -21,11 +22,15 @@ namespace XYHHumanPlugin.Controllers
     public class HumanInfoAdjustmentController : Controller
     {
         private readonly HumanInfoAdjustmentManager _humanInfoAdjustmentManager;
+        private readonly PermissionExpansionManager _permissionExpansionManager;
         private readonly ILogger Logger = LoggerManager.GetLogger("HumanInfoAdjustmentController");
 
-        public HumanInfoAdjustmentController(HumanInfoAdjustmentManager humanInfoAdjustmentManager)
+        public HumanInfoAdjustmentController(HumanInfoAdjustmentManager humanInfoAdjustmentManager,
+            PermissionExpansionManager permissionExpansionManager
+            )
         {
             _humanInfoAdjustmentManager = humanInfoAdjustmentManager;
+            _permissionExpansionManager = permissionExpansionManager;
         }
 
 
@@ -50,7 +55,7 @@ namespace XYHHumanPlugin.Controllers
             }
             try
             {
-                response.Extension = await _humanInfoAdjustmentManager.FindByIdAsync(id, HttpContext.RequestAborted);
+                return await _humanInfoAdjustmentManager.FindByIdAsync(user, id, HttpContext.RequestAborted);
             }
             catch (Exception e)
             {
@@ -82,7 +87,7 @@ namespace XYHHumanPlugin.Controllers
             }
             try
             {
-                response.Extension = await _humanInfoAdjustmentManager.CreateAsync(user, humanInfoAdjustmentRequest, HttpContext.RequestAborted);
+                return await _humanInfoAdjustmentManager.CreateAsync(user, humanInfoAdjustmentRequest, HttpContext.RequestAborted);
             }
             catch (Exception e)
             {
@@ -115,7 +120,7 @@ namespace XYHHumanPlugin.Controllers
             }
             try
             {
-                response.Extension = await _humanInfoAdjustmentManager.UpdateAsync(user, id, humanInfoAdjustmentRequest, HttpContext.RequestAborted);
+                return await _humanInfoAdjustmentManager.UpdateAsync(user, id, humanInfoAdjustmentRequest, HttpContext.RequestAborted);
             }
             catch (Exception e)
             {
@@ -147,7 +152,7 @@ namespace XYHHumanPlugin.Controllers
             }
             try
             {
-                await _humanInfoAdjustmentManager.DeleteAsync(user, id, HttpContext.RequestAborted);
+                return await _humanInfoAdjustmentManager.DeleteAsync(user, id, HttpContext.RequestAborted);
             }
             catch (Exception e)
             {

@@ -13,6 +13,7 @@ namespace XYHHumanPlugin.Stores
     {
 
         IQueryable<HumanInfoAdjustment> HumanInfoAdjustments { get; set; }
+        IQueryable<HumanInfoAdjustment> SimpleQuery();
 
         /// <summary>
         /// 新增

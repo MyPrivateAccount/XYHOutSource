@@ -13,6 +13,7 @@ namespace XYHHumanPlugin.Stores
     {
         IQueryable<HumanInfoPartPosition> HumanInfoPartPostions { get; set; }
 
+        IQueryable<HumanInfoPartPosition> SimpleQuery();
 
         /// <summary>
         /// 新增

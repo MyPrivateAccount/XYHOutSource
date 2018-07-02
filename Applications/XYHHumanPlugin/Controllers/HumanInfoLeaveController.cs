@@ -1,6 +1,7 @@
 ﻿using ApplicationCore;
 using ApplicationCore.Dto;
 using ApplicationCore.Filters;
+using ApplicationCore.Managers;
 using AspNet.Security.OAuth.Validation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -49,7 +50,7 @@ namespace XYHHumanPlugin.Controllers
             }
             try
             {
-                response.Extension = await _humanInfoLeaveManager.FindByIdAsync(id, HttpContext.RequestAborted);
+                return await _humanInfoLeaveManager.FindByIdAsync(user, id, HttpContext.RequestAborted);
             }
             catch (Exception e)
             {
@@ -81,7 +82,7 @@ namespace XYHHumanPlugin.Controllers
             }
             try
             {
-                response.Extension = await _humanInfoLeaveManager.CreateAsync(user, humanInfoLeaveRequest, HttpContext.RequestAborted);
+                return await _humanInfoLeaveManager.CreateAsync(user, humanInfoLeaveRequest, HttpContext.RequestAborted);
             }
             catch (Exception e)
             {
@@ -114,7 +115,7 @@ namespace XYHHumanPlugin.Controllers
             }
             try
             {
-                response.Extension = await _humanInfoLeaveManager.UpdateAsync(user, id, humanInfoLeaveRequest, HttpContext.RequestAborted);
+                return await _humanInfoLeaveManager.UpdateAsync(user, id, humanInfoLeaveRequest, HttpContext.RequestAborted);
             }
             catch (Exception e)
             {
@@ -146,7 +147,7 @@ namespace XYHHumanPlugin.Controllers
             }
             try
             {
-                await _humanInfoLeaveManager.DeleteAsync(user, id, HttpContext.RequestAborted);
+                return await _humanInfoLeaveManager.DeleteAsync(user, id, HttpContext.RequestAborted);
             }
             catch (Exception e)
             {
