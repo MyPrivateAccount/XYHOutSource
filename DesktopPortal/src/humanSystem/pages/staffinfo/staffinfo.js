@@ -263,7 +263,7 @@ class Staffinfo extends Component {
         let paginationProps = {total: searchInfo.searchResult.totalCount, pageSize: searchInfo.searchResult.pageSize, current: searchInfo.searchResult.pageIndex}
         return (
             <Layer className="content-page">
-                <div style={{marginTop: '1.5rem'}}>
+                <div style={{marginTop: '0.5rem'}}>
                     <Row className='searchBox'>
                         <Col span={12}>
                             <Input addonBefore="新耀行" prefix={<Icon type="search" />}
@@ -273,7 +273,7 @@ class Staffinfo extends Component {
                                 onChange={this.handleKeyChangeWord} />
                         </Col>
                         <Col span={8}>
-                            <Button type="primary" size="large" onClick={(e) => this.handleSearch()}>搜索</Button>
+                            <Button type="primary" className='searchButton' onClick={(e) => this.handleSearch()}>搜索</Button>
                         </Col>
                     </Row>
                     <div className='searchCondition'>

@@ -190,15 +190,13 @@ export function* getHumanDetailAsync(state) {
 }
 
 export function* getBlackListAsync(state) {
-    let result = {isOk: false, extension: {}, msg: '获取月结列表失败！'};
+    let result = {isOk: false, extension: {}, msg: '获取黑名单列表失败！'};
     let url = WebApiConfig.search.getBlackList;
-
     try {
         let res = yield call(ApiClient.post, url, state.payload);
         if (res.data.code == 0) {
             result.isOk = true;
             let lv = res.data.extension;
-
             yield put({
                 type: actionUtils.getActionType(actionTypes.UPDATE_BLACKLST),
                 payload: {
@@ -207,7 +205,6 @@ export function* getBlackListAsync(state) {
                     }), pageIndex: lv.pageIndex, pageSize: lv.pageSize, totalCount: lv.totalCount, lastTime: lv.lastTime
                 }
             });
-            // payload: res.data.extension});
         }
     } catch (e) {
         result.msg = '检索关键字接口调用异常';

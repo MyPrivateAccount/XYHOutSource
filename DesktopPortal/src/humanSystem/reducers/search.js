@@ -10,7 +10,7 @@ const initState = {
     achievementList: {extension: [], pageIndex: 0, pageSize: 10, total: 1},
     stationList: [],//选中的部门职位
     orgstationList: [],//选中的部门职位
-    blackList: {extension: [{key: '1', idcard: 'tt', name: 'test', reason: "tta"}], pageIndex: 0, pageSize: 10, total: 1},//黑名单结果
+    blackList: {extension: [], pageIndex: 0, pageSize: 10, total: 1},//黑名单结果
     showLoading: false,
     showOrgSelect: false,//部门选择
     navigator: [],//导航记录

@@ -3,7 +3,8 @@ import {getDicParList, postBlackLst} from '../../actions/actionCreator';
 import React, {Component} from 'react'
 import {Table, Input, Select, Form, Button, Row, Col, Checkbox, Pagination, Spin} from 'antd'
 import Layer from '../../../components/Layer'
-
+import BlackForm from '../../../businessComponents/humanSystem/blackInfo'
+import {NewGuid} from '../../../utils/appUtils';
 const FormItem = Form.Item;
 const ButtonGroup = Button.Group;
 const formItemLayout1 = {
@@ -13,70 +14,43 @@ const formItemLayout1 = {
 
 
 class Black extends Component {
-
+    state = {
+        blackForm: null
+    }
     componentWillMount() {
     }
 
     componentDidMount() {
-        let len = this.props.selBlacklist.length;
-        if (this.props.ismodify == 1) {//修改界面
-            this.props.form.setFieldsValue({idCard: this.props.selBlacklist[len - 1].idCard});
-            this.props.form.setFieldsValue({name: this.props.selBlacklist[len - 1].name});
-            this.props.form.setFieldsValue({reason: this.props.selBlacklist[len - 1].reason});
+
+    }
+
+    //子页面回调
+    subPageLoadCallback = (formObj, pageName) => {
+        console.log("表单对象:", formObj, pageName);
+        if (pageName == "black") {
+            this.setState({blackForm: formObj});
         }
     }
-
-    hasErrors(fieldsError) {
-        return !Object.keys(fieldsError).some(field => fieldsError[field]);
-    }
-
     handleSubmit = (e) => {
         e.preventDefault();
-        this.props.form.validateFields((err, values) => {
+        this.state.blackForm.validateFields((err, values) => {
             if (!err) {
+                values.id = NewGuid();
+                console.log("提交的黑名单信息:", values);
                 this.props.dispatch(postBlackLst(values));
             }
         });
     }
 
     render() {
-        const {getFieldDecorator, getFieldsError, getFieldsValue, isFieldTouched} = this.props.form;
         return (
-            <Layer>
-                <Form onSubmit={this.handleSubmit}>
-                    <FormItem {...formItemLayout1} />
-                    <FormItem {...formItemLayout1} />
-                    <FormItem {...formItemLayout1} label="身份证号码">
-                        {getFieldDecorator('idCard', {
-                            rules: [{
-                                required: true, message: '请输入身份证号',
-                            }]
-                        })(
-                            <Input disabled={this.props.ismodify == 1} placeholder="请输入身份证号码" />
-                        )}
-                    </FormItem>
-                    <FormItem {...formItemLayout1} label="姓名">
-                        {getFieldDecorator('name', {
-                            rules: [{
-                                required: true, message: '请输入姓名',
-                            }]
-                        })(
-                            <Input placeholder="请输入姓名" />
-                        )}
-                    </FormItem>
-                    <FormItem {...formItemLayout1} label="备注">
-                        {getFieldDecorator('reason', {
-                            rules: [{
-                                required: false, message: 'please entry name',
-                            }]
-                        })(
-                            <Input placeholder="请输入备注" />
-                        )}
-                    </FormItem>
-                    <FormItem wrapperCol={{span: 12, offset: 6}}>
-                        <Col span={6}><Button type="primary" htmlType="submit" disabled={this.hasErrors(getFieldsValue())} >提交</Button></Col>
-                    </FormItem>
-                </Form>
+            <Layer className="content-page">
+                <BlackForm subPageLoadCallback={(formObj, pageName) => this.subPageLoadCallback(formObj, pageName)} />
+                <Row>
+                    <Col style={{textAlign: 'center'}} span={21}>
+                        <Button type="primary" onClick={this.handleSubmit} >提交</Button>
+                    </Col>
+                </Row>
             </Layer>
 
         );
@@ -94,4 +68,4 @@ function tableMapDispatchToProps(dispatch) {
         dispatch
     };
 }
-export default connect(tableMapStateToProps, tableMapDispatchToProps)(Form.create()(Black));
+export default connect(tableMapStateToProps, tableMapDispatchToProps)(Black);

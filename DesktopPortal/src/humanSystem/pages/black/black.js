@@ -1,10 +1,7 @@
 import {connect} from 'react-redux';
-import {setLoadingVisible, adduserPage, deleteBlackInfo, getBlackList} from '../../actions/actionCreator';
+import {setLoadingVisible, setSearchLoadingVisible, adduserPage, deleteBlackInfo, getBlackList, selBlackList} from '../../actions/actionCreator';
 import React, {Component} from 'react';
-import {Input, Spin, Checkbox, Button, notification} from 'antd';
-//import {getDicParList} from '../actions/actionCreator';
-import SearchCondition from './searchCondition';
-import SearchResult from './searchResult';
+import {Input, Spin, Checkbox, Button, notification, Row, Col, Table} from 'antd';
 import './search.less';
 import Layer, {LayerRouter} from '../../../components/Layer'
 import {Route} from 'react-router'
@@ -18,10 +15,26 @@ const buttonDef = [
 
 class MainIndex extends Component {
     state = {
+        condition: {
+            keyWord: "",
+            pageIndex: 0,
+            pageSize: 0
+        },
+        editblackInfo: null//当前编辑黑名单
     }
 
     componentWillMount() {
-
+        this.handleSearch()
+    }
+    _getColumns() {
+        const columns = [
+            {title: '身份证', dataIndex: 'idCard', key: 'idCard', },
+            {title: '姓名', dataIndex: 'name', key: 'name'},
+            {title: '性别', dataIndex: 'sex', key: 'sex', render: (text, record) => <div>{text == 1 ? "男" : '女'}</div>},
+            {title: '电话', dataIndex: 'phone', key: 'phone'},
+            {title: 'email', dataIndex: 'email', key: 'email'},
+        ];
+        return columns;
     }
 
     gotoSubPage = (path, params) => {
@@ -35,12 +48,11 @@ class MainIndex extends Component {
         } else if (e.target.id === "modify") {
             if (this.props.selBlacklist.length > 0) {
                 this.props.dispatch(adduserPage({id: 12, menuID: 'menu_blackmodify', displayName: '修改黑名单', type: 'item'}));
-                this.gotoSubPage('addblack',{ismodify:"1"})
+                this.gotoSubPage('addblack', {ismodify: "1"})
             }
             else {
                 notification.error({
-                    message: '未选择指定发票',
-                    description: "请选择指定发票",
+                    description: "请选择指定黑名单",
                     duration: 3
                 });
             }
@@ -51,8 +63,7 @@ class MainIndex extends Component {
             }
             else {
                 notification.error({
-                    message: '未选择指定发票',
-                    description: "请选择指定发票",
+                    description: "请选择指定黑名单",
                     duration: 3
                 });
             }
@@ -73,25 +84,59 @@ class MainIndex extends Component {
         }
         return hasPermission;
     }
+    handleSearch = () => {
+        this.props.dispatch(setSearchLoadingVisible(true));
+        this.props.dispatch(getBlackList(this.state.condition));
+    }
 
     render() {
+        const rowSelection = {
+            onChange: (selectedRowKeys, selectedRows) => {
+                this.props.dispatch(selBlackList(selectedRows));
+            }
+        };
         let showLoading = this.props.showLoading;
+        let columns = this._getColumns();
+        let blackList = this.props.searchInfoResult.blackList;
+        let paginationInfo = {current: blackList.pageIndex, pageSize: blackList.pageSize, total: blackList.totalCount};
         return (
             <Layer >
-                <Spin spinning={showLoading}>
-                    <SearchCondition />
-                    {
-                        buttonDef.map(
-                            (button, i) => this.hasPermission(button) ?
-                                <Button key={i} id={button.buttonID} style={{marginTop: '10px', marginBottom: '10px', marginRight: '10px', border: 0}}
-                                    onClick={this.handleClickFucButton}
-                                    icon={button.icon} size={button.size} type={button.type}>{button.buttonName}</Button> : null
-                        )
-                    }
-                    <SearchResult />
-                </Spin>
+                {/* <Spin spinning={showLoading}> */}
+                {/* <SearchCondition /> */}
+                <div className="searchBox">
+                    <Row type="flex">
+                        <Col span={12}>
+                            <Input placeholder={'请输入名称'} onChange={this.handleKeyChangeWord} />
+                        </Col>
+                        <Col span={8}>
+                            <Button type='primary' className='searchButton' onClick={this.handleSearch}>查询</Button>
+                        </Col>
+                    </Row>
+                </div>
+                {
+                    buttonDef.map(
+                        (button, i) => this.hasPermission(button) ?
+                            <Button key={i} id={button.buttonID} style={{marginTop: '10px', marginBottom: '10px', marginRight: '10px', border: 0}}
+                                onClick={this.handleClickFucButton}
+                                icon={button.icon} size={button.size} type={button.type}>{button.buttonName}</Button> : null
+                    )
+                }
+                {/* <SearchResult /> */}
+                <div>
+                    {<p style={{marginBottom: '10px'}}>目前已为你筛选出<b>{this.props.searchInfoResult.blackList.extension.length}</b>条费用信息</p>}
+                    <div id="searchResult">
+                        <Table id={"table"} rowKey={record => record.key}
+                            columns={columns}
+                            pagination={paginationInfo}
+                            onChange={this.handleChangePage}
+                            dataSource={blackList.extension} bordered size="middle"
+                            rowSelection={rowSelection} />
+                    </div>
+                </div>
+                {/* </Spin> */}
                 <LayerRouter>
                     <Route path={`${this.props.match.url}/addblack`} render={(props) => <Addblack  {...props} />} />
+                    <Route path={`${this.props.match.url}/editblack`} render={(props) => <Addblack  {...props} isEdit />} />
                 </LayerRouter>
             </Layer>
         )
@@ -102,6 +147,7 @@ function mapStateToProps(state) {
     return {
         selBlacklist: state.basicData.selBlacklist,
         showLoading: state.basicData.showLoading,
+        searchInfoResult: state.search,
     }
 }
 

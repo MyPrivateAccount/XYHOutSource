@@ -1,37 +1,37 @@
-import React, { Component } from 'react';
-import { Form, Modal, Cascader, TreeSelect, Input, InputNumber, DatePicker, notification, Select, Icon, Upload, Button, Row, Col, Checkbox, Tag, Spin, Table } from 'antd'
-import { connect } from 'react-redux';
+import React, {Component} from 'react';
+import {Form, Modal, Popconfirm, TreeSelect, Input, InputNumber, DatePicker, notification, Select, Icon, Upload, Button, Row, Col, Checkbox, Tag, Spin, Table} from 'antd'
+import {connect} from 'react-redux';
 import moment from 'moment';
 import WebApiConfig from '../../constants/webapiConfig';
 import './staff.less';
-import { postHumanInfo, getcreateOrgStation, getcreateStation, getSalaryItem, getHumanDetail } from '../../actions/actionCreator';
-import { NewGuid } from '../../../utils/appUtils';
+import {postHumanInfo, getcreateOrgStation, getcreateStation, getSalaryItem, getHumanDetail} from '../../actions/actionCreator';
+import {NewGuid} from '../../../utils/appUtils';
 import ApiClient from '../../../utils/apiClient';
 import FormerCompany from '../dialog/formerCompany';
 import Education from '../dialog/education';
 import PositionalTitle from '../dialog/positionalTitle';
 import '../dialog/dialog.less'
-import { getDicPars } from '../../../utils/utils'
+import {getDicPars} from '../../../utils/utils'
 import SocialSecurity from '../../../businessComponents/humanSystem/socialSecurity'
 import Salary from '../../../businessComponents/humanSystem/salary'
 import Layer from '../../../components/Layer'
-import { formerCompanyColumns, educationColumns } from '../../constants/tools'
+import {formerCompanyColumns, educationColumns} from '../../constants/tools'
 
 const Option = Select.Option;
 const FormItem = Form.Item;
-const { TextArea } = Input;
+const {TextArea} = Input;
 
 const formItemLayout = {
-    labelCol: { span: 12 },
-    wrapperCol: { span: 12 },
+    labelCol: {span: 12},
+    wrapperCol: {span: 12},
 };
 const entryType = [
-    { label: '新入职', key: '0' },
-    { label: '重复入职', key: '1' }
+    {label: '新入职', key: '0'},
+    {label: '重复入职', key: '1'}
 ];
 const marriages = [
-    { label: '未婚', key: '0' },
-    { label: '已婚', key: '1' },
+    {label: '未婚', key: '0'},
+    {label: '已婚', key: '1'},
 ];
 const styles = {
     subHeader: {
@@ -50,7 +50,7 @@ export const titleColumns = [
     {
         title: '取得时间',
         dataIndex: 'getTitleTime',
-        render: (text, record) => <div>{record.getTitleTime ? record.getTitleTime.format('YYYY-MM-DD') : null}</div>,
+        // render: (text, record) => <div>{record.getTitleTime ? record.getTitleTime.format('YYYY-MM-DD') : null}</div>,
         key: 'getTitleTime',
     }
 ];
@@ -98,14 +98,7 @@ class OnBoarding extends Component {
             isReadOnly: this.props.isReadOnly ? this.props.isReadOnly : false,
             ismodify: Object.keys(params).length > 0 ? true : false
         });
-        if (this.props.isReadOnly == true) {
-            let formerCompanyExtColumn = this.getOperColumn('formerCompany');
-            let educationExtColumn = this.getOperColumn('education');
-            let positionTitleExtColumn = this.getOperColumn('positionalTitle');
-            this.setState({ formerCompanyColumns: formerCompanyColumns.concat(formerCompanyExtColumn) });
-            this.setState({ educationColumns: educationColumns.concat(educationExtColumn) })
-            this.setState({ titleColumns: titleColumns.concat(positionTitleExtColumn) })
-        }
+
         let dicNation = getDicPars("HUMEN_Nation", this.props.rootBasicData);
         let dicHouseRegister = getDicPars("HUMEN_HOUSE_REGISTER", this.props.rootBasicData);
         let dicEducation = getDicPars("HUMEN_EDUCATION", this.props.rootBasicData);
@@ -125,6 +118,36 @@ class OnBoarding extends Component {
             dicPositions: dicPositions
         });
 
+        let educationColumn = educationColumns.find(c => c.key === 'education');
+        let getDegreeColumn = educationColumns.find(c => c.key === 'getDegree');
+        educationColumn.render = (text, record) => {
+            let dicRes = dicEducation.find(dic => dic.value == record.education);
+            if (dicRes) {
+                text = dicRes.key;
+            }
+            return (<div>{text}</div>)
+        }
+        getDegreeColumn.render = (text, record) => {
+            let dicRes = dicDegree.find(dic => dic.value == record.getDegree);
+            if (dicRes) {
+                text = dicRes.key;
+            }
+            return (<div>{text}</div>)
+        }
+        if (this.props.isReadOnly != true) {
+            let formerCompanyExtColumn = this.getOperColumn('formerCompany');
+            let educationExtColumn = this.getOperColumn('education');
+            let positionTitleExtColumn = this.getOperColumn('positionalTitle');
+            this.setState({formerCompanyColumns: formerCompanyColumns.concat(formerCompanyExtColumn)});
+            this.setState({educationColumns: educationColumns.concat(educationExtColumn)})
+            this.setState({titleColumns: titleColumns.concat(positionTitleExtColumn)})
+        } else {
+            this.setState({formerCompanyColumns: formerCompanyColumns});
+            this.setState({educationColumns: educationColumns})
+            this.setState({titleColumns: titleColumns})
+        }
+
+
         this.getWorkNumber();
         console.log("字典列表:", dicNation, dicHouseRegister);
     }
@@ -136,8 +159,10 @@ class OnBoarding extends Component {
             render: (text, record) => {
                 return (
                     <div>
-                        <Button type="primary" size='small' style={{ marginRight: '5px' }} shape="circle" icon="edit" onClick={() => this.tableOperate(tableType, 'edit', record)} />
-                        <Button type="primary" size='small' shape="circle" icon="delete" onClick={() => this.tableOperate(tableType, 'delete', record)} />
+                        <Button type="primary" size='small' style={{marginRight: '5px'}} shape="circle" icon="edit" onClick={() => this.tableOperate(tableType, 'edit', record)} />
+                        <Popconfirm title="确认要删除改数据?" onConfirm={() => this.tableOperate(tableType, 'delete', record)} okText="是" cancelText="否">
+                            <Button type="primary" size='small' shape="circle" icon="delete" />
+                        </Popconfirm>
                     </div>
                 )
             },
@@ -146,8 +171,8 @@ class OnBoarding extends Component {
     }
 
     tableOperate = (listType, operType, record) => {
+        let tableList = [];
         if (operType == 'delete') {
-            let tableList = [];
             if (listType == 'formerCompany') {
                 tableList = this.state.formerCompanyList || [];
             } else if (listType == 'education') {
@@ -159,15 +184,25 @@ class OnBoarding extends Component {
             if (index != -1) {
                 tableList.splice(index, 1);
                 if (listType == 'formerCompany') {
-                    this.setState({ formerCompanyList: tableList });
+                    this.setState({formerCompanyList: tableList});
                 } else if (listType == 'education') {
-                    this.setState({ educationList: tableList });
+                    this.setState({educationList: tableList});
                 } else if (listType == 'positionalTitle') {
-                    this.setState({ positionalTitleList: tableList });
+                    this.setState({positionalTitleList: tableList});
                 }
             }
         } else if (operType == 'edit') {
-
+            // this.setState({formerCompanyEdit: null, educationEdit: null, positionalTitleEdit: null});
+            if (listType == 'formerCompany') {
+                tableList = this.state.formerCompanyList || [];
+                this.setState({formerCompanyDgShow: true, formerCompanyEdit: record});
+            } else if (listType == 'education') {
+                tableList = this.state.educationList || [];
+                this.setState({educationDgShow: true, educationEdit: record});
+            } else if (listType == 'positionalTitle') {
+                tableList = this.state.positionalTitleList || [];
+                this.setState({positionalDgShow: true, positionalTitleEdit: record});
+            }
         }
     }
 
@@ -196,7 +231,7 @@ class OnBoarding extends Component {
         return true;
     }
 
-    handleCancel = () => this.setState({ previewVisible: false })
+    handleCancel = () => this.setState({previewVisible: false})
 
     handlePreview = (file) => {
         this.setState({
@@ -204,7 +239,7 @@ class OnBoarding extends Component {
             previewVisible: true,
         });
     }
-    handleChange = ({ fileList }) => this.setState({ fileList })
+    handleChange = ({fileList}) => this.setState({fileList})
 
     hasErrors(fieldsError) {
         return !Object.keys(fieldsError).some(field => fieldsError[field]);
@@ -215,7 +250,7 @@ class OnBoarding extends Component {
         let url = WebApiConfig.server.GetWorkNumber;
         ApiClient.get(url).then(function (f) {
             if (f.data.code == 0) {
-                tempthis.props.form.setFieldsValue({ userID: f.data.extension });
+                tempthis.props.form.setFieldsValue({userID: f.data.extension});
             }
         });
     }
@@ -234,7 +269,7 @@ class OnBoarding extends Component {
         xhr.open('POST', uploadUrl, true);
         xhr.send(fd);
         xhr.onload = function (e) {
-            _this.setState({ showLoading: false });
+            _this.setState({showLoading: false});
             if (this.status === 200) {
                 let r = JSON.parse(this.response);
                 console.log("返回结果：", this.response);
@@ -266,14 +301,14 @@ class OnBoarding extends Component {
             }
         }
         xhr.onerror = function (e) {
-            this.setState({ showLoading: false });
+            this.setState({showLoading: false});
             notification.error({
                 message: '图片上传失败!',
                 duration: 3
             });
         }
         xhr.onabort = function () {
-            this.setState({ showLoading: false });
+            this.setState({showLoading: false});
             notification.error({
                 message: '图片上传异常终止!',
                 duration: 3
@@ -296,16 +331,16 @@ class OnBoarding extends Component {
             });
             return false;
         }
-        this.setState({ showLoading: true });
+        this.setState({showLoading: true});
         let reader = new FileReader();
         let _this = this;
         reader.readAsDataURL(uploadFile);
         reader.onloadend = function () {
             _this.UploadFile(uploadFile, (ufile) => {
-                _this.setState({ showLoading: false });
+                _this.setState({showLoading: false});
                 console.log("上传完成:", ufile);
                 if (fileType == 'img') {
-                    _this.props.form.setFieldsValue({ "picture": ufile.fileGuid })
+                    _this.props.form.setFieldsValue({"picture": ufile.fileGuid})
                 } else if (fileType == "file") {
                     //附件咱不处理
                 }
@@ -331,12 +366,12 @@ class OnBoarding extends Component {
                 if (this.state.SocialSecurityForm) {
                     let socialSecurityValues = this.state.SocialSecurityForm.getFieldsValue();
                     socialSecurityValues.id = this.state.humenNewId;
-                    values = { ...values, humanSocialSecurity: socialSecurityValues }
+                    values = {...values, humanSocialSecurity: socialSecurityValues}
                 }
                 if (this.state.SalaryForm) {
                     let salaryValues = this.state.SalaryForm.getFieldsValue();
                     salaryValues.id = this.state.humenNewId;
-                    values = { ...values, humanSalaryStructure: salaryValues }
+                    values = {...values, humanSalaryStructure: salaryValues}
                 }
                 values.id = this.state.humenNewId;
                 values.humanTitleInfos = this.state.positionalTitleList || []
@@ -372,29 +407,44 @@ class OnBoarding extends Component {
     //对话框信息回调
     dialogConfirmCallback = (info, type) => {
         console.log("表单对象:", this.props.form, info, type);
-        info.id = NewGuid();
+        // info.id = NewGuid();
         info.humenId = this.state.humenNewId;
         if (type == 'formerCompany') {
             let formerCompanyList = this.state.formerCompanyList;
-            formerCompanyList.push(info);
-            this.setState({ formerCompanyList: formerCompanyList });
+            let index = formerCompanyList.findIndex(item => item.id == info.id)
+            if (index < 0) {
+                formerCompanyList.push(info);
+            } else {
+                formerCompanyList[index] = info;
+            }
+            this.setState({formerCompanyList: formerCompanyList});
         } else if (type == 'education') {
             let educationList = this.state.educationList;
-            educationList.push(info);
-            this.setState({ educationList: educationList });
+            let index = educationList.findIndex(item => item.id == info.id);
+            if (index < 0) {
+                educationList.push(info);
+            } else {
+                educationList[index] = info;
+            }
+            this.setState({educationList: educationList});
         } else if (type == 'positionalTitle') {
             let positionalTitleList = this.state.positionalTitleList;
-            positionalTitleList.push(info);
-            this.setState({ positionalTitleList: positionalTitleList });
+            let index = positionalTitleList.findIndex(item => item.id == info.id);
+            if (index < 0) {
+                positionalTitleList.push(info);
+            } else {
+                positionalTitleList[index] = info;
+            }
+            this.setState({positionalTitleList: positionalTitleList});
         }
     }
     //子页面回调
     subPageLoadCallback = (formObj, pageName) => {
         console.log("表单对象:", formObj, pageName);
         if (pageName == "socialSecurity") {
-            this.setState({ SocialSecurityForm: formObj });
+            this.setState({SocialSecurityForm: formObj});
         } else if (pageName == "salary") {
-            this.setState({ SalaryForm: formObj });
+            this.setState({SalaryForm: formObj});
         }
     }
     onIdCardBlur = (e) => {
@@ -403,23 +453,23 @@ class OnBoarding extends Component {
             let birthday = moment(idCard.substr(6, 4) + "-" + idCard.substr(10, 2) + "-" + idCard.substr(12, 2));
             let age = moment().diff(birthday, 'year');
             let sex = (idCard.substr(17, 1) % 2 == 1 ? "1" : "2");//1:男,2:女
-            this.props.form.setFieldsValue({ age: age, birthday: birthday, sex: sex });
+            this.props.form.setFieldsValue({age: age, birthday: birthday, sex: sex});
         }
     }
     getPosition(departmentId) {
         let url = WebApiConfig.search.getStationList + "/" + departmentId;
-        let huResult = { isOk: false, msg: '获取职位失败！' };
+        let huResult = {isOk: false, msg: '获取职位失败！'};
         try {
             ApiClient.get(url).then(res => {
                 console.log("请求结果:", res);
                 if (res.data.code == 0) {
-                    res.data.message = '获取职位成功';
                     huResult.isOk = true;
-                    this.setState({ positionList: res.data.extension || [] });
+                    huResult.msg = '获取职位成功';
+                    this.setState({positionList: res.data.extension || []});
                 }
             });
         } catch (e) {
-            huResult.message = "获取职位接口调用异常!";
+            huResult.msg = "获取职位接口调用异常!";
         }
         if (!huResult.isOk) {
             notification.error({
@@ -431,8 +481,8 @@ class OnBoarding extends Component {
     render() {
         let self = this;
         let fileList = this.state.fileList;
-        const { previewVisible, previewImage, formerCompanyColumns, educationColumns, titleColumns, positionList } = this.state;
-        const { getFieldDecorator, getFieldsError, getFieldsValue, isFieldTouched } = this.props.form;
+        const {previewVisible, previewImage, formerCompanyColumns, educationColumns, titleColumns, positionList} = this.state;
+        const {getFieldDecorator, getFieldsError, getFieldsValue, isFieldTouched} = this.props.form;
 
         let psition = this.props.selHumanList.length > 0 ? this.props.selHumanList[this.props.selHumanList.length - 1].position : 0;
 
@@ -454,11 +504,11 @@ class OnBoarding extends Component {
         humanInfo.humanTitleInfos = humanInfo.humanTitleInfos || [];
         humanInfo.humanEducationInfos = humanInfo.humanEducationInfos || [];
         humanInfo.humanWorkHistories = humanInfo.humanWorkHistories || [];
-        // console.log("客户详情:", humanInfo);
+        console.log("formerCompanyColumns详情:", formerCompanyColumns, this.state.formerCompanyList);
         return (
             <Layer showLoading={this.state.showLoading}>
-                <div className="page-title" style={{ marginBottom: '10px' }}>员工信息表</div>
-                <Form layout="horizontal" onSubmit={this.handleSubmit} style={{ paddingTop: '5px' }}>
+                <div className="page-title" style={{marginBottom: '10px'}}>员工信息表</div>
+                <Form layout="horizontal" onSubmit={this.handleSubmit} style={{paddingTop: '5px'}}>
                     <h3 style={styles.subHeader}><Icon type="tags-o" className='content-icon' />入职信息</h3>
                     <Row>
                         <Col span={14}>
@@ -512,7 +562,7 @@ class OnBoarding extends Component {
                                                 required: true, message: '请输入生日',
                                             }]
                                         })(
-                                            <DatePicker disabled={this.props.ismodify == 1} format='YYYY-MM-DD' style={{ width: '100%' }} />
+                                            <DatePicker disabled={this.props.ismodify == 1} format='YYYY-MM-DD' style={{width: '100%'}} />
                                         )}
                                     </FormItem>
                                 </Col>
@@ -539,7 +589,7 @@ class OnBoarding extends Component {
                                             initialValue: humanInfo.phone,
                                             rules: [{
                                                 required: true, message: '请输入手机号码',
-                                            }, { pattern: '^((1[0-9][0-9])|(14[5|7])|(15([0-3]|[5-9]))|(18[0,5-9]))\\d{8}$', message: '不是有效的手机号码!' }]
+                                            }, {pattern: '^((1[0-9][0-9])|(14[5|7])|(15([0-3]|[5-9]))|(18[0,5-9]))\\d{8}$', message: '不是有效的手机号码!'}]
                                         })(
                                             <Input disabled={this.props.ismodify == 1} placeholder="请输入手机号码" />
                                         )}
@@ -562,7 +612,7 @@ class OnBoarding extends Component {
                                         {fileList.length >= 1 ? null : uploadButton}
                                     </Upload>
                                     <Modal visible={previewVisible} footer={null} onCancel={this.handleCancel}>
-                                        <img alt="example" style={{ width: '100%' }} src={previewImage} />
+                                        <img alt="example" style={{width: '100%'}} src={previewImage} />
                                     </Modal>
                                 </div>
                             </FormItem>
@@ -606,7 +656,7 @@ class OnBoarding extends Component {
                                         required: true, message: 'please entry Age',
                                     }]
                                 })(
-                                    <InputNumber disabled style={{ width: '100%' }} />
+                                    <InputNumber disabled style={{width: '100%'}} />
                                 )}
                             </FormItem>
                         </Col>
@@ -657,7 +707,7 @@ class OnBoarding extends Component {
                                         message: '请选择入职日期'
                                     }]
                                 })(
-                                    <DatePicker disabled={this.props.ismodify == 1} format='YYYY-MM-DD' style={{ width: '100%' }} />
+                                    <DatePicker disabled={this.props.ismodify == 1} format='YYYY-MM-DD' style={{width: '100%'}} />
                                 )}
                             </FormItem>
                         </Col>
@@ -769,7 +819,7 @@ class OnBoarding extends Component {
                     </Row>
                     <Row>
                         <Col span={14}>
-                            <FormItem labelCol={{ span: 6 }} wrapperCol={{ span: 12 }} label="家庭住址" >
+                            <FormItem labelCol={{span: 6}} wrapperCol={{span: 12}} label="家庭住址" >
                                 {getFieldDecorator('familyAddress', {
                                     initialValue: humanInfo.familyAddress,
                                     rules: [{
@@ -828,7 +878,7 @@ class OnBoarding extends Component {
                                     initialValue: humanInfo.emergencyContactPhone,
                                     rules: [{
                                         required: true, message: '请输入手机号码',
-                                    }, { pattern: '^((1[0-9][0-9])|(14[5|7])|(15([0-3]|[5-9]))|(18[0,5-9]))\\d{8}$', message: '不是有效的手机号码!' }]
+                                    }, {pattern: '^((1[0-9][0-9])|(14[5|7])|(15([0-3]|[5-9]))|(18[0,5-9]))\\d{8}$', message: '不是有效的手机号码!'}]
                                 })(
                                     <Input disabled={this.props.ismodify == 1} placeholder="请输入手机号码" />
                                 )}
@@ -849,12 +899,12 @@ class OnBoarding extends Component {
                     </Row>
                     <Row>
                         <Col span={14}>
-                            <FormItem labelCol={{ span: 6 }} wrapperCol={{ span: 12 }} label="Email地址" >
+                            <FormItem labelCol={{span: 6}} wrapperCol={{span: 12}} label="Email地址" >
                                 {getFieldDecorator('emailAddress', {
                                     initialValue: humanInfo.emailAddress,
                                     rules: [{
                                         required: true, message: 'Email地址',
-                                    }, { type: 'email', message: '请输入正确的email地址' }]
+                                    }, {type: 'email', message: '请输入正确的email地址'}]
                                 })(
                                     <Input disabled={this.props.ismodify == 1} placeholder="请输入Email地址" />
                                 )}
@@ -887,7 +937,7 @@ class OnBoarding extends Component {
                     </Row>
                     <Row>
                         <Col span={14}>
-                            <FormItem labelCol={{ span: 6 }} wrapperCol={{ span: 12 }} label="备注" >
+                            <FormItem labelCol={{span: 6}} wrapperCol={{span: 12}} label="备注" >
                                 {getFieldDecorator('desc', {
                                     initialValue: humanInfo.desc,
                                     rules: []
@@ -900,7 +950,7 @@ class OnBoarding extends Component {
                     </Row>
                     <Row>
                         <Col span={14}>
-                            <FormItem labelCol={{ span: 6 }} wrapperCol={{ span: 12 }} label="附件" >
+                            <FormItem labelCol={{span: 6}} wrapperCol={{span: 12}} label="附件" >
                                 <Upload beforeUpload={(uploadFile) => this.handleBeforeUpload(uploadFile, 'file')}>
                                     <Button><Icon type="upload" />上传</Button>
                                 </Upload>
@@ -959,7 +1009,7 @@ class OnBoarding extends Component {
                                         message: '请选择合同签订日期'
                                     }]
                                 })(
-                                    <DatePicker disabled={this.props.ismodify == 1} format='YYYY-MM-DD' style={{ width: '100%' }} />
+                                    <DatePicker disabled={this.props.ismodify == 1} format='YYYY-MM-DD' style={{width: '100%'}} />
                                 )}
                             </FormItem>
                         </Col>
@@ -972,7 +1022,7 @@ class OnBoarding extends Component {
                                         message: '请选择合同有效期'
                                     }]
                                 })(
-                                    <DatePicker disabled={this.props.ismodify == 1} format='YYYY-MM-DD' style={{ width: '100%' }} />
+                                    <DatePicker disabled={this.props.ismodify == 1} format='YYYY-MM-DD' style={{width: '100%'}} />
                                 )}
                             </FormItem>
                         </Col>
@@ -985,36 +1035,36 @@ class OnBoarding extends Component {
                                         message: '请选择合同到期日'
                                     }]
                                 })(
-                                    <DatePicker disabled={this.props.ismodify == 1} format='YYYY-MM-DD' style={{ width: '100%' }} />
+                                    <DatePicker disabled={this.props.ismodify == 1} format='YYYY-MM-DD' style={{width: '100%'}} />
                                 )}
                             </FormItem>
                         </Col>
                     </Row>
-                    <h3 style={styles.subHeader}><Icon type="tags-o" className='content-icon' />上单位职位信息 <Button type="primary" size='small' shape="circle" icon="plus" onClick={() => this.setState({ formerCompanyDgShow: true })} /></h3>
+                    <h3 style={styles.subHeader}><Icon type="tags-o" className='content-icon' />上单位职位信息 <Button type="primary" size='small' shape="circle" icon="plus" onClick={() => this.setState({formerCompanyDgShow: true})} /></h3>
                     <Row>
                         <Col span={2}></Col>
                         <Col span={20}>
-                            <Table dataSource={this.state.formerCompanyList || []} columns={formerCompanyColumns} style={{ marginBottom: '10px' }} />
+                            <Table rowKey={record => record.id} pagination={false} dataSource={this.state.formerCompanyList || []} columns={formerCompanyColumns} style={{marginBottom: '10px'}} />
                         </Col>
                         <Col span={2}></Col>
                     </Row>
 
 
-                    <h3 style={styles.subHeader}><Icon type="tags-o" className='content-icon' />学历信息 <Button type="primary" size='small' shape="circle" icon="plus" onClick={() => this.setState({ educationDgShow: true })} /></h3>
+                    <h3 style={styles.subHeader}><Icon type="tags-o" className='content-icon' />学历信息 <Button type="primary" size='small' shape="circle" icon="plus" onClick={() => this.setState({educationDgShow: true})} /></h3>
                     <Row>
                         <Col span={2}></Col>
                         <Col span={20}>
-                            <Table dataSource={this.state.educationList || []} columns={educationColumns} style={{ marginBottom: '10px' }} />
+                            <Table rowKey={record => record.id} pagination={false} dataSource={this.state.educationList || []} columns={educationColumns} style={{marginBottom: '10px'}} />
                         </Col>
                         <Col span={2}></Col>
                     </Row>
 
-                    <h3 style={styles.subHeader}><Icon type="tags-o" className='content-icon' />职称信息 <Button type="primary" size='small' shape="circle" icon="plus" onClick={() => this.setState({ positionalDgShow: true })} /></h3>
+                    <h3 style={styles.subHeader}><Icon type="tags-o" className='content-icon' />职称信息 <Button type="primary" size='small' shape="circle" icon="plus" onClick={() => this.setState({positionalDgShow: true})} /></h3>
 
                     <Row>
                         <Col span={2}></Col>
                         <Col span={20}>
-                            <Table dataSource={this.state.positionalTitleList || []} columns={titleColumns} style={{ marginBottom: '10px' }} />
+                            <Table rowKey={record => record.id} pagination={false} dataSource={this.state.positionalTitleList || []} columns={titleColumns} style={{marginBottom: '10px'}} />
                         </Col>
                         <Col span={2}></Col>
                     </Row>
@@ -1050,14 +1100,14 @@ class OnBoarding extends Component {
                     )}
                 </FormItem> */}
                     <Row>
-                        <Col style={{ textAlign: 'center' }}>
-                            <Button type="primary" htmlType="submit" style={{ marginRight: '20px' }} disabled={this.hasErrors(getFieldsValue())} onClick={(e) => this.handleSubmit(e)}>提交</Button>
+                        <Col style={{textAlign: 'center'}}>
+                            <Button type="primary" htmlType="submit" style={{marginRight: '20px'}} disabled={this.hasErrors(getFieldsValue())} onClick={(e) => this.handleSubmit(e)}>提交</Button>
                             <Button type="primary" onClick={this.handleReset}>清空</Button>
                         </Col>
                     </Row>
-                    <FormerCompany showDialog={this.state.formerCompanyDgShow} closeDialog={() => this.setState({ formerCompanyDgShow: false })} confirmCallback={(info) => this.dialogConfirmCallback(info, 'formerCompany')} />
-                    <Education showDialog={this.state.educationDgShow} closeDialog={() => this.setState({ educationDgShow: false })} confirmCallback={(info) => this.dialogConfirmCallback(info, 'education')} dicEducation={this.state.dicEducation} dicDegree={this.state.dicDegree} />
-                    <PositionalTitle showDialog={this.state.positionalDgShow} closeDialog={() => this.setState({ positionalDgShow: false })} confirmCallback={(info) => this.dialogConfirmCallback(info, 'positionalTitle')} />
+                    <FormerCompany showDialog={this.state.formerCompanyDgShow} closeDialog={() => this.setState({formerCompanyDgShow: false, formerCompanyEdit: null})} confirmCallback={(info) => this.dialogConfirmCallback(info, 'formerCompany')} entityInfo={this.state.formerCompanyEdit || {}} />
+                    <Education showDialog={this.state.educationDgShow} closeDialog={() => this.setState({educationDgShow: false, educationEdit: null})} confirmCallback={(info) => this.dialogConfirmCallback(info, 'education')} dicEducation={this.state.dicEducation} dicDegree={this.state.dicDegree} entityInfo={this.state.educationEdit || {}} />
+                    <PositionalTitle showDialog={this.state.positionalDgShow} closeDialog={() => this.setState({positionalDgShow: false, positionalTitleEdit: null})} confirmCallback={(info) => this.dialogConfirmCallback(info, 'positionalTitle')} entityInfo={this.state.positionalTitleEdit} />
                 </Form>
             </Layer>
         );

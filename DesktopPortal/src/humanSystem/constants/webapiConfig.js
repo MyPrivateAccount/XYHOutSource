@@ -42,7 +42,7 @@ const WebApiConfig = {
         getCustomerByUserID: basicDataBaseApiUrl + 'customerInfo/salesmancustomer/',//根据用户ID获取客户列表
         getAuditHistory: basicDataBaseApiUrl + "examines/",//获取审核历史详细
         getAllMonthList: basicDataBaseApiUrl + 'month/monthlist',
-        getBlackList: basicDataBaseApiUrl + 'humanblack/blacklist',
+        getBlackList: basicDataBaseApiUrl + 'humaninfoblack/list',
         getStationList: basicDataBaseApiUrl + 'humanstation/stationlist',
         getSalaryList: basicDataBaseApiUrl + 'humansalary/salarylist',
         getSalaryItem: basicDataBaseApiUrl + 'humansalary/salaryitem',

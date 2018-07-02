@@ -9,10 +9,16 @@ class PositionalTitle extends Component {
     }
 
     handleOk = (e) => {
+        let editInfo = this.props.entityInfo || {};
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                values.id=NewGuid();
+                if (editInfo.id) {
+                    values.id = editInfo.id;
+                } else {
+                    values.id = NewGuid();
+                }
+                values.getTitleTime = values.getTitleTime ? values.getTitleTime.format('YYYY-MM-DD') : '';
                 console.log('职称信息: ', values);
                 if (this.props.confirmCallback) {
                     this.props.confirmCallback(values);
@@ -22,6 +28,7 @@ class PositionalTitle extends Component {
         });
     }
     handleCancel = () => {
+        this.props.form.resetFields();
         if (this.props.closeDialog) {
             this.props.closeDialog();
         }
@@ -33,12 +40,15 @@ class PositionalTitle extends Component {
             labelCol: {span: 6},
             wrapperCol: {span: 17},
         };
+        let editInfo = this.props.entityInfo || {};
+        console.log("对象:", editInfo);
         return (
             <Modal title="上单位职位信息" maskClosable={false} style={{width: '600px !important'}} visible={this.props.showDialog} onOk={this.handleOk} onCancel={this.handleCancel}>
                 <Row>
                     <Col span={12}>
                         <FormItem {...formItemLayout} label="职称" >
                             {getFieldDecorator('titleName', {
+                                initialValue: editInfo.titleName,
                                 rules: [{
                                     required: true, message: '请输入职称',
                                 }]
@@ -50,6 +60,7 @@ class PositionalTitle extends Component {
                     <Col span={12}>
                         <FormItem {...formItemLayout} label="取得时间">
                             {getFieldDecorator('getTitleTime', {
+                                initialValue: editInfo.getTitleTime ? moment(editInfo.getTitleTime) : null,
                                 rules: [{
                                     required: true,
                                     message: '请选择职称取得时间'
