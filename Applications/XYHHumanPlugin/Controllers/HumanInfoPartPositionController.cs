@@ -50,7 +50,7 @@ namespace XYHHumanPlugin.Controllers
             }
             try
             {
-                response.Extension = await _humanInfoPartPositionManager.FindByIdAsync(id, HttpContext.RequestAborted);
+                return await _humanInfoPartPositionManager.FindByIdAsync(user, id, HttpContext.RequestAborted);
             }
             catch (Exception e)
             {
@@ -82,7 +82,7 @@ namespace XYHHumanPlugin.Controllers
             }
             try
             {
-                response.Extension = await _humanInfoPartPositionManager.CreateAsync(user, humanInfoPartPositionRequest, HttpContext.RequestAborted);
+                return await _humanInfoPartPositionManager.CreateAsync(user, humanInfoPartPositionRequest, HttpContext.RequestAborted);
             }
             catch (Exception e)
             {
@@ -115,7 +115,7 @@ namespace XYHHumanPlugin.Controllers
             }
             try
             {
-                response.Extension = await _humanInfoPartPositionManager.UpdateAsync(user, id, humanInfoPartPositionRequest, HttpContext.RequestAborted);
+                return await _humanInfoPartPositionManager.UpdateAsync(user, id, humanInfoPartPositionRequest, HttpContext.RequestAborted);
             }
             catch (Exception e)
             {
@@ -147,7 +147,7 @@ namespace XYHHumanPlugin.Controllers
             }
             try
             {
-                await _humanInfoPartPositionManager.DeleteAsync(user, id, HttpContext.RequestAborted);
+                return await _humanInfoPartPositionManager.DeleteAsync(user, id, HttpContext.RequestAborted);
             }
             catch (Exception e)
             {

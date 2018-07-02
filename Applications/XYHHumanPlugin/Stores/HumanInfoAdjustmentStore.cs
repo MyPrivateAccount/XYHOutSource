@@ -10,7 +10,7 @@ using XYHHumanPlugin.Models;
 
 namespace XYHHumanPlugin.Stores
 {
-    public class HumanInfoAdjustmentStore: IHumanInfoAdjustmentStore
+    public class HumanInfoAdjustmentStore : IHumanInfoAdjustmentStore
     {
         protected HumanDbContext Context { get; }
 
@@ -21,6 +21,56 @@ namespace XYHHumanPlugin.Stores
             Context = context;
             HumanInfoAdjustments = Context.HumanInfoAdjustments;
         }
+
+        public IQueryable<HumanInfoAdjustment> SimpleQuery()
+        {
+            var q = from hra in Context.HumanInfoAdjustments.AsNoTracking()
+                    join h1 in Context.HumanInfos.AsNoTracking() on hra.HumanId equals h1.Id into h2
+                    from h in h2.DefaultIfEmpty()
+                    select new HumanInfoAdjustment()
+                    {
+                        Id = hra.Id,
+                        AdjustmentTime = hra.AdjustmentTime,
+                        BaseWages = hra.BaseWages,
+                        CommunicationAllowance = hra.CommunicationAllowance,
+                        EmploymentInjuryInsurance = hra.EmploymentInjuryInsurance,
+                        EndowmentInsurance = hra.EndowmentInsurance,
+                        HousingProvidentFundAccount = hra.HousingProvidentFundAccount,
+                        InsuredAddress = hra.InsuredAddress,
+                        MedicalInsuranceAccount = hra.MedicalInsuranceAccount,
+                        OtherAllowance = hra.OtherAllowance,
+                        SocialSecurityAccount = hra.SocialSecurityAccount,
+                        TrafficAllowance = hra.TrafficAllowance,
+                        CreateTime = hra.CreateTime,
+                        CreateUser = hra.CreateUser,
+                        DeleteTime = hra.DeleteTime,
+                        DeleteUser = hra.DeleteUser,
+                        GrossPay = hra.GrossPay,
+                        HousingProvidentFund = hra.HousingProvidentFund,
+                        HumanId = hra.HumanId,
+                        InsuredTime = hra.InsuredTime,
+                        IsCurrent = hra.IsCurrent,
+                        IsDeleted = hra.IsDeleted,
+                        IsGiveUp = hra.IsGiveUp,
+                        IsHave = hra.IsHave,
+                        IsSignCommitment = hra.IsSignCommitment,
+                        MaternityInsurance = hra.MaternityInsurance,
+                        MedicalInsurance = hra.MedicalInsurance,
+                        PostWages = hra.PostWages,
+                        ProbationaryPay = hra.ProbationaryPay,
+                        UnemploymentInsurance = hra.UnemploymentInsurance,
+                        UpdateTime = hra.UpdateTime,
+                        UpdateUser = hra.UpdateUser,
+
+                        Position = hra.Position,
+                        DepartmentId = hra.DepartmentId,
+                        OrganizationId = h.DepartmentId,
+                    };
+            return q;
+        }
+
+
+
         /// <summary>
         /// 新增
         /// </summary>

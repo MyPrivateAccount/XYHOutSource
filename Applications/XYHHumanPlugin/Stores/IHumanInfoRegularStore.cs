@@ -14,6 +14,7 @@ namespace XYHHumanPlugin.Stores
     {
         IQueryable<HumanInfoRegular> HumanInfoRegulars { get; set; }
 
+        IQueryable<HumanInfoRegular> SimpleQuery();
 
         /// <summary>
         /// 新增

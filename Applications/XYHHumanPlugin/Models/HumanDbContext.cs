@@ -28,7 +28,7 @@ namespace XYHHumanPlugin.Models
         public DbSet<HumanInfoBlack> HumanInfoBlacks { get; set; }
         public DbSet<HumanInfoChange> HumanInfoChanges { get; set; }
         public DbSet<HumanInfoLeave> HumanInfoLeaves { get; set; }
-        public DbSet<HumanInfoPartPosition> HumanInfoPartPostions { get; set; }
+        public DbSet<HumanInfoPartPosition> HumanInfoPartPositions { get; set; }
         public DbSet<HumanInfoRegular> HumanInfoRegulars { get; set; }
         public DbSet<HumanInfoAdjustment> HumanInfoAdjustments { get; set; }
 
@@ -100,6 +100,29 @@ namespace XYHHumanPlugin.Models
             {
                 b.ToTable("xyh_hu_humaninfoblack");
             });
+
+
+            modelBuilder.Entity<HumanInfoChange>(b =>
+            {
+                b.ToTable("xyh_hu_humaninfochange");
+            });
+            modelBuilder.Entity<HumanInfoLeave>(b =>
+            {
+                b.ToTable("xyh_hu_humaninfoleave");
+            });
+            modelBuilder.Entity<HumanInfoPartPosition>(b =>
+            {
+                b.ToTable("xyh_hu_humaninfopartposition");
+            });
+            modelBuilder.Entity<HumanInfoRegular>(b =>
+            {
+                b.ToTable("xyh_hu_humaninforegular");
+            });
+            modelBuilder.Entity<HumanInfoAdjustment>(b =>
+            {
+                b.ToTable("xyh_hu_humaninfoadjustment");
+            });
+
 
             modelBuilder.Entity<BlackInfo>(b =>
             {

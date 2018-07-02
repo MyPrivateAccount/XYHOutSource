@@ -21,6 +21,33 @@ namespace XYHHumanPlugin.Stores
             Context = context;
             HumanInfoLeaves = Context.HumanInfoLeaves;
         }
+
+        public IQueryable<HumanInfoLeave> SimpleQuery()
+        {
+            var q = from hrl in Context.HumanInfoLeaves.AsNoTracking()
+                    join h1 in Context.HumanInfos.AsNoTracking() on hrl.HumanId equals h1.Id into h2
+                    from h in h2.DefaultIfEmpty()
+                    select new HumanInfoLeave()
+                    {
+                        Id = hrl.Id,
+                        IsProcedure = hrl.IsProcedure,
+                        LeaveTime = hrl.LeaveTime,
+                        NewHumanId = hrl.NewHumanId,
+                        CreateTime = hrl.CreateTime,
+                        CreateUser = hrl.CreateUser,
+                        DeleteTime = hrl.DeleteTime,
+                        DeleteUser = hrl.DeleteUser,
+                        HumanId = hrl.HumanId,
+                        IsCurrent = hrl.IsCurrent,
+                        IsDeleted = hrl.IsDeleted,
+                        UpdateTime = hrl.UpdateTime,
+                        UpdateUser = hrl.UpdateUser,
+                        OrganizationId = h.DepartmentId,
+                    };
+            return q;
+        }
+
+
         /// <summary>
         /// 新增
         /// </summary>

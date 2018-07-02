@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
 namespace XYHHumanPlugin.Models
@@ -60,5 +61,8 @@ namespace XYHHumanPlugin.Models
         [MaxLength(127)]
         public string DeleteUser { get; set; }
         public DateTime? DeleteTime { get; set; }
+
+        [NotMapped]
+        public string OrganizationId { get; set; }
     }
 }

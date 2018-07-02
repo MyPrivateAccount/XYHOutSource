@@ -13,6 +13,7 @@ namespace XYHHumanPlugin.Stores
     {
         IQueryable<HumanInfoLeave> HumanInfoLeaves { get; set; }
 
+        IQueryable<HumanInfoLeave> SimpleQuery();
 
         /// <summary>
         /// 新增

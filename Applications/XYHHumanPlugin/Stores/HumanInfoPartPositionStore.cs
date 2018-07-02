@@ -10,7 +10,7 @@ using XYHHumanPlugin.Models;
 
 namespace XYHHumanPlugin.Stores
 {
-    public class HumanInfoPartPositionStore: IHumanInfoPartPositionStore
+    public class HumanInfoPartPositionStore : IHumanInfoPartPositionStore
     {
         protected HumanDbContext Context { get; }
 
@@ -19,8 +19,36 @@ namespace XYHHumanPlugin.Stores
         public HumanInfoPartPositionStore(HumanDbContext context)
         {
             Context = context;
-            HumanInfoPartPostions = Context.HumanInfoPartPostions;
+            HumanInfoPartPostions = Context.HumanInfoPartPositions;
         }
+
+        public IQueryable<HumanInfoPartPosition> SimpleQuery()
+        {
+            var q = from hp in Context.HumanInfoPartPositions.AsNoTracking()
+                    join h1 in Context.HumanInfos.AsNoTracking() on hp.HumanId equals h1.Id into h2
+                    from h in h2.DefaultIfEmpty()
+                    select new HumanInfoPartPosition()
+                    {
+                        Id = hp.Id,
+                        Desc = hp.Desc,
+                        EndTime = hp.EndTime,
+                        StartTime = hp.StartTime,
+                        CreateTime = hp.CreateTime,
+                        CreateUser = hp.CreateUser,
+                        DeleteTime = hp.DeleteTime,
+                        DeleteUser = hp.DeleteUser,
+                        HumanId = hp.HumanId,
+                        IsCurrent = hp.IsCurrent,
+                        IsDeleted = hp.IsDeleted,
+                        UpdateTime = hp.UpdateTime,
+                        UpdateUser = hp.UpdateUser,
+                        Position = hp.Position,
+                        DepartmentId = hp.DepartmentId,
+                        OrganizationId = h.DepartmentId,
+                    };
+            return q;
+        }
+
         /// <summary>
         /// 新增
         /// </summary>

@@ -21,6 +21,48 @@ namespace XYHHumanPlugin.Stores
             Context = context;
             HumanInfoRegulars = Context.HumanInfoRegulars;
         }
+
+
+        public IQueryable<HumanInfoRegular> SimpleQuery()
+        {
+            var q = from hrr in Context.HumanInfoRegulars.AsNoTracking()
+                    join h1 in Context.HumanInfos.AsNoTracking() on hrr.HumanId equals h1.Id into h2
+                    from h in h2.DefaultIfEmpty()
+                    select new HumanInfoRegular()
+                    {
+                        Id = hrr.Id,
+                        EmploymentInjuryInsurance = hrr.EmploymentInjuryInsurance,
+                        EndowmentInsurance = hrr.EndowmentInsurance,
+                        HousingProvidentFundAccount = hrr.HousingProvidentFundAccount,
+                        InsuredAddress = hrr.InsuredAddress,
+                        MedicalInsuranceAccount = hrr.MedicalInsuranceAccount,
+                        SocialSecurityAccount = hrr.SocialSecurityAccount,
+                        CreateTime = hrr.CreateTime,
+                        CreateUser = hrr.CreateUser,
+                        DeleteTime = hrr.DeleteTime,
+                        DeleteUser = hrr.DeleteUser,
+                        HousingProvidentFund = hrr.HousingProvidentFund,
+                        HumanId = hrr.HumanId,
+                        InsuredTime = hrr.InsuredTime,
+                        IsCurrent = hrr.IsCurrent,
+                        IsDeleted = hrr.IsDeleted,
+                        IsGiveUp = hrr.IsGiveUp,
+                        IsHave = hrr.IsHave,
+                        IsSignCommitment = hrr.IsSignCommitment,
+                        MaternityInsurance = hrr.MaternityInsurance,
+                        MedicalInsurance = hrr.MedicalInsurance,
+
+                        UnemploymentInsurance = hrr.UnemploymentInsurance,
+                        UpdateTime = hrr.UpdateTime,
+                        UpdateUser = hrr.UpdateUser,
+                        RegularTime = hrr.RegularTime,
+
+                        OrganizationId = h.DepartmentId,
+                    };
+            return q;
+        }
+
+
         /// <summary>
         /// 新增
         /// </summary>
