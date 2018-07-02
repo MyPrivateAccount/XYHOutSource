@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import React, { Component } from 'react';
 import moment from 'moment'
 import { dealFpSave, acmentParamListGet ,searchHuman} from '../../../actions/actionCreator'
-import { DatePicker, notification, Form, Span, Layout, Table, Button, Radio, Popconfirm, Tooltip, Row, Col, Input, Spin, Select, TreeSelect } from 'antd'
+import { DatePicker, notification, Form, Span, Layout, Table, Button, Radio, Popconfirm, Tooltip, Row, Col, Input, Spin, Select, TreeSelect, InputNumber } from 'antd'
 import TradeWyTable from './tradeWyTable'
 import TradeNTable from './tradeNTable'
 import SearchCondition from '../../../constants/searchCondition'
@@ -31,116 +31,144 @@ class TradePerDis extends Component {
         this.handleYzchange = this.handleYzchange.bind(this)
         this.handleKhchange = this.handleKhchange.bind(this)
     }
+
     componentWillMount = () => {
+
     }
     componentDidMount = () => {
-        SearchCondition.acmentListCondition.branchId = this.props.branchId;
-        this.props.dispatch(acmentParamListGet(SearchCondition.acmentListCondition));
-
-        SearchCondition.humanListCondition.Organizate = this.props.branchId;
-        this.props.dispatch(searchHuman(SearchCondition.humanListCondition))
+      this.initEntity(this.props);
     }
-    componentWillReceiveProps(newProps) {
-        this.setState({ isDataLoading: false });
-        if (newProps.operInfo.operType === 'FPSAVE_UPDATE') {
-            notification.success({
-                message: '提示',
-                description: '保存成交报告业绩分配信息成功!',
-                duration: 3
-            });
-            newProps.operInfo.operType = ''
-        }
-        else if (newProps.operInfo.operType === 'FPGET_UPDATE') {//信息获取成功
-            if (JSON.stringify(newProps.ext) !== '[]') {
-                this.setState({ rpData: newProps.ext },()=>{
-                    this.reCountZyj()
-                });
+    componentWillReceiveProps = (nextProps) => {
+      if (this.props.entity !== nextProps.entity && nextProps.entity) {
+  
+        this.initEntity(nextProps)
+      }
+    }
+  
+    initEntity = (nextProps) => {
+      var entity = nextProps.entity;
+      if (!entity) {
+        return;
+      }
+  
+      let mv = {};
+      Object.keys(entity).map(key => {
+        mv[key] = entity[key];
+      })
+      this.props.form.setFieldsValue(mv);
+    }
+
+    
+    // componentWillMount = () => {
+    // }
+    // componentDidMount = () => {
+    //     SearchCondition.acmentListCondition.branchId = this.props.branchId;
+    //     this.props.dispatch(acmentParamListGet(SearchCondition.acmentListCondition));
+
+    //     SearchCondition.humanListCondition.Organizate = this.props.branchId;
+    //     this.props.dispatch(searchHuman(SearchCondition.humanListCondition))
+    // }
+    // componentWillReceiveProps(newProps) {
+    //     this.setState({ isDataLoading: false });
+    //     if (newProps.operInfo.operType === 'FPSAVE_UPDATE') {
+    //         notification.success({
+    //             message: '提示',
+    //             description: '保存成交报告业绩分配信息成功!',
+    //             duration: 3
+    //         });
+    //         newProps.operInfo.operType = ''
+    //     }
+    //     else if (newProps.operInfo.operType === 'FPGET_UPDATE') {//信息获取成功
+    //         if (JSON.stringify(newProps.ext) !== '[]') {
+    //             this.setState({ rpData: newProps.ext },()=>{
+    //                 this.reCountZyj()
+    //             });
                 
-            }
-            newProps.operInfo.operType = ''
-        }
-        else if (newProps.operInfo.operType === 'DEALRP_SYNC_DATE') {
+    //         }
+    //         newProps.operInfo.operType = ''
+    //     }
+    //     else if (newProps.operInfo.operType === 'DEALRP_SYNC_DATE') {
 
-            if (newProps.syncData !== '') {
-                console.log('开始同步日期')
-                let rpData = { ...this.state.rpData }
-                rpData.yjYzyjdqr = moment(newProps.syncData).add(180, 'days').format('YYYY-MM-DD')
-                rpData.yjKhyjdqr = moment(newProps.syncData).add(180, 'days').format('YYYY-MM-DD')
-                this.setState(rpData)
-                this.props.form.setFieldsValue({ 'yjYzyjdqr': moment(newProps.syncData).add(180, 'days') })
-                this.props.form.setFieldsValue({ 'yjKhyjdqr': moment(newProps.syncData).add(180, 'days') })
-            }
-            newProps.operInfo.operType = ''
-        }
-        else if (newProps.syncFpOp.operType === 'DEALRP_SYNC_FP') {
-            let newdata = newProps.syncFpData
-            if(JSON.stringify(newdata)==='{}'){
-                newdata.yjYzys = 0
-                newdata.yjKhys = 0
-                newdata.yjYzyjdqr=moment().add(180,'days').format('YYYY-MM-DD')
-                newdata.yjKhyjdqr=moment().add(180,'days').format('YYYY-MM-DD')
-                this.props.form.setFieldsValue({ 'yjYzys': 0})
-                this.props.form.setFieldsValue({ 'yjKhys': 0 })
-                this.props.form.setFieldsValue({ 'yjYzyjdqr': moment(newdata.yjYzyjdqr) })
-                this.props.form.setFieldsValue({ 'yjKhyjdqr': moment(newdata.yjKhyjdqr) })
-                this.setState({ rpData:newdata }, () => this.reCountZyj())
-            }
-            else{
-                let rpData = { ...this.state.rpData }
-                rpData.yjYzys = parseFloat(newdata.yjYzys, 10)
-                rpData.yjKhys = 0
-                this.setState({ rpData }, () => this.reCountZyj())
-                this.props.form.setFieldsValue({ 'yjYzys': parseFloat(newdata.yjYzys) })
-                this.props.form.setFieldsValue({ 'yjKhys': 0 })
-                this.props.form.setFieldsValue({ 'yjYzyjdqr': moment(newdata.yjYzyjdqr) })
-                this.props.form.setFieldsValue({ 'yjKhyjdqr': moment(newdata.yjKhyjdqr) })
-            }
+    //         if (newProps.syncData !== '') {
+    //             console.log('开始同步日期')
+    //             let rpData = { ...this.state.rpData }
+    //             rpData.yjYzyjdqr = moment(newProps.syncData).add(180, 'days').format('YYYY-MM-DD')
+    //             rpData.yjKhyjdqr = moment(newProps.syncData).add(180, 'days').format('YYYY-MM-DD')
+    //             this.setState(rpData)
+    //             this.props.form.setFieldsValue({ 'yjYzyjdqr': moment(newProps.syncData).add(180, 'days') })
+    //             this.props.form.setFieldsValue({ 'yjKhyjdqr': moment(newProps.syncData).add(180, 'days') })
+    //         }
+    //         newProps.operInfo.operType = ''
+    //     }
+    //     else if (newProps.syncFpOp.operType === 'DEALRP_SYNC_FP') {
+    //         let newdata = newProps.syncFpData
+    //         if(JSON.stringify(newdata)==='{}'){
+    //             newdata.yjYzys = 0
+    //             newdata.yjKhys = 0
+    //             newdata.yjYzyjdqr=moment().add(180,'days').format('YYYY-MM-DD')
+    //             newdata.yjKhyjdqr=moment().add(180,'days').format('YYYY-MM-DD')
+    //             this.props.form.setFieldsValue({ 'yjYzys': 0})
+    //             this.props.form.setFieldsValue({ 'yjKhys': 0 })
+    //             this.props.form.setFieldsValue({ 'yjYzyjdqr': moment(newdata.yjYzyjdqr) })
+    //             this.props.form.setFieldsValue({ 'yjKhyjdqr': moment(newdata.yjKhyjdqr) })
+    //             this.setState({ rpData:newdata }, () => this.reCountZyj())
+    //         }
+    //         else{
+    //             let rpData = { ...this.state.rpData }
+    //             rpData.yjYzys = parseFloat(newdata.yjYzys, 10)
+    //             rpData.yjKhys = 0
+    //             this.setState({ rpData }, () => this.reCountZyj())
+    //             this.props.form.setFieldsValue({ 'yjYzys': parseFloat(newdata.yjYzys) })
+    //             this.props.form.setFieldsValue({ 'yjKhys': 0 })
+    //             this.props.form.setFieldsValue({ 'yjYzyjdqr': moment(newdata.yjYzyjdqr) })
+    //             this.props.form.setFieldsValue({ 'yjKhyjdqr': moment(newdata.yjKhyjdqr) })
+    //         }
             
-            newProps.syncFpOp.operType = ''
-        }
-        else if (newProps.acmOperInfo.operType === 'ACMENT_PARAM_LIST_UPDATE') {
-            this.setState({ yjFtItems: newProps.scaleSearchResult.extension},()=>{
-                this.wytb.setKxlxItems(this.getWyItems())
-                this.fptb.setNbfpItems(this.getInnerItems())
-            })
-            newProps.acmOperInfo.operType = ''
-        }
-        else if (newProps.humanOperInfo.operType === 'SEARCH_HUMAN_INFO_SUCCESS') {
-            this.setState({ humanList: newProps.humanList},()=>{
-                this.fptb.setHumanList(newProps.humanList)
-            })
-            newProps.acmOperInfo.operType = ''
-        }
-    }
-    handleSave = (e) => {
-        e.preventDefault();
-        this.props.form.validateFields((err, values) => {
-            if (!err) {
-                values.id = this.props.rpId;
-                let wyDatas = this.wytb.getData(values.id);
-                let fpDatas = this.fptb.getData(values.id);
-                values.reportOutsides = wyDatas;
-                values.reportInsides = fpDatas;
+    //         newProps.syncFpOp.operType = ''
+    //     }
+    //     else if (newProps.acmOperInfo.operType === 'ACMENT_PARAM_LIST_UPDATE') {
+    //         this.setState({ yjFtItems: newProps.scaleSearchResult.extension},()=>{
+    //             this.wytb.setKxlxItems(this.getWyItems())
+    //             this.fptb.setNbfpItems(this.getInnerItems())
+    //         })
+    //         newProps.acmOperInfo.operType = ''
+    //     }
+    //     else if (newProps.humanOperInfo.operType === 'SEARCH_HUMAN_INFO_SUCCESS') {
+    //         this.setState({ humanList: newProps.humanList},()=>{
+    //             this.fptb.setHumanList(newProps.humanList)
+    //         })
+    //         newProps.acmOperInfo.operType = ''
+    //     }
+    // }
+    // handleSave = (e) => {
+    //     e.preventDefault();
+    //     this.props.form.validateFields((err, values) => {
+    //         if (!err) {
+    //             values.id = this.props.rpId;
+    //             let wyDatas = this.wytb.getData(values.id);
+    //             let fpDatas = this.fptb.getData(values.id);
+    //             values.reportOutsides = wyDatas;
+    //             values.reportInsides = fpDatas;
 
-                if (this.state.yjYzyjdqr !== '') {
-                    values.yjYzyjdqr = this.state.yjYzyjdqr;
-                }
-                else {
-                    values.yjYzyjdqr = this.state.rpData.yjYzyjdqr;
-                }
-                if (this.state.yjKhyjdqr !== '') {
-                    values.yjKhyjdqr = this.state.yjKhyjdqr;
-                }
-                else {
-                    values.yjKhyjdqr = this.state.rpData.yjKhyjdqr;
-                }
+    //             if (this.state.yjYzyjdqr !== '') {
+    //                 values.yjYzyjdqr = this.state.yjYzyjdqr;
+    //             }
+    //             else {
+    //                 values.yjYzyjdqr = this.state.rpData.yjYzyjdqr;
+    //             }
+    //             if (this.state.yjKhyjdqr !== '') {
+    //                 values.yjKhyjdqr = this.state.yjKhyjdqr;
+    //             }
+    //             else {
+    //                 values.yjKhyjdqr = this.state.rpData.yjKhyjdqr;
+    //             }
 
-                console.log(values);
-                this.setState({ isDataLoading: true, tip: '保存信息中...' })
-                this.props.dispatch(dealFpSave(values))
-            }
-        });
-    }
+    //             console.log(values);
+    //             this.setState({ isDataLoading: true, tip: '保存信息中...' })
+    //             this.props.dispatch(dealFpSave(values))
+    //         }
+    //     });
+    // }
     handleAddWy = (e) => {
         e.preventDefault();
         this.wytb.handleAdd();
@@ -245,7 +273,7 @@ class TradePerDis extends Component {
                                     getFieldDecorator('yjYzys', {
                                         initialValue: this.state.rpData.yjYzys,
                                     })(
-                                        <Input style={{ width: 200 }} onChange={this.handleYzchange}></Input>
+                                        <InputNumber style={{ width: 200 }} onChange={this.handleYzchange}></InputNumber>
                                     )
                                 }
                             </FormItem>
@@ -254,10 +282,9 @@ class TradePerDis extends Component {
                             <FormItem {...formItemLayout2} label={(<span>业主佣金到期日</span>)}>
                                 {
                                     getFieldDecorator('yjYzyjdqr', {
-                                        rules: [{ required: false, message: '请选择成交日期!' }],
-                                        initialValue: moment(this.getInvalidDate(this.state.rpData.yjYzyjdqr)),
+                                        rules: [{ required: false, message: '请选择成交日期!' }]
                                     })(
-                                        <DatePicker disabled={true} style={{ width: 200 }} onChange={this.yjYzyjdqr_dateChange}></DatePicker>
+                                        <DatePicker disabled={true} style={{ width: 200 }} ></DatePicker>
                                     )
                                 }
                             </FormItem>
@@ -270,7 +297,7 @@ class TradePerDis extends Component {
                                     getFieldDecorator('yjKhys', {
                                         initialValue: this.state.rpData.yjKhys,
                                     })(
-                                        <Input style={{ width: 200 }} onChange={this.handleKhchange}></Input>
+                                        <InputNumber style={{ width: 200 }} onChange={this.handleKhchange}></InputNumber>
                                     )
                                 }
                             </FormItem>
@@ -279,10 +306,9 @@ class TradePerDis extends Component {
                             <FormItem {...formItemLayout2} label={(<span>客户佣金到期日</span>)}>
                                 {
                                     getFieldDecorator('yjKhyjdqr', {
-                                        rules: [{ required: false, message: '请选择成交日期!' }],
-                                        initialValue: moment(this.getInvalidDate(this.state.rpData.yjKhyjdqr)),
+                                        rules: [{ required: false, message: '请选择成交日期!' }]
                                     })(
-                                        <DatePicker disabled={true} style={{ width: 200 }} onChange={this.yjKhyjdqr_dateChange}></DatePicker>
+                                        <DatePicker disabled={true} style={{ width: 200 }} ></DatePicker>
                                     )
                                 }
                             </FormItem>
@@ -340,16 +366,16 @@ class TradePerDis extends Component {
 function MapStateToProps(state) {
 
     return {
-        basicData: state.base,
-        operInfo: state.rp.operInfo,
-        ext: state.rp.ext,
-        acmOperInfo: state.acm.operInfo,
-        syncData: state.rp.syncData,
-        syncFpOp: state.rp.syncFpOp,
-        syncFpData: state.rp.syncFpData,
-        scaleSearchResult:state.acm.scaleSearchResult,
-        humanList:state.org.humanList,
-        humanOperInfo:state.org.operInfo
+        // basicData: state.base,
+        // operInfo: state.rp.operInfo,
+        // ext: state.rp.ext,
+        // acmOperInfo: state.acm.operInfo,
+        // syncData: state.rp.syncData,
+        // syncFpOp: state.rp.syncFpOp,
+        // syncFpData: state.rp.syncFpData,
+        // scaleSearchResult:state.acm.scaleSearchResult,
+        // humanList:state.org.humanList,
+        // humanOperInfo:state.org.operInfo
 
     }
 }

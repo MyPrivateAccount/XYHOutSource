@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import React, { Component } from 'react';
 import { dealRpGet, dealGhGet, dealFpGet, dealWyGet, dealKhGet, dealYzGet, getShopDetail, getBuildingDetail 
          ,syncRp,syncWy,syncYz,syncKh,syncFp} from '../../../actions/actionCreator'
-import { Modal, Layout, Table, Button, Checkbox, Tree, Tabs, Icon, Popconfirm, Spin, Tooltip } from 'antd';
+import { Modal, Layout, Table, Button, Checkbox, Tree, Tabs, Icon, Popconfirm, Spin, Tooltip, notification } from 'antd';
 import TradeContract from './tradeContract'
 import TradeEstate from './tradeEstate'
 import TradeBnsOwner from './tradeBnsOwer'
@@ -16,6 +16,12 @@ import TradeReportTable from './tradeReportTable'
 import Layer, { LayerRouter } from '../../../../components/Layer'
 import {Route } from 'react-router'
 import moment from 'moment'
+import {getDicParList} from '../../../../actions/actionCreators'
+import {dicKeys, branchPar} from '../../../constants/const'
+import WebApiConfig from  '../../../constants/webApiConfig'
+import ApiClient from '../../../../utils/apiClient'
+
+
 
 const { Header, Sider, Content } = Layout;
 const TreeNode = Tree.TreeNode;
@@ -23,199 +29,248 @@ const TabPane = Tabs.TabPane;
 
 class TradeManager extends Component {
 
-    state = {
-        rpId: '',//统一的reportId
-        opType: 'add',//控制状态,新增／编辑
-        isEdit: false,
-        activeTab: 'jyht',
-        isGetShopDetail: false,
-        isGetBuildingDetail: false,
-        isDataLoading: false,
-        ccbbInfo: {},//成交报备信息
-        shopInfo: {},//商铺详情
-        buildingInfo: {},//楼盘详情
-        rpds: {},//自动填充报告基础信息
-        wyds: {},//自动填充的物业信息
-        yzds: {},//自动填充的业主信息
-        khds: {},//自动填充的客户信息
-        fpds: {},//自动填充的业绩分配信息
+    constructor(props){
+        super(props)
+        this.state = {
+            showBbDialog:false,
+            rpId: '',//统一的reportId
+            opType: 'view',//控制状态,新增／编辑
+            isEdit: false,
+            activeTab: 'jyht',
+            isGetShopDetail: false,
+            isGetBuildingDetail: false,
+            isDataLoading: false,
+            ccbbInfo: {},//成交报备信息
+            shopInfo: {},//商铺详情
+            buildingInfo: {},//楼盘详情
+            rpds: {},//自动填充报告基础信息
+            wyds: {},//自动填充的物业信息
+            yzds: {},//自动填充的业主信息
+            khds: {},//自动填充的客户信息
+            fpds: {},//自动填充的业绩分配信息
+    
+            showBbSelector: false,
+            report: {}
+        }
     }
+    
     componentWillReceiveProps = (newProps) => {
 
-        this.setState({ isDataLoading: false })
-        if(this.state.rpId!==newProps.rpId){
-            this.setState({rpId:newProps.rpId,isEdit:newProps.isEdit},()=>{
-                if (newProps.vs) {
-                    if (newProps.isEdit) {
-                        this.loadTabData(this.state.activeTab)
-                    }
-                }
-            })
-        }
-        if (newProps.operInfo.operType === 'DEALRP_BUILDING_GET_SUCCESS') {
-            console.log("autoSetCJBBInfo")
-            //自动设置成交报备信息
-            this.autoSetCJBBInfo(newProps.shopInfo,newProps.buildingInfo)
-            newProps.operInfo.operType = ''
-        }
+        // this.setState({ isDataLoading: false })
+        // if(this.state.rpId!==newProps.rpId){
+        //     this.setState({rpId:newProps.rpId,isEdit:newProps.isEdit},()=>{
+        //         if (newProps.vs) {
+        //             if (newProps.isEdit) {
+        //                 this.loadTabData(this.state.activeTab)
+        //             }
+        //         }
+        //     })
+        // }
+        // if (newProps.operInfo.operType === 'DEALRP_BUILDING_GET_SUCCESS') {
+        //     console.log("autoSetCJBBInfo")
+        //     //自动设置成交报备信息
+        //     this.autoSetCJBBInfo(newProps.shopInfo,newProps.buildingInfo)
+        //     newProps.operInfo.operType = ''
+        // }
     }
     componentWillMount = () => {
+        
     }
     componentDidMount = () => {
+        this.props.getDicParList([
+            dicKeys.wyfl, 
+            dicKeys.cjbglx,
+            dicKeys.jylx,
+            dicKeys.fkfs,
+            dicKeys.xmlx,
+            dicKeys.htlx,
+            dicKeys.cqlx,
+            dicKeys.xxjylx,
+            dicKeys.zjjg,
+            dicKeys.wylx,
+            dicKeys.kjlx,
+            dicKeys.jj,
+            dicKeys.khxz
+        ]);
+        let initState= (this.props.location||{}).state ||{};
+        this.setState({opType: initState.op})
+        this.initData(initState);
+       
+
         //新增加录入成交报告
-        if (this.props.rpId == null || this.props.rpId === '') {
-            let uuid = this.uuid()
-            this.setState({ rpId: uuid })
-        }
-        else {
-            this.setState({ rpId: this.props.rpId, isEdit: true })
-        }
+        // if (this.props.rpId == null || this.props.rpId === '') {
+        //     let uuid = this.uuid()
+        //     this.setState({ rpId: uuid })
+        // }
+        // else {
+        //     this.setState({ rpId: this.props.rpId, isEdit: true })
+        // }
     }
-    loadTabData = (e) => {
-        console.log(e)
-        if (e === 'jyht' && this.state.isEdit) {
-            this.props.dispatch(dealRpGet(this.state.rpId));
-        }
-        else if (e === 'cjwy' && this.state.isEdit) {
-            this.props.dispatch(dealWyGet(this.state.rpId));
-        }
-        else if (e === 'yzxx' && this.state.isEdit) {
-            this.props.dispatch(dealYzGet(this.state.rpId));
-        }
-        else if (e === 'khxx' && this.state.isEdit) {
-            this.props.dispatch(dealKhGet(this.state.rpId));
-        }
-        else if (e === 'yjfp' && this.state.isEdit) {
-            this.props.dispatch(dealFpGet(this.state.rpId));
-        }
-        else if (e === 'ajgh' && this.state.isEdit) {
-            this.props.dispatch(dealGhGet(this.state.rpId));
-        }
-        else if (e === 'fj' && this.state.isEdit) {
 
+    initData = async (initState)=>{
+        if( initState.op === 'add' || initState.op === 'edit'){
+            //获取组织参数
+            await this.getBranchPar();
         }
-        else if (e === 'yjtz' && this.state.isEdit) {
-
+        if(initState.op==='add'){
+            this.setState({report: initState.entity||{}})
+        }else if(initState.entity){
+            //获取详情
         }
-        this.setState({ activeTab: e });
+        
     }
-    uuid = () => {
-        var s = [];
-        var hexDigits = "0123456789abcdef";
-        for (var i = 0; i < 36; i++) {
-            s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
+
+    getBranchPar = async ()=>{
+        if(!this.props.user.Filiale){
+            notification.warn({message:'用户没有归属分公司'})
+            return;
         }
-        s[14] = "4";  // bits 12-15 of the time_hi_and_version field to 0010
-        s[19] = hexDigits.substr((s[19] & 0x3) | 0x8, 1);  // bits 6-7 of the clock_seq_hi_and_reserved to 01
-        s[8] = s[13] = s[18] = s[23] = "";
-
-        var uuid = s.join("")
-        console.log(uuid);
-        return uuid;
-    }
-    //显示成交报备列表
-    onShowCjbbtb = (e) => {
-        this.cjbbtb.show()
-    }
-    onTradReportTableSelf = (e) => {
-        this.cjbbtb = e
-    }
-    //双击选择成交报备
-    onHandleChooseCjbb = (e) => {
-        console.log(e)
-        this.setState({ ccbbInfo: e })
-        this.setState({ isDataLoading: true })
-        this.props.dispatch(getShopDetail(e.shopId));
-        this.props.dispatch(getBuildingDetail(e.projectId));
-    }
-    //自动设置成交报备信息
-    autoSetCJBBInfo = (s,b) => {
-        let cjbbInfo = this.state.ccbbInfo
-        let shopInfo = s
-        let buildingInfo = b
-
-        let rpds = {...this.state.rpds}
-        rpds.fyzId = cjbbInfo.departmentName//分行（组）名称
-        rpds.cjrId = cjbbInfo.userName//成交人名称
-        rpds.cjrq = cjbbInfo.createTime//成交日期
-        rpds.cjzj = cjbbInfo.totalPrice//成交总价
-        rpds.ycjyj = cjbbInfo.commission//成交佣金
-        /*this.setState({ rpds },()=>{
-            if(this.rpds!=null){
-                this.rpds.loadData()
+        let url  = `${WebApiConfig.baseset.orgget}${this.props.user.Filiale}/${branchPar.showBb}`
+        let r=  await ApiClient.get(url);
+        r= (r||{}).data||{};
+        if(r.code==='0'){
+            if(r.extension && r.extension.parValue==='0'){
+                this.setState({showBbSelector: false})
+            }else{
+                this.setState({showBbSelector: true})
             }
-        })*/
-        this.props.dispatch(syncRp(rpds))
-
-        let wyds = {...this.state.wyds}
-        wyds.wyCq = buildingInfo.basicInfo.city//物业城区
-        wyds.wyPq = buildingInfo.basicInfo.district//物业片区
-        wyds.wyMc = buildingInfo.basicInfo.name//物业名称
-        /*wyds.wyWz=//物业位置
-        wyds.wyLc=//物业楼层
-        wyds.wyFh=//物业房号
-        wyds.wyZlc=//物业总楼层
-        wyds.wyCzwydz=//产证物业地址
-        wyds.wyF=//房
-        wyds.wyT=//厅
-        wyds.wyW=//卫
-        wyds.wyYt=//阳台
-        wyds.wyLt=//露台
-        wyds.wyJgf=//观景台
-        wyds.wyWylx=//物业类型
-        wyds.wyKjlx=//空间类型
-        wyds.wyJzmj=//建筑面积
-        wyds.wyWyJj=//均价
-        wyds.wyDts=//电梯数
-        wyds.wyMchs=//每层户数
-        wyds.wyZxnd=//装修年代
-        wyds.wyJj=//家具
-        wyds.wyCqzqdsj=//产权取得时间
-        wyds.wyFcajhm=//房产按揭号码
-        wyds.wySfhz=//是否合租
-        wyds.wyFyfkfs=//房源付款方式
-        wyds.wyFydknx=//房源贷款年限
-        wyds.wyFydksynx=//房源贷款剩余年限*/
-        /*this.setState({ wyds },()=>{
-            if(this.wyds!=null){
-                this.wyds.loadData()
-            }
-        })*/
-        this.props.dispatch(syncWy(wyds))
-
-        let yzds = {...this.state.yzds}
-        yzds.yzMc = cjbbInfo.customerName//业主名称
-        yzds.yzSj = cjbbInfo.customerPhone//业主电话
-        /*this.setState({ yzds },()=>{
-            if(this.yzds!=null){
-                this.yzds.loadData()
-            }
-        })*/
-        this.props.dispatch(syncYz(yzds))
-
-        let khds = {...this.state.khds}
-        khds.khMc = cjbbInfo.customerName
-        khds.khSj = cjbbInfo.customerPhone
-        /*this.setState({ khds },()=>{
-            if(this.khds!=null){
-                this.khds.loadData()
-            }
-        })*/
-        this.props.dispatch(syncKh(khds))
-
-        let fpds = {...this.state.fpds}
-        fpds.yjYzys = cjbbInfo.commission//业主应收
-        let m1 = moment(cjbbInfo.createTime).add(180, 'days')
-        fpds.yjYzyjdqr = m1.format('YYYY-MM-DD')//业主佣金到期日
-        fpds.yjKhyjdqr = m1.format('YYYY-MM-DD')//客户佣金到期日
-
-        /*this.setState({ fpds },()=>{
-            if(this.fpds!=null){
-                this.fpds.loadData()
-            }
-        })*/
-        this.props.dispatch(syncFp(fpds))
+        }
     }
+
+    // loadTabData = (e) => {
+    //     console.log(e)
+    //     if (e === 'jyht' && this.state.isEdit) {
+    //         this.props.dispatch(dealRpGet(this.state.rpId));
+    //     }
+    //     else if (e === 'cjwy' && this.state.isEdit) {
+    //         this.props.dispatch(dealWyGet(this.state.rpId));
+    //     }
+    //     else if (e === 'yzxx' && this.state.isEdit) {
+    //         this.props.dispatch(dealYzGet(this.state.rpId));
+    //     }
+    //     else if (e === 'khxx' && this.state.isEdit) {
+    //         this.props.dispatch(dealKhGet(this.state.rpId));
+    //     }
+    //     else if (e === 'yjfp' && this.state.isEdit) {
+    //         this.props.dispatch(dealFpGet(this.state.rpId));
+    //     }
+    //     else if (e === 'ajgh' && this.state.isEdit) {
+    //         this.props.dispatch(dealGhGet(this.state.rpId));
+    //     }
+    //     else if (e === 'fj' && this.state.isEdit) {
+
+    //     }
+    //     else if (e === 'yjtz' && this.state.isEdit) {
+
+    //     }
+    //     this.setState({ activeTab: e });
+    // }
+ 
+    cjrqChanged = ()=>{
+        let newReport = this._getSubFormValues();
+
+        let rq = newReport.cjrq;
+        if(rq){
+            rq = moment(rq)
+
+            let yj = newReport.reportYjfp || {};
+            yj.yjYzyjdqr  = rq.days(180);
+            yj.yjKhyjdqr= rq.days(180);
+            newReport.reportYjfp = {...yj};
+
+            this.setState({report: {...this.state.report,...newReport}})
+        }
+        
+    }
+
+    showBbDialog =(b)=>{
+        this.setState({showBbDialog: b})
+    }
+    bbChanged=async (item)=>{
+        console.log(item);
+        let newReport = this._getSubFormValues();
+
+        newReport.fyzId = item.departmentId;
+        newReport.fyzName = item.departmentName;
+        newReport.cjrq = moment(item.dealTime);
+        newReport.cjzj = item.totalPrice*1;
+        newReport.ycjyj = item.commission*1;
+        newReport.cjrId = item.userId;
+        newReport.cjrName = item.userName;
+        newReport.cjbbId = item.id;
+
+        //获取楼盘信息
+        let wy = newReport.reportWy ||{};
+        wy = {...wy}
+        let url = `${WebApiConfig.project.get}${item.projectId}`
+        let r = await ApiClient.get(url);
+        r = (r||{}).data||{};
+        if(r.code==='0' && r.extension){
+            let bi = r.extension.basicInfo||{};
+            wy.wyCq=bi.district;
+            wy.wyPq = bi.area;
+            wy.wyMc = bi.name;
+            wy.wyCzwydz = bi.address;
+        }else{
+            notification.error({message:'获取楼盘信息失败'})
+        }
+        url = `${WebApiConfig.project.getShop}${item.shopId}`
+        r = await ApiClient.get(url);
+        r = (r||{}).data||{};
+        if(r.code==='0' && r.extension){
+            let bi = r.extension.basicInfo||{};
+            wy.wyWz = bi.buildingNo;
+            wy.wyLc = bi.floorNo;
+            wy.wyFh = bi.number;
+            wy.wyZlc = bi.floors;
+            wy.wyJzmj = bi.buildingArea;
+        }else{
+            notification.error({message:'获取商铺信息失败'})
+        }
+        newReport.reportWy = wy;
+
+        let yz = newReport.reportYz ||{};
+        yz = {...yz}
+        yz.yzMc = item.customerName;
+        newReport.reportYz = yz;
+
+        let kh = newReport.reportKh ||{};
+        kh = {...kh}
+        kh.khMc = item.customerName;
+        newReport.reportKh = kh;
+        
+        let yj = newReport.reportYjfp || {};
+            yj.yjYzyjdqr  = newReport.cjrq.days(180);
+            yj.yjKhyjdqr= newReport.cjrq.days(180);
+            yj.yjYzys = newReport.ycjyj;
+            yj.yjKhys = 0;
+            newReport.reportYjfp = {...yj};
+    
+        console.log(newReport);
+
+        this.setState({report: {...this.state.report,...newReport}})
+
+        this.showBbDialog(false);
+    }
+
+    _getSubFormValues = ()=>{
+        let values = this.jyhtForm.props.form.getFieldsValue();
+        if(this.wyForm){
+            values.reportWy = this.wyForm.props.form.getFieldsValue();
+        }
+        if(this.yzForm){
+            values.reportYz = this.yzForm.props.form.getFieldsValue();
+        }
+        if(this.khForm){
+            values.reportKh = this.khForm.props.form.getFieldsValue();
+        }
+        if(this.yjForm){
+            values.reportYjfp = this.yjForm.props.form.getFieldsValue();
+        }
+
+        return values;
+    }
+
     render() {
         return (
             <Layer>
@@ -227,27 +282,71 @@ class TradeManager extends Component {
                     </div> */}
                     <Spin spinning={this.state.isDataLoading}>
                         <Content style={{ overflowY: 'auto', height: '100%' }}>
+                        <div style={{paddingTop:'1rem', paddingBottom:'1rem'}}>
+                            <Button type="primary">保存</Button>
+                            <Button type="primary" style={{marginLeft:'0.5rem'}}>提交审核</Button>
+                            </div>
                             <Tabs defaultActiveKey="jyht" onChange={this.loadTabData}>
                                 <TabPane tab="交易合同" key="jyht">
-                                    <TradeContract  rpId={this.state.rpId} opType={this.state.opType} onShowCjbbtb={this.onShowCjbbtb} />
+                                    <TradeContract 
+                                        cjrqChanged={this.cjrqChanged}
+                                        entity={this.state.report} 
+                                        wrappedComponentRef={(inst) => this.jyhtForm = inst}  
+                                        showDialog={this.showBbDialog} 
+                                        showBbSelector={this.state.showBbSelector}
+                                        dic={this.props.dic}  
+                                        rpId={this.state.rpId} 
+                                        opType={this.state.opType} 
+                                        onShowCjbbtb={this.onShowCjbbtb} />
                                 </TabPane>
                                 <TabPane tab="成交物业" key="cjwy">
-                                    <TradeEstate  rpId={this.state.rpId} opType={this.state.opType}  />
+                                    <TradeEstate  
+                                        entity={this.state.report.reportWy} 
+                                        wrappedComponentRef={(inst) => this.wyForm = inst}  
+                                        showBbSelector={this.state.showBbSelector}
+                                        dic={this.props.dic}  
+                                        rpId={this.state.rpId} 
+                                        opType={this.state.opType}  />
                                 </TabPane>
                                 <TabPane tab="业主信息" key="yzxx">
-                                    <TradeBnsOwner  rpId={this.state.rpId} opType={this.state.opType} />
+                                    <TradeBnsOwner  
+                                        entity={this.state.report.reportYz} 
+                                        wrappedComponentRef={(inst) => this.yzForm = inst}  
+                                        showBbSelector={this.state.showBbSelector}
+                                        dic={this.props.dic}  
+                                        rpId={this.state.rpId} 
+                                        opType={this.state.opType} />
                                 </TabPane>
                                 <TabPane tab="客户信息" key="khxx">
-                                    <TradeCustomer  rpId={this.state.rpId} opType={this.state.opType}  />
+                                    <TradeCustomer  
+                                        entity={this.state.report.reportKh} 
+                                        wrappedComponentRef={(inst) => this.khForm = inst}  
+                                        showBbSelector={this.state.showBbSelector}
+                                        dic={this.props.dic}  
+                                        rpId={this.state.rpId} 
+                                        opType={this.state.opType}  />
                                 </TabPane>
                                 <TabPane tab="业绩分配" key="yjfp">
-                                    <TradePerDis  rpId={this.state.rpId} opType={this.state.opType}  branchId={"1"}/>
+                                    <TradePerDis  
+                                        entity={this.state.report.reportYjfp} 
+                                        wrappedComponentRef={(inst) => this.yjForm = inst}  
+                                        showBbSelector={this.state.showBbSelector}
+                                        dic={this.props.dic}  
+                                        rpId={this.state.rpId} 
+                                        opType={this.state.opType}  
+                                        />
                                 </TabPane>
                                 <TabPane tab="附件" key="fj">
                                     <TradeAttact rpId={this.state.rpId} opType={this.state.opType} />
                                 </TabPane>
                                 <TabPane tab="按揭过户" key="ajgh">
-                                    <TradeTransfer rpId={this.state.rpId} opType={this.state.opType} />
+                                    <TradeTransfer 
+                                        entity={this.state.report.reportGh} 
+                                        wrappedComponentRef={(inst) => this.yjForm = inst}  
+                                        showBbSelector={this.state.showBbSelector}
+                                        dic={this.props.dic}
+                                        rpId={this.state.rpId} 
+                                        opType={this.state.opType} />
                                 </TabPane>
                                 {
                                     this.state.isEdit?(<TabPane tab="业绩调整" key="yjtz">
@@ -257,7 +356,7 @@ class TradeManager extends Component {
                             </Tabs>
                         </Content>
                     </Spin>
-                    <TradeReportTable onSelf={this.onTradReportTableSelf} onHandleChooseCjbb={this.onHandleChooseCjbb} />
+                    <TradeReportTable visible={this.state.showBbDialog} onClose={this.showBbDialog} selectedCallback={this.bbChanged}/>
                 </Layout>
             </Layer>
         )
@@ -267,13 +366,16 @@ function MapStateToProps(state) {
     return {
         operInfo: state.rp.operInfo,
         shopInfo: state.rp.shopInfo,
-        buildingInfo: state.rp.buildingInfo
+        buildingInfo: state.rp.buildingInfo,
+        dic: state.basicData.dicList,
+        user: state.oidc.user.profile||{}
     }
 }
 
 function MapDispatchToProps(dispatch) {
     return {
-        dispatch
+        dispatch,
+        getDicParList: (...args) => dispatch(getDicParList(...args))
     };
 }
 export default connect(MapStateToProps, MapDispatchToProps)(TradeManager);

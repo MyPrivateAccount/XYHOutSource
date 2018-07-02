@@ -19,7 +19,16 @@ const WebApiConfig = {
         ResetPwd: BaseApiUrl + "user/initpassword",//重置密码
     },
     human:{
-        List:basicDataBaseApiUrl+"humaninfo/searchhumaninfo"
+        List:basicDataBaseApiUrl+"humaninfo/searchhumaninfo",
+        orgUser: basicDataBaseApiUrl+"humaninfo/simpleSearch"
+    },
+    area:{
+        get: basicDataBaseApiUrl+'areadefines/',
+        list:  basicDataBaseApiUrl+'areadefines/list',
+    },
+    project:{
+        get: basicDataBaseApiUrl+"buildings/",
+        getShop: basicDataBaseApiUrl+"Shops/"
     },
     application: {
         Base: BaseApiUrl + 'Application',//应用基础地址
@@ -68,7 +77,14 @@ const WebApiConfig = {
         rpDel:basicDataBaseApiUrl+'yj/report/',
     },
     fina:{
-        searchPPFt:basicDataBaseApiUrl+'yj/ppft/search'
+        searchPPFt:basicDataBaseApiUrl+'yj/ppft/search',
+        searchRYFT:basicDataBaseApiUrl+'yj/report/rsft',
+        searchYFTC:basicDataBaseApiUrl+'yj/report/yftc',
+        searchSFTC:basicDataBaseApiUrl+'yj/report/sftc',
+        searchTCCB:basicDataBaseApiUrl+'yj/report/tccb',
+        searchYFTCCJ:basicDataBaseApiUrl+'yj/report/cbcj',
+        searchLZYJQR:basicDataBaseApiUrl+'yj/report/yjqr/',
+        searchSKQR:basicDataBaseApiUrl+'yj/report/skqr/'
     },
     yj:{
         monthlyMonth:basicDataBaseApiUrl+'yj/monthly/'//月结月份
@@ -85,6 +101,7 @@ const WebApiConfig = {
         acmentsave:basicDataBaseApiUrl+'yj/allocationsettings/',
         acmentitems:basicDataBaseApiUrl+'yj/allocationsettings/items',
         orgsave:basicDataBaseApiUrl+'yj/branchsettings/',
+        orgget: basicDataBaseApiUrl + 'yj/branchsettings/',
         ppftsave:basicDataBaseApiUrl+'yj/brandsharesetting/',
         incomesave:basicDataBaseApiUrl+'yj/rules/'
     }

@@ -1,17 +1,18 @@
-import {connect} from 'react-redux';
-import {createStation, getOrgList, leavePosition} from '../../actions/actionCreator';
-import React, {Component} from 'react'
-import {Select, Input, Form, Cascader, Button, Row, Col, Checkbox, DatePicker, TreeSelect} from 'antd'
+import { connect } from 'react-redux';
+import { createStation, getOrgList, leavePosition } from '../../actions/actionCreator';
+import React, { Component } from 'react'
+import { Select, Input, Form, Cascader, Button, Row, Col, Checkbox, DatePicker, TreeSelect } from 'antd'
 import Layer from '../../../components/Layer'
+import LeaveForm from '../../../businessComponents/humanSystem/leavePreview'
 const FormItem = Form.Item;
 const Option = Select.Option;
 const formItemLayout = {
-    labelCol: {span: 6},
-    wrapperCol: {span: 17},
+    labelCol: { span: 6 },
+    wrapperCol: { span: 17 },
 };
 
 
-class Left extends Component {
+class Leave extends Component {
     state = {
         department: ''
     }
@@ -35,15 +36,30 @@ class Left extends Component {
         });
     }
 
+
+    //子页面回调
+    subPageLoadCallback = (formObj, pageName) => {
+        console.log("表单对象:", formObj, pageName);
+        if (pageName == "socialSecurity") {
+            this.setState({ socialSecurityForm: formObj });
+        } else if (pageName == "salary") {
+            this.setState({ salaryForm: formObj });
+        }
+    }
+
+
     render() {
-        const {getFieldDecorator, getFieldsError, getFieldsValue, isFieldTouched} = this.props.form;
+        const { getFieldDecorator, getFieldsError, getFieldsValue, isFieldTouched } = this.props.form;
         let humanInfo = this.props.location.state;
-        console.log("部门id:",humanInfo.departmentId);
         return (
             <Layer>
-                <div className="page-title" style={{marginBottom: '10px'}}>离职</div>
-                <Form onSubmit={this.handleSubmit}>
-                    <Row style={{marginTop: '10px'}}>
+                <div className="page-title" style={{ marginBottom: '10px' }}>离职</div>
+                <LeaveForm
+                    entityInfo={humanInfo}
+                    subPageLoadCallback={(formObj, pageName) => this.subPageLoadCallback(formObj, pageName)}
+                    setDepartmentOrgTree={this.props.setDepartmentOrgTree || []}
+                />
+                {/* <Row style={{ marginTop: '10px' }}>
                         <Col span={7}>
                             <FormItem {...formItemLayout} label="员工编号">
                                 {getFieldDecorator('userID', {
@@ -77,7 +93,6 @@ class Left extends Component {
                                         message: 'please entry',
                                     }]
                                 })(
-                                    // <Cascader disabled={true} options={this.props.setDepartmentOrgTree} onChange={this.handleChooseDepartmentChange} onPopupVisibleChange={this.handleDepartmentChange} changeOnSelect placeholder="归属部门" />
                                     <TreeSelect disabled={true} treeData={this.props.setDepartmentOrgTree} />
                                 )}
                             </FormItem>
@@ -91,7 +106,7 @@ class Left extends Component {
                                         required: true, message: '请输入离职日期',
                                     }]
                                 })(
-                                    <DatePicker format='YYYY-MM-DD' style={{width: '100%'}} />
+                                    <DatePicker format='YYYY-MM-DD' style={{ width: '100%' }} />
                                 )}
                             </FormItem>
                         </Col>
@@ -119,43 +134,12 @@ class Left extends Component {
                                 )}
                             </FormItem>
                         </Col>
-                    </Row>
-                    <Row>
-                        <Col span={20} style={{textAlign: 'center'}}>
-                            <Button type="primary" htmlType="submit" disabled={this.hasErrors(getFieldsValue())} >提交</Button>
-                        </Col>
-                    </Row>
-                    {/* <FormItem {...formItemLayout1} label="离职办理时间">
-                        {getFieldDecorator('leaveTime', {
-                            rules: [{
-                                required:true, message: 'please entry',
-                            }]
-                        })(
-                            <DatePicker format='YYYY-MM-DD' style={{width: '100%'}} />
-                        )}
-                    </FormItem>
-                    <FormItem {...formItemLayout1} colon={false} label=" ">
-                        {getFieldDecorator('isFormalities', {
-                            rules: [{
-                                required:true, message: 'please entry',
-                            }]
-                        })(
-                            <Checkbox >是否办理手续</Checkbox>
-                        )}
-                    </FormItem>
-                    <FormItem {...formItemLayout1} colon={false} label=" ">
-                        {getFieldDecorator('isReduceSocialEnsure', {
-                            rules: [{
-                                required:true, message: 'please entry',
-                            }]
-                        })(
-                            <Checkbox >社保是否减少</Checkbox>
-                        )}
-                    </FormItem>
-                    <FormItem wrapperCol={{ span: 12, offset: 6 }}>
-                        <Col span={6}><Button type="primary" htmlType="submit" disabled={this.hasErrors(getFieldsValue())} >提交</Button></Col>
-                    </FormItem> */}
-                </Form>
+                    </Row> */}
+                <Row>
+                    <Col span={20} style={{ textAlign: 'center' }}>
+                        <Button type="primary" htmlType="submit" disabled={this.hasErrors(getFieldsValue())} >提交</Button>
+                    </Col>
+                </Row>
             </Layer >
 
         );
@@ -164,7 +148,6 @@ class Left extends Component {
 
 function tableMapStateToProps(state) {
     return {
-        selHumanList: state.basicData.selHumanList,
         setDepartmentOrgTree: state.basicData.searchOrgTree,
 
     }
@@ -175,4 +158,4 @@ function tableMapDispatchToProps(dispatch) {
         dispatch
     };
 }
-export default connect(tableMapStateToProps, tableMapDispatchToProps)(Form.create()(Left));
+export default connect(tableMapStateToProps, tableMapDispatchToProps)(Leave);

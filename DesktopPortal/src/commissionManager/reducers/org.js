@@ -16,6 +16,7 @@ const initState = {
         BaseSetOrgTree:[],
         RSFTZZOrgTree:[],//人数分摊组织页面的树
         YJOrgTree:[],//月结页面的组织树
+        FinaOrgTree:[],
     },
     areaList: [],
     humanList:[]
@@ -29,6 +30,8 @@ treeReducerMap[actionTypes.ORG_GET_PERMISSION_TREE_UPDATE] = function (state, ac
     let BaseSetOrgTree = state.permissionOrgTree.BaseSetOrgTree
     let RSFTZZOrgTree = state.permissionOrgTree.RSFTZZOrgTree
     let YJOrgTree = state.permissionOrgTree.YJOrgTree
+    let FinaOrgTree = state.permissionOrgTree.FinaOrgTree
+
     let formatNodeList = [];
     for (var i in action.payload.extension) {
         var node = action.payload.extension[i];
@@ -76,7 +79,16 @@ treeReducerMap[actionTypes.ORG_GET_PERMISSION_TREE_UPDATE] = function (state, ac
     else if(action.payload.permissionType === "YJ_CW_YJ"){
         YJOrgTree  = getContractOrg(orgTreeSource,null)
     }
-    return Object.assign({}, state, {permissionOrgTree: {AddUserTree: AddUserTree, AddNormalRoleTree: AddNormalRoleTree, AddPublicRoleTree: AddPublicRoleTree, AddRolePermissionTree: AddRolePermissionTree,BaseSetOrgTree:BaseSetOrgTree,RSFTZZOrgTree:RSFTZZOrgTree,YJOrgTree:YJOrgTree},operInfo:{operType:action.payload.permissionType}});
+    else if(action.payload.permissionType === "YJ_CW_RY_QUERY"||
+    action.payload.permissionType === "YJ_CW_YFTCB"||
+    action.payload.permissionType === "YJ_CW_SFTCB"||
+    action.payload.permissionType === "YJ_CW_TCCBB"||
+    action.payload.permissionType === "YJ_CW_YFTCCJB"||
+    action.payload.permissionType === "YJ_CW_LZRYYJQRB"||
+    action.payload.permissionType === "YJ_CW_SFKJQRB"){
+        FinaOrgTree  = getContractOrg(orgTreeSource,null)
+    }
+    return Object.assign({}, state, {permissionOrgTree: {AddUserTree: AddUserTree, AddNormalRoleTree: AddNormalRoleTree, AddPublicRoleTree: AddPublicRoleTree, AddRolePermissionTree: AddRolePermissionTree,BaseSetOrgTree:BaseSetOrgTree,RSFTZZOrgTree:RSFTZZOrgTree,YJOrgTree:YJOrgTree,FinaOrgTree:FinaOrgTree},operInfo:{operType:action.payload.permissionType}});
 }
 function getContractOrg(orgTree,sArray) {
     if(sArray === null){
