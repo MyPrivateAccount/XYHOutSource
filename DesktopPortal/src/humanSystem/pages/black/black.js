@@ -10,9 +10,7 @@ import BlackForm from '../../../businessComponents/humanSystem/blackInfo'
 import ApiClient from '../../../utils/apiClient'
 import WebApiConfig from '../../constants/webapiConfig';
 const buttonDef = [
-    {buttonID: "addnew", buttonName: "新建", icon: '', type: 'primary', size: 'large', },
-    {buttonID: "modify", buttonName: "修改", icon: '', type: 'primary', size: 'large', },
-    {buttonID: "delete", buttonName: "删除", icon: '', type: 'primary', size: 'large', },
+    {buttonID: "addnew", buttonName: "新建", icon: '', type: 'primary', size: 'large', }
 ];
 
 
@@ -43,8 +41,16 @@ class MainIndex extends Component {
             {
                 title: "操作", dataIndex: "operation", key: "operation",
                 render: (text, record) => {
+                    let hasModifyPermission = this.hasPermission({buttonID: "modify", buttonName: "修改"});
+                    let hasDeletePermission = this.hasPermission({buttonID: "delete", buttonName: "删除"});
                     return (
-                        <span> <a onClick={() => this.showDetail(record)}>显示详细</a> </span>
+                        <span>
+                            {hasModifyPermission ? <Button type="primary" size='small' shape="circle" icon="edit" style={{marginRight: '5px'}} onClick={() => this.handleOperClick(record, 'modify')} /> : null}
+                            {hasDeletePermission ? <Button type="primary" size='small' shape="circle" icon="idcard" style={{marginRight: '5px'}} onClick={() => this.showDetail(record)} /> : null}
+                            <Popconfirm title="确定要删除该记录?" onConfirm={() => this.handleOperClick(record, 'delete')} okText="是" cancelText="否">
+                                <Button type="primary" shape="circle" size='small' icon="delete" style={{marginRight: '5px'}} />
+                            </Popconfirm>
+                        </span>
                     );
                 }
             }
@@ -60,29 +66,15 @@ class MainIndex extends Component {
         console.log("操作按钮:", e);
         if (e.target.id === "addnew") {
             this.gotoSubPage('addblack', {})
-        } else if (e.target.id === "modify") {
-            if (this.state.checkList.length > 0) {
-                let editInfo = {...this.state.checkList[0]}
-                editInfo.sex = editInfo.sex + '';
-                this.gotoSubPage('editblack', editInfo)
-            }
-            else {
-                notification.error({
-                    description: "请选择指定黑名单",
-                    duration: 3
-                });
-            }
-        } else if (e.target.id === "delete") {
-            if (this.state.checkList.length > 0) {
-                let curBlackInfo = this.state.checkList[0]
-                this.handleDelete(curBlackInfo.id);
-            }
-            else {
-                notification.error({
-                    description: "请选择指定黑名单",
-                    duration: 3
-                });
-            }
+        }
+    }
+
+    handleOperClick = (record, type) => {
+        if (type === "modify") {
+            record.sex = record.sex + '';
+            this.gotoSubPage('editblack', record)
+        } else if (type === "delete") {
+            this.handleDelete(record.id);
         }
     }
     //是否有权限
@@ -189,21 +181,9 @@ class MainIndex extends Component {
                 {
                     buttonDef.map((button, i) => {
                         let hasPermission = this.hasPermission(button);
-                        if (hasPermission) {
-                            if (button.buttonID == 'delete') {
-                                return (this.state.checkList.length > 0 ? <Popconfirm id={button.buttonID} key={button.buttonID} title="确认要删除黑名单?" onConfirm={() => this.handleClickFucButton({target: {id: 'delete'}})} okText="是" cancelText="否">
-                                    <Button id={button.buttonID} style={{marginTop: '10px', marginBottom: '10px', marginRight: '10px', border: 0}}
-                                        icon={button.icon} size={button.size} type={button.type}>{button.buttonName}</Button>
-                                </Popconfirm> : <Button key={button.buttonID} id={button.buttonID} style={{marginTop: '10px', marginBottom: '10px', marginRight: '10px', border: 0}}
-                                    onClick={this.handleClickFucButton}
-                                    icon={button.icon} size={button.size} type={button.type}>{button.buttonName}</Button>
-                                )
-                            } else {
-                                return (<Button id={button.buttonID} key={button.buttonID} style={{marginTop: '10px', marginBottom: '10px', marginRight: '10px', border: 0}}
-                                    onClick={this.handleClickFucButton}
-                                    icon={button.icon} size={button.size} type={button.type}>{button.buttonName}</Button>)
-                            }
-                        }
+                        return (hasPermission ? <Button id={button.buttonID} key={button.buttonID} style={{marginTop: '10px', marginBottom: '10px', marginRight: '10px', border: 0}}
+                            onClick={this.handleClickFucButton}
+                            icon={button.icon} size={button.size} type={button.type}>{button.buttonName}</Button> : null)
                     })
                 }
                 <div>

@@ -39,17 +39,15 @@ class Station extends Component {
         });
     }
 
-    handleChooseDepartmentChange = (value, label, extra) => {
-        // this.state.department = e;
-        let orgObj = ((extra.triggerNode || {}).props || {}).Original || {};
-        console.log("选择部门:", orgObj);
-        if (orgObj.type && orgObj.type !== 'Filiale') {
-            // this.props.form.resetFields();
-            this.props.form.setFields({'parentID': {value: null, errors: ["请选择类型为分公司的组织!"]}})
-            notification.warning({
-                description: '只能选择分公司!'
-            });
+    //部门类型验证
+    orgTypeValidate = (rule, value, callback) => {
+        console.log("部门类型验证");
+        const form = this.props.form;
+        let orgObj = form.getFieldValue('parentID');
+        if (orgObj && orgObj.type !== 'Filiale') {
+            callback('请选择类型为分公司的组织!');
         }
+        callback();
     }
 
     render() {
@@ -80,7 +78,7 @@ class Station extends Component {
                         })(
                             <Select>
                                 {
-                                    (this.state.dicPositions || []).map((item,i) => <Option key={i} value={item.value}>{item.key}</Option>)
+                                    (this.state.dicPositions || []).map((item, i) => <Option key={i} value={item.value}>{item.key}</Option>)
                                 }
                             </Select>
                         )}
@@ -89,14 +87,14 @@ class Station extends Component {
                         {getFieldDecorator('parentID', {
                             initialValue: editPositionObj.parentID,
                             rules: [{
-                                required: true, message: '请选择所属分公司',
+                                required: true, message: '请选择所属分公司'
+                            }, {
+                                validator: this.orgTypeValidate
                             }]
                         })(
-                            // <Cascader options={this.props.setContractOrgTree} onChange={this.handleChooseDepartmentChange} changeOnSelect placeholder="归属部门" />
                             <TreeSelect
                                 allowClear
                                 treeData={this.props.setContractOrgTree}
-                                onChange={this.handleChooseDepartmentChange}
                                 placeholder="请选择所属分公司"
                             />
                         )}
@@ -106,8 +104,7 @@ class Station extends Component {
                     </FormItem>
                 </Form>
             </Layer>
-
-        );
+        )
     }
 }
 

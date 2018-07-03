@@ -22,7 +22,7 @@ const WebApiConfig = {
         SetBlack: basicDataBaseApiUrl + "humaninfoblack",
         DeleteBlack: basicDataBaseApiUrl + "humaninfoblack/",
         SetStation: basicDataBaseApiUrl + "humanstation/setstation",
-        DeleteStation: basicDataBaseApiUrl + "humanstation/deletesalary",
+        DeleteStation: basicDataBaseApiUrl + "humanstation/deletestation",
         setSalary: basicDataBaseApiUrl + "humansalary/setsalary",
         deleteSalary: basicDataBaseApiUrl + "humansalary/deletestation",
         getHumanImage: basicDataBaseApiUrl + "humanfile/getfileinfo",

@@ -1,16 +1,9 @@
 import React, {Component} from 'react'
 import {Row, Col, Checkbox, Select, Form, Input, Icon} from 'antd';
-import {DIC_SAVE_GROUP_ASYNC} from '../../xtwh/constants';
 const FormItem = Form.Item;
 const Option = Select.Option;
 const {TextArea} = Input;
-const styles = {
-    subHeader: {
-        padding: '5px',
-        marginBottom: '10px',
-        backgroundColor: '#e0e0e0'
-    }
-}
+
 class BlackInfo extends Component {
     state = {
 
