@@ -47,7 +47,7 @@ class Education extends Component {
         let editInfo = this.props.entityInfo || {};
         console.log("教育经历:", editInfo);
         return (
-            <Modal title="学历信息" maskClosable={false} style={{width: '600px !important'}} visible={this.props.showDialog} onOk={this.handleOk} onCancel={this.handleCancel}>
+            <Modal title="学历信息" maskClosable={false} width='700px' visible={this.props.showDialog} onOk={this.handleOk} onCancel={this.handleCancel}>
                 <Row>
                     <Col span={12}>
                         <FormItem {...formItemLayout} label="学历">

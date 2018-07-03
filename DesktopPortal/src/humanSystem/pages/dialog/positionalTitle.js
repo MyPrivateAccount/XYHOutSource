@@ -43,7 +43,7 @@ class PositionalTitle extends Component {
         let editInfo = this.props.entityInfo || {};
         console.log("对象:", editInfo);
         return (
-            <Modal title="上单位职位信息" maskClosable={false} style={{width: '600px !important'}} visible={this.props.showDialog} onOk={this.handleOk} onCancel={this.handleCancel}>
+            <Modal title="上单位职位信息" maskClosable={false} width='620px' visible={this.props.showDialog} onOk={this.handleOk} onCancel={this.handleCancel}>
                 <Row>
                     <Col span={12}>
                         <FormItem {...formItemLayout} label="职称" >

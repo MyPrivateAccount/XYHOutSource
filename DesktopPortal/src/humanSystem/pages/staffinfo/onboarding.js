@@ -10,7 +10,6 @@ import ApiClient from '../../../utils/apiClient';
 import FormerCompany from '../dialog/formerCompany';
 import Education from '../dialog/education';
 import PositionalTitle from '../dialog/positionalTitle';
-import '../dialog/dialog.less'
 import {getDicPars} from '../../../utils/utils'
 import SocialSecurity from '../../../businessComponents/humanSystem/socialSecurity'
 import Salary from '../../../businessComponents/humanSystem/salary'

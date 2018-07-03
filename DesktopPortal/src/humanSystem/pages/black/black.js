@@ -7,6 +7,8 @@ import Layer, {LayerRouter} from '../../../components/Layer'
 import {Route} from 'react-router'
 import Addblack from './addblack'
 import BlackForm from '../../../businessComponents/humanSystem/blackInfo'
+import ApiClient from '../../../utils/apiClient'
+import WebApiConfig from '../../constants/webapiConfig';
 const buttonDef = [
     {buttonID: "addnew", buttonName: "新建", icon: '', type: 'primary', size: 'large', },
     {buttonID: "modify", buttonName: "修改", icon: '', type: 'primary', size: 'large', },
@@ -19,8 +21,10 @@ class MainIndex extends Component {
         condition: {
             keyWord: "",
             pageIndex: 0,
-            pageSize: 0
+            pageSize: 10
         },
+        showLoading: false,
+        blackList: {extension: [], pageIndex: 0, pageSize: 10, totalCount: 0},
         showDetail: false,//详情
         checkList: [],//选中列表
         editblackInfo: null//当前编辑黑名单
@@ -53,11 +57,14 @@ class MainIndex extends Component {
     }
 
     handleClickFucButton = (e) => {
+        console.log("操作按钮:", e);
         if (e.target.id === "addnew") {
             this.gotoSubPage('addblack', {})
         } else if (e.target.id === "modify") {
             if (this.state.checkList.length > 0) {
-                this.gotoSubPage('editblack', this.state.checkList[0])
+                let editInfo = {...this.state.checkList[0]}
+                editInfo.sex = editInfo.sex + '';
+                this.gotoSubPage('editblack', editInfo)
             }
             else {
                 notification.error({
@@ -68,7 +75,7 @@ class MainIndex extends Component {
         } else if (e.target.id === "delete") {
             if (this.state.checkList.length > 0) {
                 let curBlackInfo = this.state.checkList[0]
-                this.props.dispatch(deleteBlackInfo(curBlackInfo.id));
+                this.handleDelete(curBlackInfo.id);
             }
             else {
                 notification.error({
@@ -98,8 +105,49 @@ class MainIndex extends Component {
         this.setState({showDetail: true, editblackInfo: record});
     }
     handleSearch = () => {
-        this.props.dispatch(setSearchLoadingVisible(true));
-        this.props.dispatch(getBlackList(this.state.condition));
+        let result = {isOk: false, extension: {}, msg: '获取黑名单列表失败！'};
+        let url = WebApiConfig.search.getBlackList;
+        let _this = this;
+        let blackList = this.state.blackList;
+        this.setState({showLoading: true});
+        ApiClient.post(url, this.state.condition).then(res => {
+            this.setState({showLoading: false});
+            if (res.data.code == 0) {
+                result.isOk = true;
+                blackList = {
+                    extension: res.data.extension, pageIndex: res.data.pageIndex, pageSize: res.data.pageSize, totalCount: res.data.totalCount
+                }
+                _this.setState({blackList: blackList});
+            }
+        }).catch(e => {
+            this.setState({showLoading: false});
+            result.msg = '检索关键字接口调用异常';
+            notification.error({
+                description: result.msg,
+                duration: 3
+            });
+        })
+    }
+
+    handleDelete = (blackInfoId) => {
+        let url = WebApiConfig.server.DeleteBlack + blackInfoId;
+        let huResult = {isOk: false, msg: '删除黑名单失败！'};
+        ApiClient.post(url, null, null, 'DELETE').then(res => {
+            if (res.data.code == 0) {
+                huResult.msg = '删除黑名单成功';
+                notification.success({
+                    message: huResult.msg,
+                    duration: 3
+                });
+            }
+            this.handleSearch();
+        }).catch(e => {
+            huResult.msg = "删除黑名单接口调用异常!";
+            notification.error({
+                message: huResult.msg,
+                duration: 3
+            });
+        })
     }
     //翻页
     handleChangePage = (pageIndex) => {
@@ -110,6 +158,11 @@ class MainIndex extends Component {
         });
     }
 
+    handleKeyChangeWord = (e) => {
+        let condition = this.state.condition;
+        condition.keyWord = e.target.value;
+        this.setState({condition: condition})
+    }
     render() {
         const rowSelection = {
             onChange: (selectedRowKeys, selectedRows) => {
@@ -117,17 +170,16 @@ class MainIndex extends Component {
                 this.setState({checkList: selectedRows});
             }
         };
-        let showLoading = this.props.showLoading;
+        let showLoading = this.state.showLoading;
         let columns = this._getColumns();
-        let blackList = this.props.searchInfoResult.blackList;
+        let blackList = this.state.blackList;
         let paginationInfo = {current: blackList.pageIndex, pageSize: blackList.pageSize, total: blackList.totalCount};
         return (
-            <Layer>
-                {/* <Spin spinning={showLoading}> */}
+            <Layer showLoading={showLoading}>
                 <div className="searchBox">
                     <Row type="flex">
                         <Col span={12}>
-                            <Input placeholder={'请输入名称'} onChange={this.handleKeyChangeWord} />
+                            <Input placeholder={'请输入名称'} onChange={this.handleKeyChangeWord} onPressEnter={this.handleSearch} />
                         </Col>
                         <Col span={8}>
                             <Button type='primary' className='searchButton' onClick={this.handleSearch}>查询</Button>
@@ -139,15 +191,15 @@ class MainIndex extends Component {
                         let hasPermission = this.hasPermission(button);
                         if (hasPermission) {
                             if (button.buttonID == 'delete') {
-                                return (this.state.checkList.length > 0 ? <Popconfirm title="确认要删除黑名单?" onConfirm={this.handleClickFucButton} okText="是" cancelText="否">
-                                    <Button key={i} id={button.buttonID} style={{marginTop: '10px', marginBottom: '10px', marginRight: '10px', border: 0}}
+                                return (this.state.checkList.length > 0 ? <Popconfirm id={button.buttonID} key={button.buttonID} title="确认要删除黑名单?" onConfirm={() => this.handleClickFucButton({target: {id: 'delete'}})} okText="是" cancelText="否">
+                                    <Button id={button.buttonID} style={{marginTop: '10px', marginBottom: '10px', marginRight: '10px', border: 0}}
                                         icon={button.icon} size={button.size} type={button.type}>{button.buttonName}</Button>
-                                </Popconfirm> : <Button key={i} id={button.buttonID} style={{marginTop: '10px', marginBottom: '10px', marginRight: '10px', border: 0}}
+                                </Popconfirm> : <Button key={button.buttonID} id={button.buttonID} style={{marginTop: '10px', marginBottom: '10px', marginRight: '10px', border: 0}}
                                     onClick={this.handleClickFucButton}
                                     icon={button.icon} size={button.size} type={button.type}>{button.buttonName}</Button>
                                 )
                             } else {
-                                return (<Button key={i} id={button.buttonID} style={{marginTop: '10px', marginBottom: '10px', marginRight: '10px', border: 0}}
+                                return (<Button id={button.buttonID} key={button.buttonID} style={{marginTop: '10px', marginBottom: '10px', marginRight: '10px', border: 0}}
                                     onClick={this.handleClickFucButton}
                                     icon={button.icon} size={button.size} type={button.type}>{button.buttonName}</Button>)
                             }
@@ -155,9 +207,9 @@ class MainIndex extends Component {
                     })
                 }
                 <div>
-                    {<p style={{marginBottom: '10px'}}>目前已为你筛选出<b>{this.props.searchInfoResult.blackList.extension.length}</b>条费用信息</p>}
+                    {<p style={{marginBottom: '10px'}}>目前已为你筛选出<b>{blackList.totalCount}</b>条费用信息</p>}
                     <div id="searchResult">
-                        <Table id={"table"} rowKey={record => record.key}
+                        <Table id={"table"} rowKey={record => record.id}
                             columns={columns}
                             pagination={paginationInfo}
                             onChange={this.handleChangePage}
@@ -165,10 +217,10 @@ class MainIndex extends Component {
                             rowSelection={rowSelection} />
                     </div>
                 </div>
-                {/* </Spin> */}
-                <Modal title="黑名单详情"
+                <Modal title="黑名单详情" width='850px'
                     visible={this.state.showDetail}
-                    footer={<Button onClick={() => this.setState({showDetail: false})}>关闭</Button>}
+                    onCancel={() => this.setState({showDetail: false})}
+                    footer={<Button type="primary" onClick={() => this.setState({showDetail: false})}>关闭</Button>}
                 >
                     <BlackForm entityInfo={this.state.editblackInfo} readOnly />
                 </Modal>

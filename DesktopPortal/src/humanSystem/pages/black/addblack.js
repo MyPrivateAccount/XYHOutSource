@@ -24,21 +24,23 @@ class Black extends Component {
         this.setState({showLoading: true});
         let url = WebApiConfig.server.SetBlack;
         let huResult = {isOk: false, msg: '黑名单保存失败！'};
-        try {
-            let res = ApiClient.post(url, entity, null, 'PUT');
+        ApiClient.post(url, entity, null, 'PUT').then(res => {
             this.setState({showLoading: false});
-            //弹消息，返回
             if (res.data.code == 0) {
                 huResult.isOk = true;
                 huResult.msg = '黑名单保存成功';
             }
-        } catch (e) {
+            notification.success({
+                message: huResult.msg,
+                duration: 3
+            });
+        }).catch(e => {
             huResult.msg = "黑名单接口调用异常!";
-        }
-        notification[huResult.isOk ? 'success' : 'error']({
-            message: huResult.msg,
-            duration: 3
-        });
+            notification.error({
+                message: huResult.msg,
+                duration: 3
+            });
+        })
     }
 
     //子页面回调
