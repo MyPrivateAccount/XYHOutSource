@@ -1,17 +1,11 @@
-import { connect } from 'react-redux';
-import React, { Component } from 'react'
-import { Table, Input, Select, Form, Button, Row, Col, Checkbox, Pagination, Spin, notification } from 'antd'
+import {connect} from 'react-redux';
+import React, {Component} from 'react'
+import {Button, Row, Col, notification} from 'antd'
 import Layer from '../../../components/Layer'
 import BlackForm from '../../../businessComponents/humanSystem/blackInfo'
-import { NewGuid } from '../../../utils/appUtils';
+import {NewGuid} from '../../../utils/appUtils';
 import ApiClient from '../../../utils/apiClient'
 import WebApiConfig from '../../constants/webapiConfig';
-const FormItem = Form.Item;
-const ButtonGroup = Button.Group;
-const formItemLayout1 = {
-    labelCol: { span: 6 },
-    wrapperCol: { span: 6 },
-};
 
 
 class Black extends Component {
@@ -27,31 +21,33 @@ class Black extends Component {
     }
     //提交黑名单
     submitBlack(entity, type) {
-        this.setState({ showLoading: true });
+        this.setState({showLoading: true});
         let url = WebApiConfig.server.SetBlack;
-        let huResult = { isOk: false, msg: '黑名单保存失败！' };
-        try {
-            let res = ApiClient.post(url, entity);
-            this.setState({ showLoading: false });
-            //弹消息，返回
+        let huResult = {isOk: false, msg: '黑名单保存失败！'};
+        ApiClient.post(url, entity, null, 'PUT').then(res => {
+            this.setState({showLoading: false});
             if (res.data.code == 0) {
                 huResult.isOk = true;
                 huResult.msg = '黑名单保存成功';
             }
-        } catch (e) {
+            notification.success({
+                message: huResult.msg,
+                duration: 3
+            });
+        }).catch(e => {
             huResult.msg = "黑名单接口调用异常!";
-        }
-        notification[huResult.isOk ? 'success' : 'error']({
-            message: huResult.msg,
-            duration: 3
-        });
+            notification.error({
+                message: huResult.msg,
+                duration: 3
+            });
+        })
     }
 
     //子页面回调
     subPageLoadCallback = (formObj, pageName) => {
         console.log("表单对象:", formObj, pageName);
         if (pageName == "black") {
-            this.setState({ blackForm: formObj });
+            this.setState({blackForm: formObj});
         }
     }
     handleSubmit = (e) => {
@@ -76,7 +72,7 @@ class Black extends Component {
             <Layer className="content-page" showLoading={this.state.showLoading}>
                 <BlackForm subPageLoadCallback={(formObj, pageName) => this.subPageLoadCallback(formObj, pageName)} entityInfo={blackInfo} />
                 <Row>
-                    <Col style={{ textAlign: 'center' }} span={21}>
+                    <Col style={{textAlign: 'center'}} span={21}>
                         <Button type="primary" onClick={this.handleSubmit} >提交</Button>
                     </Col>
                 </Row>

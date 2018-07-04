@@ -196,20 +196,17 @@ export function* getBlackListAsync(state) {
         let res = yield call(ApiClient.post, url, state.payload);
         if (res.data.code == 0) {
             result.isOk = true;
-            let lv = res.data.extension;
             yield put({
                 type: actionUtils.getActionType(actionTypes.UPDATE_BLACKLST),
                 payload: {
-                    extension: lv.extension.map(function (v, i) {
-                        return Object.assign({key: i}, v);
-                    }), pageIndex: lv.pageIndex, pageSize: lv.pageSize, totalCount: lv.totalCount, lastTime: lv.lastTime
+                    extension: res.data.extension, pageIndex: res.data.pageIndex, pageSize: res.data.pageSize, totalCount: res.data.totalCount
                 }
             });
         }
     } catch (e) {
         result.msg = '检索关键字接口调用异常';
     }
-
+    yield put(actionUtils.action(setSearchLoadingVisible(false)));
     if (!result.isOk) {
         notification.error({
             description: result.msg,
@@ -221,7 +218,6 @@ export function* getBlackListAsync(state) {
 export function* getSalaryListAsync(state) {
     let result = {isOk: false, extension: {}, msg: '获取薪酬列表失败！'};
     let url = WebApiConfig.search.getSalaryList;
-
     try {
         let res = yield call(ApiClient.post, url, state.payload);
         if (res.data.code == 0) {
@@ -237,7 +233,6 @@ export function* getSalaryListAsync(state) {
                 pageSize: lv.pageSize,
                 totalCount: lv.totalCount
             };
-
             yield put({type: actionUtils.getActionType(actionTypes.UPDATE_SALARYINFO), payload: re});
         }
     } catch (e) {
@@ -379,7 +374,7 @@ export function* searchtAttendenceLst(state) {
             huResult.data.message = '查询考勤列表成功';
 
             yield put({type: actionUtils.getActionType(actionTypes.UPDATE_ATTENDANCELST), payload: huResult.data.extension});
-            
+
             return;
         }
     } catch (e) {

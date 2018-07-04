@@ -299,11 +299,10 @@ export function* getHumanImage(state) {
 }
 
 export function* deleteBlackInfo(state) {
-    let url = WebApiConfig.server.DeleteBlack;
+    let url = WebApiConfig.server.DeleteBlack + state.payload;
     let huResult = {isOk: false, msg: '删除黑名单失败！'};
-
     try {
-        huResult = yield call(ApiClient.post, url, state.payload);
+        huResult = yield call(ApiClient.post, url, null, null, 'DELETE');
         if (huResult.data.code == 0) {
             huResult.data.message = '删除黑名单成功';
 

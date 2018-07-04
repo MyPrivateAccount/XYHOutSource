@@ -1,16 +1,9 @@
 import React, {Component} from 'react'
 import {Row, Col, Checkbox, Select, Form, Input, Icon} from 'antd';
-import {DIC_SAVE_GROUP_ASYNC} from '../../xtwh/constants';
 const FormItem = Form.Item;
 const Option = Select.Option;
 const {TextArea} = Input;
-const styles = {
-    subHeader: {
-        padding: '5px',
-        marginBottom: '10px',
-        backgroundColor: '#e0e0e0'
-    }
-}
+
 class BlackInfo extends Component {
     state = {
 
@@ -100,7 +93,7 @@ class BlackInfo extends Component {
                                     initialValue: blackInfo.email,
                                     rules: [{type: 'email', message: '请输入正确的email地址'}]
                                 })(
-                                    <Input disabled={disabled} placeholder="请输入Email地址" />
+                                    <Input disabled={disabled} placeholder={disabled ? "" : "请输入Email地址"} />
                                 )}
                             </FormItem>
                         </Col>
@@ -113,7 +106,7 @@ class BlackInfo extends Component {
                                     initialValue: blackInfo.reason,
                                     rules: []
                                 })(
-                                    <TextArea rows={4} placeholder="请输入备注" />
+                                    <TextArea disabled={disabled} rows={4} placeholder={disabled ? "" : "请输入备注"} />
                                 )}
                             </FormItem>
                         </Col>
