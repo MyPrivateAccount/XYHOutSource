@@ -32,7 +32,7 @@ class Salary extends Component {
             wrapperCol: { span: 17 },
         };
         let salaryInfo = this.props.entityInfo || {};
-        let disabled = (this.props.readOnly || false);
+        let disabled = (this.props.isReadOnly || false);
         return (
             <div>
                 <h3 style={styles.subHeader}><Icon type="tags-o" className='content-icon' />薪资构成</h3>

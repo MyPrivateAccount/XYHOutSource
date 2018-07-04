@@ -174,6 +174,7 @@ export function* getHumanDetailAsync(state) {
             result.isOk = true;
             result.msg = "获取员工详情成功";
             let detailInfo = res.data.extension;
+            console.log("员工详情获取结果");
             yield put(actionUtils.action(getHumanDetailEnd(detailInfo)));
             yield put(actionUtils.action(setSearchLoadingVisible(false)));
         }

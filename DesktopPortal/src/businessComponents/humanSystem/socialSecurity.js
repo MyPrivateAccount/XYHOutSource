@@ -28,7 +28,7 @@ class SocialSecurity extends Component {
             wrapperCol: { span: 17 },
         };
         let socialSecurityInfo = this.props.entityInfo || {};
-        let disabled = (this.props.readOnly || false);
+        let disabled = (this.props.isReadOnly || false);
         return (
             <div>
                 <h3 style={styles.subHeader}><Icon type="tags-o" className='content-icon' />社保信息</h3>

@@ -41,17 +41,32 @@ class Station extends Component {
 
     //部门类型验证
     orgTypeValidate = (rule, value, callback) => {
-        console.log("部门类型验证");
-        const form = this.props.form;
-        let orgObj = form.getFieldValue('parentID');
-        if (orgObj && orgObj.type !== 'Filiale') {
+        let orgDataSource = this.props.setContractOrgTree;
+        let orgInfo = this._getOrgDetail(orgDataSource, value);
+        if (orgInfo && orgInfo.type !== 'Filiale') {
             callback('请选择类型为分公司的组织!');
         }
         callback();
     }
 
+    _getOrgDetail(orgDataSource, orgID) {
+        if (orgDataSource) {
+            for (let i = 0; i < orgDataSource.length; i++) {
+                if (orgDataSource[i].key == orgID) {
+                    return orgDataSource[i].Original;
+                } else {
+                    let result = this._getOrgDetail(orgDataSource[i].children, orgID);
+                    if (result) {
+                        return result;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
     render() {
-        const {getFieldDecorator, getFieldsError, getFieldsValue, isFieldTouched} = this.props.form;
+        const {getFieldDecorator, getFieldsValue} = this.props.form;
         let editPositionObj = this.props.location.state;
         let isModify = Object.keys(editPositionObj).length > 0;
         return (

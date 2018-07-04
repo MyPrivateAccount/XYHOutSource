@@ -33,10 +33,11 @@ const WebApiConfig = {
         deleteAttendenceList: basicDataBaseApiUrl + 'humanattendance/deleteattendanceitem',
         addRPInfo: basicDataBaseApiUrl + 'rewardpunishment/addrewardpunishment',
         deleteRPInfo: basicDataBaseApiUrl + 'rewardpunishment/deleterewardpunishment',
-        savePartTimeJob: basicDataBaseApiUrl + ''//兼职保存
+        savePartTimeJob: basicDataBaseApiUrl + '',//兼职保存
+        adjustHuman: basicDataBaseApiUrl + 'humanadjustment'
     },
     search: {
-        searchHumanList: basicDataBaseApiUrl + 'humaninfo/searchhumaninfo',
+        searchHumanList: basicDataBaseApiUrl + 'humaninfo/search',
         getAuditList: basicDataBaseApiUrl + 'examines/submitlist',//提交的调客审核列表
         getRepeatJudgeInfo: basicDataBaseApiUrl + 'customerInfo/customerheavy/',//获取重客判断信息
         getCustomerByUserID: basicDataBaseApiUrl + 'customerInfo/salesmancustomer/',//根据用户ID获取客户列表
