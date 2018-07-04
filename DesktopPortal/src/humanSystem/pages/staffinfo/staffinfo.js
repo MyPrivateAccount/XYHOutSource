@@ -204,7 +204,8 @@ class Staffinfo extends Component {
 
     handlePartTimeJob = () => {
         if (this.state.checkedList.length > 0) {
-            this.props.dispatch(getHumanDetail(this.state.checkedList[0].id))
+            // this.props.dispatch(getHumanDetail(this.state.checkedList[0].id))
+            this.gotoSubPage('partTimeJob', this.state.checkedList[0])
         } else {
             notification.error({
                 message: "请选择员工",
