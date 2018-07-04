@@ -8,6 +8,12 @@ import { dicKeys } from '../../../constants/const'
 const FormItem = Form.Item;
 const Option = Select.Option;
 
+let cjzqList = [];
+for(let i = 1;i<=11;i++){
+  cjzqList.push({key: `${i-1}~${i}周`,value: `${i-1}~${1}`})
+}
+
+
 class TradeCustomer extends Component {
   state = {
     loading: false,
@@ -40,24 +46,23 @@ class TradeCustomer extends Component {
 
   render() {
     const { getFieldDecorator } = this.props.form;
+    const {showBbSelector}  = this.props;
     const formItemLayout = {
       labelCol: { span: 6 },
       wrapperCol: { span: 14 },
     };
-    const formItemLayout2 = {
-      labelCol: { span: 14 },
-      wrapperCol: { span: 6 },
-    };
+
     const formItemLayout3 = {
       labelCol: { span: 7 },
       wrapperCol: { span: 14 },
     };
     //  let yzChtscTypes = this.props.basicData.yzChtscTypes
     let khKhxzTypes = getDicPars(dicKeys.khxz, this.props.dic);
+    let khlyList = getDicPars(dicKeys.khly, this.props.dic);
     return (
       <Layout>
         <Spin spinning={this.state.loading} tip={this.state.tip}>
-          <Row>
+          <Row className="form-row">
             <Col span={8}>
               <FormItem {...formItemLayout} label={(<span>名称</span>)}>
                 {
@@ -81,7 +86,7 @@ class TradeCustomer extends Component {
               </FormItem>
             </Col>
           </Row>
-          <Row>
+          <Row className="form-row">
             <Col span={8}>
               <FormItem {...formItemLayout} label={(<span>地址</span>)}>
                 {
@@ -110,13 +115,18 @@ class TradeCustomer extends Component {
                   getFieldDecorator('khKhly', {
                     rules: [{ required: true, message: '请选择客户来源!' }]
                   })(
-                    <Input style={{ width: 200 }}></Input>
+                    <Select disabled={showBbSelector} style={{ width: 80 }}>
+                      {
+                        khlyList.map(tp => <Option key={tp.key} value={tp.key}>{tp.key}</Option>)
+                      }
+                    </Select>
                   )
                 }
               </FormItem>
-            </Col>
+            </Col> 
           </Row>
-          <Row>
+          <div className="divider"></div>
+          <Row className="form-row">
             <Col span={8}>
               <FormItem {...formItemLayout} label={(<span>客户性质</span>)}>
                 {
@@ -157,8 +167,8 @@ class TradeCustomer extends Component {
               </FormItem>
             </Col>
           </Row>
-          <Row>
-            <Col span={24} pull={4}>
+          <Row className="form-row">
+            <Col span={24}>
               <FormItem {...formItemLayout} label={(<span>Email</span>)}>
                 {
                   getFieldDecorator('khEmail', {
@@ -170,7 +180,7 @@ class TradeCustomer extends Component {
               </FormItem>
             </Col>
           </Row>
-          <Row>
+          <Row className="form-row">
             <Col span={8}>
               <FormItem {...formItemLayout} label={(<span>代理人</span>)}>
                 {
@@ -205,7 +215,7 @@ class TradeCustomer extends Component {
               </FormItem>
             </Col>
           </Row>
-          {/* <Row>
+           <Row className="form-row">
             <Col span={8}>
               <FormItem {...formItemLayout} label={(<span>成交原因</span>)}>
                 {
@@ -219,7 +229,7 @@ class TradeCustomer extends Component {
               </FormItem>
             </Col>
             <Col span={8}>
-              <FormItem {...formItemLayout2} label={(<span>从登记至签合同时长</span>)}>
+              <FormItem className="auto-width" label={(<span>从登记至签合同时长</span>)}>
                 {
                   getFieldDecorator('khCdjzqhtsc', {
                     rules: [{ required: false, message: '请填写成交人!' }],
@@ -227,14 +237,14 @@ class TradeCustomer extends Component {
                   })(
                     <Select style={{ width: 80 }}>
                       {
-                        yzChtscTypes.map(tp => <Option key={tp.key} value={tp.key}>{tp.key}</Option>)
+                        cjzqList.map(tp => <Option key={tp.key} value={tp.key}>{tp.key}</Option>)
                       }
                     </Select>
                   )
                 }
               </FormItem>
             </Col>
-          </Row> */}
+          </Row> 
           {/* <Row>
             <Col span={24} style={{ textAlign: 'center' }}>
               <Button type='primary' onClick={this.handleSave}>保存</Button>
