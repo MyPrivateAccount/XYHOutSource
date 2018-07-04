@@ -13,6 +13,7 @@ export const permission = {
     shareBranch: 'YJ_SZ_KXFTZZ',
     
     myReport: 'YJ_CJ_WD',
+    nyftPepole:'YJ_CJ_NYFT', //内容分摊人
     reportQuery: 'YJ_CJ_CX',
 
     monthlyClosing: 'YJ_CW_YJ',
@@ -41,12 +42,18 @@ export const dicKeys = {
     cqlx: 'COMMISSION_OWN_TYPE', 
     xxjylx: 'COMMISSION_TRADEDETAIL_TYPE', 
     zjjg: 'COMMISSION_SFZJJG_TYPE',
+    sfxycqjybgj: 'COMMISSION_SFXYCQJYBGJ',
 
-    wylx:'COMMISSION_WY_WYLX',
-    kjlx:'COMMISSION_WY_KJLX',
-    jj:'COMMISSION_WY_ZXJJ',
-    htsc:'COMMISSION_YZ_QHTSC',
-    khxz:'COMMISSION_KH_KHXZ'
+    wylx:'COMMISSION_WY_WYLX',  //物业类型
+    kjlx:'COMMISSION_WY_KJLX', //空间类型
+    jj:'COMMISSION_WY_ZXJJ', //家具
+    zxzk: 'COMMISSION_WY_ZXZK', //装修状况
+    cx: 'SHOP_TOWARD', //朝向
+    htsc:'COMMISSION_YZ_QHTSC', //
+    khxz:'COMMISSION_KH_KHXZ', //客户性质
+    khly:'CUSTOMER_SOURCE',
+
+    sfdx:'COMMISSION_FP_SFDX' //收付对象
 
 }
 

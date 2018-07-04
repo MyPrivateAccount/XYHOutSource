@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import React, { Component } from 'react';
 import moment from 'moment'
 import { dealRpSave, syncYJDate } from '../../../actions/actionCreator'
-import { notification, DatePicker, Form, Span, Layout, Table, Button, Radio, Popconfirm, Tooltip, Row, Col, Input, Spin, Select, TreeSelect, Modal, InputNumber } from 'antd'
+import { notification, DatePicker, Form, Layout, Table, Button, Radio, Popconfirm, Tooltip, Row, Col, Input, Spin, Select, TreeSelect, Modal, InputNumber } from 'antd'
 import { getDicPars, getOrganizationTree } from '../../../../utils/utils'
 import validations from '../../../../utils/validations'
 import { dicKeys, permission } from '../../../constants/const'
@@ -16,9 +16,9 @@ const RadioGroup = Radio.Group;
 const FormItem = Form.Item;
 class TradeContract extends Component {
     state = {
-        cjUserList:[],
-        loading:false,
-        tip:''
+        cjUserList: [],
+        loading: false,
+        tip: ''
     }
     componentWillMount = () => {
         //   this.setState({isDataLoading:true,tip:'信息初始化中...'})
@@ -38,16 +38,16 @@ class TradeContract extends Component {
                 mv[key] = entity[key];
             })
 
-            if(entity.fyzId){
+            if (entity.fyzId && this.props.entity.fyzId!==entity.fyzId ) {
                 this.getCjUserList(entity.fyzId, entity);
             }
 
-           // mv.gsmc = { value: { key: entity.gsmc, label: entity.gsmcName } }
+            // mv.gsmc = { value: { key: entity.gsmc, label: entity.gsmcName } }
             this.props.form.setFieldsValue(mv);
 
-            
 
-            
+
+
         }
     }
 
@@ -62,27 +62,27 @@ class TradeContract extends Component {
         }
     }
 
-    getCjUserList = async (id, entity)=>{
+    getCjUserList = async (id, entity) => {
         let url = `${WebApiConfig.human.orgUser}`;
-        let r = await ApiClient.get(url, true, { permissionId: permission.cjfhxz, branchId:id, pageSize: 0, pageIndex: 0 });
-        r = (r||{}).data||{};
+        let r = await ApiClient.get(url, true, { permissionId: permission.cjfhxz, branchId: id, pageSize: 0, pageIndex: 0 });
+        r = (r || {}).data || {};
 
         let ul = [];
         if (r.code === '0') {
             ul = r.extension || [];
         } else {
-            notification.error({ message: `获取成交用户列表失败:${((r || {}).data || {}).message || ''}`});
+            notification.error({ message: `获取成交用户列表失败:${((r || {}).data || {}).message || ''}` });
         }
-        if(entity.cjrId && this.props.opType==='view'){
-            let ou = ul.find(x=>x.id === entity.cjrId);
-            if(!ou){
-                ul.push({id:entity.cjrId, name: entity.cjrName||'' })
+        if (entity.cjrId && this.props.opType === 'view') {
+            let ou = ul.find(x => x.id === entity.cjrId);
+            if (!ou) {
+                ul.push({ id: entity.cjrId, name: entity.cjrName || '' })
             }
         }
-        this.setState({cjUserList: ul})
+        this.setState({ cjUserList: ul })
     }
 
-    getValues = ()=>{
+    getValues = () => {
         this.props.form.validateFieldsAndScroll();
         var errors = this.props.form.getFieldsError();
 
@@ -179,7 +179,7 @@ class TradeContract extends Component {
     render() {
         const { getFieldDecorator } = this.props.form;
         const { entity, showBbSelector } = this.props;
-        const {cjUserList, loading, tip} = this.state;
+        const { cjUserList, loading, tip } = this.state;
         const formItemLayout = {
             labelCol: { span: 6 },
             wrapperCol: { span: 14 },
@@ -202,8 +202,8 @@ class TradeContract extends Component {
         let payTypes = getDicPars(dicKeys.fkfs, this.props.dic)
         let contractTypes = getDicPars(dicKeys.htlx, this.props.dic)
         let sfzjjgTypes = getDicPars(dicKeys.zjjg, this.props.dic)
+        let cqjybgj = getDicPars(dicKeys.sfxycqjybgj, this.props.dic);
 
-        
 
         return (
             <Layout>
@@ -211,7 +211,7 @@ class TradeContract extends Component {
                     {
                         showBbSelector ?
                             <Row>
-                                <Col span={16} style={{display:'flex'}}>
+                                <Col span={16} style={{ display: 'flex' }}>
                                     {/* <FormItem {...formItemLayout} label={(<span>成交报备</span>)}>
                                         {
                                             <Input readOnly disabled style={{ width: 200 }}></Input>
@@ -219,13 +219,13 @@ class TradeContract extends Component {
                                     </FormItem> */}
                                     <Button onClick={this.chooseReport}>选择成交信息</Button>
                                 </Col>
-     
+
                             </Row> : null
                     }
 
                     <Spin spinning={loading} tip={tip}>
-                        <Row>
-                            <Col span={24} pull={4}>
+                        <Row className="form-row">
+                            <Col span={24}>
                                 <FormItem {...formItemLayout} label={(<span>报数物业分类</span>)}>
                                     {
                                         getFieldDecorator('bswylx', {
@@ -241,8 +241,8 @@ class TradeContract extends Component {
                                 </FormItem>
                             </Col>
                         </Row>
-                        <Row>
-                            <Col span={24} pull={4}>
+                        <Row className="form-row">
+                            <Col span={24}>
                                 <FormItem {...formItemLayout} label={(<span>成交报告类型</span>)}>
                                     {
                                         getFieldDecorator('cjbglx', {
@@ -258,12 +258,12 @@ class TradeContract extends Component {
                                 </FormItem>
                             </Col>
                         </Row>
-                        <Row>
-                            <Col span={24} pull={4}>
+                        <Row className="form-row">
+                            <Col span={24}>
                                 <FormItem {...formItemLayout} label={(<span>公司名称</span>)}>
                                     {
                                         getFieldDecorator('gsmc')(
-                                            <Select disabled  style={{ width: '15rem' }}>
+                                            <Select disabled style={{ width: '15rem' }}>
                                                 <Select.Option key={entity.gsmc} value={entity.gsmc}>{entity.gsmcName}</Select.Option>
                                             </Select>
 
@@ -272,7 +272,7 @@ class TradeContract extends Component {
                                 </FormItem>
                             </Col>
                         </Row>
-                        <Row>
+                        <Row className="form-row">
                             <Col span={8}>
                                 <FormItem {...formItemLayout} label={(<span>分行名称</span>)}>
                                     {
@@ -296,14 +296,14 @@ class TradeContract extends Component {
                                         getFieldDecorator('cjrId', {
                                             rules: [{ required: true, message: '请填写成交人!' }]
                                         })(
-                                            <Select disabled  style={{ width: '15rem' }}>
-                                            {
-                                                cjUserList.map(u=>(<Select.Option key={u.id} value={u.id}>{u.name}</Select.Option>) )
-                                            }
-                                                
+                                            <Select disabled style={{ width: '15rem' }}>
+                                                {
+                                                    cjUserList.map(u => (<Select.Option key={u.id} value={u.id}>{u.name}</Select.Option>))
+                                                }
+
                                             </Select>
 
-                                           
+
                                         )
                                     }
                                 </FormItem>
@@ -314,13 +314,13 @@ class TradeContract extends Component {
                                         getFieldDecorator('cjrq', {
                                             rules: [{ required: true, message: '请选择成交日期!' }]
                                         })(
-                                            <DatePicker onChange={this.props.cjrqChanged} style={{ width: 200 }} disabled={showBbSelector}></DatePicker>
+                                            <DatePicker onChange={(v)=> this.props.inputChanged('cjrq',v)}  style={{ width: 200 }} disabled={showBbSelector}></DatePicker>
                                         )
                                     }
                                 </FormItem>
                             </Col>
                         </Row>
-                        <Row>
+                        {/* <Row>
                             <Col span={8}>
                                 <FormItem {...formItemLayout} label={(<span>成交报告编号</span>)}>
                                     {
@@ -341,22 +341,23 @@ class TradeContract extends Component {
                                     }
                                 </FormItem>
                             </Col>
-                        </Row>
-                        <Row>
-                            <Col span={24} pull={4}>
+                        </Row> */}
+                        <Row className="form-row">
+                            <Col span={24}>
                                 <FormItem {...formItemLayout} label={(<span>备注</span>)}>
                                     {
                                         getFieldDecorator('bz', {
                                             rules: [{ required: true, message: '请填写备注' }]
                                         })(
-                                            <Input.TextArea rows={4} style={{ width: 510 }}></Input.TextArea>
+                                            <Input.TextArea rows={4} ></Input.TextArea>
                                         )
                                     }
                                 </FormItem>
                             </Col>
                         </Row>
-                        <Row>
-                            <Col span={24} pull={4}>
+                        <div className="divider"></div>
+                        <Row className="form-row">
+                            <Col span={12}>
                                 <FormItem {...formItemLayout} label={(<span>交易类型</span>)}>
                                     {
                                         getFieldDecorator('jylx', {
@@ -371,26 +372,25 @@ class TradeContract extends Component {
                                     }
                                 </FormItem>
                             </Col>
-                        </Row>
-                        <Row>
-                            <Col span={24} pull={4}>
+                            <Col span={12}>
                                 <FormItem {...formItemLayout} label={(<span>项目类型</span>)}>
                                     {
                                         getFieldDecorator('xmlx', {
                                             rules: [{ required: false }]
                                         })(
-                                            <RadioGroup>
+                                            <Select>
                                                 {
-                                                    projectTypes.map(tp => <Radio key={tp.key} value={tp.value}>{tp.key}</Radio>)
+                                                    projectTypes.map(tp => <Select.Option key={tp.key} value={tp.value}>{tp.key}</Select.Option>)
                                                 }
-                                            </RadioGroup>
+                                            </Select>
                                         )
                                     }
                                 </FormItem>
                             </Col>
                         </Row>
-                        <Row>
-                            <Col span={24} pull={4}>
+
+                        <Row className="form-row">
+                            <Col span={12}>
                                 <FormItem {...formItemLayout} label={(<span>详细交易类型</span>)}>
                                     {
                                         getFieldDecorator('xxjylx', {
@@ -405,58 +405,72 @@ class TradeContract extends Component {
                                     }
                                 </FormItem>
                             </Col>
-                        </Row>
-                        <Row>
-                            <Col span={24} pull={4}>
+                            <Col span={12}>
                                 <FormItem {...formItemLayout} label={(<span>产权类型</span>)}>
                                     {
                                         getFieldDecorator('cqlx', {
                                             rules: [{ required: false }]
                                         })(
-                                            <RadioGroup>
+                                            <Select>
                                                 {
-                                                    ownTypes.map(tp => <Radio key={tp.key} value={tp.value}>{tp.key}</Radio>)
+                                                    ownTypes.map(tp => <Select.Option key={tp.key} value={tp.value}>{tp.key}</Select.Option>)
                                                 }
-                                            </RadioGroup>
+                                            </Select>
                                         )
                                     }
                                 </FormItem>
                             </Col>
                         </Row>
-                        <Row>
-                            <Col span={8}>
+
+                        <Row className="form-row">
+                            <Col span={12}>
                                 <FormItem {...formItemLayout} label={(<span>成交总价</span>)}>
                                     {
                                         getFieldDecorator('cjzj', {
                                             rules: [{ required: true, message: '请填写成交总价!' }]
                                         })(
-                                            <InputNumber precision={2} style={{ width: 200 }}></InputNumber>
+                                            <InputNumber onChange={(v)=> this.props.inputChanged('cjzj',v)} precision={2} style={{ width: 200 }}></InputNumber>
                                         )
                                     }
                                 </FormItem>
                             </Col>
-                            <Col span={8}>
+                            <Col span={12}>
                                 <FormItem {...formItemLayout} label={(<span>佣金</span>)}>
                                     {
                                         getFieldDecorator('ycjyj', {
                                             rules: [{ required: true, message: '请填写佣金金额!' }]
                                         })(
-                                            <InputNumber precision={2} style={{ width: 200 }}></InputNumber>
+                                            <InputNumber onChange={(v)=> this.props.inputChanged('yj',v)} precision={2} style={{ width: 200 }}></InputNumber>
                                         )
                                     }
                                 </FormItem>
                             </Col>
                         </Row>
-                        <Row>
-                            <Col span={24} pull={4}>
+                        <Row className="form-row">
+                            <Col span={12}>
                                 <FormItem {...formItemLayout} label={(<span>付款方式</span>)}>
                                     {
                                         getFieldDecorator('fkfs', {
                                             rules: [{ required: false }]
                                         })(
+                                            <Select>
+                                                {
+                                                    payTypes.map(tp => <Select.Option key={tp.key} value={tp.value}>{tp.key}</Select.Option>)
+                                                }
+                                            </Select>
+                                        )
+                                    }
+                                </FormItem>
+                            </Col>
+                            <Col span={12}>
+                                <FormItem className="auto-width" {...formItemLayout} label={(<span>是否需要产权交易部跟进</span>)}>
+                                    {
+                                        getFieldDecorator('sfxcqjybgj', {
+                                            rules: [{ required: false }]
+                                        })(
                                             <RadioGroup>
                                                 {
-                                                    payTypes.map(tp => <Radio key={tp.key} value={tp.value}>{tp.key}</Radio>)
+                                                    cqjybgj.map(tp => <Radio key={tp.key} value={tp.value}>{tp.key}</Radio>)
                                                 }
                                             </RadioGroup>
                                         )
@@ -464,19 +478,8 @@ class TradeContract extends Component {
                                 </FormItem>
                             </Col>
                         </Row>
-                        <Row>
-                            <Col span={8}>
-                                <FormItem {...formItemLayout} label={(<span>网签日期</span>)}>
-                                    {
-                                        getFieldDecorator('yxsqyrq', {
-                                            rules: [{ required: false }]
-                                        })(
-                                            <DatePicker style={{ width: 200 }} onChange={this.wqrq_dateChange}></DatePicker>
-                                        )
-                                    }
-                                </FormItem>
-                            </Col>
-                            <Col span={8}>
+                        <Row className="form-row">
+                            <Col span={12}>
                                 <FormItem {...formItemLayout} label={(<span>预计放款日期</span>)}>
                                     {
                                         getFieldDecorator('yjfksj', {
@@ -487,7 +490,7 @@ class TradeContract extends Component {
                                     }
                                 </FormItem>
                             </Col>
-                            <Col span={8}>
+                            <Col span={12}>
                                 <FormItem {...formItemLayout} label={(<span>预计放款金额</span>)}>
                                     {
                                         getFieldDecorator('yjfkje', {
@@ -499,8 +502,20 @@ class TradeContract extends Component {
                                 </FormItem>
                             </Col>
                         </Row>
-                        <Row>
-                            <Col span={24} pull={4}>
+
+                        <Row className="form-row">
+                            <Col span={12}>
+                                <FormItem {...formItemLayout} label={(<span>网签日期</span>)}>
+                                    {
+                                        getFieldDecorator('yxsqyrq', {
+                                            rules: [{ required: false }]
+                                        })(
+                                            <DatePicker style={{ width: 200 }} onChange={this.wqrq_dateChange}></DatePicker>
+                                        )
+                                    }
+                                </FormItem>
+                            </Col>
+                            <Col span={12} >
                                 <FormItem {...formItemLayout} label={(<span>是否资金监管</span>)}>
                                     {
                                         getFieldDecorator('sfzjjg', {
@@ -516,12 +531,14 @@ class TradeContract extends Component {
                                 </FormItem>
                             </Col>
                         </Row>
-                        <Row>
+                        <div className="divider"></div>
+                        <Row className="form-row">
                             <Col span={8}>
                                 <FormItem {...formItemLayout} label={(<span>客户来访日期</span>)}>
                                     {
                                         getFieldDecorator('kflfrq', {
-                                            rules: [{ required: false }]                                        })(
+                                            rules: [{ required: false }]
+                                        })(
                                             <DatePicker style={{ width: 200 }} onChange={this.kflfrq_dateChange}></DatePicker>
                                         )
                                     }
@@ -531,7 +548,8 @@ class TradeContract extends Component {
                                 <FormItem {...formItemLayout} label={(<span>合同签约日期</span>)}>
                                     {
                                         getFieldDecorator('htqyrq', {
-                                            rules: [{ required: false }]                                        })(
+                                            rules: [{ required: false }]
+                                        })(
                                             <DatePicker style={{ width: 200 }} onChange={this.htqyrq_dateChange}></DatePicker>
                                         )
                                     }
@@ -553,7 +571,7 @@ class TradeContract extends Component {
                                 </FormItem>
                             </Col>
                         </Row>
-                        <Row>
+                        <Row className="form-row">
                             <Col span={8}>
                                 <FormItem {...formItemLayout} label={(<span>资金监管协议编号</span>)}>
                                     {
