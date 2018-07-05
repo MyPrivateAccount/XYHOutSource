@@ -23,18 +23,21 @@ const WebApiConfig = {
         DeleteBlack: basicDataBaseApiUrl + "humaninfoblack/",
         SetStation: basicDataBaseApiUrl + "humanstation/setstation",
         DeleteStation: basicDataBaseApiUrl + "humanstation/deletestation",
-        setSalary: basicDataBaseApiUrl + "humansalary/setsalary",
+        setSalary: basicDataBaseApiUrl + "positionsalary",
+        editSalary: basicDataBaseApiUrl + 'positionsalary/',
         deleteSalary: basicDataBaseApiUrl + "humansalary/deletestation",
         getHumanImage: basicDataBaseApiUrl + "humanfile/getfileinfo",
         setSocialInsure: basicDataBaseApiUrl + "humaninfo/becomehuman",
-        leavePositon: basicDataBaseApiUrl + "humaninfo/leavehuman",
+        leavePositon: basicDataBaseApiUrl + "humanleave",
         postAttendenceSettingList: basicDataBaseApiUrl + 'humanattendance/setattendancesetting',
         importAttendenceList: basicDataBaseApiUrl + 'humanattendance/importattendancelst',
         deleteAttendenceList: basicDataBaseApiUrl + 'humanattendance/deleteattendanceitem',
         addRPInfo: basicDataBaseApiUrl + 'rewardpunishment/addrewardpunishment',
         deleteRPInfo: basicDataBaseApiUrl + 'rewardpunishment/deleterewardpunishment',
         savePartTimeJob: basicDataBaseApiUrl + '',//兼职保存
-        adjustHuman: basicDataBaseApiUrl + 'humanadjustment'
+        adjustHuman: basicDataBaseApiUrl + 'humanadjustment',//异动调薪
+        getPartTimeJobList: basicDataBaseApiUrl + 'humanpartposition/',//获取兼职列表
+        removePartTimeJob: basicDataBaseApiUrl + 'humanpartposition/',//删除兼职信息
     },
     search: {
         searchHumanList: basicDataBaseApiUrl + 'humaninfo/search',

@@ -18,6 +18,8 @@ export function getHumanList(entity) {
             result.pageIndex = res.data.pageIndex;
             result.pageSize = res.data.pageSize;
             result.totalCount = res.data.totalCount;
+        } else {
+            result.msg = res.data.message;
         }
     }).catch(e => {
         result.msg = '员工查询接口调用异常!';
@@ -41,6 +43,8 @@ export function getHumanDetail(humenId) {
             result.msg = "获取员工详情成功";
             result.extension = res.data.extension;
             console.log("员工详情获取结果:", res);
+        } else {
+            result.msg = res.data.message;
         }
     }).catch(e => {
         result.msg = '获取员工详情接口异常!';
@@ -63,6 +67,8 @@ export function adjustHuman(entity) {
         if (res.data.code == 0) {
             huResult.isOk = true;
             huResult.msg = '异动调薪保存成功';
+        } else {
+            huResult.msg = res.data.message;
         }
     }).catch(e => {
         huResult.msg = "异动调薪接口调用异常!";
@@ -83,6 +89,8 @@ export function postHumanInfo(entity) {
         if (res.data.code == 0) {
             humanResult.isOk = true;
             humanResult.msg = '人事信息提交成功';
+        } else {
+            humanResult.msg = res.data.message;
         }
     }).catch(e => {
         humanResult.msg = "人事信息提交接口调用异常!";
@@ -104,6 +112,8 @@ export function getPosition(departmentId) {
             huResult.isOk = true;
             huResult.msg = '获取职位成功';
             huResult.extension = res.data.extension || [];
+        } else {
+            huResult.msg = res.data.message;
         }
     }).catch(e => {
         huResult.msg = "获取职位接口调用异常!";
@@ -118,23 +128,94 @@ export function getPosition(departmentId) {
     });
 }
 //离职操作
-export function leavePosition(state) {
+export function leavePosition(entity) {
     let url = WebApiConfig.server.leavePositon;
     let huResult = {isOk: false, msg: '离职失败！'};
-    return ApiClient.post(url, state.payload).then(res => {
-        if (huResult.data.code == 0) {
+    return ApiClient.post(url, entity).then(res => {
+        if (res.data.code == 0) {
             huResult.isOk = true;
             huResult.msg = '离职成功';
+        } else {
+            huResult.msg = res.data.message;
         }
     }).catch(e => {
-        huResult.msg = "离职接口调用异常!";
+        huResult.msg = "离职接口调用异常:" + e.message;
     }).then(res => {
-        if (huResult.isOk) {
-            notification.error({
-                message: huResult.msg,
-                duration: 3
-            });
+        notification[huResult.isOk ? 'success' : 'error']({
+            message: huResult.msg,
+            duration: 3
+        });
+        return huResult;
+    });
+}
+
+//保存兼职信息
+export function savePartTimeJob(entity) {
+    let url = WebApiConfig.server.savePartTimeJob;
+    let huResult = {isOk: false, msg: '保存兼职信息失败!'};
+    return ApiClient.post(url, entity).then(res => {
+        if (res.data.code == 0) {
+            huResult.isOk = true;
+            huResult.msg = '保存兼职信息成功';
+            huResult.extension = res.data.extension;
         }
+        else {
+            huResult.msg = res.data.message;
+        }
+    }).catch(e => {
+        huResult.msg = "保存兼职信息接口调用异常!";
+    }).then(res => {
+        notification[huResult.isOk ? "success" : "error"]({
+            message: huResult.msg,
+            duration: 3
+        });
+        return huResult;
+    });
+}
+
+//查询兼职信息
+export function getPartTimeJobById(userId) {
+    let url = WebApiConfig.server.getPartTimeJobList + userId;
+    let huResult = {isOk: false, msg: '获取兼职列表失败!'};
+    return ApiClient.get(url).then(res => {
+        if (res.data.code == 0) {
+            huResult.isOk = true;
+            huResult.msg = '获取兼职列表成功';
+            huResult.extension = res.data.extension;
+        }
+        else {
+            huResult.msg = res.data.message;
+        }
+    }).catch(e => {
+        huResult.msg = "获取兼职列表接口调用异常:" + e.message;
+    }).then(res => {
+        notification[huResult.isOk ? "success" : "error"]({
+            message: huResult.msg,
+            duration: 3
+        });
+        return huResult;
+    });
+}
+
+//删除兼职信息
+export function removePartTimeJob(jobId) {
+    let url = WebApiConfig.server.removePartTimeJob + jobId;
+    let huResult = {isOk: false, msg: '删除兼职信息失败!'};
+    return ApiClient.post(url, null, null, 'DELETE').then(res => {
+        if (res.data.code == 0) {
+            huResult.isOk = true;
+            huResult.msg = '删除兼职信息成功';
+        }
+        else {
+            huResult.msg = res.data.message;
+        }
+    }).catch(e => {
+        huResult.msg = "删除兼职信息接口调用异常!";
+    }).then(res => {
+        notification[huResult.isOk ? "success" : "error"]({
+            message: huResult.msg,
+            duration: 3
+        });
         return huResult;
     });
 }

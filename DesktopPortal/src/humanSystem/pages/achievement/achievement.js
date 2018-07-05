@@ -1,12 +1,13 @@
 import {connect} from 'react-redux';
 import React, {Component} from 'react';
-import {Input, Table, Button, notification, Row, Col, Popconfirm} from 'antd';
+import {Input, Table, Button, notification, Row, Col, Popconfirm, Modal} from 'antd';
 import './search.less';
 import Layer, {LayerRouter} from '../../../components/Layer'
 import {Route} from 'react-router'
 import Achievement from './addachievement'
 import ApiClient from '../../../utils/apiClient'
 import WebApiConfig from '../../constants/webapiConfig';
+import {getSalaryList} from '../../serviceAPI/salaryService'
 const buttonDef = [
     {buttonID: "addnew", buttonName: "新建", icon: '', type: 'primary', size: 'large', },
     // {buttonID: "modify", buttonName: "修改", icon: '', type: 'primary', size: 'large', },
@@ -22,7 +23,9 @@ class MainIndex extends Component {
             pageSize: 10
         },
         showLoading: false,
-        salaryList: {extension: [], pageIndex: 0, pageSize: 10, totalCount: 0}
+        salaryList: {extension: [], pageIndex: 0, pageSize: 10, totalCount: 0},
+        curAchievementInfo: {},
+        showDetail: false
     }
 
     componentWillMount() {
@@ -37,33 +40,9 @@ class MainIndex extends Component {
 
     handleSearch = () => {
         let condition = this.state.condition;
-        let result = {isOk: false, extension: {}, msg: '获取薪酬列表失败！'};
-        let url = WebApiConfig.search.getSalaryList;
-        ApiClient.post(url, condition).then(res => {
-            if (res.data.code == 0) {
-                result.isOk = true;
-                this.setState({
-                    salaryList: {
-                        extension: res.data.extension || [],
-                        pageIndex: res.data.pageIndex,
-                        pageSize: res.data.pageSize,
-                        totalCount: res.data.totalCount
-                    }
-                });
-            }
-            if (!result.isOk) {
-                notification.error({
-                    description: result.msg,
-                    duration: 3
-                });
-            }
-        }).catch(e => {
-            result.msg = '薪酬列表接口调用异常!';
-            notification.error({
-                description: result.msg,
-                duration: 3
-            });
-        });
+        // getSalaryList(condition).then(res => {
+        //     this.setState({salaryList: res.extension});
+        // });
     }
 
     handleClickFucButton = (e) => {
@@ -114,6 +93,11 @@ class MainIndex extends Component {
             hasPermission = true;
         }
         return hasPermission;
+    }
+
+    showDetail = (record) => {
+        // this.gotoSubPage('achievementPreview', record);
+        this.setState({curAchievementInfo: record, showDetail: true});
     }
 
     getColumns() {
@@ -192,8 +176,18 @@ class MainIndex extends Component {
                         />
                     </div>
                 </div>
+                <Modal title="薪酬详情"
+                    visible={this.state.showDetail}
+                    footer={[
+                        <Button key="back" onClick={() => this.setState({showDetail: false})}>关闭</Button>
+                    ]}
+                >
+                    <Achievement location={{state: this.state.curAchievementInfo}} readOnly />
+                </Modal>
+
                 <LayerRouter>
                     <Route path={`${this.props.match.url}/achievement`} render={(props) => <Achievement  {...props} />} />
+                    <Route path={`${this.props.match.url}/achievementPreview`} render={(props) => <Achievement  {...props} readOnly />} />
                 </LayerRouter>
             </Layer>
         )

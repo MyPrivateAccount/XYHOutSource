@@ -6,7 +6,7 @@ import BlackForm from '../../../businessComponents/humanSystem/blackInfo'
 import {NewGuid} from '../../../utils/appUtils';
 import ApiClient from '../../../utils/apiClient'
 import WebApiConfig from '../../constants/webapiConfig';
-
+import {addBlackLst} from '../../serviceAPI/blackService'
 
 class Black extends Component {
     state = {
@@ -22,24 +22,8 @@ class Black extends Component {
     //提交黑名单
     submitBlack(entity, type) {
         this.setState({showLoading: true});
-        let url = WebApiConfig.server.SetBlack;
-        let huResult = {isOk: false, msg: '黑名单保存失败！'};
-        ApiClient.post(url, entity, null, 'PUT').then(res => {
+        addBlackLst(entity).then(res => {
             this.setState({showLoading: false});
-            if (res.data.code == 0) {
-                huResult.isOk = true;
-                huResult.msg = '黑名单保存成功';
-            }
-            notification.success({
-                message: huResult.msg,
-                duration: 3
-            });
-        }).catch(e => {
-            huResult.msg = "黑名单接口调用异常!";
-            notification.error({
-                message: huResult.msg,
-                duration: 3
-            });
         })
     }
 

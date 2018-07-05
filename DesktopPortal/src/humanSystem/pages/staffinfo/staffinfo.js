@@ -1,7 +1,7 @@
 import {connect} from 'react-redux';
 import {postBlackLst, setHumanInfo, getHumanImage, exportHumanForm, getHumanDetail} from '../../actions/actionCreator';
 import React, {Component} from 'react'
-import {Table, Input, Select, Icon, Button, Row, Col, Slider, TreeSelect, Spin, notification} from 'antd'
+import {Table, Input, Select, Icon, Button, Row, Col, Slider, TreeSelect, Spin, notification, Popconfirm, Modal} from 'antd'
 import '../search.less'
 import Layer, {LayerRouter} from '../../../components/Layer'
 import {Route} from 'react-router'
@@ -12,7 +12,11 @@ import Leave from './leave'
 import PartTimeJob from './partTimeJob'
 import {getDicPars} from '../../../utils/utils'
 import {getHumanList} from '../../serviceAPI/staffService'
+import {addBlackLst} from '../../serviceAPI/blackService'
 import moment from 'moment'
+import {NewGuid} from '../../../utils/appUtils';
+import {createMergeHead, createColumData, writeHumanFile, HumanHead} from '../../constants/export';
+
 const styles = {
     conditionRow: {
         width: '80px',
@@ -26,7 +30,7 @@ const styles = {
         padding: '0px, 5px',
     }
 }
-
+const confirm = Modal.confirm;
 class Staffinfo extends Component {
 
     constructor(pro) {
@@ -217,10 +221,26 @@ class Staffinfo extends Component {
     handleAddBlack = () => {
         let len = this.state.checkedList.length;
         if (len > 0) {
-            this.props.dispatch(postBlackLst({
-                id: this.state.checkedList[len - 1].id,
-                idCard: this.state.checkedList[len - 1].idCard, name: this.state.checkedList[len - 1].name
-            }));
+            let humanInfo = this.state.checkedList[0];
+            confirm({
+                title: '确认',
+                content: `确认要将'${humanInfo.name}'加入黑名单?`,
+                onOk: () => {
+                    let entity = {
+                        id: NewGuid(),
+                        userId: humanInfo.id,
+                        idCard: humanInfo.idCard,
+                        name: humanInfo.name,
+                        phone: humanInfo.phone,
+                        sex: humanInfo.sex,
+                        email: humanInfo.email
+                    }
+                    this.setState({showLoading: true})
+                    addBlackLst(entity).then(res => {
+                        this.setState({showLoading: false});
+                    })
+                }
+            });
         } else {
             notification.error({
                 message: "请选择员工",
@@ -232,13 +252,43 @@ class Staffinfo extends Component {
     handleExport = () => {
         this.props.searchInfo.pageIndex = -1;
         this.props.searchInfo.pageSize = -1;
-        this.props.dispatch(exportHumanForm({
-            data: this.props.searchInfo,
-            tree: this.props.setDepartmentOrgTree
-        }));
+        let condition = {...this.state.condition}
+        getHumanList(condition).then(res => {
+            console.log("这是请求结果:", res);
+            this.setState({showLoading: false});
+            if (res.isOk) {
+                // this.setState({
+                //     humanList: {
+                //         extension: res.extension,
+                //         pageIndex: res.pageIndex,
+                //         pageSize: res.pageSize,
+                //         totalCount: res.totalCount
+                //     }
+                // });
+                const PositionStatus = ["未入职", "离职", "入职", "转正"];
+                let exportData = res.extension.map((v, k) => {
+                    let sn = "", fn = "";
+                    (v.sex == 1) && (sn = "男");
+                    (v.sex == 2) && (sn = "女");
+                    fn = v.staffStatus ? PositionStatus[v.staffStatus] : "未入职";
+                    return {
+                        a1: k, a2: v.id, a3: v.name, a4: sn, a5: v.idCard, a6: '',
+                        a7: v.position, a8: fn, a9: v.entryTime ? v.entryTime.replace("T", " ") : "",
+                        a10: v.becomeTime ? v.becomeTime.replace("T", " ") : "",
+                        a11: v.baseWages, a12: v.isHaveSocialSecurity ? "是" : "否", a13: v.isSignContracInfo ? "是" : "否"
+                    }
+                });
+                console.log("导出数据:", exportData);
+                let f = createMergeHead(HumanHead);
+                let ret = createColumData(f, exportData);
+                writeHumanFile(f, ret, "人事员工表", "人事员工.xlsx");
+            }
+        });
+        // this.props.dispatch(exportHumanForm({
+        //     data: this.props.searchInfo,
+        //     tree: this.props.setDepartmentOrgTree
+        // }));
     }
-
-
     render() {
         const rowSelection = {
             onChange: (selectedRowKeys, selectedRows) => {
@@ -316,7 +366,7 @@ class Staffinfo extends Component {
                             <Button type="primary" className="statuButton" onClick={(e) => this.handleChangeSalary()}>异动调薪</Button>
                             <Button type="primary" className="statuButton" onClick={(e) => this.handleLeft()}>离职</Button>
                             <Button type="primary" className="statuButton" onClick={(e) => this.handlePartTimeJob()}>兼职</Button>
-                            <Button type="primary" className="statuButton" onClick={(e) => this.handleUploadContract()}>合同上传</Button>
+                            {/* <Button type="primary" className="statuButton" onClick={(e) => this.handleUploadContract()}>合同上传</Button> */}
                             <Button type="primary" className="statuButton" onClick={(e) => this.handleAddBlack()}>加入黑名单</Button>
                             <Button type="primary" className="statuButton" onClick={(e) => this.handleExport()}>导出花名册</Button>
                         </Col>
@@ -328,7 +378,7 @@ class Staffinfo extends Component {
                 </div>
                 <LayerRouter>
                     <Route path={`${this.props.match.url}/onBoarding`} render={(props) => <OnBoarding  {...props} />} />
-                    <Route path={`${this.props.match.url}/onBoardingDetail`} render={(props) => <OnBoarding  {...props} isReadOnly/>} />
+                    <Route path={`${this.props.match.url}/onBoardingDetail`} render={(props) => <OnBoarding  {...props} isReadOnly />} />
                     <Route path={`${this.props.match.url}/becomeStaff`} render={(props) => <BecomeStaff  {...props} />} />
                     <Route path={`${this.props.match.url}/change`} render={(props) => <Change  {...props} />} />
                     <Route path={`${this.props.match.url}/leave`} render={(props) => <Leave  {...props} />} />
