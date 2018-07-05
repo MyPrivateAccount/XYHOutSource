@@ -234,11 +234,22 @@
     .ant-form-item {
         display: flex;
         .ant-form-item-label {
-            width: 8rem;
+            width: 9rem;
+            
+        }
+        &.auto-width{
+            .ant-form-item-label {
+                width: auto;
+                
+            }
         }
         .ant-form-item-control-wrapper {
             flex: 1;
         }
+    }
+   
+    .ant-select{
+        width:8rem;
     }
 }
 
@@ -258,4 +269,20 @@ td.column-money {
     overflow-y: auto;
     overflow-x: hidden;
     padding-bottom: 40px;
+}
+
+.ant-table-row{
+    &.selected{
+        background-color:rgba(0, 0, 0, 0.63);
+        color:white;
+    }
+}
+
+.divider{
+    display: block;
+    height: 1px;
+    width: 100%;
+    margin: 24px 0;
+    clear: both;
+    background: #e8e8e8;
 }

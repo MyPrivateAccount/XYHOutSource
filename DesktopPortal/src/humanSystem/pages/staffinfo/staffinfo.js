@@ -1,10 +1,8 @@
 import {connect} from 'react-redux';
-import {postBlackLst, setHumanInfo, searchConditionType, setSearchLoadingVisible, getHumanImage, exportHumanForm, getHumanDetail, adduserPage} from '../../actions/actionCreator';
+import {postBlackLst, setHumanInfo, getHumanImage, exportHumanForm, getHumanDetail} from '../../actions/actionCreator';
 import React, {Component} from 'react'
 import {Table, Input, Select, Icon, Button, Row, Col, Slider, TreeSelect, Spin, notification} from 'antd'
 import '../search.less'
-// import SearchCondition from '../../constants/searchCondition'
-// import {SearchHumanTypes, AgeRanges} from '../../constants/tools'
 import Layer, {LayerRouter} from '../../../components/Layer'
 import {Route} from 'react-router'
 import OnBoarding from './onboarding'
@@ -13,7 +11,8 @@ import Change from './change'
 import Leave from './leave'
 import PartTimeJob from './partTimeJob'
 import {getDicPars} from '../../../utils/utils'
-
+import {getHumanList} from '../../serviceAPI/staffService'
+import moment from 'moment'
 const styles = {
     conditionRow: {
         width: '80px',
@@ -43,6 +42,8 @@ class Staffinfo extends Component {
                 pageIndex: 0,
                 pageSize: 10
             },
+            showLoading: false,
+            humanList: {extension: [], pageIndex: 0, pageSize: 10, totalCount: 0},
             checkedList: []//选中列表
         }
     }
@@ -51,25 +52,26 @@ class Staffinfo extends Component {
         let listColums = [
             {title: '工号', dataIndex: 'userID', key: 'userID'},
             {title: '用户名', dataIndex: 'name', key: 'name'},
-            {title: '性别', dataIndex: 'sexname', key: 'sexname'},
+            {title: '性别', dataIndex: 'sex', key: 'sex', render: (text, record) => text == '1' ? '男' : '女'},
             {title: '身份证号', dataIndex: 'idCard', key: 'idCard'},
-            {title: '职位', dataIndex: 'positionName', key: 'positionName'},
+            {title: '职位', dataIndex: 'position', key: 'position'},
             {
                 title: '状态', dataIndex: 'staffStatus', key: 'staffStatus', render: (text, record) => {
                     let statusObj = dicEmpStatus.find(dic => dic.value == text);
                     return (<div>{statusObj ? statusObj.key : text}</div>)
                 }
             },
-            {title: '入职时间', dataIndex: 'entryTime', key: 'entryTime'},
-            {title: '转正时间', dataIndex: 'becomeTime', key: 'becomeTime'},
-            {title: '基本薪水', dataIndex: 'baseSalary', key: 'baseSalary'},
-            {title: '是否参加社保', dataIndex: 'socialInsurance', key: 'socialInsurance'},
-            {title: '是否签订合同', dataIndex: 'contract', key: 'contract'},
+            {title: '入职时间', dataIndex: 'entryTime', key: 'entryTime', render: (text, record) => text ? moment(text).format("YYYY-MM-DD") : ''},
+            {title: '转正时间', dataIndex: 'becomeTime', key: 'becomeTime', render: (text, record) => text ? moment(text).format("YYYY-MM-DD") : ''},
+            {title: '基本薪水', dataIndex: 'baseWages', key: 'baseWages'},
+            {title: '是否参加社保', dataIndex: 'isHaveSocialSecurity', key: 'isHaveSocialSecurity', render: (text, record) => text == true ? '是' : '否'},
+            {title: '是否签订合同', dataIndex: 'isSignContracInfo', key: 'isSignContracInfo', render: (text, record) => text == true ? '是' : '否'},
             {
                 title: "操作", dataIndex: "operation", key: "operation",
                 render: (text, record) => {
                     return (
-                        <span> <a onClick={() => this.show(record)}>显示详细</a> </span>
+                        <Button type="primary" size='small' shape="circle" icon="idcard" style={{marginRight: '5px'}} onClick={() => this.show(record)} />
+                        // <span> <a onClick={() => this.show(record)}>显示详细</a> </span>
                     );
                 }
             },
@@ -78,26 +80,38 @@ class Staffinfo extends Component {
     }
 
     show = (record) => {
-        //this.props.dispatch(adduserPage({menuID: 'chargedetailinfo', disname: '费用信息', type:'item', extra: e.id}));
-        // this.props.dispatch(setHumanInfo([record]));
-        // this.props.dispatch(getHumanImage(record.id));
-        // this.props.dispatch(adduserPage({id: "4", menuID: "OnboardingShow", displayName: '详情', type: 'item'}));
         this.props.dispatch(getHumanDetail(record.id))
-        this.gotoSubPage('onBoarding', record);
+        this.gotoSubPage('onBoardingDetail', record);
     }
 
     handleKeyChangeWord = (e) => {
-        this.props.searchInfo.keyWord = e.target.value;
+        let condition = this.state.condition;
+        condition.keyWord = e.target.value;
+        this.setState({condition: condition});
     }
 
-    handleSearch(condite) {
-        this.props.dispatch(searchConditionType(this.state.condition));
+    handleSearch() {
+        this.setState({showLoading: true});
+        console.log("当前检索条件:", this.state.condition);
+        let condition = {...this.state.condition}
+        getHumanList(condition).then(res => {
+            console.log("这是请求结果:", res);
+            this.setState({showLoading: false});
+            if (res.isOk) {
+                this.setState({
+                    humanList: {
+                        extension: res.extension,
+                        pageIndex: res.pageIndex,
+                        pageSize: res.pageSize,
+                        totalCount: res.totalCount
+                    }
+                });
+            }
+        });
     }
 
     componentDidMount() {
-        this.props.dispatch(setSearchLoadingVisible(true));
-        this.props.dispatch(setHumanInfo([]));
-        this.props.dispatch(searchConditionType(this.state.condition));
+        this.handleSearch();
         let dicEmpStatus = getDicPars("HUMEN_EMP_STATUS", this.props.rootBasicData);
         this.setState({dicEmpStatus: dicEmpStatus});
     }
@@ -125,16 +139,15 @@ class Staffinfo extends Component {
         this.setState({condition: condition});
     }
 
-    handleTableChange = (pagination, filters, sorter) => {
-        this.props.searchInfo.pageIndex = (pagination.current - 1);
-    };
+    //翻页
     handleTablePageChange = (pagination, filters, sorter) => {
-        console.log("翻页:", pagination);
         let condition = this.state.condition;
-        // condition.pageIndex=
-        // this.setState({condition: condition}, () => {
-        //     this.props.dispatch(searchConditionType(this.state.condition));
-        // });
+        console.log("翻页前条件:", condition);
+        condition.pageIndex = pagination.current - 1;
+        this.setState({condition: condition}, () => {
+            console.log("翻页后条件:", this.state.condition);
+            this.handleSearch();
+        });
     }
 
     gotoSubPage = (path, params) => {
@@ -191,7 +204,8 @@ class Staffinfo extends Component {
 
     handlePartTimeJob = () => {
         if (this.state.checkedList.length > 0) {
-            this.props.dispatch(getHumanDetail(this.state.checkedList[0].id))
+            // this.props.dispatch(getHumanDetail(this.state.checkedList[0].id))
+            this.gotoSubPage('partTimeJob', this.state.checkedList[0])
         } else {
             notification.error({
                 message: "请选择员工",
@@ -225,26 +239,7 @@ class Staffinfo extends Component {
     }
 
 
-    // changeCallback = (entity) => {
-    //     let l = this.state.list;
-    //     let idx = l.findIndex(x => x.id === entity.id);
-    //     if (idx >= 0) {
-    //         l[idx] = {
-    //             ...entity, ...{
-    //                 status: entity.status,
-    //                 billStatus: entity.billStatus,
-    //                 isBackup: entity.isBackup,
-    //                 backuped: entity.backuped,
-    //                 isPayment: entity.isPayment,
-    //                 paymentAmount: entity.paymentAmount
-    //             }
-    //         }
-    //         this.setState({list: [...l]})
-    //     }
-    // }
-
     render() {
-        // let self = this;
         const rowSelection = {
             onChange: (selectedRowKeys, selectedRows) => {
                 //self.props.dispatch(setHumanInfo(selectedRows));
@@ -259,11 +254,11 @@ class Staffinfo extends Component {
 
         const searchInfo = this.props.searchInfo || {};
         const showLoading = searchInfo.showLoading;
-        const humanList = this.props.searchInfo.searchResult.extension;
-        let paginationProps = {total: searchInfo.searchResult.totalCount, pageSize: searchInfo.searchResult.pageSize, current: searchInfo.searchResult.pageIndex}
+        const humanList = this.state.humanList;
+        let paginationProps = {total: humanList.totalCount, pageSize: humanList.pageSize, current: humanList.pageIndex + 1}
         return (
-            <Layer className="content-page">
-                <div style={{marginTop: '1.5rem'}}>
+            <Layer className="content-page" showLoading={this.state.showLoading}>
+                <div style={{marginTop: '0.5rem'}}>
                     <Row className='searchBox'>
                         <Col span={12}>
                             <Input addonBefore="新耀行" prefix={<Icon type="search" />}
@@ -273,15 +268,12 @@ class Staffinfo extends Component {
                                 onChange={this.handleKeyChangeWord} />
                         </Col>
                         <Col span={8}>
-                            <Button type="primary" size="large" onClick={(e) => this.handleSearch()}>搜索</Button>
+                            <Button type="primary" className='searchButton' onClick={(e) => this.handleSearch()}>搜索</Button>
                         </Col>
                     </Row>
                     <div className='searchCondition'>
                         <Row>
-                            <Col span={12}>
-                                {/* <span style={styles.bSpan}>所有人员 > </span> */}
-                            </Col>
-                            <Col span={4}>
+                            <Col style={{textAlign: 'center'}}>
                                 <Button onClick={() => this.setState({expandSearchBox: !this.state.expandSearchBox})}>{this.props.searchInfo.expandSearchBox ? "收起筛选" : "展开筛选"}<Icon type={this.props.searchInfo.expandSearchBox ? "up-square-o" : "down-square-o"} /></Button>
                             </Col>
                         </Row>
@@ -311,7 +303,7 @@ class Staffinfo extends Component {
                             </Row>
                             <Row className="normalInfo">
                                 <Col>
-                                    <label style={styles.conditionRow}>排序 ：</label>
+                                    <label style={styles.conditionRow}>部门 ：</label>
                                     <TreeSelect allowClear style={{width: '200px'}} treeData={this.props.setDepartmentOrgTree || []} onChange={(e) => this.handleSearchConditionChange(e, 'departmentId')} />
                                 </Col>
                             </Row>
@@ -329,13 +321,14 @@ class Staffinfo extends Component {
                             <Button type="primary" className="statuButton" onClick={(e) => this.handleExport()}>导出花名册</Button>
                         </Col>
                     </Row>
-                    <p style={{fontSize: '1.4rem', fontWeight: 'bold'}}>目前已为你筛选出<b style={{color: '#f36366'}}> {humanList.length || 0} </b>条员工信息</p>
+                    <p style={{fontSize: '1.4rem', fontWeight: 'bold'}}>目前已为你筛选出<b style={{color: '#f36366'}}> {humanList.totalCount || 0} </b>条员工信息</p>
                     <Spin spinning={showLoading} delay={200} tip="查询中...">
-                        <Table rowSelection={rowSelection} rowKey={record => record.key} pagination={paginationProps} columns={this.getColumns()} dataSource={this.props.searchInfo.searchResult.extension} onChange={this.handleTablePageChange} />
+                        <Table rowSelection={rowSelection} rowKey={record => record.key} pagination={paginationProps} columns={this.getColumns()} dataSource={humanList.extension} onChange={this.handleTablePageChange} />
                     </Spin>
                 </div>
                 <LayerRouter>
                     <Route path={`${this.props.match.url}/onBoarding`} render={(props) => <OnBoarding  {...props} />} />
+                    <Route path={`${this.props.match.url}/onBoardingDetail`} render={(props) => <OnBoarding  {...props} isReadOnly/>} />
                     <Route path={`${this.props.match.url}/becomeStaff`} render={(props) => <BecomeStaff  {...props} />} />
                     <Route path={`${this.props.match.url}/change`} render={(props) => <Change  {...props} />} />
                     <Route path={`${this.props.match.url}/leave`} render={(props) => <Leave  {...props} />} />

@@ -1,10 +1,11 @@
 import {connect} from 'react-redux';
-import {createStation, postChangeHuman, getDicParList, getcreateStation, getcreateOrgStation, getSalaryItem} from '../../actions/actionCreator';
+import {postChangeHuman, getcreateStation, getSalaryItem} from '../../actions/actionCreator';
 import React, {Component} from 'react'
-import {TreeSelect, Input, Form, Select, Button, Row, Col, Checkbox, DatePicker, Cascader} from 'antd'
-import SocialSecurity from './form/socialSecurity'
-import Salary from './form/salary'
+import {TreeSelect, Input, Form, Select, Button, Row, Col} from 'antd'
+import SocialSecurity from '../../../businessComponents/humanSystem/socialSecurity'
+import Salary from '../../../businessComponents/humanSystem/salary'
 import Layer from '../../../components/Layer'
+import {getPosition, adjustHuman} from '../../serviceAPI/staffService'
 const FormItem = Form.Item;
 const Option = Select.Option;
 const formItemLayout = {
@@ -15,35 +16,27 @@ const formItemLayout = {
 
 class Change extends Component {
     state = {
-        department: ''
-    }
-
-    componentWillMount() {
-        // this.props.dispatch(getDicParList(["HUMAN_CHANGE_TYPE", "HUMAN_CHANGEREASON_TYPE"]));
-        // this.props.dispatch(getcreateOrgStation(this.props.selHumanList[this.props.selHumanList.length - 1].departmentId));
+        department: '',
+        oldPositionList: [],
+        newPositionList: [],
+        showLoading: false
     }
 
     componentDidMount() {
-        let len = this.props.selHumanList.length;
-
-        if (len > 0) {
-
-            let lstvalue = [];
-            this.props.setDepartmentOrgTree.findIndex(e => this.findCascaderLst(this.props.selHumanList[len - 1].departmentId, e, lstvalue));
-            //this.findCascaderLst(this.props.selHumanList[len-1].departmentId, this.props.setDepartmentOrgTree, lstvalue);
-
-            this.state.id = this.props.selHumanList[len - 1].id;
-            this.props.form.setFieldsValue({name: this.props.selHumanList[len - 1].name});
-            this.props.form.setFieldsValue({idCard: this.props.selHumanList[len - 1].idCard});
-            this.props.form.setFieldsValue({orgDepartmentId: lstvalue});
-
-            // this.props.form.setFieldsValue({baseSalary: this.props.selHumanList[len-1].baseSalary});
-            // this.props.form.setFieldsValue({subsidy: this.props.selHumanList[len-1].subsidy});
-            // this.props.form.setFieldsValue({clothesBack: this.props.selHumanList[len-1].clothesBack});
-            // this.props.form.setFieldsValue({administrativeBack: this.props.selHumanList[len-1].administrativeBack});
-            // this.props.form.setFieldsValue({portBack: this.props.selHumanList[len-1].portBack});
+        // let len = this.props.selHumanList.length;
+        // if (len > 0) {
+        //     let lstvalue = [];
+        //     this.props.setDepartmentOrgTree.findIndex(e => this.findCascaderLst(this.props.selHumanList[len - 1].departmentId, e, lstvalue));
+        //     this.props.form.setFieldsValue({name: this.props.selHumanList[len - 1].name});
+        //     this.props.form.setFieldsValue({idCard: this.props.selHumanList[len - 1].idCard});
+        //     this.props.form.setFieldsValue({orgDepartmentId: lstvalue});
+        // }
+        let humanInfo = this.props.location.state;
+        if (humanInfo.departmentId) {
+            getPosition(humanInfo.departmentId).then(res => {
+                this.setState({oldPositionList: res.extension || []});
+            });
         }
-
     }
 
     hasErrors(fieldsError) {
@@ -58,31 +51,35 @@ class Change extends Component {
             socialSecurityForm.validateFields();
             let salaryErrs = salaryForm.getFieldsError();
             let socialSecurityErrs = socialSecurityForm.getFieldsError();
+
             let hasErr = false;
-            for (let err in salaryErrs) {
-                if (err) {
+            for (let item in salaryErrs) {
+                if (salaryErrs[item]) {
                     hasErr = true;
                 }
             }
-            for (let err in socialSecurityErrs) {
-                if (err) {
+            for (let item in socialSecurityErrs) {
+                if (socialSecurityErrs[item]) {
                     hasErr = true;
                 }
             }
+            console.log("表单:", values, hasErr);
             if (!err && !hasErr) {
-                this.props.dispatch(postChangeHuman(values));
+                // this.props.dispatch(postChangeHuman(values));
+                this.setState({showLoading: true});
+                adjustHuman(values).then(res => {
+                    this.setState({showLoading: false});
+                })
             }
         });
     }
 
-    handleDepartmentChange = (e) => {
-        if (!e) {
-            this.props.dispatch(getcreateStation(this.state.department));
+    handleNewDepartmentChange = (e) => {
+        if (e) {
+            getPosition(e).then(res => {
+                this.setState({newPositionList: res.extension || []});
+            });
         }
-    }
-
-    handleChooseDepartmentChange = (e) => {
-        this.state.department = e[e.length - 1];
     }
 
     handleSelectChange = (e) => {
@@ -115,12 +112,10 @@ class Change extends Component {
     }
 
     render() {
-        let self = this;
         let humanInfo = this.props.location.state;
-        // let len = this.props.selHumanList.length;
-        const {getFieldDecorator, getFieldsError, getFieldsValue, isFieldTouched} = this.props.form;
+        const {getFieldDecorator, getFieldsValue} = this.props.form;
         return (
-            <Layer>
+            <Layer showLoading={this.state.showLoading}>
                 <div className="page-title" style={{marginBottom: '10px'}}>异动调薪</div>
                 <Form onSubmit={this.handleSubmit}>
                     <Row style={{marginTop: '10px'}}>
@@ -160,7 +155,8 @@ class Change extends Component {
                                         message: '',
                                     }]
                                 })(
-                                    <Cascader disabled={true} options={this.props.setDepartmentOrgTree} onChange={this.handleChooseDepartmentChange} onPopupVisibleChange={this.handleDepartmentChange} changeOnSelect placeholder="归属部门" />
+                                    // <Cascader disabled={true} options={this.props.setDepartmentOrgTree} onChange={this.handleChooseDepartmentChange} onPopupVisibleChange={this.handleDepartmentChange} changeOnSelect placeholder="归属部门" />
+                                    <TreeSelect treeData={this.props.setDepartmentOrgTree} placeholder="归属部门" />
                                 )}
                             </FormItem>
                         </Col>
@@ -169,15 +165,15 @@ class Change extends Component {
                                 {getFieldDecorator('position', {
                                     initialValue: humanInfo.position,
                                     rules: [{
-                                        required: true, message: 'please entry',
+                                        required: true, message: '请选择职位',
                                     }],
                                 })(
                                     <Select disabled={true} onChange={this.handleSelectChange} placeholder="选择职位">
                                         {
-                                            (self.props.orgstationList && self.props.orgstationList.length > 0) ?
-                                                self.props.orgstationList.map(
+                                            (this.state.oldPositionList && this.state.oldPositionList.length > 0) ?
+                                                this.state.oldPositionList.map(
                                                     function (params) {
-                                                        return <Option key={params.key} value={params.id}>{params.stationname}</Option>;
+                                                        return <Option key={params.id} value={params.id}>{params.positionName}</Option>;
                                                     }
                                                 ) : null
                                         }
@@ -196,7 +192,7 @@ class Change extends Component {
                                         message: '请选择新部门',
                                     }]
                                 })(
-                                    <Cascader options={this.props.setDepartmentOrgTree} onChange={this.handleChooseDepartmentChange} onPopupVisibleChange={this.handleDepartmentChange} changeOnSelect placeholder="归属部门" />
+                                    <TreeSelect treeData={this.props.setDepartmentOrgTree} placeholder="归属部门" onChange={this.handleNewDepartmentChange} />
                                 )}
                             </FormItem>
                         </Col>
@@ -209,10 +205,10 @@ class Change extends Component {
                                 })(
                                     <Select disabled={this.props.ismodify == 1} onChange={this.handleSelectChange} placeholder="选择职位">
                                         {
-                                            (self.props.stationList && self.props.stationList.length > 0) ?
-                                                self.props.stationList.map(
+                                            (this.state.newPositionList && this.state.newPositionList.length > 0) ?
+                                                this.state.newPositionList.map(
                                                     function (params) {
-                                                        return <Option key={params.key} value={params.id}>{params.stationname}</Option>;
+                                                        return <Option key={params.id} value={params.id}>{params.positionName}</Option>;
                                                     }
                                                 ) : null
                                         }
@@ -228,170 +224,9 @@ class Change extends Component {
 
                     <Row>
                         <Col span={20} style={{textAlign: 'center'}}>
-                            <Button type="primary" htmlType="submit" disabled={this.hasErrors(getFieldsValue())} >提交</Button>
+                            <Button type="primary" disabled={this.hasErrors(getFieldsValue())} onClick={this.handleSubmit}>提交</Button>
                         </Col>
                     </Row>
-
-                    {/* <FormItem {...formItemLayout1} label="姓名">
-                        {getFieldDecorator('name', {
-                            rules: [{
-                                required:true, message: 'please entry',
-                            }]
-                        })(
-                            <Input disabled={true} placeholder="请输入姓名" />
-                        )}
-                    </FormItem>
-                    <FormItem {...formItemLayout1} label="身份证号">
-                        {getFieldDecorator('idCard', {
-                            rules: [{
-                                required:true, message: 'please entry',
-                            }]
-                        })(
-                            <Input disabled={true} placeholder="请输入身份证号" />
-                        )}
-                    </FormItem>
-                    <FormItem {...formItemLayout1} label="异动类型">
-                        {getFieldDecorator('changeType', {
-                            rules: [{
-                                required:true, message: 'please entry',
-                            }]
-                        })(
-                            <Select placeholder="选择异动类型">
-                                {
-                                    (self.props.changeTypeList && self.props.changeTypeList.length > 0) ?
-                                        self.props.changeTypeList.map(
-                                            function (params) {
-                                                return <Option key={params.value} value={params.value+""}>{params.key}</Option>;
-                                            }
-                                        ):null
-                                }
-                            </Select>
-                        )}
-                    </FormItem>
-                    <FormItem {...formItemLayout1} label="异动原因">
-                        {getFieldDecorator('changeReason', {
-                            rules: [{
-                                required:true, message: 'please entry',
-                            }]
-                        })(
-                            <Select placeholder="选择异动原因">
-                               {
-                                    (self.props.changeResonList && self.props.changeResonList.length > 0) ?
-                                        self.props.changeResonList.map(
-                                            function (params) {
-                                                return <Option key={params.value} value={params.value+""}>{params.key}</Option>;
-                                            }
-                                        ):null
-                                }
-                            </Select>
-                        )}
-                    </FormItem>
-                    <FormItem {...formItemLayout1} label="其他原因简述">
-                        {getFieldDecorator('otherReason', {
-                            rules: [{
-                                required:true, message: 'please entry',
-                            }]
-                        })(
-                            <Input.TextArea rows={4} placeholder="请输入原因" />
-                        )}
-                    </FormItem>
-                    <FormItem {...formItemLayout1} label="所属部门">
-                        {getFieldDecorator('orgDepartmentId', {
-                                    rules: [{
-                                        required:true,
-                                        message: 'please entry',
-                                    }]
-                                })(
-                                    <Cascader disabled={true} style={{ width: '70%' }} options={this.props.setDepartmentOrgTree} onChange={this.handleChooseDepartmentChange} onPopupVisibleChange={this.handleDepartmentChange} changeOnSelect  placeholder="归属部门"/>
-                                )}
-                    </FormItem>
-                    <FormItem {...formItemLayout1} label="原职位">
-                        {getFieldDecorator('orgStation', {
-                            rules: [{
-                                required:true, message: 'please entry',
-                            }],
-                            initialValue: this.props.selHumanList[len-1].position? this.props.selHumanList[len-1].position:null
-                        })(
-                            <Select disabled={true} style={{ width: '70%' }} onChange={this.handleSelectChange} placeholder="选择职位">
-                                {
-                                    (self.props.orgstationList && self.props.orgstationList.length > 0) ?
-                                        self.props.orgstationList.map(
-                                            function (params) {
-                                                return <Option key={params.key} value={params.id}>{params.stationname}</Option>;
-                                            }
-                                        ):null
-                                }
-                            </Select>
-                        )}
-                    </FormItem>
-                    <FormItem {...formItemLayout1} label="新部门">
-                        {getFieldDecorator('newDepartmentId', {
-                            rules: [{
-                                required:true,
-                                message: 'please entry',
-                            }]
-                        })(
-                            <Cascader style={{ width: '70%' }} options={this.props.setDepartmentOrgTree} onChange={this.handleChooseDepartmentChange} onPopupVisibleChange={this.handleDepartmentChange} changeOnSelect  placeholder="归属部门"/>
-                        )}
-                    </FormItem>
-                    <FormItem {...formItemLayout1} label="新职位">
-                        {getFieldDecorator('newStation', {
-                            rules: [{
-                                required:true, message: 'please entry',
-                            }]
-                        })(
-                            <Select disabled={this.props.ismodify == 1} style={{ width: '70%' }} onChange={this.handleSelectChange} placeholder="选择职位">
-                                {
-                                    (self.props.stationList && self.props.stationList.length > 0) ?
-                                        self.props.stationList.map(
-                                            function (params) {
-                                                return <Option key={params.key} value={params.id}>{params.stationname}</Option>;
-                                            }
-                                        ):null
-                                }
-                            </Select>
-                        )}
-                    </FormItem>
-                    <FormItem {...formItemLayout1} colon={false} label="新工资信息">
-                    </FormItem>
-                    <FormItem {...formItemLayout1} label="基本工资">
-                        {getFieldDecorator('baseSalary', {
-                            initialValue: self.props.selSalaryItem?self.props.selSalaryItem.baseSalary:null
-                        })(
-                                        <InputNumber style={{ width: '70%' }} />
-                                    )}
-                    </FormItem>
-                    <FormItem {...formItemLayout1} label="岗位补贴">
-                        {getFieldDecorator('subsidy', {
-                            initialValue: self.props.selSalaryItem?self.props.selSalaryItem.subsidy:null
-                        })(
-                                            <InputNumber style={{ width: '70%' }} />
-                                        )}
-                    </FormItem>
-                    <FormItem {...formItemLayout1} label="工装扣款">
-                        {getFieldDecorator('clothesBack', {
-                            initialValue: self.props.selSalaryItem?self.props.selSalaryItem.clothesBack:null
-                        })(
-                                        <InputNumber  />
-                                    )}
-                    </FormItem>
-                    <FormItem {...formItemLayout1} label="行政扣款">
-                        {getFieldDecorator('administrativeBack', {
-                            initialValue: self.props.selSalaryItem?self.props.selSalaryItem.administrativeBack:null
-                        })(
-                                        <InputNumber  />
-                                    )}
-                    </FormItem>
-                    <FormItem {...formItemLayout1} label="端口扣款">
-                        {getFieldDecorator('portBack', {
-                            initialValue:self.props.selSalaryItem?self.props.selSalaryItem.portBack:null
-                        })(
-                                        <InputNumber  />
-                                    )}
-                    </FormItem>
-                    <FormItem wrapperCol={{ span: 12, offset: 6 }}>
-                        <Col span={6}><Button type="primary" htmlType="submit" disabled={this.hasErrors(getFieldsValue())} >提交</Button></Col>
-                    </FormItem> */}
                 </Form>
             </Layer>
 

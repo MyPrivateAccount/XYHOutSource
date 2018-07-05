@@ -50,7 +50,7 @@ namespace XYHHumanPlugin.Controllers
             }
             try
             {
-                response.Extension = await _humanInfoRegularManager.FindByIdAsync(id, HttpContext.RequestAborted);
+                return await _humanInfoRegularManager.FindByIdAsync(user, id, HttpContext.RequestAborted);
             }
             catch (Exception e)
             {
@@ -82,7 +82,7 @@ namespace XYHHumanPlugin.Controllers
             }
             try
             {
-                response.Extension = await _humanInfoRegularManager.CreateAsync(user, humanInfoRegularRequest, HttpContext.RequestAborted);
+                return await _humanInfoRegularManager.CreateAsync(user, humanInfoRegularRequest, HttpContext.RequestAborted);
             }
             catch (Exception e)
             {
@@ -115,7 +115,7 @@ namespace XYHHumanPlugin.Controllers
             }
             try
             {
-                response.Extension = await _humanInfoRegularManager.UpdateAsync(user, id, humanInfoRegularRequest, HttpContext.RequestAborted);
+                return await _humanInfoRegularManager.UpdateAsync(user, id, humanInfoRegularRequest, HttpContext.RequestAborted);
             }
             catch (Exception e)
             {
@@ -147,7 +147,7 @@ namespace XYHHumanPlugin.Controllers
             }
             try
             {
-                await _humanInfoRegularManager.DeleteAsync(user, id, HttpContext.RequestAborted);
+                return await _humanInfoRegularManager.DeleteAsync(user, id, HttpContext.RequestAborted);
             }
             catch (Exception e)
             {

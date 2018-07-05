@@ -18,6 +18,7 @@ using LeaveInfoRequest = XYHHumanPlugin.Dto.Response.LeaveInfoResponse;
 using ChangeInfoRequest = XYHHumanPlugin.Dto.Response.ChangeInfoResponse;
 using ApplicationCore;
 using ApplicationCore.Stores;
+using Microsoft.EntityFrameworkCore;
 
 namespace XYHHumanPlugin.Managers
 {
@@ -439,30 +440,31 @@ namespace XYHHumanPlugin.Managers
 
             if (!String.IsNullOrWhiteSpace(keyword))
             {
-                //query = query.Where(hr => ( hr.Name.Contains(keyword) || hr.UserID.Contains(keyword) || hr.ID==keyword ));
+                query = query.Where(hr => ( hr.Name.Contains(keyword) || hr.UserID.Contains(keyword) || hr.Id==keyword ));
             }
             if (pageSize > 0 && pageIndex > 0)
             {
-                //r.TotalCount = await query.CountAsync();
+                r.TotalCount = await query.CountAsync();
                 r.PageIndex = pageIndex;
                 r.PageSize = pageSize;
                 query = query.Skip((pageIndex - 1) * pageSize).Take(pageSize);
 
             }
-            //var ul = await query.ToListAsync();
-            //r.Extension = new List<HumanInfRequest>();
-            //ul.ForEach(u =>
-            //{
-            //    var u2 = _mapper.Map<HumanInfoResponse>(u);
-            //    if (u.OrganizationExpansion != null && !String.IsNullOrEmpty(u.OrganizationExpansion.FullName))
-            //    {
-            //u2.OrganizationFullName = u.OrganizationExpansion.FullName;
-            //}else if (u.Organizations != null)
-            //{
-            //u2.OrganizationFullName = u.Organizations.OrganizationName;
-            //}
-            //    r.Extension.Add(u2);
-            //});
+            var ul = await query.ToListAsync();
+            r.Extension = new List<HumanInfoResponse>();
+            ul.ForEach(u =>
+            {
+                var u2 = _mapper.Map<HumanInfoResponse>(u);
+                if (u.OrganizationExpansion != null && !String.IsNullOrEmpty(u.OrganizationExpansion.FullName))
+                {
+                    u2.OrganizationFullName = u.OrganizationExpansion.FullName;
+                }
+                else if (u.Organizations != null)
+                {
+                    u2.OrganizationFullName = u.Organizations.OrganizationName;
+                }
+                r.Extension.Add(u2);
+            });
 
             if (r.TotalCount == 0)
             {

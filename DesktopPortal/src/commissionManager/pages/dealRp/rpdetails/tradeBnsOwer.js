@@ -1,83 +1,72 @@
 //业主信息组件
 import { connect } from 'react-redux';
-import { getDicParList, dealYzSave } from '../../../actions/actionCreator'
 import React, { Component } from 'react';
-import moment from 'moment'
-import { notification, Form, Span, Layout, Table, Button, Radio, Popconfirm, Tooltip, Row, Col, Input, Spin, Select, TreeSelect } from 'antd'
+import { Form, Layout, Row, Col, Input,Spin,Select } from 'antd'
+import { getDicPars } from '../../../../utils/utils'
+import { dicKeys, permission } from '../../../constants/const'
 
 const FormItem = Form.Item;
-const Option = Select.Option;
+
+let cjzqList = [];
+for(let i = 1;i<=11;i++){
+  cjzqList.push({key: `${i-1}~${i}周`,value: `${i-1}~${1}`})
+}
 
 class TradeBnsOwner extends Component {
   state = {
-    isDataLoading: false,
+    loading: false,
     rpData: []
   }
   componentWillMount = () => {
-    this.setState({ isDataLoading: true, tip: '信息初始化中' })
-    this.props.dispatch(getDicParList(['COMMISSION_YZ_QHTSC']));
+
   }
   componentDidMount = () => {
-    
+    this.initEntity(this.props);
   }
-  componentWillReceiveProps(newProps) {
-    this.setState({ isDataLoading: false });
-    if (newProps.operInfo.operType === 'YZSAVE_UPDATE') {
-      notification.success({
-        message: '提示',
-        description: '保存成交报告业主信息成功!',
-        duration: 3
-      });
-      newProps.operInfo.operType = ''
-    }
-    else if (newProps.operInfo.operType === 'YZGET_UPDATE') {//信息获取成功
-      this.setState({ rpData: newProps.ext });
-      newProps.operInfo.operType = ''
-    }
-    else if (newProps.syncYzOp.operType === 'DEALRP_SYNC_YZ') {
-      let newdata = newProps.syncYzData
-      this.props.form.setFieldsValue({'yzMc':newdata.yzMc })
-      this.props.form.setFieldsValue({'yzSj':newdata.yzSj })
-      newProps.syncYzOp.operType = ''
-      this.setState({rpData:newdata})
+  componentWillReceiveProps = (nextProps) => {
+    if (this.props.entity !== nextProps.entity && nextProps.entity) {
+
+      this.initEntity(nextProps)
     }
   }
-  handleSave = (e) => {
-    e.preventDefault();
-    this.props.form.validateFields((err, values) => {
-      if (!err) {
-        values.id = this.props.rpId;
-        console.log(values);
-        this.setState({ isDataLoading: true, tip: '保存信息中...' })
-        this.props.dispatch(dealYzSave(values))
-      }
-    });
+
+  initEntity = (nextProps) => {
+    var entity = nextProps.entity;
+    if (!entity) {
+      return;
+    }
+
+    let mv = {};
+    Object.keys(entity).map(key => {
+      mv[key] = entity[key];
+    })
+    this.props.form.setFieldsValue(mv);
   }
+
+
   render() {
     const { getFieldDecorator } = this.props.form;
+    const { showBbSelector } = this.props;
     const formItemLayout = {
       labelCol: { span: 6 },
       wrapperCol: { span: 14 },
     };
-    const formItemLayout2 = {
-      labelCol: { span: 14 },
-      wrapperCol: { span: 6 },
-    };
+    
     const formItemLayout3 = {
       labelCol: { span: 7 },
       wrapperCol: { span: 14 },
     };
-    let yzChtscTypes = this.props.basicData.yzChtscTypes
+    //  let yzChtscTypes = this.props.basicData.yzChtscTypes
+    let khlyList = getDicPars(dicKeys.khly, this.props.dic);
     return (
       <Layout>
-        <Spin spinning={this.state.isDataLoading} tip={this.state.tip}>
-          <Row>
+        <Spin spinning={this.state.loading} tip={this.state.tip}>
+          <Row className="form-row">
             <Col span={8}>
               <FormItem {...formItemLayout} label={(<span>名称</span>)}>
                 {
                   getFieldDecorator('yzMc', {
-                    rules: [{ required: true, message: '请填写业主名称' }],
-                    initialValue: this.state.rpData.yzMc,
+                    rules: [{ required: true, message: '请填写业主名称' }]
                   })(
                     <Input style={{ width: 200 }}></Input>
                   )
@@ -89,7 +78,6 @@ class TradeBnsOwner extends Component {
                 {
                   getFieldDecorator('yzZjhm', {
                     rules: [{ required: false }],
-                    initialValue: this.state.rpData.yzZjhm,
                   })(
                     <Input style={{ width: 200 }}></Input>
                   )
@@ -97,13 +85,12 @@ class TradeBnsOwner extends Component {
               </FormItem>
             </Col>
           </Row>
-          <Row>
+          <Row className="form-row">
             <Col span={8}>
               <FormItem {...formItemLayout} label={(<span>地址</span>)}>
                 {
                   getFieldDecorator('yzDz', {
-                    rules: [{ required: false, message: '请填写分行名称!' }],
-                    initialValue: this.state.rpData.yzDz,
+                    rules: [{ required: false, message: '请填写地址!' }]
                   })(
                     <Input style={{ width: 200 }}></Input>
                   )
@@ -114,8 +101,7 @@ class TradeBnsOwner extends Component {
               <FormItem {...formItemLayout} label={(<span>手机</span>)}>
                 {
                   getFieldDecorator('yzSj', {
-                    rules: [{ required: false, message: '请填写成交人!' }],
-                    initialValue: this.state.rpData.yzSj,
+                    rules: [{ required: false, message: '请填写客户手机!' }]
                   })(
                     <Input style={{ width: 200 }}></Input>
                   )
@@ -126,22 +112,25 @@ class TradeBnsOwner extends Component {
               <FormItem {...formItemLayout} label={(<span>客户来源</span>)}>
                 {
                   getFieldDecorator('yzYzly', {
-                    rules: [{ required: false, message: '请选择成交日期!' }],
-                    initialValue: this.state.rpData.yzYzly,
+                    rules: [{ required: false, message: '请填写客户来源!' }]
                   })(
-                    <Input style={{ width: 200 }}></Input>
+                    <Select disabled={showBbSelector} >
+                        {
+                            khlyList.map(u => (<Select.Option key={u.key} value={u.key}>{u.key}</Select.Option>))
+                        }
+                    </Select>
                   )
                 }
               </FormItem>
-            </Col>
+            </Col> 
           </Row>
-          <Row>
-            <Col span={24} pull={4}>
+          <div className="divider"></div>
+          <Row className="form-row">
+            <Col span={24}>
               <FormItem {...formItemLayout} label={(<span>Email</span>)}>
                 {
                   getFieldDecorator('yzEmail', {
-                    rules: [{ required: false }],
-                    initialValue: this.state.rpData.yzEmail,
+                    rules: [{ required: false }]
                   })(
                     <Input style={{ width: 200 }}></Input>
                   )
@@ -149,13 +138,12 @@ class TradeBnsOwner extends Component {
               </FormItem>
             </Col>
           </Row>
-          <Row>
+          <Row className="form-row">
             <Col span={8}>
               <FormItem {...formItemLayout} label={(<span>代理人</span>)}>
                 {
                   getFieldDecorator('yzDlr', {
-                    rules: [{ required: false, message: '请填写分行名称!' }],
-                    initialValue: this.state.rpData.yzDlr,
+                    rules: [{ required: false, message: '请填写代理人' }]
                   })(
                     <Input style={{ width: 200 }}></Input>
                   )
@@ -166,8 +154,7 @@ class TradeBnsOwner extends Component {
               <FormItem {...formItemLayout3} label={(<span>代理人联系方式</span>)}>
                 {
                   getFieldDecorator('yzDlrlxfs', {
-                    rules: [{ required: false, message: '请填写成交人!' }],
-                    initialValue: this.state.rpData.yzDlrlxfs,
+                    rules: [{ required: false, message: '请填写代理人联系方式!' }]
                   })(
                     <Input style={{ width: 200 }}></Input>
                   )
@@ -178,8 +165,7 @@ class TradeBnsOwner extends Component {
               <FormItem {...formItemLayout3} label={(<span>代理人证件号码</span>)}>
                 {
                   getFieldDecorator('yzDlrzjhm', {
-                    rules: [{ required: false, message: '请选择成交日期!' }],
-                    initialValue: this.state.rpData.yzDlrzjhm,
+                    rules: [{ required: false, message: '请填写代理人证件号码!' }]
                   })(
                     <Input style={{ width: 200 }}></Input>
                   )
@@ -187,13 +173,12 @@ class TradeBnsOwner extends Component {
               </FormItem>
             </Col>
           </Row>
-          <Row>
+          <Row className="form-row">
             <Col span={8}>
               <FormItem {...formItemLayout} label={(<span>成交原因</span>)}>
                 {
                   getFieldDecorator('yzCjyy', {
-                    rules: [{ required: false, message: '请填写分行名称!' }],
-                    initialValue: this.state.rpData.yzCjyy,
+                    rules: [{ required: false, message: '请填写成交原因!' }]
                   })(
                     <Input style={{ width: 200 }}></Input>
                   )
@@ -201,27 +186,26 @@ class TradeBnsOwner extends Component {
               </FormItem>
             </Col>
             <Col span={8}>
-              <FormItem {...formItemLayout2} label={(<span>从登记至签合同时长</span>)}>
+              <FormItem className="auto-width" label={(<span>从登记至签合同时长</span>)}>
                 {
                   getFieldDecorator('yzCdjzqhtsc', {
-                    rules: [{ required: false, message: '请填写成交人!' }],
-                    initialValue: this.state.rpData.yzCdjzqhtsc,
+                    rules: [{ required: false, message: '请填写从登记至签合同时长!' }]
                   })(
                     <Select style={{ width: 80 }}>
                       {
-                        yzChtscTypes.map(tp => <Option key={tp.key} value={tp.key}>{tp.key}</Option>)
+                        cjzqList.map(tp => <Select.Option key={tp.key} value={tp.value}>{tp.key}</Select.Option>)
                       }
                     </Select>
                   )
                 }
               </FormItem>
-            </Col>
+            </Col> 
           </Row>
-          <Row>
+          {/* <Row>
             <Col span={24} style={{ textAlign: 'center' }}>
               <Button type='primary' onClick={this.handleSave}>保存</Button>
             </Col>
-          </Row>
+          </Row> */}
         </Spin>
       </Layout>
     )
@@ -230,11 +214,11 @@ class TradeBnsOwner extends Component {
 function MapStateToProps(state) {
 
   return {
-    basicData: state.base,
-    operInfo: state.rp.operInfo,
-    ext: state.rp.ext,
-    syncYzOp:state.rp.syncYzOp,
-    syncYzData:state.rp.syncYzData
+    // basicData: state.base,
+    // operInfo: state.rp.operInfo,
+    // ext: state.rp.ext,
+    // syncYzOp:state.rp.syncYzOp,
+    // syncYzData:state.rp.syncYzData
   }
 }
 

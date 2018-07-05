@@ -1,13 +1,14 @@
 import {connect} from 'react-redux';
 import {createStation, getOrgList, getDicParList, setStation, deleteStation, getcreateStation, setSearchLoadingVisible} from '../../actions/actionCreator';
 import React, {Component} from 'react'
-import {Table, Input, Form, Select, Cascader, Button, Row, Col, Spin, TreeSelect, Popconfirm} from 'antd'
+import {Table, notification, Button, Row, Col, Spin, TreeSelect, Popconfirm} from 'antd'
 import './station.less';
 import Layer, {LayerRouter} from '../../../components/Layer'
 import {Route} from 'react-router'
 import AddStation from './addstation'
 import {getDicPars} from '../../../utils/utils';
-
+import ApiClient from '../../../utils/apiClient'
+import WebApiConfig from '../../constants/webapiConfig';
 const styles = {
     conditionRow: {
         width: '80px',
@@ -22,15 +23,6 @@ const styles = {
     }
 }
 
-const EditableCell = ({editable, value, onChange}) => (
-    <div>
-        {editable
-            ? <Input style={{margin: '-5px 0'}} value={value} onChange={e => onChange(e.target.value)} />
-            : value
-        }
-    </div>
-);
-
 const rowSelection = {
     onChange: (selectedRowKeys, selectedRows) => {
         console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
@@ -43,11 +35,18 @@ const rowSelection = {
 
 
 class Station extends Component {
-    constructor(pros) {
-        super(pros);
+    // constructor(pros) {
+    //     super(pros);
 
-        this.state = {department: ""};
-        this.cacheData = this.props.stationList.map(item => ({...item}));
+    //     this.state = {department: ""};
+    //     this.cacheData = this.props.stationList.map(item => ({...item}));
+    // }
+    state = {
+        stationList: [],
+        showLoading: false,
+        condition: {
+            departmentId: ''
+        }
     }
 
     gotoSubPage = (path, params) => {
@@ -76,18 +75,26 @@ class Station extends Component {
     }
 
     delete = (record) => {
-        this.props.dispatch(deleteStation({entity: record}));
-    }
+        let url = WebApiConfig.server.DeleteStation;
+        let huResult = {isOk: false, msg: '删除职位失败！'};
 
-    save(key) {
-        const newData = [...this.props.stationList];
-        const target = newData.filter(item => key === item.key)[0];
-        if (target) {
-            delete target.editable;
-            this.forceUpdate();
-            this.cacheData = newData.map(item => ({...item}));
-            this.props.dispatch(setStation({id: target.id, positionName: target.stationname, positionType: target.positionType, parentID: this.state.department}));
-        }
+        ApiClient.post(url, record).then(res => {
+            if (res.data.code == 0) {
+                huResult.isOk = true;
+                huResult.msg = '删除职位成功！';
+                this.search();
+            }
+            notification[huResult.isOk ? 'success' : 'error']({
+                description: huResult.msg,
+                duration: 3
+            });
+        }).catch(e => {
+            huResult.msg = "删除职位接口调用异常!";
+            notification.error({
+                description: huResult.msg,
+                duration: 3
+            });
+        });
     }
 
     cancel(key) {
@@ -133,15 +140,27 @@ class Station extends Component {
                     }
                 },
                 {
+                    title: '所属分公司',
+                    dataIndex: 'parentID',
+                    key: 'parentID',
+                    render: (text, record) => {
+                        return (
+                            <TreeSelect disabled value={text}
+                                treeData={this.props.setContractOrgTree}
+                            />
+                        );
+                    }
+                },
+                {
                     title: '操作',
                     dataIndex: 'operation',
                     render: (text, record) => {
                         const {editable} = record;
                         return (
                             <div className="editable-row-operations">
-                                <Button type="primary" size='small' style={{marginRight: '10px'}} onClick={() => this.edit(record)}>编辑</Button>
+                                <Button type="primary" size='small' shape="circle" icon="edit" style={{marginRight: '10px'}} onClick={() => this.edit(record)}></Button>
                                 <Popconfirm title="确认删除该记录?" onConfirm={() => this.delete(record)} okText="确认" cancelText="取消">
-                                    <Button type="primary" size='small' >删除</Button>
+                                    <Button type="primary" size='small' shape="circle" icon="delete"></Button>
                                 </Popconfirm >
                             </div>
                         );
@@ -153,15 +172,13 @@ class Station extends Component {
 
     }
 
-    hasErrors(fieldsError) {
-        return !Object.keys(fieldsError).some(field => fieldsError[field]);
-    }
-
     handleChooseDepartmentChange = (e) => {
-        this.setState({department: e});
+        let condition = this.state.condition;
+        condition.departmentId = e;
+        this.setState({condition: condition});
     }
 
-    handleSearchBoxToggle1 = (e) => {
+    handleAddNew = (e) => {
         //暂时写个测试
         let nkey = 1;
         if (this.props.stationList.length > 0) {
@@ -174,34 +191,55 @@ class Station extends Component {
         this.gotoSubPage("addStation", {})
     }
     search = () => {
-        this.props.dispatch(setSearchLoadingVisible(true));
-        this.props.dispatch(getcreateStation(this.state.department));
+        let departmentId = this.state.condition.departmentId;
+        if (departmentId) {
+            this.setState({showLoading: true});
+            let url = WebApiConfig.search.getStationList + "/" + departmentId;
+            let huResult = {isOk: false, msg: '获取职位失败！'};
+            ApiClient.get(url).then(res => {
+                console.log("请求结果:", res);
+                this.setState({showLoading: false});
+                if (res.data.code == 0) {
+                    huResult.msg = '获取职位成功';
+                    this.setState({stationList: res.data.extension});
+                    // yield put({type: actionUtils.getActionType(actionTypes.UPDATE_STATIONLIST), payload: huResult.data.extension});
+                }
+            }).catch(e => {
+                this.setState({showLoading: false});
+                notification.error({
+                    message: huResult.msg,
+                    duration: 3
+                });
+            });
+        }
     }
 
     render() {
         let ListColums = this.state.ListColums || [];
         return (
-            <Layer>
-                <Row>
-                    <Col style={{marginTop: '10px'}}>
-                        <label style={styles.conditionRow}>选择分公司 ：</label>
-                        <TreeSelect style={{width: '300px', marginRight: '10px'}}
-                            allowClear
-                            treeData={this.props.setContractOrgTree}
-                            onChange={this.handleChooseDepartmentChange}
-                            placeholder="请选择所属分公司"
-                        />
-                        <Button type="primary" onClick={this.search}>查询</Button>
-                    </Col>
-                </Row>
+            <Layer showLoading={this.state.showLoading}>
+                <div className="searchBox">
+                    <Row>
+                        <Col style={{marginTop: '10px'}}>
+                            <label style={styles.conditionRow}>选择分公司 ：</label>
+                            <TreeSelect style={{width: '300px', marginRight: '10px'}}
+                                allowClear
+                                treeData={this.props.setContractOrgTree}
+                                onChange={this.handleChooseDepartmentChange}
+                                placeholder="请选择所属分公司"
+                            />
+                            <Button type="primary" className='searchButton' onClick={this.search}>查询</Button>
+                        </Col>
+                    </Row>
+                </div>
                 <Row className="btnBlock">
                     <Col style={{marginBottom: '15px', marginTop: '15px'}}>
-                        <Button type="primary" onClick={this.handleSearchBoxToggle1}>新建</Button>
+                        <Button type="primary" onClick={this.handleAddNew}>新建</Button>
                     </Col>
 
                 </Row>
                 <Spin spinning={this.props.showLoading} delay={200} tip="查询中...">
-                    <Table rowSelection={rowSelection} rowKey={record => record.key} dataSource={this.props.stationList} columns={ListColums} onChange={this.handleTableChange} bordered />
+                    <Table rowKey={record => record.key} dataSource={this.state.stationList} columns={ListColums} onChange={this.handleTableChange} bordered />
                 </Spin>
                 <LayerRouter>
                     <Route path={`${this.props.match.url}/addStation`} render={(props) => <AddStation  {...props} />} />

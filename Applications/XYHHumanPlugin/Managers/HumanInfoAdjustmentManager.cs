@@ -1,5 +1,8 @@
-﻿using ApplicationCore.Dto;
+﻿using ApplicationCore;
+using ApplicationCore.Dto;
+using ApplicationCore.Managers;
 using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,25 +18,48 @@ namespace XYHHumanPlugin.Managers
 {
     public class HumanInfoAdjustmentManager
     {
-        public HumanInfoAdjustmentManager(IHumanInfoAdjustmentStore humanInfoAdjustmentStore, IMapper mapper)
+        public HumanInfoAdjustmentManager(IHumanInfoAdjustmentStore humanInfoAdjustmentStore,
+            IHumanInfoStore humanInfoStore,
+            PermissionExpansionManager permissionExpansionManager,
+            IMapper mapper)
         {
             Store = humanInfoAdjustmentStore;
+            _permissionExpansionManager = permissionExpansionManager;
+            _humanInfoStore = humanInfoStore;
             _mapper = mapper;
         }
 
         protected IHumanInfoAdjustmentStore Store { get; }
+        protected PermissionExpansionManager _permissionExpansionManager;
+        protected IHumanInfoStore _humanInfoStore;
         protected IMapper _mapper { get; }
 
 
-        public async Task<HumanInfoAdjustmentResponse> FindByIdAsync(string id, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ResponseMessage<HumanInfoAdjustmentResponse>> FindByIdAsync(UserInfo user, string id, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var humanInfoAdjustment = await Store.GetAsync(a => a.Where(b => b.Id == id), cancellationToken);
-            return _mapper.Map<HumanInfoAdjustmentResponse>(humanInfoAdjustment);
+            ResponseMessage<HumanInfoAdjustmentResponse> response = new ResponseMessage<HumanInfoAdjustmentResponse>();
+            var humanInfoAdjustment = await Store.SimpleQuery().SingleOrDefaultAsync(a => a.Id == id, cancellationToken);
+            if (humanInfoAdjustment == null)
+            {
+                response.Code = ResponseCodeDefines.NotFound;
+                response.Message = "没有找到";
+                return response;
+            }
+            var org = await _permissionExpansionManager.GetOrganizationOfPermission(user.Id, "HumanAdjustment");
+            if (org == null || org.Count == 0 || !org.Contains(humanInfoAdjustment.DepartmentId) || !org.Contains(humanInfoAdjustment.OrganizationId))
+            {
+                response.Code = ResponseCodeDefines.NotAllow;
+                response.Message = "没有权限";
+                return response;
+            }
+            response.Extension = _mapper.Map<HumanInfoAdjustmentResponse>(humanInfoAdjustment);
+            return response;
         }
 
 
-        public async Task<HumanInfoAdjustmentResponse> CreateAsync(UserInfo user, HumanInfoAdjustmentRequest humanInfoAdjustmentRequest, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ResponseMessage<HumanInfoAdjustmentResponse>> CreateAsync(UserInfo user, HumanInfoAdjustmentRequest humanInfoAdjustmentRequest, CancellationToken cancellationToken = default(CancellationToken))
         {
+            ResponseMessage<HumanInfoAdjustmentResponse> response = new ResponseMessage<HumanInfoAdjustmentResponse>();
             if (user == null)
             {
                 throw new ArgumentNullException(nameof(user));
@@ -42,12 +68,28 @@ namespace XYHHumanPlugin.Managers
             {
                 throw new ArgumentNullException(nameof(humanInfoAdjustmentRequest));
             }
-            return _mapper.Map<HumanInfoAdjustmentResponse>(await Store.CreateAsync(user, _mapper.Map<HumanInfoAdjustment>(humanInfoAdjustmentRequest), cancellationToken));
+            var humaninfo = await _humanInfoStore.GetAsync(a => a.Where(b => b.Id == humanInfoAdjustmentRequest.HumanId && !b.IsDeleted), cancellationToken);
+            if (humaninfo == null)
+            {
+                response.Code = ResponseCodeDefines.NotFound;
+                response.Message = "操作的人事信息未找到";
+                return response;
+            }
+            var org = await _permissionExpansionManager.GetOrganizationOfPermission(user.Id, "HumanAdjustment");
+            if (org == null || org.Count == 0 || !org.Contains(humanInfoAdjustmentRequest.DepartmentId) || !org.Contains(humaninfo.DepartmentId))
+            {
+                response.Code = ResponseCodeDefines.NotAllow;
+                response.Message = "没有权限";
+                return response;
+            }
+            response.Extension = _mapper.Map<HumanInfoAdjustmentResponse>(await Store.CreateAsync(user, _mapper.Map<HumanInfoAdjustment>(humanInfoAdjustmentRequest), cancellationToken));
+            return response;
         }
 
 
-        public async Task<HumanInfoAdjustmentResponse> UpdateAsync(UserInfo user, string id, HumanInfoAdjustmentRequest humanInfoAdjustmentRequest, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ResponseMessage<HumanInfoAdjustmentResponse>> UpdateAsync(UserInfo user, string id, HumanInfoAdjustmentRequest humanInfoAdjustmentRequest, CancellationToken cancellationToken = default(CancellationToken))
         {
+            ResponseMessage<HumanInfoAdjustmentResponse> response = new ResponseMessage<HumanInfoAdjustmentResponse>();
             if (user == null)
             {
                 throw new ArgumentNullException(nameof(user));
@@ -55,14 +97,30 @@ namespace XYHHumanPlugin.Managers
             if (humanInfoAdjustmentRequest == null)
             {
                 throw new ArgumentNullException(nameof(humanInfoAdjustmentRequest));
+            }
+            var humaninfo = await _humanInfoStore.GetAsync(a => a.Where(b => b.Id == humanInfoAdjustmentRequest.HumanId && !b.IsDeleted), cancellationToken);
+            if (humaninfo == null)
+            {
+                response.Code = ResponseCodeDefines.NotFound;
+                response.Message = "操作的人事信息未找到";
+                return response;
+            }
+            var org = await _permissionExpansionManager.GetOrganizationOfPermission(user.Id, "HumanAdjustment");
+            if (org == null || org.Count == 0 || !org.Contains(humanInfoAdjustmentRequest.DepartmentId) || !org.Contains(humaninfo.DepartmentId))
+            {
+                response.Code = ResponseCodeDefines.NotAllow;
+                response.Message = "没有权限";
+                return response;
             }
             var humanInfoAdjustment = _mapper.Map<HumanInfoAdjustment>(humanInfoAdjustmentRequest);
             humanInfoAdjustment.Id = id;
-            return _mapper.Map<HumanInfoAdjustmentResponse>(await Store.UpdateAsync(user, humanInfoAdjustment, cancellationToken));
+            response.Extension = _mapper.Map<HumanInfoAdjustmentResponse>(await Store.UpdateAsync(user, humanInfoAdjustment, cancellationToken));
+            return response;
         }
 
-        public async Task DeleteAsync(UserInfo user, string id, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ResponseMessage> DeleteAsync(UserInfo user, string id, CancellationToken cancellationToken = default(CancellationToken))
         {
+            ResponseMessage response = new ResponseMessage();
             if (user == null)
             {
                 throw new ArgumentNullException(nameof(user));
@@ -71,12 +129,22 @@ namespace XYHHumanPlugin.Managers
             {
                 throw new ArgumentNullException(nameof(id));
             }
-            var old = await Store.GetAsync(a => a.Where(b => b.Id == id));
+            var old = await Store.SimpleQuery().Where(a => a.Id == id).SingleOrDefaultAsync(cancellationToken);
             if (old == null)
             {
-                throw new Exception("删除的对象不存在");
+                response.Code = ResponseCodeDefines.NotFound;
+                response.Message = "删除的对象不存在";
+                return response;
+            }
+            var org = await _permissionExpansionManager.GetOrganizationOfPermission(user.Id, "HumanAdjustment");
+            if (org == null || org.Count == 0 || !org.Contains(old.DepartmentId) || !org.Contains(old.OrganizationId))
+            {
+                response.Code = ResponseCodeDefines.NotAllow;
+                response.Message = "没有权限";
+                return response;
             }
             await Store.DeleteAsync(user, old, cancellationToken);
+            return response;
         }
     }
 }

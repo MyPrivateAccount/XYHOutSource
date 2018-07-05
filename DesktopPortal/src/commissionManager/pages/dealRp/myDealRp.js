@@ -1,13 +1,14 @@
 //合同列表
 import { connect } from 'react-redux';
 import React, { Component } from 'react';
-import { Layout, Table, Button, Checkbox, Popconfirm, Tooltip, Row, Col, Input, Spin, Select, TreeSelect } from 'antd'
+import { Layout, notification, Button, Checkbox, Popconfirm, Tooltip, Row, Col, Input, Spin, Select, TreeSelect } from 'antd'
 import TradeManager from './rpdetails/tradeManager'
 import DealRpTable from './dealRpTable'
 import SearchCondition from '../../constants/searchCondition'
 import { rpClear,syncRp,syncWy,syncYz,syncKh,syncFp } from '../../actions/actionCreator'
 import Layer, { LayerRouter } from '../../../components/Layer'
 import {Route } from 'react-router'
+import uuid from 'uuid'
 
 const { Header, Content } = Layout;
 const Option = Select.Option;
@@ -26,23 +27,63 @@ class MyDealRp extends Component {
 
     }
     handleNew = (info) => {
-        this.props.history.push(`${this.props.match.url}/reportInfo`, {entity: {}, op: 'add', pagePar: this.state.pagePar})
+        if(!this.props.user.Filiale){
+            notification.error({message:'您没有归属于任何分公司，无法录入成交报告'})
+            return;
+        }
+
+        var newEntity = {
+            id: uuid.v1(),
+            gsmc: this.props.user.Filiale,
+            gsmcName: this.props.user.FilialeName,
+            bswylx:"一手商铺",
+            cjbglx:"商铺",
+            jylx: "1",
+            xmlx:'1',
+            xxjylx:'1',
+            cqlx:'1',
+            fkfs:'全款',
+            sfzjjg:'1',
+            htlx:'3',
+            cjzj:0,
+            ycjyj:0,
+            reportWy:{
+                wyWylx:"1",
+                wyKjlx:"多层",
+                wyLl:0,
+                wyDts:1,
+                wyZxzk:'清水房',
+                wyZxnd:new Date().getFullYear(),
+                wyJj:"部分",
+                wyCx:'东',
+                wySfhz:true,
+                wyFyfkfs:'全款'
+            },
+            reportYz:{
+                yzCdjzqhtsc:'0~1'
+            },
+            reportKh:{
+                khKhxz:'本地居民',
+                khCdjzqhtsc: '0~1'
+            }
+        }
+        this.props.history.push(`${this.props.match.url}/reportInfo`, {entity: newEntity, op: 'add', pagePar: this.state.pagePar})
 
       //  this.setState({ isShowManager: true, rpId: '', editReport: false })
       //  this.clearRp()
     }
     //清除数据
-    clearRp = (e) => {
-        this.props.dispatch(syncRp({}))
-        this.props.dispatch(syncWy({}))
-        this.props.dispatch(syncYz({}))
-        this.props.dispatch(syncKh({}))
-        this.props.dispatch(syncFp({}))
-    }
-    handleBack = (e) => {
-        this.setState({ isShowManager: false })
-        this.rptb.handleMySearch()
-    }
+    // clearRp = (e) => {
+    //     this.props.dispatch(syncRp({}))
+    //     this.props.dispatch(syncWy({}))
+    //     this.props.dispatch(syncYz({}))
+    //     this.props.dispatch(syncKh({}))
+    //     this.props.dispatch(syncFp({}))
+    // }
+    // handleBack = (e) => {
+    //     this.setState({ isShowManager: false })
+    //     this.rptb.handleMySearch()
+    // }
     componentWillMount = () => {
 
     }
@@ -51,24 +92,16 @@ class MyDealRp extends Component {
     }
     componentWillReceiveProps = (newProps) => {
 
-        if (newProps.operInfo.operType === 'DEALRP_OPEN_RP_DETAIL') {
-            this.setState({ isShowManager: true, rpId: newProps.rpOpenParam.id, editReport: true })
-            newProps.operInfo.operType = ''
-        }
+        // if (newProps.operInfo.operType === 'DEALRP_OPEN_RP_DETAIL') {
+        //     this.setState({ isShowManager: true, rpId: newProps.rpOpenParam.id, editReport: true })
+        //     newProps.operInfo.operType = ''
+        // }
     }
     onRpTable = (ref) => {
         this.rptb = ref
     }
     render() {
-        const rowSelection = {
-            onChange: (selectedRowKeys, selectedRows) => {
-                console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-            },
-            getCheckboxProps: record => ({
-                disabled: record.name === 'Disabled User', // Column configuration not to be checked
-                name: record.name,
-            }),
-        };
+        
         return (
             <Layer className="content-page">
                 <div style={{ display: !this.state.isShowManager ? 'block' : 'none' }}>
@@ -88,8 +121,10 @@ class MyDealRp extends Component {
 function MapStateToProps(state) {
 
     return {
-        operInfo: state.rp.operInfo,
-        rpOpenParam: state.rp.rpOpenParam,
+        // operInfo: state.rp.operInfo,
+        // rpOpenParam: state.rp.rpOpenParam,
+        dic: state.basicData.dicList,
+        user: state.oidc.user.profile||{}
     }
 }
 

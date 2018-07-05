@@ -4,7 +4,7 @@ import {connect} from 'react-redux';
 import moment from 'moment';
 import {getworkNumbar, postHumanInfo, becomeStaff} from '../../actions/actionCreator';
 import './staff.less';
-import SocialSecurity from './form/socialSecurity'
+import SocialSecurity from '../../../businessComponents/humanSystem/socialSecurity'
 import Layer from '../../../components/Layer'
 const Option = Select.Option;
 const FormItem = Form.Item;

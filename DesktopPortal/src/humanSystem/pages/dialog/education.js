@@ -11,10 +11,18 @@ class Education extends Component {
 
     handleOk = (e) => {
         e.preventDefault();
+        let editInfo = this.props.entityInfo || {};
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                values.id = NewGuid();
+                if (editInfo.id) {
+                    values.id = editInfo.id;
+                } else {
+                    values.id = NewGuid();
+                }
                 console.log('学历信息: ', values);
+                values.enrolmentTime = values.enrolmentTime ? values.enrolmentTime.format('YYYY-MM-DD') : '';
+                values.graduationTime = values.graduationTime ? values.graduationTime.format("YYYY-MM-DD") : '';
+                values.getDegreeTime = values.getDegreeTime ? values.getDegreeTime.format("YYYY-MM-DD") : '';
                 if (this.props.confirmCallback) {
                     this.props.confirmCallback(values);
                 }
@@ -23,6 +31,7 @@ class Education extends Component {
         });
     }
     handleCancel = () => {
+        this.props.form.resetFields();
         if (this.props.closeDialog) {
             this.props.closeDialog();
         }
@@ -35,13 +44,15 @@ class Education extends Component {
             labelCol: {span: 6},
             wrapperCol: {span: 17},
         };
+        let editInfo = this.props.entityInfo || {};
+        console.log("教育经历:", editInfo);
         return (
-            <Modal title="学历信息" maskClosable={false} style={{width: '600px !important'}} visible={this.props.showDialog} onOk={this.handleOk} onCancel={this.handleCancel}>
+            <Modal title="学历信息" maskClosable={false} width='700px' visible={this.props.showDialog} onOk={this.handleOk} onCancel={this.handleCancel}>
                 <Row>
                     <Col span={12}>
                         <FormItem {...formItemLayout} label="学历">
                             {getFieldDecorator('education', {
-                                initialValue: null
+                                initialValue: editInfo.education
                             })(
                                 <Select onChange={this.handleSelectChange} placeholder="选择学历" style={{width: '100%'}}>
                                     {
@@ -54,6 +65,7 @@ class Education extends Component {
                     <Col span={12}>
                         <FormItem {...formItemLayout} label="所学专业" >
                             {getFieldDecorator('major', {
+                                initialValue: editInfo.major,
                                 rules: [{
                                     required: true, message: '请输入所学专业',
                                 }]
@@ -68,7 +80,7 @@ class Education extends Component {
                     <Col span={12}>
                         <FormItem {...formItemLayout} label="学习形式">
                             {getFieldDecorator('learningType', {
-                                initialValue: null
+                                initialValue: editInfo.learningType
                             })(
                                 <Input placeholder="请输入学习形式" />
                             )}
@@ -77,6 +89,7 @@ class Education extends Component {
                     <Col span={12}>
                         <FormItem {...formItemLayout} label="毕业证书" >
                             {getFieldDecorator('graduationCertificate', {
+                                initialValue: editInfo.graduationCertificate,
                                 rules: [{
                                     required: true, message: '请输入毕业证书',
                                 }]
@@ -91,6 +104,7 @@ class Education extends Component {
                     <Col span={12}>
                         <FormItem {...formItemLayout} label="入学时间">
                             {getFieldDecorator('enrolmentTime', {
+                                initialValue: editInfo.enrolmentTime ? moment(editInfo.enrolmentTime) : null,
                                 rules: [{
                                     required: true,
                                     message: '请选择入学时间'
@@ -103,6 +117,7 @@ class Education extends Component {
                     <Col span={12}>
                         <FormItem {...formItemLayout} label="毕业时间">
                             {getFieldDecorator('graduationTime', {
+                                initialValue: editInfo.graduationTime ? moment(editInfo.graduationTime) : null,
                                 rules: [{
                                     required: true,
                                     message: '请选择毕业时间'
@@ -117,7 +132,7 @@ class Education extends Component {
                     <Col span={12}>
                         <FormItem {...formItemLayout} label="获得学位">
                             {getFieldDecorator('getDegree', {
-                                initialValue: null
+                                initialValue: editInfo.getDegree
                             })(
                                 <Select onChange={this.handleSelectChange} placeholder="获得学位" style={{width: '100%'}}>
                                     {
@@ -130,6 +145,7 @@ class Education extends Component {
                     <Col span={12}>
                         <FormItem {...formItemLayout} label="学位授予时间">
                             {getFieldDecorator('getDegreeTime', {
+                                initialValue: editInfo.getDegreeTime ? moment(editInfo.getDegreeTime) : null,
                                 rules: []
                             })(
                                 <DatePicker format='YYYY-MM-DD' style={{width: '100%'}} />
@@ -141,6 +157,7 @@ class Education extends Component {
                     <Col span={12}>
                         <FormItem {...formItemLayout} label="学位授予单位" >
                             {getFieldDecorator('getDegreeCompany', {
+                                initialValue: editInfo.getDegreeCompany,
                                 rules: []
                             })(
                                 <Input placeholder="请输入学位授予单位" />
@@ -152,6 +169,7 @@ class Education extends Component {
                     <Col>
                         <FormItem labelCol={{span: 3}} wrapperCol={{span: 16}} label="毕业学校" >
                             {getFieldDecorator('graduationSchool', {
+                                initialValue: editInfo.graduationSchool,
                                 rules: [{
                                     required: true, message: '请输入毕业学校',
                                 }]

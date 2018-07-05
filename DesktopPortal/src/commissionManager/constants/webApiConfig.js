@@ -19,7 +19,16 @@ const WebApiConfig = {
         ResetPwd: BaseApiUrl + "user/initpassword",//重置密码
     },
     human:{
-        List:basicDataBaseApiUrl+"humaninfo/searchhumaninfo"
+        List:basicDataBaseApiUrl+"humaninfo/searchhumaninfo",
+        orgUser: basicDataBaseApiUrl+"humaninfo/simpleSearch"
+    },
+    area:{
+        get: basicDataBaseApiUrl+'areadefines/',
+        list:  basicDataBaseApiUrl+'areadefines/list',
+    },
+    project:{
+        get: basicDataBaseApiUrl+"buildings/",
+        getShop: basicDataBaseApiUrl+"Shops/"
     },
     application: {
         Base: BaseApiUrl + 'Application',//应用基础地址
@@ -92,6 +101,7 @@ const WebApiConfig = {
         acmentsave:basicDataBaseApiUrl+'yj/allocationsettings/',
         acmentitems:basicDataBaseApiUrl+'yj/allocationsettings/items',
         orgsave:basicDataBaseApiUrl+'yj/branchsettings/',
+        orgget: basicDataBaseApiUrl + 'yj/branchsettings/',
         ppftsave:basicDataBaseApiUrl+'yj/brandsharesetting/',
         incomesave:basicDataBaseApiUrl+'yj/rules/'
     }
