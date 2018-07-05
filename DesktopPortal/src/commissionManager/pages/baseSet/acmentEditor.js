@@ -64,7 +64,11 @@ class AcmentEditor extends Component {
         this.setState({ paramInfo })
     }
     handleOk = (e) => {
-
+        if(this.state.iedVisible){
+            //新增的对话框
+            this.itemDlg.getData()
+            return
+        }
         this.props.form.validateFields((err, values) => {
             if (!err) {
                 console.log(this.state.paramInfo)
@@ -82,11 +86,18 @@ class AcmentEditor extends Component {
                     values.type = 2
                 }
                 console.log(values);
-                this.props.dispatch(acmentParamSave(values))
-                this.props.dispatch(acmentParamDlgClose())
+                this.saveItemValue(values)
             }
         });
     };
+    saveItemValue = (values)=>{
+        if(values){
+            values.branchId = this.props.orgid;
+            values.percent = parseFloat(values.percent)
+            this.props.dispatch(acmentParamSave(values))
+            this.props.dispatch(acmentParamDlgClose())
+        }
+    }
     handleCancel = (e) => {//关闭对话框
         this.setState({ iedVisible: false })
         this.props.dispatch(acmentParamDlgClose());
@@ -141,6 +152,9 @@ class AcmentEditor extends Component {
         this.setState({ paramInfo }, () => {
             console.log(this.state.paramInfo)
         })
+    }
+    onItemSelf = (e)=>{
+        this.itemDlg = e
     }
     render() {
         const { getFieldDecorator } = this.props.form;
@@ -227,7 +241,7 @@ class AcmentEditor extends Component {
                             </FormItem></Col>
                     </Row>
                 </div>
-                <AcmentItemEditor vs={this.state.iedVisible} updateItemValue={this.handleItemValue} back={this.handleback} />
+                <AcmentItemEditor onSelf={this.onItemSelf} saveItemValue={this.saveItemValue} vs={this.state.iedVisible} updateItemValue={this.handleItemValue} back={this.handleback} />
             </Modal>
         )
     }
