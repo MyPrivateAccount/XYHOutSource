@@ -17,7 +17,7 @@ class LZRYTJTable extends Component {
         { title: '离职日期', dataIndex: 'userInfo.lzDate', key: 'userInfo.lzDate' },
         { title: '业绩金额', dataIndex: 'distribute.ftJe', key: 'distribute.ftJe' },
         { title: '是否包含', dataIndex: 'isInclude', key: 'isInclude',render: (text, recored) =>(
-            <Checkbox value={text} onChange={this.handleInclude(recored.key, 'isInclude')}/>
+            <Checkbox disabled={this.props.showSearch} value={text} onChange={this.handleInclude(recored.key, 'isInclude')}/>
         ) },
         
 

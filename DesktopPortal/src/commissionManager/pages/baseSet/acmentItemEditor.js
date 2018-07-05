@@ -11,8 +11,8 @@ class AcmentItemEditor extends Component{
     state = {
         paramInfo:{isCheck:true}
     }
-    componentWillMount(){
-
+    componentDidMount(){
+        this.props.onSelf(this)
     }
     componentWillReceiveProps(newProps){
         
@@ -26,6 +26,17 @@ class AcmentItemEditor extends Component{
                 console.log('Received values of form: ', values);
                 //调用保存接口，进行数据保存,待续
                 this.props.updateItemValue(values);
+            }
+        });
+    }
+    getData=()=>{
+        let dt = {}
+        this.props.form.validateFields((err, values) => {
+            console.log('getData:'+err)
+            if (!err) {
+                console.log('Received values of form: ', values);
+                dt = values
+                this.props.saveItemValue(dt)
             }
         });
     }
