@@ -2,25 +2,21 @@ import {notification} from 'antd';
 import ApiClient from '../../utils/apiClient'
 import WebApiConfig from '../constants/webapiConfig';
 
-//获取薪酬列表
-export function getSalaryList(condition) {
-    let result = {isOk: false, extension: {}, msg: '薪酬列表查询失败！'};
-    let url = WebApiConfig.search.getSalaryList;
-    return ApiClient.post(url, condition).then(res => {
+//获取薪酬详情
+export function getSalaryDetail(positionId) {
+    let result = {isOk: false, extension: {}, msg: '薪酬详情获取失败！'};
+    let url = WebApiConfig.server.editSalary + positionId;
+    return ApiClient.get(url).then(res => {
+        console.log("获取薪酬详情:", res)
         if (res.data.code == 0) {
             result.isOk = true;
-            result.msg = '薪酬列表查询成功';
-            result.extension = {
-                extension: res.data.extension || [],
-                pageIndex: res.data.pageIndex,
-                pageSize: res.data.pageSize,
-                totalCount: res.data.totalCount
-            };
+            result.msg = '薪酬详情获取成功';
+            result.extension = res.data.extension || {};
         } else {
-            result.msg = '薪酬列表查询失败:' + res.data.message;
+            result.msg = '薪酬详情获取失败:' + res.data.message;
         }
     }).catch(e => {
-        result.msg = '薪酬列表接口调用异常:' + e.message;
+        result.msg = '薪酬详情获取接口调用异常:' + e.message;
     }).then(res => {
         if (!result.isOk) {
             notification.error({

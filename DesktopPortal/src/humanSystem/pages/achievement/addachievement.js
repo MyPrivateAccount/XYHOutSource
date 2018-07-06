@@ -34,7 +34,7 @@ class Achievement extends Component {
         let salaryInfo = this.props.location.state;
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                values.id = salaryInfo.id ? salaryInfo.id : NewGuid();
+                values.id = salaryInfo.id ? salaryInfo.id : null;
                 console.log("表单内容:", values);
                 this.setState({showLoading: true});
                 if (salaryInfo.id) {

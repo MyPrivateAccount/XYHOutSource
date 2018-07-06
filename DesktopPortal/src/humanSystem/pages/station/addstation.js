@@ -32,7 +32,7 @@ class Station extends Component {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                values.id = NewGuid();
+                // values.id = NewGuid();
                 this.props.dispatch(setStation(values));
                 console.log('新增职位:', values);
             }
@@ -40,14 +40,14 @@ class Station extends Component {
     }
 
     //部门类型验证
-    orgTypeValidate = (rule, value, callback) => {
-        let orgDataSource = this.props.setContractOrgTree;
-        let orgInfo = this._getOrgDetail(orgDataSource, value);
-        if (orgInfo && orgInfo.type !== 'Filiale') {
-            callback('请选择类型为分公司的组织!');
-        }
-        callback();
-    }
+    // orgTypeValidate = (rule, value, callback) => {
+    //     let orgDataSource = this.props.setContractOrgTree;
+    //     let orgInfo = this._getOrgDetail(orgDataSource, value);
+    //     if (orgInfo && orgInfo.type !== 'Filiale') {
+    //         callback('请选择类型为分公司的组织!');
+    //     }
+    //     callback();
+    // }
 
     _getOrgDetail(orgDataSource, orgID) {
         if (orgDataSource) {
@@ -104,7 +104,7 @@ class Station extends Component {
                             rules: [{
                                 required: true, message: '请选择所属分公司'
                             }, {
-                                validator: this.orgTypeValidate
+                                // validator: this.orgTypeValidate
                             }]
                         })(
                             <TreeSelect

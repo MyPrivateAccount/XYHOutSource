@@ -105,7 +105,7 @@ class PartTimeJob extends Component {
         this.props.form.validateFields((err, values) => {
             if (!err) {
                 let addRowList = this.state.addRowList;
-                values.id = NewGuid();
+                // values.id = NewGuid();
                 savePartTimeJob(values).then(res => {
                     if (res.isOk) {
                         addRowList.push(res.extension);

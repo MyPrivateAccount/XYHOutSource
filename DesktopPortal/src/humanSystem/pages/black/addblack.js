@@ -41,9 +41,7 @@ class Black extends Component {
             if (!err) {
                 if (blackInfo.id) {
                     values.id = blackInfo.id;
-                } else {
-                    values.id = NewGuid();
-                }
+                } 
                 console.log("提交的黑名单信息:", values);
                 this.submitBlack(values);
             }

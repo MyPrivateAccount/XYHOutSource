@@ -16,9 +16,7 @@ class Education extends Component {
             if (!err) {
                 if (editInfo.id) {
                     values.id = editInfo.id;
-                } else {
-                    values.id = NewGuid();
-                }
+                } 
                 console.log('学历信息: ', values);
                 values.enrolmentTime = values.enrolmentTime ? values.enrolmentTime.format('YYYY-MM-DD') : '';
                 values.graduationTime = values.graduationTime ? values.graduationTime.format("YYYY-MM-DD") : '';

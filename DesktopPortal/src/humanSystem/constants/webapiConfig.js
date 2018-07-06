@@ -48,7 +48,7 @@ const WebApiConfig = {
         getAllMonthList: basicDataBaseApiUrl + 'month/monthlist',
         getBlackList: basicDataBaseApiUrl + 'humaninfoblack/list',
         getStationList: basicDataBaseApiUrl + 'humanstation/stationlist',
-        getSalaryList: basicDataBaseApiUrl + 'humansalary/salarylist',
+        getSalaryList: basicDataBaseApiUrl + 'positionsalary/list/',//根据职位获取薪酬信息
         getSalaryItem: basicDataBaseApiUrl + 'humansalary/salaryitem',
         getAttendenceSettingList: basicDataBaseApiUrl + 'humanattendance/attendancesetting',
         getAttendenceList: basicDataBaseApiUrl + 'humanattendance/searchattendancelst',

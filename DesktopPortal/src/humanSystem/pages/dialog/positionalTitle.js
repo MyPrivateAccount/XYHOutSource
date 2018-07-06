@@ -15,9 +15,7 @@ class PositionalTitle extends Component {
             if (!err) {
                 if (editInfo.id) {
                     values.id = editInfo.id;
-                } else {
-                    values.id = NewGuid();
-                }
+                } 
                 values.getTitleTime = values.getTitleTime ? values.getTitleTime.format('YYYY-MM-DD') : '';
                 console.log('职称信息: ', values);
                 if (this.props.confirmCallback) {

@@ -227,7 +227,6 @@ class Staffinfo extends Component {
                 content: `确认要将'${humanInfo.name}'加入黑名单?`,
                 onOk: () => {
                     let entity = {
-                        id: NewGuid(),
                         userId: humanInfo.id,
                         idCard: humanInfo.idCard,
                         name: humanInfo.name,

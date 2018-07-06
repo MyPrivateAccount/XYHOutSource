@@ -1,7 +1,7 @@
 import {connect} from 'react-redux';
 import {createStation, getOrgList, getDicParList, setStation, deleteStation, getcreateStation, setSearchLoadingVisible} from '../../actions/actionCreator';
 import React, {Component} from 'react'
-import {Table, notification, Button, Row, Col, Spin, TreeSelect, Popconfirm} from 'antd'
+import {Table, notification, Button, Row, Col, Spin, TreeSelect, Popconfirm, Modal} from 'antd'
 import './station.less';
 import Layer, {LayerRouter} from '../../../components/Layer'
 import {Route} from 'react-router'
@@ -9,6 +9,8 @@ import AddStation from './addstation'
 import {getDicPars} from '../../../utils/utils';
 import ApiClient from '../../../utils/apiClient'
 import WebApiConfig from '../../constants/webapiConfig';
+import Achievement from './achievementForm'
+import {editSalary, addSalary, getSalaryDetail} from '../../serviceAPI/salaryService'
 const styles = {
     conditionRow: {
         width: '80px',
@@ -35,18 +37,17 @@ const rowSelection = {
 
 
 class Station extends Component {
-    // constructor(pros) {
-    //     super(pros);
-
-    //     this.state = {department: ""};
-    //     this.cacheData = this.props.stationList.map(item => ({...item}));
-    // }
     state = {
         stationList: [],
         showLoading: false,
         condition: {
             departmentId: ''
-        }
+        },
+        showSalaryDetail: false,
+        curStation: {},
+        curAchievementInfo: {},
+        achievementForm: null,
+        confirmLoading: false
     }
 
     gotoSubPage = (path, params) => {
@@ -72,6 +73,58 @@ class Station extends Component {
 
     edit(recordInfo) {
         this.gotoSubPage("addStation", recordInfo);
+    }
+    //职位薪资信息
+    salaryEdit = (record) => {
+        this.setState({showSalaryDetail: true, curAchievementInfo: record, confirmLoading: true});
+        getSalaryDetail(record.id).then(res => {
+            this.setState({confirmLoading: false});
+            if (res.isOk) {
+                this.setState({curStation: res.extension});
+            }
+        })
+    }
+
+    //子页面回调
+    subPageLoadCallback = (formObj, pageName) => {
+        if (pageName == "achievement") {
+            this.setState({achievementForm: formObj});
+        }
+    }
+
+    submitSalary = () => {
+        let {curStation, curAchievementInfo} = this.state;
+        if (this.state.achievementForm) {
+            this.state.achievementForm.validateFields((err, values) => {
+                if (!err) {
+                    values.id = curStation.id ? curStation.id : null;
+                    console.log("表单内容:", values);
+                    this.setState({showLoading: true, confirmLoading: true});
+                    if (values.id) {
+                        editSalary(values).then(res => {
+                            this.setState({showLoading: false, confirmLoading: false});
+                            if (res.isOk) {
+                                this.props.form.resetFields();
+                            }
+                        });
+                    } else {
+                        addSalary(values).then(res => {
+                            this.setState({showLoading: false, confirmLoading: false});
+                            if (res.isOk) {
+                                this.props.form.resetFields();
+                            }
+                        });
+                    }
+                }
+            });
+        }
+    }
+
+    achievementClose = () => {
+        this.setState({showSalaryDetail: false});
+        if (this.state.achievementForm) {
+            this.state.achievementForm.resetFields()
+        }
     }
 
     delete = (record) => {
@@ -160,8 +213,9 @@ class Station extends Component {
                             <div className="editable-row-operations">
                                 <Button type="primary" size='small' shape="circle" icon="edit" style={{marginRight: '10px'}} onClick={() => this.edit(record)}></Button>
                                 <Popconfirm title="确认删除该记录?" onConfirm={() => this.delete(record)} okText="确认" cancelText="取消">
-                                    <Button type="primary" size='small' shape="circle" icon="delete"></Button>
+                                    <Button type="primary" size='small' shape="circle" icon="delete" style={{marginRight: '10px'}}></Button>
                                 </Popconfirm >
+                                <Button type="primary" size='small' shape="circle" icon="red-envelope" style={{marginRight: '10px'}} onClick={() => this.salaryEdit(record)}></Button>
                             </div>
                         );
                     },
@@ -241,6 +295,18 @@ class Station extends Component {
                 <Spin spinning={this.props.showLoading} delay={200} tip="查询中...">
                     <Table rowKey={record => record.key} dataSource={this.state.stationList} columns={ListColums} onChange={this.handleTableChange} bordered />
                 </Spin>
+
+                <Modal title="职位对应薪酬" width={720}
+                    visible={this.state.showSalaryDetail}
+                    confirmLoading={this.state.confirmLoading}
+                    onOk={() => this.submitSalary()}
+                    onCancel={() => this.achievementClose()}
+                >
+                    <div>
+                        <Achievement location={{state: this.state.curAchievementInfo}} subPageLoadCallback={(formObj, pageName) => this.subPageLoadCallback(formObj, pageName)} />
+                    </div>
+                </Modal>
+
                 <LayerRouter>
                     <Route path={`${this.props.match.url}/addStation`} render={(props) => <AddStation  {...props} />} />
                 </LayerRouter>
