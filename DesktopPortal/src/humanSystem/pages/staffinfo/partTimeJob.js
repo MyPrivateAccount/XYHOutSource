@@ -1,15 +1,15 @@
-import {connect} from 'react-redux';
-import React, {Component} from 'react'
-import {Select, Input, Form, Cascader, Button, Row, Col, TreeSelect, DatePicker, notification, Table, Modal} from 'antd'
+import { connect } from 'react-redux';
+import React, { Component } from 'react'
+import { Select, Input, Form, Cascader, Button, Row, Col, TreeSelect, DatePicker, notification, Table, Modal } from 'antd'
 import Layer from '../../../components/Layer'
 import moment from 'moment';
-import {NewGuid} from '../../../utils/appUtils';
-import {getHumanDetail, getPosition, savePartTimeJob, removePartTimeJob} from '../../serviceAPI/staffService'
+import { NewGuid } from '../../../utils/appUtils';
+import { getPartTimeJobList, getPosition, savePartTimeJob, removePartTimeJob } from '../../serviceAPI/staffService'
 const FormItem = Form.Item;
 const Option = Select.Option;
 const formItemLayout = {
-    labelCol: {span: 6},
-    wrapperCol: {span: 17},
+    labelCol: { span: 6 },
+    wrapperCol: { span: 17 },
 };
 
 const formerCompanyColumns = [{
@@ -24,10 +24,12 @@ const formerCompanyColumns = [{
     title: '开始时间',
     dataIndex: 'startTime',
     key: 'startTime',
+    render: (text, record) => <div>{text ? moment(text).format('YYYY-MM-DD') : text}</div>
 }, {
     title: '结束时间',
     dataIndex: 'endTime',
     key: 'endTime',
+    render: (text, record) => <div>{text ? moment(text).format('YYYY-MM-DD') : text}</div>
 }];
 
 
@@ -51,27 +53,30 @@ class PartTimeJob extends Component {
             render: (text, record) => {
                 return (
                     <div>
-                        <Button type="primary" size='small' style={{marginRight: '5px'}} onClick={() => this.Invalid(record)} >失效</Button>
+                        <Button type="primary" size='small' style={{ marginRight: '5px' }} onClick={() => this.Invalid(record)} >失效</Button>
                     </div>
                 )
             },
             key: 'proveMan',
         }
-        this.setState({columns: formerCompanyColumns.concat(operColumn)});
+        this.setState({ columns: formerCompanyColumns.concat(operColumn) });
         let humanInfo = this.props.location.state;
         if (humanInfo.id && humanInfo.departmentId) {
-            this.setState({showLoading: true});
+            this.setState({ humanInfo: humanInfo, showLoading: true });
             getPosition(humanInfo.departmentId).then(res => {
+                this.setState({ showLoading: false });
                 if (res.isOk) {
-                    this.setState({positionList: res.extension || []});
+                    this.setState({ positionList: res.extension || [] });
                     // getHumanDetail(humanInfo.id).then(res => {
                     //     this.setState({humanInfo: res.extension || {}, showLoading: false});
                     // })
-                } else {
-                    this.setState({showLoading: false});
                 }
             });
             //加载已有兼职列表
+            getPartTimeJobList(humanInfo.id).then(res => {
+                console.log("兼职列表:", res);
+                this.setState({ addRowList: res.extension || [] })
+            });
         }
     }
 
@@ -79,7 +84,7 @@ class PartTimeJob extends Component {
         console.log("部门信息变更", e);
         getPosition(e).then(res => {
             if (res.isOk) {
-                this.setState({partTimPositionList: res.extension || []})
+                this.setState({ partTimPositionList: res.extension || [] })
             }
         });
     }
@@ -93,7 +98,7 @@ class PartTimeJob extends Component {
                     let index = addRowList.findIndex(item => item.id == record.id);
                     if (index != -1) {
                         addRowList.splice(index, 1);
-                        this.setState({addRowList: addRowList});
+                        this.setState({ addRowList: addRowList });
                     }
                 }
             });
@@ -109,7 +114,7 @@ class PartTimeJob extends Component {
                 savePartTimeJob(values).then(res => {
                     if (res.isOk) {
                         addRowList.push(res.extension);
-                        this.setState({addRowList: addRowList});
+                        this.setState({ addRowList: addRowList });
                     }
                 })
 
@@ -119,35 +124,35 @@ class PartTimeJob extends Component {
 
     render() {
         let humanInfo = this.state.humanInfo || {};
-        const {getFieldDecorator} = this.props.form;
+        const { getFieldDecorator } = this.props.form;
         let tableColumns = this.state.columns || [];
         let tableDataSource = (this.state.addRowList || []);
         return (
             <Layer showLoading={this.state.showLoading}>
-                <div className="page-title" style={{marginBottom: '10px'}}>兼职</div>
-                <Row style={{marginTop: '10px'}}>
+                <div className="page-title" style={{ marginBottom: '10px' }}>兼职</div>
+                <Row style={{ marginTop: '10px' }}>
                     <Col span={6}>
                         <label className="ant-form-item-label">员工编号：</label>
-                        <Input disabled={true} style={{width: '200px'}} value={humanInfo.userID} />
+                        <Input disabled={true} style={{ width: '200px' }} value={humanInfo.userID} />
                     </Col>
                     <Col span={6}>
                         <label className="ant-form-item-label">姓名：</label>
-                        <Input disabled={true} style={{width: '200px'}} value={humanInfo.name} />
+                        <Input disabled={true} style={{ width: '200px' }} value={humanInfo.name} />
                     </Col>
                     <Col span={6}>
                         <label className="ant-form-item-label">部门：</label>
-                        <TreeSelect disabled={true} style={{width: '200px'}} value={humanInfo.departmentId} treeData={this.props.setDepartmentOrgTree} />
+                        <TreeSelect disabled={true} style={{ width: '200px' }} value={humanInfo.departmentId} treeData={this.props.setDepartmentOrgTree} />
                     </Col>
                     <Col span={6}>
                         <label className="ant-form-item-label">职位：</label>
-                        <Select style={{width: '200px'}} disabled={true} onChange={this.handleSelectChange} placeholder="选择职位">
+                        <Select style={{ width: '200px' }} disabled={true} onChange={this.handleSelectChange} placeholder="选择职位">
                             {(this.state.positionList || []).map(p => <Option key={p.id} value={p.id}>{p.positionName}</Option>)}
                         </Select>
                     </Col>
                 </Row>
-                <Row style={{marginTop: '10px', marginBottom: '10px'}}>
+                <Row style={{ marginTop: '10px', marginBottom: '10px' }}>
                     <Col>
-                        <Button type="primary" onClick={() => this.setState({isDialogShow: true})} >添加</Button>
+                        <Button type="primary" onClick={() => this.setState({ isDialogShow: true })} >添加</Button>
                     </Col>
                 </Row>
 
@@ -155,7 +160,7 @@ class PartTimeJob extends Component {
 
                 <Modal title={this.state.isModify ? "修改" : "新增兼职"}
                     visible={this.state.isDialogShow}
-                    onOk={() => this.AddRow()} onCancel={() => this.setState({isDialogShow: false})}>
+                    onOk={() => this.AddRow()} onCancel={() => this.setState({ isDialogShow: false })}>
                     <Form >
                         <Row>
                             <Col span={12}>
@@ -194,7 +199,7 @@ class PartTimeJob extends Component {
                                             message: '请选择开始时间'
                                         }]
                                     })(
-                                        <DatePicker format='YYYY-MM-DD' style={{width: '100%'}} />
+                                        <DatePicker format='YYYY-MM-DD' style={{ width: '100%' }} />
                                     )}
                                 </FormItem>
                             </Col>
@@ -207,7 +212,7 @@ class PartTimeJob extends Component {
                                             message: '请选择结束时间'
                                         }]
                                     })(
-                                        <DatePicker format='YYYY-MM-DD' style={{width: '100%'}} />
+                                        <DatePicker format='YYYY-MM-DD' style={{ width: '100%' }} />
                                     )}
                                 </FormItem>
                             </Col>

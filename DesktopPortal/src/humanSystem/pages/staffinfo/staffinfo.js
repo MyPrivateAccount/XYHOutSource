@@ -84,7 +84,7 @@ class Staffinfo extends Component {
     }
 
     show = (record) => {
-        this.props.dispatch(getHumanDetail(record.id))
+        // this.props.dispatch(getHumanDetail(record.id))
         this.gotoSubPage('onBoardingDetail', record);
     }
 
