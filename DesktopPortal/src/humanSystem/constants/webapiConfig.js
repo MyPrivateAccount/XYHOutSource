@@ -19,32 +19,36 @@ const WebApiConfig = {
         RecoverMonth: basicDataBaseApiUrl + "month/backmonth",
         CreateMonth: basicDataBaseApiUrl + "month/createmonth",
         monthFormData: basicDataBaseApiUrl + "month/monthformdata",
-        SetBlack: basicDataBaseApiUrl + "humanblack/setblack",
-        DeleteBlack: basicDataBaseApiUrl + "humanblack/deleteblack",
+        SetBlack: basicDataBaseApiUrl + "humaninfoblack",
+        DeleteBlack: basicDataBaseApiUrl + "humaninfoblack/",
         SetStation: basicDataBaseApiUrl + "humanstation/setstation",
-        DeleteStation: basicDataBaseApiUrl + "humanstation/deletesalary",
-        setSalary: basicDataBaseApiUrl + "humansalary/setsalary",
+        DeleteStation: basicDataBaseApiUrl + "humanstation/deletestation",
+        setSalary: basicDataBaseApiUrl + "positionsalary",
+        editSalary: basicDataBaseApiUrl + 'positionsalary/',
         deleteSalary: basicDataBaseApiUrl + "humansalary/deletestation",
         getHumanImage: basicDataBaseApiUrl + "humanfile/getfileinfo",
         setSocialInsure: basicDataBaseApiUrl + "humaninfo/becomehuman",
-        leavePositon: basicDataBaseApiUrl + "humaninfo/leavehuman",
+        leavePositon: basicDataBaseApiUrl + "humanleave",
         postAttendenceSettingList: basicDataBaseApiUrl + 'humanattendance/setattendancesetting',
         importAttendenceList: basicDataBaseApiUrl + 'humanattendance/importattendancelst',
         deleteAttendenceList: basicDataBaseApiUrl + 'humanattendance/deleteattendanceitem',
         addRPInfo: basicDataBaseApiUrl + 'rewardpunishment/addrewardpunishment',
         deleteRPInfo: basicDataBaseApiUrl + 'rewardpunishment/deleterewardpunishment',
-        savePartTimeJob: basicDataBaseApiUrl + ''//兼职保存
+        savePartTimeJob: basicDataBaseApiUrl + 'humanpartposition',//兼职保存
+        adjustHuman: basicDataBaseApiUrl + 'humanadjustment',//异动调薪
+        getPartTimeJobList: basicDataBaseApiUrl + 'humanpartposition/list/',//获取兼职列表
+        removePartTimeJob: basicDataBaseApiUrl + 'humanpartposition/',//删除兼职信息
     },
     search: {
-        searchHumanList: basicDataBaseApiUrl + 'humaninfo/searchhumaninfo',
+        searchHumanList: basicDataBaseApiUrl + 'humaninfo/search',
         getAuditList: basicDataBaseApiUrl + 'examines/submitlist',//提交的调客审核列表
         getRepeatJudgeInfo: basicDataBaseApiUrl + 'customerInfo/customerheavy/',//获取重客判断信息
         getCustomerByUserID: basicDataBaseApiUrl + 'customerInfo/salesmancustomer/',//根据用户ID获取客户列表
         getAuditHistory: basicDataBaseApiUrl + "examines/",//获取审核历史详细
         getAllMonthList: basicDataBaseApiUrl + 'month/monthlist',
-        getBlackList: basicDataBaseApiUrl + 'humanblack/blacklist',
+        getBlackList: basicDataBaseApiUrl + 'humaninfoblack/list',
         getStationList: basicDataBaseApiUrl + 'humanstation/stationlist',
-        getSalaryList: basicDataBaseApiUrl + 'humansalary/salarylist',
+        getSalaryList: basicDataBaseApiUrl + 'positionsalary/list/',//根据职位获取薪酬信息
         getSalaryItem: basicDataBaseApiUrl + 'humansalary/salaryitem',
         getAttendenceSettingList: basicDataBaseApiUrl + 'humanattendance/attendancesetting',
         getAttendenceList: basicDataBaseApiUrl + 'humanattendance/searchattendancelst',

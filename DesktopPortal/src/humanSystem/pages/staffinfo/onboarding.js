@@ -1,22 +1,21 @@
 import React, { Component } from 'react';
-import { Form, Modal, Cascader, TreeSelect, Input, InputNumber, DatePicker, notification, Select, Icon, Upload, Button, Row, Col, Checkbox, Tag, Spin, Table } from 'antd'
+import { Form, Modal, Popconfirm, TreeSelect, Input, InputNumber, DatePicker, notification, Select, Icon, Upload, Button, Row, Col, Checkbox, Tag, Spin, Table } from 'antd'
 import { connect } from 'react-redux';
 import moment from 'moment';
 import WebApiConfig from '../../constants/webapiConfig';
 import './staff.less';
-import { postHumanInfo, getcreateOrgStation, getcreateStation, getSalaryItem, getHumanDetail } from '../../actions/actionCreator';
+import { getcreateOrgStation, getcreateStation, getSalaryItem } from '../../actions/actionCreator';
 import { NewGuid } from '../../../utils/appUtils';
 import ApiClient from '../../../utils/apiClient';
 import FormerCompany from '../dialog/formerCompany';
 import Education from '../dialog/education';
 import PositionalTitle from '../dialog/positionalTitle';
-import '../dialog/dialog.less'
 import { getDicPars } from '../../../utils/utils'
 import SocialSecurity from '../../../businessComponents/humanSystem/socialSecurity'
 import Salary from '../../../businessComponents/humanSystem/salary'
 import Layer from '../../../components/Layer'
 import { formerCompanyColumns, educationColumns } from '../../constants/tools'
-
+import { getHumanDetail, postHumanInfo, getPosition } from '../../serviceAPI/staffService'
 const Option = Select.Option;
 const FormItem = Form.Item;
 const { TextArea } = Input;
@@ -50,7 +49,7 @@ export const titleColumns = [
     {
         title: '取得时间',
         dataIndex: 'getTitleTime',
-        render: (text, record) => <div>{record.getTitleTime ? record.getTitleTime.format('YYYY-MM-DD') : null}</div>,
+        // render: (text, record) => <div>{record.getTitleTime ? record.getTitleTime.format('YYYY-MM-DD') : null}</div>,
         key: 'getTitleTime',
     }
 ];
@@ -63,7 +62,7 @@ class OnBoarding extends Component {
         previewVisible: false,
         previewImage: '',
         fileinfo: {},
-        userinfo: {},
+        humenInfo: { id: NewGuid() },
         formerCompanyDgShow: false,//上单位对话框
         educationDgShow: false,//学历对话框
         positionalDgShow: false,//职称对话框
@@ -82,30 +81,26 @@ class OnBoarding extends Component {
     }
 
     componentWillMount() {
-        if (this.props.ismodify == 1) {
-            this.props.dispatch(getcreateOrgStation(this.props.selHumanList[this.props.selHumanList.length - 1].departmentId));
-        }
+        // if (this.props.ismodify == 1) {
+        //     this.props.dispatch(getcreateOrgStation(this.props.selHumanList[this.props.selHumanList.length - 1].departmentId));
+        // }
         //this.props.dispatch(getallOrgTree('PublicRoleOper'));
-        if (this.props.humenId) {
-            this.props.dispatch(getHumanDetail(this.props.humenId));
-        }
     }
 
     componentDidMount() {
-        this.state.userinfo.id = NewGuid();
-        let params = this.props.location.state;
+        let humenInfo = this.props.location.state;
         this.setState({
             isReadOnly: this.props.isReadOnly ? this.props.isReadOnly : false,
-            ismodify: Object.keys(params).length > 0 ? true : false
+            ismodify: Object.keys(humenInfo).length > 0 ? true : false
         });
-        if (this.props.isReadOnly == true) {
-            let formerCompanyExtColumn = this.getOperColumn('formerCompany');
-            let educationExtColumn = this.getOperColumn('education');
-            let positionTitleExtColumn = this.getOperColumn('positionalTitle');
-            this.setState({ formerCompanyColumns: formerCompanyColumns.concat(formerCompanyExtColumn) });
-            this.setState({ educationColumns: educationColumns.concat(educationExtColumn) })
-            this.setState({ titleColumns: titleColumns.concat(positionTitleExtColumn) })
+        if (humenInfo.id) {
+            this.setState({ showLoading: true })
+            getHumanDetail(humenInfo.id).then(res => {
+                console.log("员工详情请求结果:", res);
+                this.setState({ humenInfo: res.extension || {}, showLoading: false });
+            })
         }
+
         let dicNation = getDicPars("HUMEN_Nation", this.props.rootBasicData);
         let dicHouseRegister = getDicPars("HUMEN_HOUSE_REGISTER", this.props.rootBasicData);
         let dicEducation = getDicPars("HUMEN_EDUCATION", this.props.rootBasicData);
@@ -125,6 +120,36 @@ class OnBoarding extends Component {
             dicPositions: dicPositions
         });
 
+        let educationColumn = educationColumns.find(c => c.key === 'education');
+        let getDegreeColumn = educationColumns.find(c => c.key === 'getDegree');
+        educationColumn.render = (text, record) => {
+            let dicRes = dicEducation.find(dic => dic.value == record.education);
+            if (dicRes) {
+                text = dicRes.key;
+            }
+            return (<div>{text}</div>)
+        }
+        getDegreeColumn.render = (text, record) => {
+            let dicRes = dicDegree.find(dic => dic.value == record.getDegree);
+            if (dicRes) {
+                text = dicRes.key;
+            }
+            return (<div>{text}</div>)
+        }
+        if (this.props.isReadOnly != true) {
+            let formerCompanyExtColumn = this.getOperColumn('formerCompany');
+            let educationExtColumn = this.getOperColumn('education');
+            let positionTitleExtColumn = this.getOperColumn('positionalTitle');
+            this.setState({ formerCompanyColumns: formerCompanyColumns.concat(formerCompanyExtColumn) });
+            this.setState({ educationColumns: educationColumns.concat(educationExtColumn) })
+            this.setState({ titleColumns: titleColumns.concat(positionTitleExtColumn) })
+        } else {
+            this.setState({ formerCompanyColumns: formerCompanyColumns });
+            this.setState({ educationColumns: educationColumns })
+            this.setState({ titleColumns: titleColumns })
+        }
+
+
         this.getWorkNumber();
         console.log("字典列表:", dicNation, dicHouseRegister);
     }
@@ -137,7 +162,9 @@ class OnBoarding extends Component {
                 return (
                     <div>
                         <Button type="primary" size='small' style={{ marginRight: '5px' }} shape="circle" icon="edit" onClick={() => this.tableOperate(tableType, 'edit', record)} />
-                        <Button type="primary" size='small' shape="circle" icon="delete" onClick={() => this.tableOperate(tableType, 'delete', record)} />
+                        <Popconfirm title="确认要删除改数据?" onConfirm={() => this.tableOperate(tableType, 'delete', record)} okText="是" cancelText="否">
+                            <Button type="primary" size='small' shape="circle" icon="delete" />
+                        </Popconfirm>
                     </div>
                 )
             },
@@ -146,8 +173,8 @@ class OnBoarding extends Component {
     }
 
     tableOperate = (listType, operType, record) => {
+        let tableList = [];
         if (operType == 'delete') {
-            let tableList = [];
             if (listType == 'formerCompany') {
                 tableList = this.state.formerCompanyList || [];
             } else if (listType == 'education') {
@@ -167,7 +194,17 @@ class OnBoarding extends Component {
                 }
             }
         } else if (operType == 'edit') {
-
+            // this.setState({formerCompanyEdit: null, educationEdit: null, positionalTitleEdit: null});
+            if (listType == 'formerCompany') {
+                tableList = this.state.formerCompanyList || [];
+                this.setState({ formerCompanyDgShow: true, formerCompanyEdit: record });
+            } else if (listType == 'education') {
+                tableList = this.state.educationList || [];
+                this.setState({ educationDgShow: true, educationEdit: record });
+            } else if (listType == 'positionalTitle') {
+                tableList = this.state.positionalTitleList || [];
+                this.setState({ positionalDgShow: true, positionalTitleEdit: record });
+            }
         }
     }
 
@@ -221,7 +258,7 @@ class OnBoarding extends Component {
     }
 
     UploadFile(file, callback) {
-        let id = this.state.userinfo.id;
+        let id = this.state.humenInfo.id;
         let uploadUrl = `${WebApiConfig.attach.uploadUrl}${id}`;
         let fileGuid = NewGuid();
         let fd = new FormData();
@@ -343,9 +380,12 @@ class OnBoarding extends Component {
                 values.humanWorkHistories = this.state.formerCompanyList || []
                 values.humanEducationInfos = this.state.educationList || []
                 values.fileinfo = this.state.fileinfo;
-                console.log("提交内容", values);
-                // this.props.dispatch(postHumanInfo({humaninfo: values, fileinfo: this.state.fileinfo}));
-                this.props.dispatch(postHumanInfo(values));
+                values.maritalStatus = (values.maritalStatus == '0' ? false : true);
+                console.log("提交内容", JSON.stringify(values));
+                this.setState({ showLoading: true });
+                postHumanInfo(values).then(res => {
+                    this.setState({ showLoading: false });
+                });
             }
         });
     }
@@ -363,7 +403,9 @@ class OnBoarding extends Component {
     handleChooseDepartmentChange = (e) => {
         // this.state.department = e[e.length - 1];
         // console.log("当前部门:", e);
-        this.getPosition(e)
+        getPosition(e).then(res => {
+            this.setState({ positionList: res.extension || [] });
+        })
     }
 
     handleSelectChange = (e) => {
@@ -372,25 +414,39 @@ class OnBoarding extends Component {
     //对话框信息回调
     dialogConfirmCallback = (info, type) => {
         console.log("表单对象:", this.props.form, info, type);
-        info.id = NewGuid();
+        // info.id = NewGuid();
         info.humenId = this.state.humenNewId;
         if (type == 'formerCompany') {
             let formerCompanyList = this.state.formerCompanyList;
-            formerCompanyList.push(info);
+            let index = formerCompanyList.findIndex(item => item.id == info.id)
+            if (index < 0) {
+                formerCompanyList.push(info);
+            } else {
+                formerCompanyList[index] = info;
+            }
             this.setState({ formerCompanyList: formerCompanyList });
         } else if (type == 'education') {
             let educationList = this.state.educationList;
-            educationList.push(info);
+            let index = educationList.findIndex(item => item.id == info.id);
+            if (index < 0) {
+                educationList.push(info);
+            } else {
+                educationList[index] = info;
+            }
             this.setState({ educationList: educationList });
         } else if (type == 'positionalTitle') {
             let positionalTitleList = this.state.positionalTitleList;
-            positionalTitleList.push(info);
+            let index = positionalTitleList.findIndex(item => item.id == info.id);
+            if (index < 0) {
+                positionalTitleList.push(info);
+            } else {
+                positionalTitleList[index] = info;
+            }
             this.setState({ positionalTitleList: positionalTitleList });
         }
     }
     //子页面回调
     subPageLoadCallback = (formObj, pageName) => {
-        console.log("表单对象:", formObj, pageName);
         if (pageName == "socialSecurity") {
             this.setState({ SocialSecurityForm: formObj });
         } else if (pageName == "salary") {
@@ -406,30 +462,8 @@ class OnBoarding extends Component {
             this.props.form.setFieldsValue({ age: age, birthday: birthday, sex: sex });
         }
     }
-    getPosition(departmentId) {
-        let url = WebApiConfig.search.getStationList + "/" + departmentId;
-        let huResult = { isOk: false, msg: '获取职位失败！' };
-        try {
-            ApiClient.get(url).then(res => {
-                console.log("请求结果:", res);
-                if (res.data.code == 0) {
-                    res.data.message = '获取职位成功';
-                    huResult.isOk = true;
-                    this.setState({ positionList: res.data.extension || [] });
-                }
-            });
-        } catch (e) {
-            huResult.message = "获取职位接口调用异常!";
-        }
-        if (!huResult.isOk) {
-            notification.error({
-                message: huResult.msg,
-                duration: 3
-            });
-        }
-    }
+
     render() {
-        let self = this;
         let fileList = this.state.fileList;
         const { previewVisible, previewImage, formerCompanyColumns, educationColumns, titleColumns, positionList } = this.state;
         const { getFieldDecorator, getFieldsError, getFieldsValue, isFieldTouched } = this.props.form;
@@ -439,7 +473,7 @@ class OnBoarding extends Component {
         if (this.props.ismodify == 1) {
             fileList = this.props.humanImage;
         }
-
+        let disabled = this.state.isReadOnly;
         const uploadButton = (this.props.ismodify == 1) ? null : (
             <div>
                 <Icon type='plus' />
@@ -447,14 +481,14 @@ class OnBoarding extends Component {
             </div>
         );
         let judgePermissions = this.props.judgePermissions || [];
-        let humanInfo = this.props.curHumanDetail || {};
+        let humanInfo = this.state.humenInfo || {};
         humanInfo.humanContractInfo = humanInfo.humanContractInfo || {};
         humanInfo.humanSalaryStructure = humanInfo.humanSalaryStructure || {};
         humanInfo.humanSocialSecurity = humanInfo.humanSocialSecurity || {};
         humanInfo.humanTitleInfos = humanInfo.humanTitleInfos || [];
         humanInfo.humanEducationInfos = humanInfo.humanEducationInfos || [];
         humanInfo.humanWorkHistories = humanInfo.humanWorkHistories || [];
-        // console.log("客户详情:", humanInfo);
+        console.log("formerCompanyColumns详情:", humanInfo);
         return (
             <Layer showLoading={this.state.showLoading}>
                 <div className="page-title" style={{ marginBottom: '10px' }}>员工信息表</div>
@@ -472,7 +506,7 @@ class OnBoarding extends Component {
                                                 message: 'please entry Worknumber',
                                             }]
                                         })(
-                                            <Input disabled={this.props.ismodify == 1} />
+                                            <Input disabled={disabled} />
                                         )}
                                     </FormItem>
                                 </Col>
@@ -484,7 +518,7 @@ class OnBoarding extends Component {
                                                 required: true, message: '请填写姓名',
                                             }]
                                         })(
-                                            <Input disabled={this.props.ismodify == 1} placeholder="请输入姓名" />
+                                            <Input disabled={disabled} placeholder="请输入姓名" />
                                         )}
                                     </FormItem>
                                 </Col>
@@ -500,19 +534,19 @@ class OnBoarding extends Component {
                                                 pattern: /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/, message: '不是有效的身份证号'
                                             }]
                                         })(
-                                            <Input disabled={this.props.ismodify == 1} onBlur={this.onIdCardBlur} placeholder="请输入身份证号码" />
+                                            <Input disabled={disabled} onBlur={this.onIdCardBlur} placeholder="请输入身份证号码" />
                                         )}
                                     </FormItem>
                                 </Col>
                                 <Col span={12}>
                                     <FormItem {...formItemLayout} label="生日">
                                         {getFieldDecorator('birthday', {
-                                            // initialValue: empInfo.birthday,
+                                            initialValue: humanInfo.birthday ? moment(humanInfo.birthday) : '',
                                             rules: [{
                                                 required: true, message: '请输入生日',
                                             }]
                                         })(
-                                            <DatePicker disabled={this.props.ismodify == 1} format='YYYY-MM-DD' style={{ width: '100%' }} />
+                                            <DatePicker disabled={disabled} format='YYYY-MM-DD' style={{ width: '100%' }} />
                                         )}
                                     </FormItem>
                                 </Col>
@@ -526,7 +560,7 @@ class OnBoarding extends Component {
                                                 required: true, message: '请选择性别',
                                             }]
                                         })(
-                                            <Select disabled={this.props.ismodify == 1} placeholder="选择性别">
+                                            <Select disabled={disabled} placeholder="选择性别">
                                                 <Option key='1' value="1">男</Option>
                                                 <Option key='2' value="2">女</Option>
                                             </Select>
@@ -541,7 +575,7 @@ class OnBoarding extends Component {
                                                 required: true, message: '请输入手机号码',
                                             }, { pattern: '^((1[0-9][0-9])|(14[5|7])|(15([0-3]|[5-9]))|(18[0,5-9]))\\d{8}$', message: '不是有效的手机号码!' }]
                                         })(
-                                            <Input disabled={this.props.ismodify == 1} placeholder="请输入手机号码" />
+                                            <Input disabled={disabled} placeholder="请输入手机号码" />
                                         )}
                                     </FormItem>
                                 </Col>
@@ -551,8 +585,7 @@ class OnBoarding extends Component {
                         <Col span={7}>
                             <FormItem {...formItemLayout} label="图片">
                                 <div className="clearfix">
-                                    <Upload
-                                        // action="//jsonplaceholder.typicode.com/posts/"
+                                    <Upload disabled={disabled}
                                         listType="picture-card"
                                         fileList={fileList}
                                         onPreview={this.handlePreview}
@@ -580,7 +613,7 @@ class OnBoarding extends Component {
                                         required: true, message: '请输入公司',
                                     }]
                                 })(
-                                    <Input disabled={this.props.ismodify == 1} placeholder="请输入公司" />
+                                    <Input disabled={disabled} placeholder="请输入公司" />
                                 )}
                             </FormItem>
                         </Col>
@@ -593,8 +626,7 @@ class OnBoarding extends Component {
                                         message: '请选择所属部门',
                                     }]
                                 })(
-                                    // <Cascader disabled={this.props.ismodify == 1} options={this.props.setDepartmentOrgTree} onChange={this.handleChooseDepartmentChange} onPopupVisibleChange={this.handleDepartmentChange} changeOnSelect placeholder="归属部门" />
-                                    <TreeSelect treeData={this.props.setDepartmentOrgTree} onChange={this.handleChooseDepartmentChange} placeholder="所属部门" />
+                                    <TreeSelect disabled={disabled} treeData={this.props.setDepartmentOrgTree} onChange={this.handleChooseDepartmentChange} placeholder="所属部门" />
                                 )}
                             </FormItem>
                         </Col>
@@ -622,7 +654,7 @@ class OnBoarding extends Component {
                                     }],
 
                                 })(
-                                    <Select disabled={this.props.ismodify == 1} onChange={this.handleSelectChange} placeholder="选择职位">
+                                    <Select disabled={disabled} onChange={this.handleSelectChange} placeholder="选择职位">
                                         {
                                             (positionList || []).map(p => <Option key={p.id} value={p.id}>{p.positionName}</Option>)
                                         }
@@ -640,7 +672,7 @@ class OnBoarding extends Component {
                                     }],
 
                                 })(
-                                    <Select disabled={this.props.ismodify == 1} onChange={this.handleSelectChange} placeholder="选择职位">
+                                    <Select disabled={disabled} onChange={this.handleSelectChange} placeholder="选择职位">
                                         {
                                             entryType.map(item => <Option key={item.key} value={item.key}>{item.label}</Option>)
                                         }
@@ -651,13 +683,13 @@ class OnBoarding extends Component {
                         <Col span={7}>
                             <FormItem {...formItemLayout} label="入职日期">
                                 {getFieldDecorator('entryTime', {
-                                    // initialValue: empInfo.entryTime,
+                                    initialValue: humanInfo.entryTime ? moment(humanInfo.entryTime) : '',
                                     rules: [{
                                         required: true,
                                         message: '请选择入职日期'
                                     }]
                                 })(
-                                    <DatePicker disabled={this.props.ismodify == 1} format='YYYY-MM-DD' style={{ width: '100%' }} />
+                                    <DatePicker disabled={disabled} format='YYYY-MM-DD' style={{ width: '100%' }} />
                                 )}
                             </FormItem>
                         </Col>
@@ -666,15 +698,15 @@ class OnBoarding extends Component {
                     <Row>
                         <Col span={7}>
                             <FormItem {...formItemLayout} label="婚姻状况">
-                                {getFieldDecorator('position', {
-                                    initialValue: humanInfo.position,
+                                {getFieldDecorator('maritalStatus', {
+                                    initialValue: humanInfo.maritalStatus,
                                     rules: [{
                                         required: true,
                                         message: '请选择婚姻状况',
                                     }],
                                     initialValue: "1"
                                 })(
-                                    <Select disabled={this.props.ismodify == 1} onChange={this.handleSelectChange} placeholder="选择职位">
+                                    <Select disabled={disabled} onChange={this.handleSelectChange} placeholder="选择职位">
                                         {
                                             marriages.map(item => <Option key={item.key} value={item.key}>{item.label}</Option>)
                                         }
@@ -691,7 +723,7 @@ class OnBoarding extends Component {
                                         message: '请选择民族',
                                     }],
                                 })(
-                                    <Select disabled={this.props.ismodify == 1} onChange={this.handleSelectChange} placeholder="选择职位">
+                                    <Select disabled={disabled} onChange={this.handleSelectChange} placeholder="选择职位">
                                         {
                                             (this.state.dicNation || []).map(item => <Option key={item.value} value={item.value}>{item.key}</Option>)
                                         }
@@ -709,7 +741,7 @@ class OnBoarding extends Component {
                                     }],
 
                                 })(
-                                    <Select disabled={this.props.ismodify == 1} onChange={this.handleSelectChange} placeholder="选择职位">
+                                    <Select disabled={disabled} onChange={this.handleSelectChange} placeholder="选择职位">
                                         {
                                             (this.state.dicHouseRegister || []).map(item => <Option key={item.value} value={item.value}>{item.key}</Option>)
                                         }
@@ -728,7 +760,7 @@ class OnBoarding extends Component {
                                         message: '请选择最高学历',
                                     }],
                                 })(
-                                    <Select disabled={this.props.ismodify == 1} onChange={this.handleSelectChange} placeholder="选择职位">
+                                    <Select disabled={disabled} onChange={this.handleSelectChange} placeholder="选择职位">
                                         {
                                             (this.state.dicEducation || []).map(item => <Option key={item.value} value={item.value}>{item.key}</Option>)
                                         }
@@ -746,7 +778,7 @@ class OnBoarding extends Component {
                                     }],
 
                                 })(
-                                    <Select disabled={this.props.ismodify == 1} onChange={this.handleSelectChange} placeholder="选择职位">
+                                    <Select disabled={disabled} onChange={this.handleSelectChange} placeholder="选择职位">
                                         {
                                             (this.state.dicHealth || []).map(item => <Option key={item.value} value={item.value}>{item.key}</Option>)
                                         }
@@ -762,7 +794,7 @@ class OnBoarding extends Component {
                                         required: true, message: '请输入籍贯',
                                     }]
                                 })(
-                                    <Input disabled={this.props.ismodify == 1} placeholder="请填写籍贯" />
+                                    <Input disabled={disabled} placeholder="请填写籍贯" />
                                 )}
                             </FormItem>
                         </Col>
@@ -776,7 +808,7 @@ class OnBoarding extends Component {
                                         required: true, message: '请输入家庭住址',
                                     }]
                                 })(
-                                    <Input disabled={this.props.ismodify == 1} placeholder="请输入家庭住址" />
+                                    <Input disabled={disabled} placeholder="请输入家庭住址" />
                                 )}
                             </FormItem>
                         </Col>
@@ -788,7 +820,7 @@ class OnBoarding extends Component {
                                 {getFieldDecorator('policitalStatus', {
                                     initialValue: humanInfo.policitalStatus,
                                 })(
-                                    <Select disabled={this.props.ismodify == 1} onChange={this.handleSelectChange} placeholder="选择职位">
+                                    <Select disabled={disabled} onChange={this.handleSelectChange} placeholder="选择职位">
                                         {
                                             (this.state.dicPolitics || []).map(item => <Option key={item.value} value={item.value}>{item.key}</Option>)
                                         }
@@ -803,7 +835,7 @@ class OnBoarding extends Component {
                                     rules: [{
                                     }]
                                 })(
-                                    <Input disabled={this.props.ismodify == 1} placeholder="请输入户口地址" />
+                                    <Input disabled={disabled} placeholder="请输入户口地址" />
                                 )}
                             </FormItem>
                         </Col>
@@ -818,7 +850,7 @@ class OnBoarding extends Component {
                                         required: true, message: '请输入紧急联系人',
                                     }]
                                 })(
-                                    <Input disabled={this.props.ismodify == 1} placeholder="请输入紧急联系人" />
+                                    <Input disabled={disabled} placeholder="请输入紧急联系人" />
                                 )}
                             </FormItem>
                         </Col>
@@ -830,7 +862,7 @@ class OnBoarding extends Component {
                                         required: true, message: '请输入手机号码',
                                     }, { pattern: '^((1[0-9][0-9])|(14[5|7])|(15([0-3]|[5-9]))|(18[0,5-9]))\\d{8}$', message: '不是有效的手机号码!' }]
                                 })(
-                                    <Input disabled={this.props.ismodify == 1} placeholder="请输入手机号码" />
+                                    <Input disabled={disabled} placeholder="请输入手机号码" />
                                 )}
                             </FormItem>
                         </Col>
@@ -842,7 +874,7 @@ class OnBoarding extends Component {
                                         required: true, message: '请输入紧急联系人关系',
                                     }]
                                 })(
-                                    <Input disabled={this.props.ismodify == 1} placeholder="请输入紧急联系人关系" />
+                                    <Input disabled={disabled} placeholder="请输入紧急联系人关系" />
                                 )}
                             </FormItem>
                         </Col>
@@ -856,7 +888,7 @@ class OnBoarding extends Component {
                                         required: true, message: 'Email地址',
                                     }, { type: 'email', message: '请输入正确的email地址' }]
                                 })(
-                                    <Input disabled={this.props.ismodify == 1} placeholder="请输入Email地址" />
+                                    <Input disabled={disabled} placeholder="请输入Email地址" />
                                 )}
                             </FormItem>
                         </Col>
@@ -869,7 +901,7 @@ class OnBoarding extends Component {
                                     initialValue: humanInfo.bankName,
                                     rules: []
                                 })(
-                                    <Input disabled={this.props.ismodify == 1} placeholder="请输入银行名称" />
+                                    <Input disabled={disabled} placeholder="请输入银行名称" />
                                 )}
                             </FormItem>
                         </Col>
@@ -879,7 +911,7 @@ class OnBoarding extends Component {
                                     initialValue: humanInfo.bankAccount,
                                     rules: []
                                 })(
-                                    <Input disabled={this.props.ismodify == 1} placeholder="请输入银行账号" />
+                                    <Input disabled={disabled} placeholder="请输入银行账号" />
                                 )}
                             </FormItem>
                         </Col>
@@ -892,7 +924,7 @@ class OnBoarding extends Component {
                                     initialValue: humanInfo.desc,
                                     rules: []
                                 })(
-                                    <TextArea rows={4} disabled={this.props.ismodify == 1} placeholder="请输入备注" />
+                                    <TextArea rows={4} disabled={disabled} placeholder="请输入备注" />
                                 )}
                             </FormItem>
                         </Col>
@@ -919,7 +951,7 @@ class OnBoarding extends Component {
                                         required: true, message: '请输入合同编号',
                                     }]
                                 })(
-                                    <Input disabled={this.props.ismodify == 1} placeholder="请输入合同编号" />
+                                    <Input disabled={disabled} placeholder="请输入合同编号" />
                                 )}
                             </FormItem>
                         </Col>
@@ -931,7 +963,7 @@ class OnBoarding extends Component {
                                         required: true, message: '请输入签订单位',
                                     }]
                                 })(
-                                    <Input disabled={this.props.ismodify == 1} placeholder="请输入签订单位" />
+                                    <Input disabled={disabled} placeholder="请输入签订单位" />
                                 )}
                             </FormItem>
                         </Col>
@@ -940,7 +972,7 @@ class OnBoarding extends Component {
                                 {getFieldDecorator('contractType', {
                                     initialValue: humanInfo.humanContractInfo.contractType,
                                 })(
-                                    <Select disabled={this.props.ismodify == 1} onChange={this.handleSelectChange} placeholder="选择职位">
+                                    <Select disabled={disabled} onChange={this.handleSelectChange} placeholder="选择职位">
                                         {
                                             (this.state.dicContractCategories || []).map(item => <Option key={item.value} value={item.value}>{item.key}</Option>)
                                         }
@@ -959,33 +991,33 @@ class OnBoarding extends Component {
                                         message: '请选择合同签订日期'
                                     }]
                                 })(
-                                    <DatePicker disabled={this.props.ismodify == 1} format='YYYY-MM-DD' style={{ width: '100%' }} />
+                                    <DatePicker disabled={disabled} format='YYYY-MM-DD' style={{ width: '100%' }} />
                                 )}
                             </FormItem>
                         </Col>
                         <Col span={7}>
                             <FormItem {...formItemLayout} label="合同有效期">
                                 {getFieldDecorator('contractStartDate', {
-                                    // initialValue: empInfo.humanContractInfo.contractStartDate,
+                                    initialValue: humanInfo.humanContractInfo.contractStartDate ? moment(humanInfo.humanContractInfo.contractStartDate) : '',
                                     rules: [{
                                         required: true,
                                         message: '请选择合同有效期'
                                     }]
                                 })(
-                                    <DatePicker disabled={this.props.ismodify == 1} format='YYYY-MM-DD' style={{ width: '100%' }} />
+                                    <DatePicker disabled={disabled} format='YYYY-MM-DD' style={{ width: '100%' }} />
                                 )}
                             </FormItem>
                         </Col>
                         <Col span={7}>
                             <FormItem {...formItemLayout} label="合同到期日">
                                 {getFieldDecorator('contractEndDate', {
-                                    // initialValue: empInfo.humanContractInfo.contractEndDate,
+                                    initialValue: humanInfo.humanContractInfo.contractEndDate ? moment(humanInfo.humanContractInfo.contractEndDate) : '',
                                     rules: [{
                                         required: true,
                                         message: '请选择合同到期日'
                                     }]
                                 })(
-                                    <DatePicker disabled={this.props.ismodify == 1} format='YYYY-MM-DD' style={{ width: '100%' }} />
+                                    <DatePicker disabled={disabled} format='YYYY-MM-DD' style={{ width: '100%' }} />
                                 )}
                             </FormItem>
                         </Col>
@@ -994,7 +1026,7 @@ class OnBoarding extends Component {
                     <Row>
                         <Col span={2}></Col>
                         <Col span={20}>
-                            <Table dataSource={this.state.formerCompanyList || []} columns={formerCompanyColumns} style={{ marginBottom: '10px' }} />
+                            <Table rowKey={record => record.id} pagination={false} dataSource={this.state.formerCompanyList || []} columns={formerCompanyColumns} style={{ marginBottom: '10px' }} />
                         </Col>
                         <Col span={2}></Col>
                     </Row>
@@ -1004,7 +1036,7 @@ class OnBoarding extends Component {
                     <Row>
                         <Col span={2}></Col>
                         <Col span={20}>
-                            <Table dataSource={this.state.educationList || []} columns={educationColumns} style={{ marginBottom: '10px' }} />
+                            <Table rowKey={record => record.id} pagination={false} dataSource={this.state.educationList || []} columns={educationColumns} style={{ marginBottom: '10px' }} />
                         </Col>
                         <Col span={2}></Col>
                     </Row>
@@ -1014,50 +1046,21 @@ class OnBoarding extends Component {
                     <Row>
                         <Col span={2}></Col>
                         <Col span={20}>
-                            <Table dataSource={this.state.positionalTitleList || []} columns={titleColumns} style={{ marginBottom: '10px' }} />
+                            <Table rowKey={record => record.id} pagination={false} dataSource={this.state.positionalTitleList || []} columns={titleColumns} style={{ marginBottom: '10px' }} />
                         </Col>
                         <Col span={2}></Col>
                     </Row>
-                    {judgePermissions.includes('SOCIAL_SECURITY_VIEW') || this.props.ismodify != 1 ? <SocialSecurity subPageLoadCallback={(formObj, pageName) => this.subPageLoadCallback(formObj, pageName)} /> : null}
-                    {judgePermissions.includes('SALARY_VIEW') || this.props.ismodify != 1 ? <Salary subPageLoadCallback={(formObj, pageName) => this.subPageLoadCallback(formObj, pageName)} /> : null}
-
-                    {/* <FormItem {...formItemLayout} label="岗位补贴">
-                    {getFieldDecorator('subsidy', {
-                        initialValue: self.props.selSalaryItem ? self.props.selSalaryItem.subsidy : null
-                    })(
-                        <InputNumber disabled={this.props.ismodify == 1}  />
-                    )}
-                </FormItem>
-                <FormItem {...formItemLayout} label="工装扣款">
-                    {getFieldDecorator('clothesBack', {
-                        initialValue: self.props.selSalaryItem ? self.props.selSalaryItem.clothesBack : null
-                    })(
-                        <InputNumber disabled={this.props.ismodify == 1}  />
-                    )}
-                </FormItem>
-                <FormItem {...formItemLayout} label="行政扣款">
-                    {getFieldDecorator('administrativeBack', {
-                        initialValue: self.props.selSalaryItem ? self.props.selSalaryItem.administrativeBack : null
-                    })(
-                        <InputNumber disabled={this.props.ismodify == 1}  />
-                    )}
-                </FormItem>
-                <FormItem {...formItemLayout} label="端口扣款">
-                    {getFieldDecorator('portBack', {
-                        initialValue: self.props.selSalaryItem ? self.props.selSalaryItem.portBack : null
-                    })(
-                        <InputNumber disabled={this.props.ismodify == 1}  />
-                    )}
-                </FormItem> */}
-                    <Row>
-                        <Col style={{ textAlign: 'center' }}>
+                    {judgePermissions.includes('SOCIAL_SECURITY_VIEW') || this.props.ismodify != 1 ? <SocialSecurity subPageLoadCallback={(formObj, pageName) => this.subPageLoadCallback(formObj, pageName)} isReadOnly={disabled} /> : null}
+                    {judgePermissions.includes('SALARY_VIEW') || this.props.ismodify != 1 ? <Salary subPageLoadCallback={(formObj, pageName) => this.subPageLoadCallback(formObj, pageName)} isReadOnly={disabled} /> : null}
+                    <Row style={{ textAlign: 'center', display: disabled ? 'none' : 'block' }}>
+                        <Col>
                             <Button type="primary" htmlType="submit" style={{ marginRight: '20px' }} disabled={this.hasErrors(getFieldsValue())} onClick={(e) => this.handleSubmit(e)}>提交</Button>
                             <Button type="primary" onClick={this.handleReset}>清空</Button>
                         </Col>
                     </Row>
-                    <FormerCompany showDialog={this.state.formerCompanyDgShow} closeDialog={() => this.setState({ formerCompanyDgShow: false })} confirmCallback={(info) => this.dialogConfirmCallback(info, 'formerCompany')} />
-                    <Education showDialog={this.state.educationDgShow} closeDialog={() => this.setState({ educationDgShow: false })} confirmCallback={(info) => this.dialogConfirmCallback(info, 'education')} dicEducation={this.state.dicEducation} dicDegree={this.state.dicDegree} />
-                    <PositionalTitle showDialog={this.state.positionalDgShow} closeDialog={() => this.setState({ positionalDgShow: false })} confirmCallback={(info) => this.dialogConfirmCallback(info, 'positionalTitle')} />
+                    <FormerCompany showDialog={this.state.formerCompanyDgShow} closeDialog={() => this.setState({ formerCompanyDgShow: false, formerCompanyEdit: null })} confirmCallback={(info) => this.dialogConfirmCallback(info, 'formerCompany')} entityInfo={this.state.formerCompanyEdit || {}} />
+                    <Education showDialog={this.state.educationDgShow} closeDialog={() => this.setState({ educationDgShow: false, educationEdit: null })} confirmCallback={(info) => this.dialogConfirmCallback(info, 'education')} dicEducation={this.state.dicEducation} dicDegree={this.state.dicDegree} entityInfo={this.state.educationEdit || {}} />
+                    <PositionalTitle showDialog={this.state.positionalDgShow} closeDialog={() => this.setState({ positionalDgShow: false, positionalTitleEdit: null })} confirmCallback={(info) => this.dialogConfirmCallback(info, 'positionalTitle')} entityInfo={this.state.positionalTitleEdit} />
                 </Form>
             </Layer>
         );
@@ -1075,7 +1078,6 @@ function stafftableMapStateToProps(state) {
         humanImage: state.basicData.humanImage,
         rootBasicData: (state.rootBasicData || {}).dicList,
         judgePermissions: state.judgePermissions,
-        curHumanDetail: state.search.curHumanDetail
     }
 }
 

@@ -32,28 +32,41 @@ class Station extends Component {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                values.id = NewGuid();
+                // values.id = NewGuid();
                 this.props.dispatch(setStation(values));
                 console.log('新增职位:', values);
             }
         });
     }
 
-    handleChooseDepartmentChange = (value, label, extra) => {
-        // this.state.department = e;
-        let orgObj = ((extra.triggerNode || {}).props || {}).Original || {};
-        console.log("选择部门:", orgObj);
-        if (orgObj.type && orgObj.type !== 'Filiale') {
-            // this.props.form.resetFields();
-            this.props.form.setFields({'parentID': {value: null, errors: ["请选择类型为分公司的组织!"]}})
-            notification.warning({
-                description: '只能选择分公司!'
-            });
+    //部门类型验证
+    // orgTypeValidate = (rule, value, callback) => {
+    //     let orgDataSource = this.props.setContractOrgTree;
+    //     let orgInfo = this._getOrgDetail(orgDataSource, value);
+    //     if (orgInfo && orgInfo.type !== 'Filiale') {
+    //         callback('请选择类型为分公司的组织!');
+    //     }
+    //     callback();
+    // }
+
+    _getOrgDetail(orgDataSource, orgID) {
+        if (orgDataSource) {
+            for (let i = 0; i < orgDataSource.length; i++) {
+                if (orgDataSource[i].key == orgID) {
+                    return orgDataSource[i].Original;
+                } else {
+                    let result = this._getOrgDetail(orgDataSource[i].children, orgID);
+                    if (result) {
+                        return result;
+                    }
+                }
+            }
         }
+        return null;
     }
 
     render() {
-        const {getFieldDecorator, getFieldsError, getFieldsValue, isFieldTouched} = this.props.form;
+        const {getFieldDecorator, getFieldsValue} = this.props.form;
         let editPositionObj = this.props.location.state;
         let isModify = Object.keys(editPositionObj).length > 0;
         return (
@@ -80,7 +93,7 @@ class Station extends Component {
                         })(
                             <Select>
                                 {
-                                    (this.state.dicPositions || []).map((item,i) => <Option key={i} value={item.value}>{item.key}</Option>)
+                                    (this.state.dicPositions || []).map((item, i) => <Option key={i} value={item.value}>{item.key}</Option>)
                                 }
                             </Select>
                         )}
@@ -89,14 +102,14 @@ class Station extends Component {
                         {getFieldDecorator('parentID', {
                             initialValue: editPositionObj.parentID,
                             rules: [{
-                                required: true, message: '请选择所属分公司',
+                                required: true, message: '请选择所属分公司'
+                            }, {
+                                // validator: this.orgTypeValidate
                             }]
                         })(
-                            // <Cascader options={this.props.setContractOrgTree} onChange={this.handleChooseDepartmentChange} changeOnSelect placeholder="归属部门" />
                             <TreeSelect
                                 allowClear
                                 treeData={this.props.setContractOrgTree}
-                                onChange={this.handleChooseDepartmentChange}
                                 placeholder="请选择所属分公司"
                             />
                         )}
@@ -106,8 +119,7 @@ class Station extends Component {
                     </FormItem>
                 </Form>
             </Layer>
-
-        );
+        )
     }
 }
 

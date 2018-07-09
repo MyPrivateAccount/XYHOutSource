@@ -1,11 +1,12 @@
 //成交物业组件
 import { connect } from 'react-redux';
 import React, { Component } from 'react';
-import {DatePicker, Form, Layout,  Row, Col, Input, Spin, Select,  InputNumber } from 'antd'
+import {DatePicker, Form, Layout,  Row, Col, Input, Spin, Select,  InputNumber, Radio } from 'antd'
 import { getDicPars } from '../../../../utils/utils'
 import { dicKeys } from '../../../constants/const'
 import WebApiConfig from '../../../constants/webApiConfig'
 import ApiClient from '../../../../utils/apiClient'
+import RadioGroup from 'antd/lib/radio/group';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -14,6 +15,20 @@ let now = new Date();
 let zxndList =[];
 for(let i = 1990;i<=now.getFullYear();i++){
     zxndList.push({key: i, value: i})
+}
+
+let llList = [];
+for(let i =0;i<=100;i++){
+    llList.push({key: i, value: i})
+}
+
+const styles = {
+    unitLabel:{
+        verticalAlign: 'middle',
+        lineHeight: '32px',
+        paddingLeft: '12px',
+        marginRight:'1rem'
+    }
 }
 
 class TradeEstate extends Component {
@@ -27,7 +42,7 @@ class TradeEstate extends Component {
     componentWillMount = () => {
     }
     componentDidMount=()=>{
-        this.initEntity(this.props);
+        this.initEntity(this.props, true);
     }
     componentWillReceiveProps = (nextProps) => {
         if (this.props.entity !== nextProps.entity && nextProps.entity) {
@@ -36,12 +51,18 @@ class TradeEstate extends Component {
         }
     }
 
-    initEntity = (nextProps)=>{
-             if(!nextProps.showBbSelector){
-            this.getDistrictList();
-                }
-        
+    initEntity = (nextProps,isLoad)=>{
+        let oldEntity = this.props.entity||{};
         var entity = nextProps.entity;
+
+        if(isLoad || oldEntity.wyCq !== entity.wyCq || oldEntity.wyPq !== entity.wyPq || !entity.wyCq){
+            if(!nextProps.showBbSelector){
+                this.getDistrictList();
+                    }
+        }
+            
+        
+        
         if(!entity){
             return;
         }
@@ -55,7 +76,9 @@ class TradeEstate extends Component {
                 codes.push(entity.wyPq)
             }
             if(codes.length>0){
+                if( isLoad || oldEntity.wyCq !== entity.wyCq || oldEntity.wyPq !== entity.wyPq){
                 this.getInitAreaList(codes);
+                }
             }
         }
 
@@ -126,23 +149,28 @@ class TradeEstate extends Component {
         let wyWylxTypes = getDicPars(dicKeys.wylx, this.props.dic);
         let wyKjlxTypes = getDicPars(dicKeys.kjlx, this.props.dic);
         let wyJjTypes = getDicPars(dicKeys.jj, this.props.dic);
+        let zxzkList = getDicPars(dicKeys.zxzk, this.props.dic);
+        let cxList = getDicPars(dicKeys.cx, this.props.dic);
 
         let payTypes = getDicPars(dicKeys.fkfs, this.props.dic);;
         return (
             <Layout>
                 <div>
                 <Spin spinning={this.state.loading} tip={this.state.tip}>
-                    <Row style={{ textAlign: 'center', marginLeft: 30 }}>
-                        <Col span={3}><span>城区</span></Col>
+                    <Row >
+                        <Col span={6}>
+                            <span style={{width:'9rem', display:'inline-block'}}></span>
+                            <span>城区</span>
+                        </Col>
                         <Col span={3}><span>片区</span></Col>
                         <Col span={3}><span>物业名称</span></Col>
-                        <Col span={4}><span>位置/栋/座/单元</span></Col>
+                        <Col span={3}><span>位置/栋/座/单元</span></Col>
                         <Col span={3} style={{ textAlign: 'left' }}><span>楼层</span></Col>
                         <Col span={3} style={{ textAlign: 'left' }}><span>房号</span></Col>
                         <Col span={3} style={{ textAlign: 'left' }}><span>总楼层</span></Col>
                     </Row>
-                    <Row>
-                        <Col span={4}>
+                    <Row className="form-row">
+                        <Col span={6}>
                             <FormItem {...formItemLayout2} label={(<span>物业地址</span>)}>
                                 {
                                     getFieldDecorator('wyCq', {
@@ -228,89 +256,102 @@ class TradeEstate extends Component {
                             </FormItem>
                         </Col>
                     </Row>
-                    <Row>
-                        <Col span={24} pull={4}>
+                    <Row className="form-row">
+                        <Col span={20}>
                             <FormItem {...formItemLayout} label={(<span>产证物业地址</span>)}>
                                 {
                                     getFieldDecorator('wyCzwydz', {
                                         rules: [{ required: true,message:'请填写产证物业地址'}]
                                     })(
-                                        <Input style={{ width: 300 }}></Input>
+                                        <Input ></Input>
                                     )
                                 }
                             </FormItem>
                         </Col>
                     </Row>
-                    <Row>
-                        <Col span={2} push={1}>
-                            <FormItem {...formItemLayout2} label={(<span>房</span>)}>
+                    <Row className="form-row" style={{display:'flex'}}>
+                        
+                            <FormItem style={{width:'15rem'}} {...formItemLayout2} label={(<span>户型</span>)}>
                                 {
                                     getFieldDecorator('wyF', {
                                         rules: [{ required: false }]
                                     })(
-                                        <InputNumber  style={{ width: 40 }}></InputNumber>
+                                        <InputNumber min={0} style={{ width: '6rem' }}></InputNumber>
                                     )
                                 }
+                               
                             </FormItem>
-                        </Col>
-                        <Col span={2} push={1}>
-                            <FormItem {...formItemLayout2} label={(<span>厅</span>)}>
+                            <div style={styles.unitLabel}>房</div>
+                       
+                            <FormItem style={{width:'6rem'}} {...formItemLayout2}>
                                 {
                                     getFieldDecorator('wyT', {
                                         rules: [{ required: false }]
                                     })(
-                                        <InputNumber style={{ width: 40 }}></InputNumber>
+                                        <InputNumber  min={0}></InputNumber>
                                     )
                                 }
                             </FormItem>
-                        </Col>
-                        <Col span={2} push={1}>
-                            <FormItem {...formItemLayout2} label={(<span>卫</span>)}>
+                            <div style={styles.unitLabel}>厅</div>
+                      
+                       
+                            <FormItem style={{width:'6rem'}} {...formItemLayout2} >
                                 {
                                     getFieldDecorator('wyW', {
                                         rules: [{ required: false }]
                                     })(
-                                        <InputNumber style={{ width: 40 }}></InputNumber>
+                                        <InputNumber min={0}></InputNumber>
                                     )
                                 }
                             </FormItem>
-                        </Col>
-                        <Col span={3} push={1}>
-                            <FormItem {...formItemLayout2} label={(<span>阳台</span>)}>
+                            <div style={styles.unitLabel}>卫</div>
+                        
+                            <FormItem style={{width:'6rem'}} {...formItemLayout2}>
                                 {
                                     getFieldDecorator('wyYt', {
                                         rules: [{ required: false }]
                                     })(
-                                        <InputNumber style={{ width: 40 }}></InputNumber>
+                                        <InputNumber min={0}></InputNumber>
                                     )
                                 }
                             </FormItem>
-                        </Col>
-                        <Col span={3} push={1}>
-                            <FormItem {...formItemLayout2} label={(<span>露台</span>)}>
+                            <div style={styles.unitLabel}>阳台</div>
+                        
+                            <FormItem style={{width:'6rem'}} {...formItemLayout2} >
                                 {
                                     getFieldDecorator('wyLt', {
                                         rules: [{ required: false }]
                                     })(
-                                        <InputNumber style={{ width: 40 }}></InputNumber>
+                                        <InputNumber min={0}></InputNumber>
                                     )
                                 }
                             </FormItem>
-                        </Col>
-                        <Col span={3} push={1}>
-                            <FormItem {...formItemLayout2} label={(<span>观景台</span>)}>
+                            <div style={styles.unitLabel}>露台</div>
+                        
+                            <FormItem style={{width:'6rem'}} {...formItemLayout2} >
                                 {
                                     getFieldDecorator('wyJgf', {
                                         rules: [{ required: false }]
                                     })(
-                                        <InputNumber style={{ width: 40 }}></InputNumber>
+                                        <InputNumber min={0}></InputNumber>
+                                    )
+                                }
+                            </FormItem>
+                            <div style={styles.unitLabel}>观景台</div>
+                         <Col span={4}>           
+                            <FormItem  {...formItemLayout2} label="房源编号">
+                                {
+                                    getFieldDecorator('wyJgf', {
+                                        rules: [{ required: false }]
+                                    })(
+                                        <Input></Input>
                                     )
                                 }
                             </FormItem>
                         </Col>
                     </Row>
-                    <Row>
-                        <Col span={24} pull={4}>
+                    <Row className="form-row">
+                        <Col span={9}>
                             <FormItem {...formItemLayout} label={(<span>物业类型</span>)}>
                                 {
                                     getFieldDecorator('wyWylx', {
@@ -318,16 +359,14 @@ class TradeEstate extends Component {
                                     })(
                                         <Select style={{ width: 80 }}>
                                             {
-                                                wyWylxTypes.map(tp => <Option key={tp.key} value={tp.key}>{tp.key}</Option>)
+                                                wyWylxTypes.map(tp => <Option key={tp.key} value={tp.value}>{tp.key}</Option>)
                                             }
                                         </Select>
                                     )
                                 }
                             </FormItem>
                         </Col>
-                    </Row>
-                    <Row>
-                        <Col span={24} pull={4}>
+                        <Col span={9} >
                             <FormItem {...formItemLayout} label={(<span>空间类型</span>)}>
                                 {
                                     getFieldDecorator('wyKjlx', {
@@ -335,7 +374,22 @@ class TradeEstate extends Component {
                                     })(
                                         <Select style={{ width: 80 }}>
                                             {
-                                                wyKjlxTypes.map(tp => <Option key={tp.key} value={tp.key}>{tp.key}</Option>)
+                                                wyKjlxTypes.map(tp => <Option key={tp.key} value={tp.value}>{tp.key}</Option>)
+                                            }
+                                        </Select>
+                                    )
+                                }
+                            </FormItem>
+                        </Col>
+                        <Col span={6} >
+                            <FormItem {...formItemLayout} label={(<span>楼龄</span>)}>
+                                {
+                                    getFieldDecorator('wyLl', {
+                                        rules: [{ required: false }]
+                                    })(
+                                        <Select >
+                                            {
+                                                llList.map(tp => <Option key={tp.key} value={tp.value}>{tp.key}</Option>)
                                             }
                                         </Select>
                                     )
@@ -343,32 +397,42 @@ class TradeEstate extends Component {
                             </FormItem>
                         </Col>
                     </Row>
-                    <Row>
-                        <Col span={8}>
+                    
+                    <Row className="form-row">
+                        <Col span={9}>
                             <FormItem {...formItemLayout} label={(<span>建筑面积</span>)}>
                                 {
                                     getFieldDecorator('wyJzmj', {
                                         rules: [{ required: true,message:'请填写建筑面积'}]
                                     })(
-                                        <InputNumber disabled={showBbSelector}  precision={2}  style={{ width: 200 }}></InputNumber>
+                                        <InputNumber min={0} disabled={showBbSelector}  precision={2}  style={{ width: 200 }}></InputNumber>
                                     )
                                 }
                             </FormItem>
                         </Col>
-                        <Col span={8}>
+                        <Col span={9}>
                             <FormItem {...formItemLayout} label={(<span>均价</span>)}>
                                 {
                                     getFieldDecorator('wyWyJj', {
                                         rules: [{ required: true,message:'请填写均价'}]
                                     })(
-                                        <InputNumber disabled precision={2} style={{ width: 200 }}></InputNumber>
+                                        <InputNumber min={0} disabled precision={2} style={{ width: 200 }}></InputNumber>
+                                    )
+                                }
+                            </FormItem>
+                        </Col>
+                        <Col span={6}>
+                            <FormItem {...formItemLayout} label={(<span>实用面积</span>)}>
+                                {
+                                    getFieldDecorator('wySymj')(
+                                        <InputNumber min={0} disabled={showBbSelector}  precision={2}  style={{ width: 200 }}></InputNumber>
                                     )
                                 }
                             </FormItem>
                         </Col>
                     </Row>
-                    <Row>
-                        <Col span={8}>
+                    <Row className="form-row">
+                        <Col span={9}>
                             <FormItem {...formItemLayout} label={(<span>电梯数</span>)}>
                                 {
                                     getFieldDecorator('wyDts', {
@@ -379,7 +443,7 @@ class TradeEstate extends Component {
                                 }
                             </FormItem>
                         </Col>
-                        <Col span={8}>
+                        <Col span={9}>
                             <FormItem {...formItemLayout} label={(<span>每层户数</span>)}>
                                 {
                                     getFieldDecorator('wyMchs', {
@@ -390,9 +454,24 @@ class TradeEstate extends Component {
                                 }
                             </FormItem>
                         </Col>
+                        <Col span={6}>
+                            <FormItem {...formItemLayout} label={(<span>装修状况</span>)}>
+                                {
+                                    getFieldDecorator('wyZxzk', {
+                                        rules: [{ required: false }]
+                                    })(
+                                        <Select style={{ width: 80 }}>
+                                            {
+                                                zxzkList.map(tp => <Option key={tp.key} value={tp.value}>{tp.key}</Option>)
+                                            }
+                                        </Select>
+                                    )
+                                }
+                            </FormItem>
+                        </Col>
                     </Row>
-                    <Row>
-                        <Col span={8}>
+                    <Row className="form-row">
+                        <Col span={9}>
                             <FormItem {...formItemLayout} label={(<span>装修年代</span>)}>
                                 {
                                     getFieldDecorator('wyZxnd', {
@@ -407,7 +486,7 @@ class TradeEstate extends Component {
                                 }
                             </FormItem>
                         </Col>
-                        <Col span={8}>
+                        <Col span={9}>
                             <FormItem {...formItemLayout} label={(<span>家具</span>)}>
                                 {
                                     getFieldDecorator('wyJj', {
@@ -415,7 +494,22 @@ class TradeEstate extends Component {
                                     })(
                                         <Select style={{ width: 80 }}>
                                             {
-                                                wyJjTypes.map(tp => <Option key={tp.key} value={tp.key}>{tp.key}</Option>)
+                                                wyJjTypes.map(tp => <Option key={tp.key} value={tp.value}>{tp.key}</Option>)
+                                            }
+                                        </Select>
+                                    )
+                                }
+                            </FormItem>
+                        </Col>
+                        <Col span={6}>
+                            <FormItem {...formItemLayout} label={(<span>朝向</span>)}>
+                                {
+                                    getFieldDecorator('wyCx', {
+                                        rules: [{ required: false }]
+                                    })(
+                                        <Select style={{ width: 80 }}>
+                                            {
+                                                cxList.map(tp => <Option key={tp.key} value={tp.key}>{tp.key}</Option>)
                                             }
                                         </Select>
                                     )
@@ -423,7 +517,8 @@ class TradeEstate extends Component {
                             </FormItem>
                         </Col>
                     </Row>
-                    <Row>
+                    <div className="divider"></div>
+                    <Row className="form-row">
                         <Col span={8}>
                             <FormItem {...formItemLayout} label={(<span>产权取得时间</span>)}>
                                 {
@@ -452,16 +547,16 @@ class TradeEstate extends Component {
                                     getFieldDecorator('wySfhz', {
                                         rules: [{ required: false, message: '请选择是否合租' }]
                                     })(
-                                        <Select style={{ width: 180 }}>
-                                            <Option key='1' value='1'>是</Option>
-                                            <Option key='2' value='2'>否</Option>
-                                        </Select>
+                                        <RadioGroup style={{ width: 180 }}>
+                                            <Radio key='1' value={true}>是</Radio>
+                                            <Radio key='0' value={false}>否</Radio>
+                                        </RadioGroup>
                                     )
                                 }
                             </FormItem>
                         </Col>
                     </Row>
-                    <Row>
+                    <Row className="form-row">
                         <Col span={8}>
                             <FormItem {...formItemLayout} label={(<span>房源付款方式</span>)}>
                                 {
@@ -470,7 +565,7 @@ class TradeEstate extends Component {
                                     })(
                                         <Select style={{ width: 80 }}>
                                             {
-                                                payTypes.map(tp => <Option key={tp.key} value={tp.key}>{tp.key}</Option>)
+                                                payTypes.map(tp => <Option key={tp.key} value={tp.value}>{tp.key}</Option>)
                                             }
                                         </Select>
                                     )
@@ -500,7 +595,7 @@ class TradeEstate extends Component {
                             </FormItem>
                         </Col>
                     </Row>
-                    <Row>
+                    <Row className="form-row">
                         <Col span={8}>
                             <FormItem {...formItemLayout} label={(<span>房源贷款金额</span>)}>
                                 {

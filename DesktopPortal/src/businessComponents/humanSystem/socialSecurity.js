@@ -28,7 +28,7 @@ class SocialSecurity extends Component {
             wrapperCol: { span: 17 },
         };
         let socialSecurityInfo = this.props.entityInfo || {};
-        let disabled = (this.props.readOnly || false);
+        let disabled = (this.props.isReadOnly || false);
         return (
             <div>
                 <h3 style={styles.subHeader}><Icon type="tags-o" className='content-icon' />社保信息</h3>
@@ -37,9 +37,7 @@ class SocialSecurity extends Component {
                         <FormItem {...formItemLayout} label="是否参保" >
                             {getFieldDecorator('bankName', {
                                 initialValue: socialSecurityInfo.bankName,
-                                rules: [{
-                                    required: true, message: '请选择是否参保',
-                                }]
+                                rules: []
                             })(
                                 <Checkbox disabled={disabled}>已参保</Checkbox>
                             )}
@@ -49,10 +47,7 @@ class SocialSecurity extends Component {
                         <FormItem {...formItemLayout} label="参保时间">
                             {getFieldDecorator('insuredTime', {
                                 initialValue: socialSecurityInfo.insuredTime ? moment(socialSecurityInfo.insuredTime) : null,
-                                rules: [{
-                                    required: true,
-                                    message: '请选择参保时间'
-                                }]
+                                rules: []
                             })(
                                 <DatePicker disabled={disabled} format='YYYY-MM-DD' style={{ width: '100%' }} />
                             )}

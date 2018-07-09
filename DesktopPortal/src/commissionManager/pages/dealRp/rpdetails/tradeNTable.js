@@ -1,257 +1,204 @@
 //内部分配表格
 import { connect } from 'react-redux';
 import React, { Component } from 'react';
-import { Select, Table, Button, Tooltip, Input } from 'antd'
+import { Select, Table, Button, Tooltip, Input, Form, InputNumber, Spin } from 'antd'
+import WebApiConfig from '../../../constants/webApiConfig'
+import ApiClient from '../../../../utils/apiClient'
+import { dicKeys, permission } from '../../../constants/const'
+
+const FormItem = Form.Item;
 
 class TradeNTable extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            dataSource: [],
-            count: 0,
-            nbfpItems: [],
-            totalyj: 0,
-            humanList: []
+            fetchingUser: false,
+            userList: []
         }
-        this.onCellChange = this.onCellChange.bind(this)
-    }
-    appTableColumns = [
-        {
-            title: '部门', dataIndex: 'sectionName', key: 'sectionName',
-            render: (text, recored) => (
-                <span>
-                    <Input style={{ width: 80 }} />
-                </span>
-            )
-        },
-        {
-            title: '员工', dataIndex: 'username', key: 'username',
-            render: (text, recored) => (
-                <Select style={{ width: 80 }} onChange={this.onHumanChange(recored.key, 'username')}>
-                    {
-                        text.map(tp => <Select.Option key={tp.name} value={tp.name}>{tp.name}</Select.Option>)
-                    }
-                </Select>
-            )
-        },
-        {
-            title: '工号', dataIndex: 'workNumber', key: 'workNumber',
-            render: (text, recored) => (
-                <span>
-                    <Input style={{ width: 80 }} />
-                </span>
-            )
-        },
-        {
-            title: '金额', dataIndex: 'money', key: 'money',
-            render: (text, recored) => (
-                <span>
-                    <Input style={{ width: 50 }} value={text} onChange={this.onMoneyEdit(recored.key, 'money')} />
-                </span>
-            )
-        },
-        {
-            title: '比例', dataIndex: 'percent', key: 'percent',
-            render: (text, recored) => (
-                <span>
-                    <Input style={{ width: 50 }} value={text} onChange={this.onPerEdit(recored.key, 'percent')} />%
-                </span>
-            )
-        },
-        {
-            title: '单数', dataIndex: 'oddNum', key: 'oddNum',
-            render: (text, recored) => (
-                <span>
-                    <Input style={{ width: 80 }} />
-                </span>
-            )
-        },
-        {
-            title: '身份', dataIndex: 'type', key: 'type',
-            render: (text, recored) => (
-                <span>
-                    <Select style={{ width: 80 }} onChange={this.onCellChange(recored.key, 'type')}>
-                        {
-                            text.map(tp => <Select.Option key={tp.name} value={tp.name}>{tp.name}</Select.Option>)
-                        }
-                    </Select>
-                </span>
-            )
-        },
-        {
-            title: '操作', dataIndex: 'edit', key: 'edit', render: (text, recored) => (
-                <span>
 
-                    <Tooltip title='删除'>
-                        &nbsp;<Button type='primary' shape='circle' size='small' icon='team' onClick={(e) => this.handleDelete(recored)} />
-                    </Tooltip>
-                </span>
-            )
-        }
-    ];
-    componentWillMount() {
+        this._lastKeyword=  '';
+        this._fetching = false;
+        this._timeid = 0;
     }
-    componentDidMount() {
-        this.props.onFpTableRef(this)
-        if (this.props.dataSource !== null && this.props.dataSource.length !== 0) {
-            let newList = this.props.dataSource;
-            for (let i = 0; i < newList.length; i++) {
-                const { count, dataSource } = this.state;
-                const newData = {
-                    key: count,
-                    sectionName: newList[i].sectionName,
-                    username: newList[i].username,
-                    workNumber: newList[i].workNumber,
-                    money: newList[i].money,
-                    percent: newList[i].percent,
-                    oddNum: newList[i].oddNum,
-                    type: newList[i].type,
-                };
-                this.setState({
-                    dataSource: [...dataSource, newData],
-                    count: count + 1,
-                });
-            }
-        }
-    }
-    componentWillReceiveProps(newProps) {
 
-    }
-    getPercent(key) {
-        let items = this.state.nbfpItems;
-        console.log("getPercent:" + key)
-        for (let i = 0; i < items.length; i++) {
-            if (items[i].name === key) {
-                console.log(items[i].percent)
-                return items[i].percent
-            }
+    _fetchUser = (value)=>{
+        if(value ===' '){
+            return;
         }
-        return 0
-    }
-    setNbfpItems = (items) => {
-        this.setState({ nbfpItems: items })
-    }
-    setHumanList = (items) => {
-        this.setState({ humanList: items })
-    }
-    //设置总佣金
-    setZyj = (yj) => {
-        this.setState({ totalyj: yj })
-    }
-    //选择了款项类型
-    onCellChange = (key, dataIndex) => {
-        return (value) => {
-            console.log("key" + key)
-            console.log("dataIndex" + dataIndex)
-            const dataSource = [...this.state.dataSource];
-            const target = dataSource.find(item => item.key === key);
-            if (target) {
-                target['money'] = this.getPercent(value) * (this.state.totalyj == null ? 0 : this.state.totalyj);
-                target['percent'] = this.getPercent(value) * 100;
-                target['selectType'] = value
-                this.setState({ dataSource });
+        if(this._timeid){
+            clearTimeout(this._timeid)
+            this._timeid=0;
+        }
+        this._timeid = setTimeout(()=>{
+            if(this._fetching){
+                this._lastKeyword = value;
+                return;
             }
-        };
+            this._lastKeyword= '';
+            this.fetchUser(value);
+        },200)
+        
     }
-    //选择了员工，需要自动填充部门和员工id
-    onHumanChange = (key, dataIndex) => {
-        return (value) => {
-            const dataSource = [...this.state.dataSource];
-            const target = dataSource.find(item => item.key === key);
-            if (target) {
-                target['selectUser'] = value
-                this.setState({ dataSource });
-            }
+    fetchUser = async (value) => {
+        this._fetching = true;
+        let url = `${WebApiConfig.human.orgUser}`;
+        if(this._lastKeyword===value){
+            this._lastKeyword = '';
+        }
+        this.setState({fetchingUser:true})
+        var r = await ApiClient.get(url, true, { permissionId: permission.nyftPepole, keyword: value, pageSize: 0, pageIndex: 0 });
+        if (r && r.data && r.data.code === '0') {
+            this.setState({ userList: r.data.extension || [] })
+        }
+        this._fetching = false;
+        this.setState({fetchingUser:false})
+        if(this._lastKeyword){
+            this.fetchUser(this._lastKeyword);
         }
     }
-    //编辑了金额
-    onMoneyEdit = (key, dataIndex) => {
-        return (value) => {
-            console.log("onMoneyEdit:" + value)
-            const dataSource = [...this.state.dataSource];
-            const target = dataSource.find(item => item.key === key);
-            if (target) {
-                target['money'] = value.target.value;
-                this.setState({ dataSource });
-            }
-        };
-    }
-    //编辑了比例
-    onPerEdit = (key, dataIndex) => {
-        return (value) => {
-            console.log("onPerEdit:" + value)
-            const dataSource = [...this.state.dataSource];
-            const target = dataSource.find(item => item.key === key);
-            if (target) {
-                target['percent'] = value.target.value;
-                target['money'] = ((value.target.value) / 100) * (this.state.totalyj == null ? 0 : this.state.totalyj);
-                this.setState({ dataSource });
-            }
-        };
-    }
-    //新增
-    handleAdd = () => {
-        const { count, dataSource } = this.state;
-        const newData = {
-            key: count,
-            sectionName: "",
-            username: this.state.humanList,
-            selectUser:'',
-            workNumber: "",
-            money: 0,
-            percent: 0,
-            oddNum: 0,
-            type: this.state.nbfpItems,
-            selectType: '',
-            edit: ""
-        };
+    selectedUser = (row,value) => {
         this.setState({
-            dataSource: [...dataSource, newData],
-            count: count + 1,
+            data: [],
+            fetching: false,
         });
-        console.log("datasource:" + this.state.dataSource)
-    }
-    //删除
-    handleDelete = (info) => {
-        const dataSource = [...this.state.dataSource];
-        const target = dataSource.find(item => item.key === info.key);
-        if (target) {
-            dataSource.splice(target, 1)
-            this.setState({ dataSource });
-        }
-    }
-    //获取表格数据
-    getData = (id) => {
-        var dt = []
-        const dataSource = [...this.state.dataSource];
-        for (var i = 0; i < dataSource.length; i++) {
-            let temp = {}
-            temp.id = id
-            temp.sectionName = dataSource[i].sectionName
-            temp.username = dataSource[i].selectUser
-            temp.workNumber = dataSource[i].workNumber
-            temp.money = dataSource[i].money
-            temp.percent = dataSource[i].percent / 100
-            temp.oddNum = dataSource[i].oddNum
-            temp.type = dataSource[i].selectType
+        if (!value || (value && value.length === 0)) {
+            this._onRowChanged(row,'uid', null)
+            this.setState({ userList: [] })
+        } else {
+            let ru = value[value.length - 1];
+            let ui = this.state.userList.find(x=>x.id === ru.key);
+            this.setState({ userList: [] })
+            setTimeout(() => {
+                this._onRowChanged(row,'uid', ui)
+                
+            }, 0);
 
-            dt[i] = temp
         }
-        return dt;
+       
     }
+
+    _getTableColums = () => {
+        let sfItems = this.props.items || [];
+        let canEdit = this.props.canEdit || false;
+        let appTableColumns = [
+            {
+                title: '部门', dataIndex: 'sectionId', key: 'sectionId',
+                render: (text, record) => (
+                    <FormItem>
+                        <Select disabled value={record.sectionId}>
+                            <Select.Option value={record.sectionId}>{record.sectionName}</Select.Option>
+                        </Select>
+                    </FormItem>
+                )
+            },
+            {
+                title: '员工', dataIndex: 'uid', key: 'uid',width:'15rem',
+                render: (text, record) => (
+                    <FormItem hasFeedback validateStatus={record.errors['uid'] ? 'error' : ''}>
+                        <Select
+                            disabled={!canEdit}
+                            mode="multiple"
+                            maxTagCount={1}
+                            labelInValue
+                            value={record.uid||[]}
+                            placeholder="输入姓名、员工编号或手机号码"
+                            notFoundContent={this.state.fetchingUser ? <Spin size="small" /> : '没有数据'}
+                            filterOption={false}
+                            onSearch={this._fetchUser}
+                            onChange={v=>this.selectedUser(record, v)}
+                            style={{ width: '100%' }}
+                        >
+                            {this.state.userList.map(d => <Select.Option key={d.id}>{`${d.name}\t\t${d.organizationFullName}`}</Select.Option>)}
+                        </Select>
+                    </FormItem>
+                )
+            },
+            {
+                title: '工号', dataIndex: 'workNumber', key: 'workNumber',width:'15rem',
+                render: (text, record) => (
+                    <FormItem>
+                        <Input value={text} disabled />
+                    </FormItem>
+                )
+            },
+            {
+                title: '身份', dataIndex: 'type', key: 'type',width:'10rem',
+                render: (text, record) => (
+                    <FormItem hasFeedback validateStatus={record.errors['type'] ? 'error' : ''}>
+                        <Select value={text} >
+                            {
+                                sfItems.map(tp => <Select.Option key={tp.name} value={tp.code}>{tp.name}</Select.Option>)
+                            }
+                        </Select>
+                    </FormItem>
+                )
+            },
+            {
+                title: '比例', dataIndex: 'percent', key: 'percent',width:'10rem',
+                render: (text, record) => (
+                    <FormItem hasFeedback validateStatus={record.errors['percent'] ? 'error' : ''}>
+                        <InputNumber min={0} value={text} precision={2} />%
+                </FormItem>
+                )
+            },
+            {
+                title: '金额', dataIndex: 'money', key: 'money',width:'15rem',
+                render: (text, record) => (
+                    <FormItem>
+                        <InputNumber disabled value={text} />
+                    </FormItem>
+                )
+            },
+            {
+                title: '单数', dataIndex: 'oddNum', key: 'oddNum',width:'10rem',
+                render: (text, record) => (
+                    <FormItem hasFeedback validateStatus={record.errors['oddNum'] ? 'error' : ''}>
+                        <InputNumber value={text} />
+                    </FormItem>
+                )
+            },
+            {
+                title: '操作', dataIndex: 'edit', key: 'edit', render: (text, recored) => {
+                    return canEdit ? <span>
+
+                        <Tooltip title='删除'>
+                            &nbsp;<Button type='primary' shape='circle' size='small' icon='team' onClick={(e) => this._onDelRow(recored)} />
+                        </Tooltip>
+                    </span> : null
+                }
+            }
+        ];
+        return appTableColumns;
+    }
+    _onRowChanged = (row, key, value) => {
+        if (this.props.onRowChanged) {
+            if (value && value.target) {
+                value = value.target.value;
+            }
+            this.props.onRowChanged(row, key, value)
+        }
+    }
+
+    _onDelRow = (row) => {
+        if (this.props.onDelRow) {
+            this.props.onDelRow(row);
+        }
+    }
+
     render() {
-        const { dataSource } = this.state
+        const { dataSource } = this.props
+        const columns = this._getTableColums();
         return (
-            <Table bordered columns={this.appTableColumns} dataSource={dataSource}></Table>
+            <Form>
+                <Table bordered size="small" columns={columns} pagination={false} dataSource={dataSource}></Table>
+            </Form>
         )
     }
 }
 function MapStateToProps(state) {
 
     return {
-        basicData: state.base,
-        operInfo: state.rp.operInfo,
-        ext: state.rp.ext
+
     }
 }
 

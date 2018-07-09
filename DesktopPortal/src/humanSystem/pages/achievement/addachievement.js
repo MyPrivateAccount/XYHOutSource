@@ -1,10 +1,11 @@
 import {connect} from 'react-redux';
 import {getDicParList, postBlackLst, setSalaryInfo, getcreateStation} from '../../actions/actionCreator';
 import React, {Component} from 'react'
-import {Input, Select, Form, Button, Row, Col, Cascader, InputNumber} from 'antd'
+import {Input, Select, Form, Button, Row, Col, Cascader, InputNumber, TreeSelect} from 'antd'
 import {NewGuid} from '../../../utils/appUtils';
 import Layer from '../../../components/Layer'
-
+import {editSalary, addSalary} from '../../serviceAPI/salaryService'
+import {getPosition} from '../../serviceAPI/staffService'
 const FormItem = Form.Item;
 const Option = Select.Option;
 const formItemLayout = {
@@ -18,46 +19,39 @@ class Achievement extends Component {
     componentWillMount() {
         this.state = {
             id: NewGuid(),
-            department: ""
+            department: "",
+            showLoading: false,
+            positionList: []
         };
     }
 
     componentDidMount() {
-        let len = this.props.selAchievementList.length;
-        if (this.props.ismodify == 1) {//修改界面
-            this.state.id = this.props.selAchievementList[len - 1].id;
-            this.props.form.setFieldsValue({organize: this.props.selAchievementList[len - 1].organize});
-            this.props.form.setFieldsValue({position: this.props.selAchievementList[len - 1].position});
-            this.props.form.setFieldsValue({baseSalary: this.props.selAchievementList[len - 1].baseSalary});
-            this.props.form.setFieldsValue({subsidy: this.props.selAchievementList[len - 1].subsidy});
-            this.props.form.setFieldsValue({clothesBack: this.props.selAchievementList[len - 1].clothesBack});
-            this.props.form.setFieldsValue({administrativeBack: this.props.selAchievementList[len - 1].administrativeBack});
-            this.props.form.setFieldsValue({portBack: this.props.selAchievementList[len - 1].portBack});
-        }
-    }
 
-    hasErrors(fieldsError) {
-        return !Object.keys(fieldsError).some(field => fieldsError[field]);
     }
 
     handleSubmit = (e) => {
         e.preventDefault();
-        let self = this;
+        let salaryInfo = this.props.location.state;
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                values.id = self.state.id;
-                if (values.organize instanceof Array) {
-                    values.organize = values.organize[values.organize.length - 1];
+                values.id = salaryInfo.id ? salaryInfo.id : null;
+                console.log("表单内容:", values);
+                this.setState({showLoading: true});
+                if (salaryInfo.id) {
+                    editSalary(values).then(res => {
+                        this.setState({showLoading: false});
+                        if (res.isOk) {
+                            this.props.form.resetFields();
+                        }
+                    });
+                } else {
+                    addSalary(values).then(res => {
+                        this.setState({showLoading: false});
+                        if (res.isOk) {
+                            this.props.form.resetFields();
+                        }
+                    });
                 }
-
-                let vf = self.props.stationList[self.props.stationList.findIndex(function (v, i) {
-                    return v.id == values.position;
-                })];
-                values.positionName = vf.stationname;
-
-                self.props.dispatch(setSalaryInfo(values));
-                this.props.form.resetFields();
-
             }
         });
     }
@@ -67,95 +61,100 @@ class Achievement extends Component {
             this.props.dispatch(getcreateStation(this.state.department));
         }
     }
-
-    handleChooseDepartmentChange = (e) => {
-        this.state.department = e[e.length - 1];
+    //组织结构变更
+    handleDepartmentChange = (e) => {
+        getPosition(e).then(res => {
+            this.setState({positionList: res.extension || []});
+        });
 
     }
 
     render() {
-        const {getFieldDecorator, getFieldsError, getFieldsValue, isFieldTouched} = this.props.form;
-        let self = this;
+        const {getFieldDecorator, getFieldsValue} = this.props.form;
+        let achievementInfo = this.props.location.state;
+        let disabled = (this.props.readOnly || false);
         return (
-            <Layer>
+            <Layer showLoading={this.state.showLoading}>
                 <Form style={{marginTop: '10px'}} onSubmit={this.handleSubmit}>
+                    <div className="page-title" style={{marginBottom: '10px', textAlign: 'center'}}>薪酬信息</div>
                     <Row>
                         <Col span={7}>
                             <FormItem {...formItemLayout} label="选择组织">
                                 {getFieldDecorator('organize', {
+                                    initialValue: achievementInfo.organize,
                                     rules: [{
                                         required: true, message: '请选择组织',
                                     }]
                                 })(
-                                    <Cascader disabled={this.props.ismodify == 1} options={this.props.setContractOrgTree} onChange={this.handleChooseDepartmentChange} onPopupVisibleChange={this.handleDepartmentChange} changeOnSelect placeholder="归属部门" />
+                                    <TreeSelect disabled={disabled} treeData={this.props.setContractOrgTree} onChange={this.handleDepartmentChange} placeholder="归属部门" />
                                 )}
                             </FormItem>
                         </Col>
                         <Col span={7}>
                             <FormItem {...formItemLayout} label="选择职位">
                                 {getFieldDecorator('position', {
+                                    initialValue: achievementInfo.position,
                                     rules: [{
                                         required: true, message: '请选择职位',
                                     }]
                                 })(
-                                    <Select disabled={this.props.ismodify == 1} placeholder="选择职位">
+                                    <Select disabled={disabled} placeholder="选择职位">
                                         {
-                                            (self.props.stationList && self.props.stationList.length > 0) ?
-                                                self.props.stationList.map(
-                                                    function (params) {
-                                                        return <Option key={params.key} value={params.id}>{params.stationname}</Option>;
-                                                    }
-                                                ) : null
+                                            (this.state.positionList || []).map(params =>
+                                                <Option key={params.id} value={params.id}>{params.positionName}</Option>
+                                            )
                                         }
                                     </Select>
                                 )}
                             </FormItem>
                         </Col>
-                    </Row>
-                    <Row>
                         <Col span={7}>
                             <FormItem {...formItemLayout} label="基本工资">
                                 {getFieldDecorator('baseSalary', {
+                                    initialValue: achievementInfo.baseSalary,
                                     rules: [{
                                         required: true, message: '请输入基本工资',
                                     }]
                                 })(
-                                    <InputNumber placeholder="请输入基本工资" style={{width: '100%'}} />
-                                )}
-                            </FormItem>
-                        </Col>
-                        <Col span={7}>
-                            <FormItem {...formItemLayout} label="岗位补贴">
-                                {getFieldDecorator('subsidy', {
-                                    rules: [{
-                                        required: true, message: '请输入岗位补贴',
-                                    }]
-                                })(
-                                    <InputNumber placeholder="请输入岗位补贴" style={{width: '100%'}} />
+                                    <InputNumber disabled={disabled} placeholder="请输入基本工资" style={{width: '100%'}} />
                                 )}
                             </FormItem>
                         </Col>
                     </Row>
                     <Row>
                         <Col span={7}>
+                            <FormItem {...formItemLayout} label="岗位补贴">
+                                {getFieldDecorator('subsidy', {
+                                    initialValue: achievementInfo.subsidy,
+                                    rules: [{
+                                        required: true, message: '请输入岗位补贴',
+                                    }]
+                                })(
+                                    <InputNumber disabled={disabled} placeholder="请输入岗位补贴" style={{width: '100%'}} />
+                                )}
+                            </FormItem>
+                        </Col>
+                        <Col span={7}>
                             <FormItem {...formItemLayout} label="交通补贴">
                                 {getFieldDecorator('trafficAllowance', {
+                                    initialValue: achievementInfo.trafficAllowance,
                                     rules: [{
                                         required: true, message: '请输入交通补贴',
                                     }]
                                 })(
-                                    <InputNumber placeholder="请输入交通补贴" style={{width: '100%'}} />
+                                    <InputNumber disabled={disabled} placeholder="请输入交通补贴" style={{width: '100%'}} />
                                 )}
                             </FormItem>
                         </Col>
                         <Col span={7}>
                             <FormItem {...formItemLayout} label="通讯补贴">
                                 {getFieldDecorator('communicationAllowance', {
+                                    initialValue: achievementInfo.communicationAllowance,
                                     rules: [{
                                         required: true, message: '请输入通讯补贴',
                                     }]
                                 })(
-                                    <InputNumber placeholder="请输入通讯补贴" style={{width: '100%'}} />
+                                    <InputNumber disabled={disabled} placeholder="请输入通讯补贴" style={{width: '100%'}} />
                                 )}
                             </FormItem>
                         </Col>
@@ -164,61 +163,31 @@ class Achievement extends Component {
                         <Col span={7}>
                             <FormItem {...formItemLayout} label="其他补贴">
                                 {getFieldDecorator('otherAllowance', {
+                                    initialValue: achievementInfo.otherAllowance,
                                     rules: [{
                                         required: false, message: '请输入其他补贴',
                                     }]
                                 })(
-                                    <InputNumber placeholder="请输入其他补贴" style={{width: '100%'}} />
+                                    <InputNumber disabled={disabled} placeholder="请输入其他补贴" style={{width: '100%'}} />
                                 )}
                             </FormItem>
                         </Col>
                         <Col span={7}> </Col>
                     </Row>
-
-
-                    {/* <FormItem {...formItemLayout1} label="工装扣款">
-                        {getFieldDecorator('clothesBack', {
-                            rules: [{
-                                required: true, message: 'please entry',
-                            }]
-                        })(
-                            <InputNumber placeholder="请输入工装扣款" style={{width: '100%'}} />
-                        )}
-                    </FormItem> 
-                     <FormItem {...formItemLayout1} label="行政扣款">
-                        {getFieldDecorator('administrativeBack', {
-                            rules: [{
-                                required: true, message: 'please entry',
-                            }]
-                        })(
-                            <InputNumber placeholder="请输入行政扣款" style={{width: '100%'}} />
-                        )}
-                    </FormItem> 
-                     <FormItem {...formItemLayout1} label="端口扣款">
-                        {getFieldDecorator('portBack', {
-                            rules: [{
-                                required: true, message: 'please entry',
-                            }]
-                        })(
-                            <InputNumber placeholder="请输入端口扣款" style={{width: '100%'}} />
-                        )}
-                    </FormItem> */}
-                    <Row>
-                        <Col span={14}>
-                            <Button type="primary" htmlType="submit" disabled={this.hasErrors(getFieldsValue())} >提交</Button>
+                    <Row style={{textAlign: 'center', display: (disabled ? 'none' : 'block')}}>
+                        <Col span={20}>
+                            <Button type="primary" disabled={disabled} htmlType="submit" >提交</Button>
                         </Col>
                     </Row>
                 </Form>
-            </Layer>
+            </Layer >
         );
     }
 }
 
 function tableMapStateToProps(state) {
     return {
-        selAchievementList: state.basicData.selAchievementList,
         setContractOrgTree: state.basicData.searchOrgTree,
-        stationList: state.search.stationList,
     }
 }
 

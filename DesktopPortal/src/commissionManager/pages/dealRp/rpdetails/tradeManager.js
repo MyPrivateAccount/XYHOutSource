@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import React, { Component } from 'react';
 import { dealRpGet, dealGhGet, dealFpGet, dealWyGet, dealKhGet, dealYzGet, getShopDetail, getBuildingDetail 
          ,syncRp,syncWy,syncYz,syncKh,syncFp} from '../../../actions/actionCreator'
-import { Modal, Layout, Table, Button, Checkbox, Tree, Tabs, Icon, Popconfirm, Spin, Tooltip, notification } from 'antd';
+import { Affix, Layout, Table, Button, Checkbox, Tree, Tabs, Icon, Popconfirm, Spin, Tooltip, notification } from 'antd';
 import TradeContract from './tradeContract'
 import TradeEstate from './tradeEstate'
 import TradeBnsOwner from './tradeBnsOwer'
@@ -20,6 +20,7 @@ import {getDicParList} from '../../../../actions/actionCreators'
 import {dicKeys, branchPar} from '../../../constants/const'
 import WebApiConfig from  '../../../constants/webApiConfig'
 import ApiClient from '../../../../utils/apiClient'
+import { getDicPars } from '../../../../utils/utils';
 
 
 
@@ -90,7 +91,12 @@ class TradeManager extends Component {
             dicKeys.wylx,
             dicKeys.kjlx,
             dicKeys.jj,
-            dicKeys.khxz
+            dicKeys.zxzk,
+            dicKeys.cx,
+            dicKeys.khxz,
+            dicKeys.sfxycqjybgj,
+            dicKeys.khly,
+            dicKeys.sfdx
         ]);
         let initState= (this.props.location||{}).state ||{};
         this.setState({opType: initState.op})
@@ -166,21 +172,38 @@ class TradeManager extends Component {
     //     this.setState({ activeTab: e });
     // }
  
-    cjrqChanged = ()=>{
+    inputChanged = (key, value)=>{
         let newReport = this._getSubFormValues();
 
-        let rq = newReport.cjrq;
-        if(rq){
-            rq = moment(rq)
-
-            let yj = newReport.reportYjfp || {};
-            yj.yjYzyjdqr  = rq.days(180);
-            yj.yjKhyjdqr= rq.days(180);
-            newReport.reportYjfp = {...yj};
-
-            this.setState({report: {...this.state.report,...newReport}})
+        if(key === 'cjrq'){
+            console.log(value)
         }
-        
+        if(key ==='cjzj'){
+            //更新均价
+            newReport.cjzj = value;
+            let wy = newReport.reportWy || this.state.report.reportWy;
+            if(wy){
+                if(wy.wyJzmj){
+                    wy.wyWyJj =  Math.round(( newReport.cjzj / wy.wyJzmj)*100)/100;
+                    newReport.reportWy = {...wy};
+                }
+                this.setState({report: {...this.state.report,...newReport}})
+            }
+            
+
+           
+        }
+        if(key === 'yj'){
+            newReport.ycjyj = value;
+            let yjfp = newReport.reportYjfp || this.state.report.reportYjfp;
+            if(yjfp){
+                yjfp.yjYzys = value - (yjfp.yjKhys||0)
+                newReport.reportYjfp = {...yjfp}
+                this.setState({report: {...this.state.report,...newReport}})
+            }
+        }
+
+       
     }
 
     showBbDialog =(b)=>{
@@ -200,7 +223,7 @@ class TradeManager extends Component {
         newReport.cjbbId = item.id;
 
         //获取楼盘信息
-        let wy = newReport.reportWy ||{};
+        let wy = newReport.reportWy || this.state.report.reportWy ||{};
         wy = {...wy}
         let url = `${WebApiConfig.project.get}${item.projectId}`
         let r = await ApiClient.get(url);
@@ -224,26 +247,44 @@ class TradeManager extends Component {
             wy.wyFh = bi.number;
             wy.wyZlc = bi.floors;
             wy.wyJzmj = bi.buildingArea;
+            wy.wySymj = bi.houseArea;
+            if(wy.wyJzmj){
+                wy.wyWyJj =  Math.round(( newReport.cjzj / wy.wyJzmj)*100)/100;
+            }
+            
+            let cxList = getDicPars(dicKeys.cx, this.props.dic);
+            let item = cxList.find(x=>x.value === bi.toward);
+            if(item){
+                wy.wyCx = item.key;
+            }
         }else{
             notification.error({message:'获取商铺信息失败'})
         }
-        newReport.reportWy = wy;
+        newReport.reportWy =  wy;
 
-        let yz = newReport.reportYz ||{};
+        let yz = newReport.reportYz || this.state.report.reportYz || {};
         yz = {...yz}
-        yz.yzMc = item.customerName;
+        yz.yzMc = wy.wyMc;
         newReport.reportYz = yz;
 
-        let kh = newReport.reportKh ||{};
+        let kh = newReport.reportKh || this.state.report.reportKh || {};
         kh = {...kh}
         kh.khMc = item.customerName;
         newReport.reportKh = kh;
+        if(item.customerInfo){
+            let csList = getDicPars(dicKeys.khly, this.props.dic);
+            let cs = csList.find(x=>x.value === item.customerInfo.source);
+            if(cs){
+                kh.khKhly = cs.key;
+            }
+        }
         
-        let yj = newReport.reportYjfp || {};
+        let yj = newReport.reportYjfp || this.state.report.reportYjfp || {};
             yj.yjYzyjdqr  = newReport.cjrq.days(180);
             yj.yjKhyjdqr= newReport.cjrq.days(180);
             yj.yjYzys = newReport.ycjyj;
             yj.yjKhys = 0;
+            yj.yjZcjyj = yj.yjYzys + yj.yjKhys;
             newReport.reportYjfp = {...yj};
     
         console.log(newReport);
@@ -274,22 +315,22 @@ class TradeManager extends Component {
     render() {
         return (
             <Layer>
-                <Layout>
+                <div className="full" style={{overflow:'auto'}} ref={(node) => { this.container = node; }}>
                     {/* <div>
                         <Tooltip title="返回">
                             <Button type='primary' shape='circle' icon='arrow-left' style={{ 'margin': 10, float: 'left' }} onClick={this.props.handleback} />
                         </Tooltip>
                     </div> */}
                     <Spin spinning={this.state.isDataLoading}>
-                        <Content style={{ overflowY: 'auto', height: '100%' }}>
-                        <div style={{paddingTop:'1rem', paddingBottom:'1rem'}}>
+                        <Content style={{ overflowY: 'auto', height: '100%' }} >
+                        <Affix offsetTop  target={() => this.container} style={{paddingTop:'1rem', paddingBottom:'1rem'}}>
                             <Button type="primary">保存</Button>
                             <Button type="primary" style={{marginLeft:'0.5rem'}}>提交审核</Button>
-                            </div>
+                            </Affix >
                             <Tabs defaultActiveKey="jyht" onChange={this.loadTabData}>
                                 <TabPane tab="交易合同" key="jyht">
                                     <TradeContract 
-                                        cjrqChanged={this.cjrqChanged}
+                                        inputChanged={this.inputChanged}
                                         entity={this.state.report} 
                                         wrappedComponentRef={(inst) => this.jyhtForm = inst}  
                                         showDialog={this.showBbDialog} 
@@ -328,6 +369,7 @@ class TradeManager extends Component {
                                 </TabPane>
                                 <TabPane tab="业绩分配" key="yjfp">
                                     <TradePerDis  
+                                        report={this.state.report}
                                         entity={this.state.report.reportYjfp} 
                                         wrappedComponentRef={(inst) => this.yjForm = inst}  
                                         showBbSelector={this.state.showBbSelector}
@@ -357,7 +399,7 @@ class TradeManager extends Component {
                         </Content>
                     </Spin>
                     <TradeReportTable visible={this.state.showBbDialog} onClose={this.showBbDialog} selectedCallback={this.bbChanged}/>
-                </Layout>
+                </div>
             </Layer>
         )
     }

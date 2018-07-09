@@ -1,62 +1,83 @@
 import {connect} from 'react-redux';
-import {setLoadingVisible, adduserPage, deleteSalaryInfo, getSalaryList, getcreateStation} from '../../actions/actionCreator';
 import React, {Component} from 'react';
-import {Input, Spin, Checkbox, Button, notification} from 'antd';
-//import {getDicParList} from '../actions/actionCreator';
-import SearchCondition from './searchCondition';
-import SearchResult from './searchResult';
+import {Input, Table, Button, notification, Row, Col, Popconfirm, Modal} from 'antd';
 import './search.less';
 import Layer, {LayerRouter} from '../../../components/Layer'
 import {Route} from 'react-router'
 import Achievement from './addachievement'
-
+import ApiClient from '../../../utils/apiClient'
+import WebApiConfig from '../../constants/webapiConfig';
+import {getSalaryList} from '../../serviceAPI/salaryService'
 const buttonDef = [
     {buttonID: "addnew", buttonName: "新建", icon: '', type: 'primary', size: 'large', },
-    {buttonID: "modify", buttonName: "修改", icon: '', type: 'primary', size: 'large', },
-    {buttonID: "delete", buttonName: "删除", icon: '', type: 'primary', size: 'large', },
+    // {buttonID: "modify", buttonName: "修改", icon: '', type: 'primary', size: 'large', },
+    // {buttonID: "delete", buttonName: "删除", icon: '', type: 'primary', size: 'large', },
 ];
 
 
 class MainIndex extends Component {
     state = {
+        condition: {
+            keyWord: '',
+            pageIndex: 0,
+            pageSize: 10
+        },
+        showLoading: false,
+        salaryList: {extension: [], pageIndex: 0, pageSize: 10, totalCount: 0},
+        curAchievementInfo: {},
+        showDetail: false
     }
 
     componentWillMount() {
-        //this.props.dispatch(getSalaryList(this.props.selAchievementList));
-        //this.props.dispatch(setLoadingVisible(false));//测试
+        this.handleSearch();
+    }
+    componentDidMount() {
+        this.handleSearch();
     }
     gotoSubPage = (path, params) => {
-        this.props.history.push(`${this.props.match.url}/${path}`, {...params})
+        this.props.history.push(`${this.props.match.url}/${path}`, params)
     }
+
+    handleSearch = () => {
+        let condition = this.state.condition;
+        // getSalaryList(condition).then(res => {
+        //     this.setState({salaryList: res.extension});
+        // });
+    }
+
     handleClickFucButton = (e) => {
         if (e.target.id === "addnew") {
-            // this.props.dispatch(adduserPage({id: 11, menuID: 'menu_achievementnew', displayName: '新建薪酬', type: 'item'}));
-            this.gotoSubPage('achievement', {ismodify:'0'});
-        } else if (e.target.id === "modify") {
-            if (this.props.selAchievementList.length > 0) {
-                this.props.dispatch(getcreateStation(this.props.selAchievementList[this.props.selAchievementList.length - 1].organize));
-                // this.props.dispatch(adduserPage({id: 12, menuID: 'menu_achievementmodify', displayName: '修改薪酬', type: 'item'}));
-                this.gotoSubPage('achievement', {ismodify:'1'});
-            }
-            else {
-                notification.error({
-                    message: '未选择指定职位薪酬',
-                    description: "请选择指定职位薪酬",
-                    duration: 3
-                });
-            }
-        } else if (e.target.id === "delete") {
-            if (this.props.selAchievementList.length > 0) {
-                this.props.dispatch(deleteSalaryInfo(this.props.selAchievementList[this.props.selAchievementList.length - 1]));
-            }
-            else {
-                notification.error({
-                    message: '未选择指定职位薪酬',
-                    description: "请选择指定职位薪酬",
-                    duration: 3
-                });
-            }
+            this.gotoSubPage('achievement', {});
         }
+    }
+
+    handleOperClick = (record, type) => {
+        if (type === "modify") {
+            this.gotoSubPage('achievement', record)
+        } else if (type === "delete") {
+            this.handleDelete(record.id);
+        }
+    }
+    //删除薪酬记录
+    handleDelete = (blackInfoId) => {
+        let url = WebApiConfig.server.deleteSalary;
+        let huResult = {isOk: false, msg: '删除薪酬失败！'};
+        ApiClient.post(url, null, null, 'DELETE').then(res => {
+            if (res.data.code == 0) {
+                huResult.msg = '删除薪酬成功';
+                notification.success({
+                    message: huResult.msg,
+                    duration: 3
+                });
+            }
+            this.handleSearch();
+        }).catch(e => {
+            huResult.msg = "删除薪酬接口调用异常!";
+            notification.error({
+                message: huResult.msg,
+                duration: 3
+            });
+        })
     }
     //是否有权限
     hasPermission(buttonInfo) {
@@ -74,25 +95,99 @@ class MainIndex extends Component {
         return hasPermission;
     }
 
+    showDetail = (record) => {
+        // this.gotoSubPage('achievementPreview', record);
+        this.setState({curAchievementInfo: record, showDetail: true});
+    }
+
+    getColumns() {
+        let columns = [
+            {title: '组织(分公司)', dataIndex: 'organize', key: 'organize', },
+            {title: '职位', dataIndex: 'positionName', key: 'positionName'},
+            {title: '基本工资', dataIndex: 'baseSalary', key: 'baseSalary'},
+            {title: '岗位补贴', dataIndex: 'subsidy', key: 'subsidy'},
+            {title: '工装扣款', dataIndex: 'clothesBack', key: 'clothesBack'},
+            {title: '行政扣款', dataIndex: 'administrativeBack', key: 'administrativeBack'},
+            {title: '端口扣款', dataIndex: 'portBack', key: 'portBack'},
+            {
+                title: "操作", dataIndex: "operation", key: "operation",
+                render: (text, record) => {
+                    let hasModifyPermission = this.hasPermission({buttonID: "modify", buttonName: "修改"});
+                    let hasDeletePermission = this.hasPermission({buttonID: "delete", buttonName: "删除"});
+                    return (
+                        <span>
+                            {hasModifyPermission ? <Button type="primary" size='small' shape="circle" icon="edit" style={{marginRight: '5px'}} onClick={() => this.handleOperClick(record, 'modify')} /> : null}
+                            {hasDeletePermission ? <Button type="primary" size='small' shape="circle" icon="idcard" style={{marginRight: '5px'}} onClick={() => this.showDetail(record)} /> : null}
+                            <Popconfirm title="确定要删除该记录?" onConfirm={() => this.handleOperClick(record, 'delete')} okText="是" cancelText="否">
+                                <Button type="primary" shape="circle" size='small' icon="delete" style={{marginRight: '5px'}} />
+                            </Popconfirm>
+                        </span>
+                    );
+                }
+            }
+        ];
+        return columns;
+    }
+
+    //翻页
+    handleChangePage = (pageIndex) => {
+        let condition = this.state.condition;
+        condition.pageIndex = pageIndex;
+        this.setState({condition: condition}, () => {
+            this.handleSearch();
+        });
+    }
+    handleKeyChangeWord = (e) => {
+        let condition = this.state.condition;
+        condition.keyWord = e.target.value;
+        this.setState({condition: condition})
+    }
     render() {
-        let showLoading = this.props.showLoading;
+        let salaryList = this.state.salaryList;
+        let paginationInfo = {current: salaryList.pageIndex, pageSize: salaryList.pageSize, total: salaryList.totalCount}
         return (
-            <Layer >
-                <Spin spinning={showLoading}>
-                    <SearchCondition />
-                    {
-                        buttonDef.map(
-                            (button, i) => this.hasPermission(button) ?
-                                <Button key={i} id={button.buttonID} style={{marginTop: '10px', marginBottom: '10px', marginRight: '10px', border: 0}}
-                                    onClick={this.handleClickFucButton}
-                                    icon={button.icon} size={button.size} type={button.type}>{button.buttonName}</Button> : null
-                        )
-                    }
-                    <SearchResult />
-                </Spin>
+            <Layer showLoading={this.state.showLoading}>
+                <div className="searchBox">
+                    <Row type="flex">
+                        <Col span={12}>
+                            <Input placeholder={'请输入名称'} onChange={this.handleKeyChangeWord} onPressEnter={this.handleSearch} />
+                        </Col>
+                        <Col span={8}>
+                            <Button type='primary' className='searchButton' onClick={this.handleSearch}>查询</Button>
+                        </Col>
+                    </Row>
+                </div>
+                {
+                    buttonDef.map(
+                        (button, i) => this.hasPermission(button) ?
+                            <Button key={i} id={button.buttonID} style={{marginTop: '10px', marginBottom: '10px', marginRight: '10px', border: 0}}
+                                onClick={this.handleClickFucButton}
+                                icon={button.icon} size={button.size} type={button.type}>{button.buttonName}</Button> : null
+                    )
+                }
+                <div>
+                    {<p style={{marginBottom: '10px'}}>目前已为你筛选出<b>{salaryList.totalCount}</b>条职位薪酬信息</p>}
+                    <div id="searchResult">
+                        <Table id={"table"} rowKey={record => record.id}
+                            columns={this.getColumns()}
+                            pagination={paginationInfo}
+                            onChange={this.handleChangePage}
+                            dataSource={salaryList.extension} bordered size="middle"
+                        />
+                    </div>
+                </div>
+                <Modal title="薪酬详情"
+                    visible={this.state.showDetail}
+                    footer={[
+                        <Button key="back" onClick={() => this.setState({showDetail: false})}>关闭</Button>
+                    ]}
+                >
+                    <Achievement location={{state: this.state.curAchievementInfo}} readOnly />
+                </Modal>
+
                 <LayerRouter>
                     <Route path={`${this.props.match.url}/achievement`} render={(props) => <Achievement  {...props} />} />
-                    {/* <Route path={`${this.props.match.url}/becomeStaff`} render={(props) => <BecomeStaff changeCallback={this.changeCallback} {...props} />} /> */}
+                    <Route path={`${this.props.match.url}/achievementPreview`} render={(props) => <Achievement  {...props} readOnly />} />
                 </LayerRouter>
             </Layer>
         )
@@ -101,8 +196,7 @@ class MainIndex extends Component {
 
 function mapStateToProps(state) {
     return {
-        selAchievementList: state.basicData.selAchievementList,
-        showLoading: state.basicData.showLoading,
+        selAchievementList: state.basicData.selAchievementList
     }
 }
 

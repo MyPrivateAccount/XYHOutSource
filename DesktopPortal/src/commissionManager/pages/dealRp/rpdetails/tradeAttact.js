@@ -59,7 +59,6 @@ class TradeAttact extends Component {
             <Layout>
                 <Sider>
                     <Menu mode="inline"
-                        theme="dark"
                         onClick={this.handleMenuClick}
                         defaultSelectedKeys={["menu_htyjfyj"]}>
                         {menuDefine.map((menu, i) =>

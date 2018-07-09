@@ -33,7 +33,8 @@ const menuDefine = [
     {id: 21, menuID: "menu_month", displayName: "月结", menuIcon: 'calendar', path: '/month'},
     {id: 22, menuID: "menu_black", displayName: "黑名单管理", menuIcon: 'lock', path: '/black',/*, requirePermission: ['PermissionItemCreate']*/},
     {id: 23, menuID: "menu_station", displayName: "职位和岗位配置", menuIcon: 'solution', path: '/station'},
-    {id: 24, menuID: "menu_achievement", displayName: "薪酬管理", menuIcon: 'database', path: '/achievement'},
+    //薪酬管理已经合并到职位和岗位配置中,所以此处屏蔽了
+    // {id: 24, menuID: "menu_achievement", displayName: "薪酬管理", menuIcon: 'database', path: '/achievement'},
     {id: 25, menuID: "menu_attendance", displayName: "考勤信息", menuIcon: 'pushpin-o', path: '/attendance'},
     {id: 26, menuID: "menu_organization", displayName: "组织架构管理", menuIcon: 'layout', path: '/organization'},
     // {id: 27, menuID: "menu_statistics", displayName: "统计报表", menuIcon: 'global', path: '/statistics'},

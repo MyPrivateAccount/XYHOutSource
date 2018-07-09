@@ -15,7 +15,7 @@ class SFKJQRTable extends Component{
         { title: '本月追佣金额', dataIndex: 'byZyTc', key: 'byZyTc' },
         { title: '本月应扣除金额', dataIndex: 'byDzyTc', key: 'byDzyTc' },
         { title: '本月实际扣除金额', dataIndex: 'byKjJe', key: 'byKjJe' ,render: (text, recored) =>(
-            <Input value={text} onChange={this.handleEdit(recored.key, 'byKjJe')}/>
+            <Input disabled={this.props.showSearch} value={text} onChange={this.handleEdit(recored.key, 'byKjJe')}/>
         )},
         { title: '本月追佣余额', dataIndex: 'byZyYe', key: 'byZyYe' },
 

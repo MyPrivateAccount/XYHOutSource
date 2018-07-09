@@ -440,11 +440,11 @@ namespace XYHHumanPlugin.Managers
 
             if (!String.IsNullOrWhiteSpace(keyword))
             {
-                //query = query.Where(hr => ( hr.Name.Contains(keyword) || hr.UserID.Contains(keyword) || hr.ID==keyword ));
+                query = query.Where(hr => ( hr.Name.Contains(keyword) || hr.UserID.Contains(keyword) || hr.Id==keyword ));
             }
             if (pageSize > 0 && pageIndex > 0)
             {
-                //r.TotalCount = await query.CountAsync();
+                r.TotalCount = await query.CountAsync();
                 r.PageIndex = pageIndex;
                 r.PageSize = pageSize;
                 query = query.Skip((pageIndex - 1) * pageSize).Take(pageSize);

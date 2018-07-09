@@ -15,18 +15,17 @@ export function* postHumanInfoAsync(state) {
     let urlhuman = WebApiConfig.server.PostHumaninfo;
     let humanResult = {isOk: false, msg: '人事信息提交失败！'};
     try {
-        humanResult = yield call(ApiClient.post, urlhuman, state.payload, null, 'PUT');
+        let res = yield call(ApiClient.post, urlhuman, state.payload, null, 'PUT');
         console.log("人事信息提交结果:", urlhuman, humanResult);
         //弹消息，返回
-        if (humanResult.data.code == 0) {
+        if (res.data.code == 0) {
             humanResult.isOk = true;
-            humanResult.message = '人事信息提交成功';
+            humanResult.msg = '人事信息提交成功';
             yield put({type: actionUtils.getActionType(actionTypes.SET_USER_BREADITEMINDEX), payload: 0});
         }
     } catch (e) {
         humanResult.msg = "人事信息提交接口调用异常!";
     }
-
     notification[humanResult.isOk ? 'success' : 'error']({
         message: humanResult.msg,
         duration: 3
@@ -300,11 +299,10 @@ export function* getHumanImage(state) {
 }
 
 export function* deleteBlackInfo(state) {
-    let url = WebApiConfig.server.DeleteBlack;
+    let url = WebApiConfig.server.DeleteBlack + state.payload;
     let huResult = {isOk: false, msg: '删除黑名单失败！'};
-
     try {
-        huResult = yield call(ApiClient.post, url, state.payload);
+        huResult = yield call(ApiClient.post, url, null, null, 'DELETE');
         if (huResult.data.code == 0) {
             huResult.data.message = '删除黑名单成功';
 
@@ -423,7 +421,7 @@ export function* exportMonthForm(state) {
             huResult.data.message = '获取月结接口成功,导出表格失败';
 
             if (huResult.data.extension) {
-                let strmonth = state.payload.getFullYear() + "." + (state.payload.getMonth()+1);
+                let strmonth = state.payload.getFullYear() + "." + (state.payload.getMonth() + 1);
                 MonthHead[0].v = MonthHead[0].v + strmonth + "月结表";
                 let f = createMergeHead(MonthHead);
                 let ret = createColumData(f, huResult.data.extension);
@@ -763,7 +761,7 @@ export default function* watchDicAllAsync() {
     yield takeLatest(actionUtils.getActionType(actionTypes.UPDATE_ORG), updateOrg);
     //考勤
     yield takeLatest(actionUtils.getActionType(actionTypes.IMPORT_ATTENDANCELST), importAttendenceLst);
-    
+
     yield takeLatest(actionUtils.getActionType(actionTypes.DELETE_ATTENDANCEITEM), deleteAttendenceItem);
     //行政惩罚
     yield takeLatest(actionUtils.getActionType(actionTypes.ADD_REWARDPUNISHMENT), addRewardPunishment);

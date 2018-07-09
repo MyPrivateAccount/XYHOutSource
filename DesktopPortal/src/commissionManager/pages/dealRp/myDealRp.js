@@ -36,10 +36,36 @@ class MyDealRp extends Component {
             id: uuid.v1(),
             gsmc: this.props.user.Filiale,
             gsmcName: this.props.user.FilialeName,
-            bswylx:"1",
-            cjbglx:"1",
+            bswylx:"一手商铺",
+            cjbglx:"商铺",
             jylx: "1",
-           
+            xmlx:'1',
+            xxjylx:'1',
+            cqlx:'1',
+            fkfs:'全款',
+            sfzjjg:'1',
+            htlx:'3',
+            cjzj:0,
+            ycjyj:0,
+            reportWy:{
+                wyWylx:"1",
+                wyKjlx:"多层",
+                wyLl:0,
+                wyDts:1,
+                wyZxzk:'清水房',
+                wyZxnd:new Date().getFullYear(),
+                wyJj:"部分",
+                wyCx:'东',
+                wySfhz:true,
+                wyFyfkfs:'全款'
+            },
+            reportYz:{
+                yzCdjzqhtsc:'0~1'
+            },
+            reportKh:{
+                khKhxz:'本地居民',
+                khCdjzqhtsc: '0~1'
+            }
         }
         this.props.history.push(`${this.props.match.url}/reportInfo`, {entity: newEntity, op: 'add', pagePar: this.state.pagePar})
 
@@ -47,17 +73,17 @@ class MyDealRp extends Component {
       //  this.clearRp()
     }
     //清除数据
-    clearRp = (e) => {
-        this.props.dispatch(syncRp({}))
-        this.props.dispatch(syncWy({}))
-        this.props.dispatch(syncYz({}))
-        this.props.dispatch(syncKh({}))
-        this.props.dispatch(syncFp({}))
-    }
-    handleBack = (e) => {
-        this.setState({ isShowManager: false })
-        this.rptb.handleMySearch()
-    }
+    // clearRp = (e) => {
+    //     this.props.dispatch(syncRp({}))
+    //     this.props.dispatch(syncWy({}))
+    //     this.props.dispatch(syncYz({}))
+    //     this.props.dispatch(syncKh({}))
+    //     this.props.dispatch(syncFp({}))
+    // }
+    // handleBack = (e) => {
+    //     this.setState({ isShowManager: false })
+    //     this.rptb.handleMySearch()
+    // }
     componentWillMount = () => {
 
     }
@@ -75,15 +101,7 @@ class MyDealRp extends Component {
         this.rptb = ref
     }
     render() {
-        const rowSelection = {
-            onChange: (selectedRowKeys, selectedRows) => {
-                console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-            },
-            getCheckboxProps: record => ({
-                disabled: record.name === 'Disabled User', // Column configuration not to be checked
-                name: record.name,
-            }),
-        };
+        
         return (
             <Layer className="content-page">
                 <div style={{ display: !this.state.isShowManager ? 'block' : 'none' }}>

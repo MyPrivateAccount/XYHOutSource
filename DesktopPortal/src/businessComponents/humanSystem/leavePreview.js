@@ -1,12 +1,12 @@
-import React, { Component } from 'react'
-import { Select, Input, Form, Cascader, Button, Row, Col, Checkbox, DatePicker, TreeSelect } from 'antd'
+import React, {Component} from 'react'
+import {Select, Input, Form, Cascader, Button, Row, Col, Checkbox, DatePicker, TreeSelect} from 'antd'
 import SocialSecurity from './socialSecurity'
 import moment from 'moment'
 const FormItem = Form.Item;
 const Option = Select.Option;
 const formItemLayout = {
-    labelCol: { span: 6 },
-    wrapperCol: { span: 17 },
+    labelCol: {span: 6},
+    wrapperCol: {span: 17},
 };
 
 class LeavePreview extends Component {
@@ -22,11 +22,12 @@ class LeavePreview extends Component {
     render() {
         let entityInfo = this.props.entityInfo;
         let disabled = (this.props.readOnly || false);
-        const { getFieldDecorator } = this.props.form;
+        const {getFieldDecorator} = this.props.form;
         let setDepartmentOrgTree = this.props.setDepartmentOrgTree || [];
+        let handleOverList = this.props.handleOverList || [];//交接人
         return (
             <Form >
-                <Row style={{ marginTop: '10px' }}>
+                <Row style={{marginTop: '10px'}}>
                     <Col span={7}>
                         <FormItem {...formItemLayout} label="员工编号">
                             {getFieldDecorator('userID', {
@@ -74,7 +75,7 @@ class LeavePreview extends Component {
                                     required: true, message: '请输入离职日期',
                                 }]
                             })(
-                                <DatePicker format='YYYY-MM-DD' style={{ width: '100%' }} />
+                                <DatePicker format='YYYY-MM-DD' style={{width: '100%'}} />
                             )}
                         </FormItem>
                     </Col>
@@ -87,7 +88,7 @@ class LeavePreview extends Component {
                                 }]
                             })(
                                 <Select disabled={this.props.ismodify == 1} placeholder="请选择交接人">
-
+                                    {handleOverList.map(item => <Option key={item.id}>{item.trueName}</Option>)}
                                 </Select>
                             )}
                         </FormItem>
@@ -96,9 +97,7 @@ class LeavePreview extends Component {
                         <FormItem {...formItemLayout} colon={false} label=" ">
                             {getFieldDecorator('isFormalities', {
                                 initialValue: entityInfo.isFormalities,
-                                rules: [{
-                                    required: false, message: 'please entry',
-                                }]
+                                rules: []
                             })(
                                 <Checkbox >是否办理手续</Checkbox>
                             )}
