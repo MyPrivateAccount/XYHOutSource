@@ -5,10 +5,7 @@ using System.Text;
 
 namespace XYHHumanPlugin.Models
 {
-    /// <summary>
-    /// 薪资构成
-    /// </summary>
-    public class HumanSalaryStructure
+    public class PositionSalary
     {
         /// <summary>
         /// 主键Id
@@ -16,6 +13,17 @@ namespace XYHHumanPlugin.Models
         [Key]
         [MaxLength(127)]
         public string Id { get; set; }
+        ///// <summary>
+        ///// 所属部门
+        ///// </summary>
+        //[MaxLength(127)]
+        //public string DepartmentId { get; set; }
+        ///// <summary>
+        ///// 所属职位
+        ///// </summary>
+        //[MaxLength(127)]
+        //public string PositionId { get; set; }
+
         /// <summary>
         /// 基本工资
         /// </summary>
@@ -37,12 +45,27 @@ namespace XYHHumanPlugin.Models
         /// </summary>
         public decimal? OtherAllowance { get; set; } = 0;
         /// <summary>
-        /// 应发工资
+        /// 审核状态
         /// </summary>
-        public decimal? GrossPay { get; set; } = 0;
+        public ExamineStatusEnum ExamineStatus { get; set; } = ExamineStatusEnum.UnSubmit;
+
         /// <summary>
-        /// 试用期工资
+        /// 创建时间
         /// </summary>
-        public decimal? ProbationaryPay { get; set; } = 0;
+        public DateTime? CreateTime { get; set; }
+        /// <summary>
+        /// 创建人
+        /// </summary>
+        [MaxLength(127)]
+        public string CreateUser { get; set; }
+        [MaxLength(127)]
+        public string UpdateUser { get; set; }
+        public DateTime? UpdateTime { get; set; }
+        public bool IsDeleted { get; set; }
+        [MaxLength(127)]
+        public string DeleteUser { get; set; }
+        public DateTime? DeleteTime { get; set; }
+
+
     }
 }

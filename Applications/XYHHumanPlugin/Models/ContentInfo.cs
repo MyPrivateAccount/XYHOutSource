@@ -241,7 +241,7 @@ namespace XYHHumanPlugin.Models
         [MaxLength(127)]
         public string IDCard { get; set; }
         public int? Type { get; set; }
-        public int? ExamineStatus { get; set; }
+        public ExamineStatusEnum ExamineStatus { get; set; } = ExamineStatusEnum.UnSubmit;
         public DateTime? ExamineTime { get; set; }
         [MaxLength(32)]
         public string ModifyPepole { get; set; }

@@ -31,7 +31,9 @@ namespace XYHHumanPlugin.Models
         public DbSet<HumanInfoPartPosition> HumanInfoPartPositions { get; set; }
         public DbSet<HumanInfoRegular> HumanInfoRegulars { get; set; }
         public DbSet<HumanInfoAdjustment> HumanInfoAdjustments { get; set; }
+        public DbSet<PositionSalary> PositionSalaries { get; set; }
 
+        public DbSet<HumanPosition> HumanPositions { get; set; }
 
 
         public DbSet<BlackInfo> BlackInfos { get; set; }
@@ -121,6 +123,14 @@ namespace XYHHumanPlugin.Models
             modelBuilder.Entity<HumanInfoAdjustment>(b =>
             {
                 b.ToTable("xyh_hu_humaninfoadjustment");
+            });
+            modelBuilder.Entity<PositionSalary>(b =>
+            {
+                b.ToTable("xyh_hu_positionsalary");
+            });
+            modelBuilder.Entity<HumanPosition>(b =>
+            {
+                b.ToTable("xyh_hu_humanposition");
             });
 
 

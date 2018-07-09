@@ -57,6 +57,28 @@ namespace XYHHumanPlugin.Managers
         }
 
 
+        public async Task<ResponseMessage<List<HumanInfoPartPositionResponse>>> FindByHumanIdAsync(UserInfo user, string humanId, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            ResponseMessage<List<HumanInfoPartPositionResponse>> response = new ResponseMessage<List<HumanInfoPartPositionResponse>>();
+            var org = await _permissionExpansionManager.GetOrganizationOfPermission(user.Id, "HumanPartPosition");
+            if (org == null || org.Count == 0)
+            {
+                response.Code = ResponseCodeDefines.NotAllow;
+                response.Message = "没有权限";
+                return response;
+            }
+            var humanInfoPartPostionList = await Store.SimpleQuery().Where(a => a.Id == humanId && org.Contains(a.DepartmentId)).ToListAsync(cancellationToken);
+            if (humanInfoPartPostionList == null && humanInfoPartPostionList.Count == 0)
+            {
+                response.Code = ResponseCodeDefines.NotFound;
+                response.Message = "没有找到";
+                return response;
+            }
+            response.Extension = _mapper.Map<List<HumanInfoPartPositionResponse>>(humanInfoPartPostionList);
+            return response;
+        }
+
+
         public async Task<ResponseMessage<HumanInfoPartPositionResponse>> CreateAsync(UserInfo user, HumanInfoPartPositionRequest humanInfoPartPostionRequest, CancellationToken cancellationToken = default(CancellationToken))
         {
             ResponseMessage<HumanInfoPartPositionResponse> response = new ResponseMessage<HumanInfoPartPositionResponse>();
@@ -84,6 +106,18 @@ namespace XYHHumanPlugin.Managers
             }
             response.Extension = _mapper.Map<HumanInfoPartPositionResponse>(await Store.CreateAsync(user, _mapper.Map<HumanInfoPartPosition>(humanInfoPartPostionRequest), cancellationToken));
             return response;
+        }
+
+        /// <summary>
+        /// 更新审核状态
+        /// </summary>
+        /// <param name="humanId"></param>
+        /// <param name="status"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task UpdateExamineStatus(string humanId, ExamineStatusEnum status, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            await Store.UpdateExamineStatus(humanId, status, cancellationToken);
         }
 
 

@@ -107,7 +107,31 @@ namespace XYHHumanPlugin.Stores
             return humanInfoPartPostion;
         }
 
-
+        /// <summary>
+        /// 更新人事兼职审核状态
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="status"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task UpdateExamineStatus(string id, ExamineStatusEnum status, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            HumanInfoPartPosition humanInfoPartPosition = new HumanInfoPartPosition()
+            {
+                Id = id,
+                UpdateTime = DateTime.Now,
+                ExamineStatus = status
+            };
+            Context.Attach(humanInfoPartPosition);
+            var entry = Context.Entry(humanInfoPartPosition);
+            entry.Property(x => x.ExamineStatus).IsModified = true;
+            entry.Property(x => x.UpdateTime).IsModified = true;
+            try
+            {
+                await Context.SaveChangesAsync(cancellationToken);
+            }
+            catch (DbUpdateException) { throw; }
+        }
 
         /// <summary>
         /// 删除

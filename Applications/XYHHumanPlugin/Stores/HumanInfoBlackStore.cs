@@ -91,6 +91,33 @@ namespace XYHHumanPlugin.Stores
         }
 
         /// <summary>
+        /// 更新人事黑名单审核状态
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="status"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task UpdateExamineStatus(string id, ExamineStatusEnum status, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            HumanInfoBlack humanInfoBlack = new HumanInfoBlack()
+            {
+                Id = id,
+                UpdateTime = DateTime.Now,
+                ExamineStatus = status
+            };
+            Context.Attach(humanInfoBlack);
+            var entry = Context.Entry(humanInfoBlack);
+            entry.Property(x => x.ExamineStatus).IsModified = true;
+            entry.Property(x => x.UpdateTime).IsModified = true;
+            try
+            {
+                await Context.SaveChangesAsync(cancellationToken);
+            }
+            catch (DbUpdateException) { throw; }
+        }
+
+
+        /// <summary>
         /// 删除
         /// </summary>
         /// <returns></returns>

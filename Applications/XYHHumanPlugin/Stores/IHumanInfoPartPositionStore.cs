@@ -29,7 +29,7 @@ namespace XYHHumanPlugin.Stores
         Task<HumanInfoPartPosition> UpdateAsync(UserInfo user, HumanInfoPartPosition humanInfoPartPostion, CancellationToken cancellationToken = default(CancellationToken));
 
 
-
+        Task UpdateExamineStatus(string id, ExamineStatusEnum status, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// 删除

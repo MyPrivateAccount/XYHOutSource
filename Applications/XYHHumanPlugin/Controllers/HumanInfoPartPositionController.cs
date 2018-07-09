@@ -2,6 +2,7 @@
 using ApplicationCore.Dto;
 using ApplicationCore.Filters;
 using AspNet.Security.OAuth.Validation;
+using GatewayInterface.Dto.Response;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -12,6 +13,7 @@ using XYH.Core.Log;
 using XYHHumanPlugin.Dto.Request;
 using XYHHumanPlugin.Dto.Response;
 using XYHHumanPlugin.Managers;
+using XYHHumanPlugin.Models;
 
 namespace XYHHumanPlugin.Controllers
 {
@@ -60,6 +62,40 @@ namespace XYHHumanPlugin.Controllers
             }
             return response;
         }
+
+
+        /// <summary>
+        /// 根据人事Id获取人事兼职信息列表
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="humanId"></param>
+        /// <returns></returns>
+        [HttpGet("list/{humanId}")]
+        [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
+        public async Task<ResponseMessage<List<HumanInfoPartPositionResponse>>> GetHumanInfoPartPositionList(UserInfo user, [FromRoute] string humanId)
+        {
+            Logger.Trace($"用户{user?.UserName ?? ""}({user?.Id ?? ""})根据人事Id获取人事兼职信息列表(GetHumanInfoPartPositionList)，请求体为：\r\nid:{humanId ?? ""}");
+            ResponseMessage<List<HumanInfoPartPositionResponse>> response = new ResponseMessage<List<HumanInfoPartPositionResponse>>();
+            if (!ModelState.IsValid)
+            {
+                response.Code = ResponseCodeDefines.ModelStateInvalid;
+                response.Message = ModelState.GetAllErrors();
+                Logger.Error($"用户{user?.UserName ?? ""}({user?.Id ?? ""})根据人事Id获取人事兼职信息列表(GetHumanInfoPartPositionList)模型验证失败：{response.Message}请求体为：\r\nid:{humanId ?? ""}");
+                return response;
+            }
+            try
+            {
+                return await _humanInfoPartPositionManager.FindByHumanIdAsync(user, humanId, HttpContext.RequestAborted);
+            }
+            catch (Exception e)
+            {
+                response.Code = ResponseCodeDefines.ServiceError;
+                response.Message = e.Message;
+                Logger.Error($"用户{user?.UserName ?? ""}({user?.Id ?? ""})根据人事Id获取人事兼职信息列表(GetHumanInfoPartPositionList)失败：{e.ToString()}请求体为：\r\nid:{humanId ?? ""}");
+            }
+            return response;
+        }
+
 
         /// <summary>
         /// 新增人事兼职信息
@@ -157,5 +193,73 @@ namespace XYHHumanPlugin.Controllers
             }
             return response;
         }
+
+
+
+
+
+        /// <summary>
+        /// 新增人事信息回调
+        /// </summary>
+        /// <param name="examineResponse"></param>
+        /// <returns></returns>
+        [HttpPost("humaninfocallback")]
+        [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
+        public async Task<ResponseMessage> HumanInfoCreateCallback([FromBody] ExamineResponse examineResponse)
+        {
+            Logger.Trace($"新增人事信息回调(HumanInfoCreateCallback)：\r\n请求参数为：\r\n" + (examineResponse != null ? JsonHelper.ToJson(examineResponse) : ""));
+
+            ResponseMessage response = new ResponseMessage();
+
+            if (examineResponse == null)
+            {
+                response.Code = ResponseCodeDefines.ModelStateInvalid;
+                Logger.Trace($"新增人事信息回调(HumanInfoCreateCallback)模型验证失败：\r\n{response.Message ?? ""}，\r\n请求参数为：\r\n" + (examineResponse != null ? JsonHelper.ToJson(examineResponse) : ""));
+                return response;
+            }
+            try
+            {
+                response.Code = ResponseCodeDefines.SuccessCode;
+                if (examineResponse.ExamineStatus == ExamineStatus.Examined)
+                {
+                    await _humanInfoPartPositionManager.UpdateExamineStatus(examineResponse.SubmitDefineId, ExamineStatusEnum.Approved);
+                }
+                else if (examineResponse.ExamineStatus == ExamineStatus.Reject)
+                {
+                    await _humanInfoPartPositionManager.UpdateExamineStatus(examineResponse.SubmitDefineId, ExamineStatusEnum.Reject);
+                }
+            }
+            catch (Exception e)
+            {
+                response.Code = ResponseCodeDefines.ServiceError;
+                response.Message = e.ToString();
+                Logger.Trace($"新增人事信息回调(HumanInfoCreateCallback)报错：\r\n{e.ToString()}，\r\n请求参数为：\r\n" + examineResponse != null ? JsonHelper.ToJson(examineResponse) : "");
+            }
+            return response;
+        }
+
+
+
+        /// <summary>
+        /// 新增人事信息步骤回调
+        /// </summary>
+        /// <param name="examineResponse"></param>
+        /// <returns></returns>
+        [HttpPost("humaninfostepcallback")]
+        [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
+        public async Task<ResponseMessage> HumanInfoCreateStepCallback([FromBody] ExamineStepResponse examineStepResponse)
+        {
+            Logger.Trace($"新增人事信息步骤回调(HumanInfoCreateStepCallback)：\r\n请求参数为：\r\n" + (examineStepResponse != null ? JsonHelper.ToJson(examineStepResponse) : ""));
+
+            ResponseMessage response = new ResponseMessage();
+            return response;
+        }
+
+
+
+
+
+
+
     }
 }
