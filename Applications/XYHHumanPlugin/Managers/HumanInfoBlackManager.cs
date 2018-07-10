@@ -74,6 +74,17 @@ namespace XYHHumanPlugin.Managers
             return pagingResponse;
         }
 
+        /// <summary>
+        /// 更新审核状态
+        /// </summary>
+        /// <param name="humanId"></param>
+        /// <param name="status"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task UpdateExamineStatus(string humanId, ExamineStatusEnum status, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            await Store.UpdateExamineStatus(humanId, status, cancellationToken);
+        }
 
         public async Task DeleteAsync(UserInfo user, string id, CancellationToken cancellationToken = default(CancellationToken))
         {

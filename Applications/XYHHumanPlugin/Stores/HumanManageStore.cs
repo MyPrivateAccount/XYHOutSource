@@ -102,7 +102,7 @@ namespace XYHHumanPlugin.Stores
             modify.IDCard = humaninfo.IDCard;
             modify.ModifyPepole = userinfo.Id;
             modify.ModifyStartTime = DateTime.Now;
-            modify.ExamineStatus = (int)ExamineStatusEnum.Auditing;
+            modify.ExamineStatus = ExamineStatusEnum.Auditing;
             modify.ExamineTime = modify.ModifyStartTime;
             modify.ModifyCheck = checkaction;
             modify.Ext1 = humaninfo.Id;
@@ -311,7 +311,7 @@ namespace XYHHumanPlugin.Stores
             modify.IDCard = idcard;
             modify.ModifyPepole = userinfo.Id;
             modify.ModifyStartTime = DateTime.Now;
-            modify.ExamineStatus = (int)ExamineStatusEnum.Auditing;
+            modify.ExamineStatus = ExamineStatusEnum.Auditing;
             modify.ExamineTime = modify.ModifyStartTime;
             modify.ModifyCheck = checkaction;
             modify.Ext1 = huid;
@@ -374,7 +374,7 @@ namespace XYHHumanPlugin.Stores
             modify.IDCard = idcard;
             modify.ModifyPepole = userinfo.Id;
             modify.ModifyStartTime = DateTime.Now;
-            modify.ExamineStatus = (int)ExamineStatusEnum.Auditing;
+            modify.ExamineStatus = ExamineStatusEnum.Auditing;
             modify.ExamineTime = modify.ModifyStartTime;
             modify.ModifyCheck = checkaction;
             modify.Ext1 = huid;
@@ -429,7 +429,7 @@ namespace XYHHumanPlugin.Stores
             modify.IDCard = idcard;
             modify.ModifyPepole = userinfo.Id;
             modify.ModifyStartTime = DateTime.Now;
-            modify.ExamineStatus = (int)ExamineStatusEnum.Auditing;
+            modify.ExamineStatus = ExamineStatusEnum.Auditing;
             modify.ExamineTime = modify.ModifyStartTime;
             modify.ModifyCheck = checkaction;
             modify.Ext1 = huid;
@@ -495,7 +495,7 @@ namespace XYHHumanPlugin.Stores
 
         }
 
-        
+
 
         public async Task DeleteSalaryAsync(SalaryInfo monthinfo, CancellationToken cancellationToken = default(CancellationToken))
         {
@@ -525,7 +525,7 @@ namespace XYHHumanPlugin.Stores
             {
                 throw new ArgumentNullException(nameof(rpinfo));
             }
-            
+
             Context.Remove(rpinfo);
             await Context.SaveChangesAsync(cancellationToken);
         }
@@ -857,7 +857,7 @@ namespace XYHHumanPlugin.Stores
                 {
                     ID = modifyId,
                     ExamineTime = DateTime.Now,
-                    ExamineStatus = (int)status,
+                    ExamineStatus = status,
                 };
                 Context.Attach(mbuildings);
                 var mentry = Context.Entry(mbuildings);

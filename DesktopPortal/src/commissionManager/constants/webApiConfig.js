@@ -75,6 +75,8 @@ const WebApiConfig = {
         shopget:basicDataBaseApiUrl+'shops/',
         buildingget:basicDataBaseApiUrl+'buildings/',
         rpDel:basicDataBaseApiUrl+'yj/report/',
+
+        rpSubmit :basicDataBaseApiUrl+'yj/report/audit/submit/',
     },
     fina:{
         searchPPFt:basicDataBaseApiUrl+'yj/ppft/search',
@@ -90,7 +92,8 @@ const WebApiConfig = {
         monthlyMonth:basicDataBaseApiUrl+'yj/monthly/'//月结月份
     },
     attach: {
-        uploadUrl: `${UploadUrl}/file/upload/`
+        uploadUrl: `${UploadUrl}/file/upload/`,
+        browseUrl: UploadUrl
     },
     server: {
         uploadImg: basicDataBaseApiUrl + "yj/commissionfiles/",

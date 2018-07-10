@@ -6,6 +6,7 @@ namespace GatewayInterface.Dto
 {
     public class ExamineSubmitRequest
     {
+        public UserInfo UserInfo { get; set; }
         /// <summary>
         /// 审核流程名
         /// </summary>
@@ -35,6 +36,10 @@ namespace GatewayInterface.Dto
         /// 回调地址
         /// </summary>
         public string CallbackUrl { get; set; }
+        /// <summary>
+        /// 步骤回调地址
+        /// </summary>
+        public string StepCallbackUrl { get; set; }
         /// <summary>
         /// 来源
         /// </summary>

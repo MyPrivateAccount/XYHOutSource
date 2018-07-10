@@ -148,7 +148,31 @@ namespace XYHHumanPlugin.Stores
             return humanInfoAdjustment;
         }
 
-
+        /// <summary>
+        /// 更新人事调薪异动审核状态
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="status"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task UpdateExamineStatus(string id, ExamineStatusEnum status, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            HumanInfoAdjustment humanInfoAdjustment = new HumanInfoAdjustment()
+            {
+                Id = id,
+                UpdateTime = DateTime.Now,
+                ExamineStatus = status
+            };
+            Context.Attach(humanInfoAdjustment);
+            var entry = Context.Entry(humanInfoAdjustment);
+            entry.Property(x => x.ExamineStatus).IsModified = true;
+            entry.Property(x => x.UpdateTime).IsModified = true;
+            try
+            {
+                await Context.SaveChangesAsync(cancellationToken);
+            }
+            catch (DbUpdateException) { throw; }
+        }
 
         /// <summary>
         /// 删除

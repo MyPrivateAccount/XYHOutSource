@@ -67,6 +67,10 @@ namespace XYHHumanPlugin.Dto.Response
         public string FamilyAddress { get; set; }
 
         /// <summary>
+        /// 婚姻状况
+        /// </summary>
+        public bool? MaritalStatus { get; set; }
+        /// <summary>
         /// 职位名称
         /// </summary>
         public string Position { get; set; }
@@ -137,6 +141,10 @@ namespace XYHHumanPlugin.Dto.Response
 
         public PositionInfoResponse PositionInfo { get; set; }
 
+        /// <summary>
+        /// 审核状态
+        /// </summary>
+        public ExamineStatusEnum ExamineStatus { get; set; } = ExamineStatusEnum.UnSubmit;
 
         /// <summary>
         /// 状态
@@ -156,6 +164,7 @@ namespace XYHHumanPlugin.Dto.Response
         /// </summary>
         public DateTime CreateTime { get; set; }
 
+        public bool IsDeleted { get; set; }
         public Organizations Organizations { get; set; }
 
         public OrganizationExpansion OrganizationExpansion { get; set; }

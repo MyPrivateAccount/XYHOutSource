@@ -50,6 +50,10 @@ namespace XYHHumanPlugin.Models
         [MaxLength(500)]
         public string Reason { get; set; }
         /// <summary>
+        /// 审核状态
+        /// </summary>
+        public ExamineStatusEnum ExamineStatus { get; set; } = ExamineStatusEnum.UnSubmit;
+        /// <summary>
         /// 创建时间
         /// </summary>
         public DateTime CreateTime { get; set; }

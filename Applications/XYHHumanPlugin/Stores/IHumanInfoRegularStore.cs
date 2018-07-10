@@ -30,7 +30,7 @@ namespace XYHHumanPlugin.Stores
         Task<HumanInfoRegular> UpdateAsync(UserInfo user, HumanInfoRegular humanInfoRegular, CancellationToken cancellationToken = default(CancellationToken));
 
 
-
+        Task UpdateExamineStatus(string id, ExamineStatusEnum status, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// 删除

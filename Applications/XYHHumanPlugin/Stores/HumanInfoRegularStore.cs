@@ -131,7 +131,31 @@ namespace XYHHumanPlugin.Stores
             return humanInfoRegular;
         }
 
-
+        /// <summary>
+        /// 更新人事审核状态
+        /// </summary>
+        /// <param name="humanId"></param>
+        /// <param name="status"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task UpdateExamineStatus(string id, ExamineStatusEnum status, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            HumanInfoRegular humanInfoRegular = new HumanInfoRegular()
+            {
+                Id = id,
+                UpdateTime = DateTime.Now,
+                ExamineStatus = status
+            };
+            Context.Attach(humanInfoRegular);
+            var entry = Context.Entry(humanInfoRegular);
+            entry.Property(x => x.ExamineStatus).IsModified = true;
+            entry.Property(x => x.UpdateTime).IsModified = true;
+            try
+            {
+                await Context.SaveChangesAsync(cancellationToken);
+            }
+            catch (DbUpdateException) { throw; }
+        }
 
         /// <summary>
         /// 删除

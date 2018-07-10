@@ -39,5 +39,6 @@ namespace XYHHumanPlugin.Stores
         /// <returns></returns>
         Task<List<TResult>> ListAsync<TResult>(Func<IQueryable<HumanInfoBlack>, IQueryable<TResult>> query, CancellationToken cancellationToken = default(CancellationToken));
 
+        Task UpdateExamineStatus(string id, ExamineStatusEnum status, CancellationToken cancellationToken = default(CancellationToken));
     }
 }

@@ -15,14 +15,19 @@ import ApiClient from '../../../../utils/apiClient'
 const RadioGroup = Radio.Group;
 const FormItem = Form.Item;
 class TradeContract extends Component {
-    state = {
-        cjUserList: [],
-        loading: false,
-        tip: ''
+    constructor(props){
+        super(props)
+        this.state = {
+            cjUserList: [],
+            loading: false,
+            tip: ''
+        }
+        this.entity = {};
+        this.getNoded= false;
     }
+    
     componentWillMount = () => {
-        //   this.setState({isDataLoading:true,tip:'信息初始化中...'})
-        //  this.props.dispatch(getDicParList(['COMMISSION_BSWY_CATEGORIES', 'COMMISSION_CJBG_TYPE', 'COMMISSION_JY_TYPE', 'COMMISSION_PAY_TYPE', 'COMMISSION_PROJECT_TYPE', 'COMMISSION_CONTRACT_TYPE', 'COMMISSION_OWN_TYPE', 'COMMISSION_TRADEDETAIL_TYPE', 'COMMISSION_SFZJJG_TYPE']));
+        
     }
     componentDidMount = () => {
         this.getNodes();
@@ -30,25 +35,31 @@ class TradeContract extends Component {
 
     componentWillReceiveProps = (nextProps) => {
         if (this.props.entity !== nextProps.entity && nextProps.entity) {
-
-            var entity = nextProps.entity;
-
-            let mv = {};
-            Object.keys(entity).map(key => {
-                mv[key] = entity[key];
-            })
-
-            if (entity.fyzId && this.props.entity.fyzId!==entity.fyzId ) {
-                this.getCjUserList(entity.fyzId, entity);
+            if(this.getNoded){
+                this.initEntity(nextProps.entity)
             }
-
-            // mv.gsmc = { value: { key: entity.gsmc, label: entity.gsmcName } }
-            this.props.form.setFieldsValue(mv);
-
-
+            
 
 
         }
+    }
+
+    initEntity=(entity)=>{
+        if(!entity){
+            return;
+        }
+        let mv = {};
+        Object.keys(entity).map(key => {
+            mv[key] = entity[key];
+        })
+        
+        if (entity.fyzId && this.entity.fyzId!==entity.fyzId ) {
+            this.getCjUserList(entity.fyzId, entity);
+        }
+        this.entity = entity;
+        this.props.form.setFieldsValue(mv);
+
+
     }
 
     getNodes = async () => {
@@ -56,10 +67,13 @@ class TradeContract extends Component {
         let r = await ApiClient.get(url, true);
         if (r && r.data && r.data.code === '0') {
             var nodes = getOrganizationTree(r.data.extension);
-            this.setState({ nodes: nodes });
+            this.setState({ nodes: nodes },()=>{
+                this.initEntity(this.props.entity);
+            });
         } else {
             notification.error(`获取分行组织失败:${((r || {}).data || {}).message || ''}`);
         }
+        this.getNoded = true;
     }
 
     getCjUserList = async (id, entity) => {
@@ -94,82 +108,7 @@ class TradeContract extends Component {
         return values;
     }
 
-    handleSave = (e) => {
-        let values = this.props.form.getFieldsValue();
-        console.log(values)
-        e.preventDefault();
-        // this.props.form.validateFields((err, values) => {
-        //     if (!err) {
-        //         values.id = this.props.rpId;
-        //         /*if(this.state.cjrq!==''){
-        //             values.cjrq = this.state.cjrq;
-        //         }
-        //         else{
-        //             values.cjrq = this.state.rpData.cjrq;
-        //         }
-        //         if(this.state.yxsqyrq!==''){
-        //             values.yxsqyrq = this.state.yxsqyrq;
-        //         }
-        //         else{
-        //             values.yxsqyrq = this.state.rpData.yxsqyrq;
-        //         }
-        //         if(this.state.yjfksj!==''){
-        //             values.yjfksj = this.state.yjfksj;
-        //         }
-        //         else{
-        //             values.yjfksj = this.state.rpData.yjfksj;
-        //         }
-        //         if(this.state.kflfrq!==''){
-        //             values.kflfrq = this.state.kflfrq;
-        //         }
-        //         else{
-        //             values.kflfrq = this.state.rpData.kflfrq;
-        //         }
-        //         if(this.state.htqyrq!==''){
-        //             values.htqyrq = this.state.htqyrq;
-        //         }
-        //         else{
-        //             values.htqyrq = this.state.rpData.htqyrq;
-        //         }*/
-        //         values.cjrq = values.cjrq.format('YYYY-MM-DD')
-        //         values.yxsqyrq = values.yxsqyrq.format('YYYY-MM-DD')
-        //         values.yjfksj = values.yjfksj.format('YYYY-MM-DD')
-        //         values.kflfrq = values.kflfrq.format('YYYY-MM-DD')
-        //         values.htqyrq = values.htqyrq.format('YYYY-MM-DD')
-
-        //         console.log(values);
-        //         this.setState({isDataLoading:true,tip:'保存信息中...'})
-        //         this.props.dispatch(dealRpSave(values));
-        //     }
-        // });
-    }
-    cjrq_dateChange = (value, dateString) => {
-        console.log(dateString)
-        this.setState({ cjrq: dateString })
-        this.props.dispatch(syncYJDate(dateString))//同步日期給业绩分配页面
-    }
-    wqrq_dateChange = (value, dateString) => {
-        console.log(dateString)
-        this.setState({ yxsqyrq: dateString })
-    }
-    yjfksj_dateChange = (value, dateString) => {
-        this.setState({ yjfksj: dateString })
-    }
-    kflfrq_dateChange = (value, dateString) => {
-        this.setState({ kflfrq: dateString })
-    }
-    htqyrq_dateChange = (value, dateString) => {
-        this.setState({ htqyrq: dateString })
-    }
-    getInvalidDate = (dt) => {
-        var newdt = '' + dt;
-        if (newdt.indexOf('T') !== -1) {
-            newdt = newdt.substr(0, newdt.length - 9);
-            console.log("newdt:" + newdt)
-            return newdt;
-        }
-        return dt
-    }
+    
     //选择成交报备
     chooseReport = () => {
         if (this.props.showDialog) {
@@ -184,15 +123,7 @@ class TradeContract extends Component {
             labelCol: { span: 6 },
             wrapperCol: { span: 14 },
         };
-        // let bswyTypes = this.props.basicData.bswyTypes;
-        // let cjbgTypes = this.props.basicData.cjbgTypes;
-        // let tradeTypes = this.props.basicData.tradeTypes;
-        // let projectTypes = this.props.basicData.projectTypes;
-        // let tradeDetailTypes = this.props.basicData.tradeDetailTypes;
-        // let ownTypes = this.props.basicData.ownTypes;
-        // let payTypes = this.props.basicData.payTypes;
-        // let contractTypes = this.props.basicData.contractTypes;
-        // let sfzjjgTypes = this.props.basicData.sfzjjgTypes;
+
         let bswyTypes = getDicPars(dicKeys.wyfl, this.props.dic)
         let cjbgTypes = getDicPars(dicKeys.cjbglx, this.props.dic)
         let tradeTypes = getDicPars(dicKeys.jylx, this.props.dic)
@@ -204,12 +135,14 @@ class TradeContract extends Component {
         let sfzjjgTypes = getDicPars(dicKeys.zjjg, this.props.dic)
         let cqjybgj = getDicPars(dicKeys.sfxycqjybgj, this.props.dic);
 
+        const canEdit = this.props.canEdit;
+
 
         return (
             <Layout>
                 <div style={{ marginLeft: 12 }}>
                     {
-                        showBbSelector ?
+                       ( showBbSelector && canEdit) ?
                             <Row>
                                 <Col span={16} style={{ display: 'flex' }}>
                                     {/* <FormItem {...formItemLayout} label={(<span>成交报备</span>)}>
@@ -222,7 +155,12 @@ class TradeContract extends Component {
 
                             </Row> : null
                     }
-
+                        {
+                            getFieldDecorator('cjbbId')(<Input type="hidden"/>)
+                            
+                        }
+                        {getFieldDecorator('lpId')(<Input type="hidden"/>)}
+                        {getFieldDecorator('spId')(<Input type="hidden"/>)}
                     <Spin spinning={loading} tip={tip}>
                         <Row className="form-row">
                             <Col span={24}>
@@ -231,7 +169,7 @@ class TradeContract extends Component {
                                         getFieldDecorator('bswylx', {
                                             rules: [{ required: false }]
                                         })(
-                                            <RadioGroup>
+                                            <RadioGroup disabled={!canEdit}>
                                                 {
                                                     bswyTypes.map(tp => <Radio key={tp.key} value={tp.value}>{tp.key}</Radio>)
                                                 }
@@ -248,7 +186,7 @@ class TradeContract extends Component {
                                         getFieldDecorator('cjbglx', {
                                             rules: [{ required: false }]
                                         })(
-                                            <RadioGroup>
+                                            <RadioGroup disabled={!canEdit}>
                                                 {
                                                     cjbgTypes.map(tp => <Radio key={tp.key} value={tp.value}>{tp.key}</Radio>)
                                                 }
@@ -259,7 +197,7 @@ class TradeContract extends Component {
                             </Col>
                         </Row>
                         <Row className="form-row">
-                            <Col span={24}>
+                            <Col span={8}>
                                 <FormItem {...formItemLayout} label={(<span>公司名称</span>)}>
                                     {
                                         getFieldDecorator('gsmc')(
@@ -267,6 +205,15 @@ class TradeContract extends Component {
                                                 <Select.Option key={entity.gsmc} value={entity.gsmc}>{entity.gsmcName}</Select.Option>
                                             </Select>
 
+                                        )
+                                    }
+                                </FormItem>
+                            </Col>
+                            <Col span={8}>
+                                <FormItem {...formItemLayout} label={(<span>成交报告编号</span>)}>
+                                    {
+                                        getFieldDecorator('cjbgbh')(
+                                            <Input disabled/>
                                         )
                                     }
                                 </FormItem>
@@ -281,7 +228,7 @@ class TradeContract extends Component {
                                         })(
                                             <TreeSelect
                                                 style={{ width: 200 }}
-                                                disabled={showBbSelector}
+                                                disabled={showBbSelector || !canEdit}
                                                 dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
                                                 treeData={this.state.nodes}
                                                 placeholder="请选择分行"
@@ -314,34 +261,13 @@ class TradeContract extends Component {
                                         getFieldDecorator('cjrq', {
                                             rules: [{ required: true, message: '请选择成交日期!' }]
                                         })(
-                                            <DatePicker onChange={(v)=> this.props.inputChanged('cjrq',v)}  style={{ width: 200 }} disabled={showBbSelector}></DatePicker>
+                                            <DatePicker   onChange={(v)=> this.props.inputChanged('cjrq',v)}  style={{ width: 200 }} disabled={showBbSelector || !canEdit}></DatePicker>
                                         )
                                     }
                                 </FormItem>
                             </Col>
                         </Row>
-                        {/* <Row>
-                            <Col span={8}>
-                                <FormItem {...formItemLayout} label={(<span>成交报告编号</span>)}>
-                                    {
-                                        getFieldDecorator('cjbgbh')(
-                                            <Input disabled style={{ width: 200 }}></Input>
-                                        )
-                                    }
-                                </FormItem>
-                            </Col>
-                            <Col span={8}>
-                                <FormItem {...formItemLayout} label={(<span>附加说明</span>)}>
-                                    {
-                                        getFieldDecorator('fjsm', {
-                                            rules: [{ required: false }]
-                                        })(
-                                            <Input style={{ width: 200 }}></Input>
-                                        )
-                                    }
-                                </FormItem>
-                            </Col>
-                        </Row> */}
+                
                         <Row className="form-row">
                             <Col span={24}>
                                 <FormItem {...formItemLayout} label={(<span>备注</span>)}>
@@ -349,7 +275,7 @@ class TradeContract extends Component {
                                         getFieldDecorator('bz', {
                                             rules: [{ required: true, message: '请填写备注' }]
                                         })(
-                                            <Input.TextArea rows={4} ></Input.TextArea>
+                                            <Input.TextArea rows={4} disabled={!canEdit}></Input.TextArea>
                                         )
                                     }
                                 </FormItem>
@@ -363,7 +289,7 @@ class TradeContract extends Component {
                                         getFieldDecorator('jylx', {
                                             rules: [{ required: false }]
                                         })(
-                                            <RadioGroup>
+                                            <RadioGroup disabled={!canEdit}>
                                                 {
                                                     tradeTypes.map(tp => <Radio key={tp.key} value={tp.value}>{tp.key}</Radio>)
                                                 }
@@ -378,7 +304,7 @@ class TradeContract extends Component {
                                         getFieldDecorator('xmlx', {
                                             rules: [{ required: false }]
                                         })(
-                                            <Select>
+                                            <Select disabled={!canEdit}>
                                                 {
                                                     projectTypes.map(tp => <Select.Option key={tp.key} value={tp.value}>{tp.key}</Select.Option>)
                                                 }
@@ -396,7 +322,7 @@ class TradeContract extends Component {
                                         getFieldDecorator('xxjylx', {
                                             rules: [{ required: false }]
                                         })(
-                                            <RadioGroup>
+                                            <RadioGroup disabled={!canEdit}>
                                                 {
                                                     tradeDetailTypes.map(tp => <Radio key={tp.key} value={tp.value}>{tp.key}</Radio>)
                                                 }
@@ -411,7 +337,7 @@ class TradeContract extends Component {
                                         getFieldDecorator('cqlx', {
                                             rules: [{ required: false }]
                                         })(
-                                            <Select>
+                                            <Select disabled={!canEdit}>
                                                 {
                                                     ownTypes.map(tp => <Select.Option key={tp.key} value={tp.value}>{tp.key}</Select.Option>)
                                                 }
@@ -429,7 +355,7 @@ class TradeContract extends Component {
                                         getFieldDecorator('cjzj', {
                                             rules: [{ required: true, message: '请填写成交总价!' }]
                                         })(
-                                            <InputNumber onChange={(v)=> this.props.inputChanged('cjzj',v)} precision={2} style={{ width: 200 }}></InputNumber>
+                                            <InputNumber disabled={!canEdit} onChange={(v)=> this.props.inputChanged('cjzj',v)} precision={2} style={{ width: 200 }}></InputNumber>
                                         )
                                     }
                                 </FormItem>
@@ -440,7 +366,7 @@ class TradeContract extends Component {
                                         getFieldDecorator('ycjyj', {
                                             rules: [{ required: true, message: '请填写佣金金额!' }]
                                         })(
-                                            <InputNumber onChange={(v)=> this.props.inputChanged('yj',v)} precision={2} style={{ width: 200 }}></InputNumber>
+                                            <InputNumber disabled={!canEdit} onChange={(v)=> this.props.inputChanged('yj',v)} precision={2} style={{ width: 200 }}></InputNumber>
                                         )
                                     }
                                 </FormItem>
@@ -453,7 +379,7 @@ class TradeContract extends Component {
                                         getFieldDecorator('fkfs', {
                                             rules: [{ required: false }]
                                         })(
-                                            <Select>
+                                            <Select disabled={!canEdit}>
                                                 {
                                                     payTypes.map(tp => <Select.Option key={tp.key} value={tp.value}>{tp.key}</Select.Option>)
                                                 }
@@ -468,9 +394,9 @@ class TradeContract extends Component {
                                         getFieldDecorator('sfxcqjybgj', {
                                             rules: [{ required: false }]
                                         })(
-                                            <RadioGroup>
+                                            <RadioGroup disabled={!canEdit}>
                                                 {
-                                                    cqjybgj.map(tp => <Radio key={tp.key} value={tp.value}>{tp.key}</Radio>)
+                                                    cqjybgj.map(tp => <Radio key={tp.key} value={tp.value*1}>{tp.key}</Radio>)
                                                 }
                                             </RadioGroup>
                                         )
@@ -485,7 +411,7 @@ class TradeContract extends Component {
                                         getFieldDecorator('yjfksj', {
                                             rules: [{ required: false }],
                                         })(
-                                            <DatePicker style={{ width: 200 }} onChange={this.yjfksj_dateChange}></DatePicker>
+                                            <DatePicker disabled={!canEdit} style={{ width: 200 }} onChange={this.yjfksj_dateChange}></DatePicker>
                                         )
                                     }
                                 </FormItem>
@@ -496,7 +422,7 @@ class TradeContract extends Component {
                                         getFieldDecorator('yjfkje', {
                                             rules: [{ required: false }]
                                         })(
-                                            <Input style={{ width: 200 }}></Input>
+                                            <Input disabled={!canEdit} style={{ width: 200 }}></Input>
                                         )
                                     }
                                 </FormItem>
@@ -510,7 +436,7 @@ class TradeContract extends Component {
                                         getFieldDecorator('yxsqyrq', {
                                             rules: [{ required: false }]
                                         })(
-                                            <DatePicker style={{ width: 200 }} onChange={this.wqrq_dateChange}></DatePicker>
+                                            <DatePicker disabled={!canEdit} style={{ width: 200 }} onChange={this.wqrq_dateChange}></DatePicker>
                                         )
                                     }
                                 </FormItem>
@@ -521,7 +447,7 @@ class TradeContract extends Component {
                                         getFieldDecorator('sfzjjg', {
                                             rules: [{ required: false }]
                                         })(
-                                            <RadioGroup>
+                                            <RadioGroup disabled={!canEdit}>
                                                 {
                                                     sfzjjgTypes.map(tp => <Radio key={tp.key} value={tp.value}>{tp.key}</Radio>)
                                                 }
@@ -536,10 +462,10 @@ class TradeContract extends Component {
                             <Col span={8}>
                                 <FormItem {...formItemLayout} label={(<span>客户来访日期</span>)}>
                                     {
-                                        getFieldDecorator('kflfrq', {
+                                        getFieldDecorator('khlfrq', {
                                             rules: [{ required: false }]
                                         })(
-                                            <DatePicker style={{ width: 200 }} onChange={this.kflfrq_dateChange}></DatePicker>
+                                            <DatePicker disabled={!canEdit} style={{ width: 200 }} onChange={this.kflfrq_dateChange}></DatePicker>
                                         )
                                     }
                                 </FormItem>
@@ -550,7 +476,7 @@ class TradeContract extends Component {
                                         getFieldDecorator('htqyrq', {
                                             rules: [{ required: false }]
                                         })(
-                                            <DatePicker style={{ width: 200 }} onChange={this.htqyrq_dateChange}></DatePicker>
+                                            <DatePicker disabled={!canEdit} style={{ width: 200 }} onChange={this.htqyrq_dateChange}></DatePicker>
                                         )
                                     }
                                 </FormItem>
@@ -561,7 +487,7 @@ class TradeContract extends Component {
                                         getFieldDecorator('htlx', {
                                             rules: [{ required: false }]
                                         })(
-                                            <RadioGroup>
+                                            <RadioGroup disabled={!canEdit}>
                                                 {
                                                     contractTypes.map(tp => <Radio key={tp.key} value={tp.value}>{tp.key}</Radio>)
                                                 }
@@ -575,10 +501,10 @@ class TradeContract extends Component {
                             <Col span={8}>
                                 <FormItem {...formItemLayout} label={(<span>资金监管协议编号</span>)}>
                                     {
-                                        getFieldDecorator('jjjgxybh', {
+                                        getFieldDecorator('zjjgxybh', {
                                             rules: [{ required: false }]
                                         })(
-                                            <Input style={{ width: 200 }}></Input>
+                                            <Input disabled={!canEdit} style={{ width: 200 }}></Input>
                                         )
                                     }
                                 </FormItem>
@@ -589,7 +515,7 @@ class TradeContract extends Component {
                                         getFieldDecorator('mmjjhtbh', {
                                             rules: [{ required: false }]
                                         })(
-                                            <Input style={{ width: 200 }}></Input>
+                                            <Input  disabled={!canEdit} style={{ width: 200 }}></Input>
                                         )
                                     }
                                 </FormItem>
@@ -600,7 +526,7 @@ class TradeContract extends Component {
                                         getFieldDecorator('zzhtbh', {
                                             rules: [{ required: true, message: '请填写自制合同编号' }]
                                         })(
-                                            <Input style={{ width: 200 }}></Input>
+                                            <Input disabled={!canEdit} style={{ width: 200 }}></Input>
                                         )
                                     }
                                 </FormItem>

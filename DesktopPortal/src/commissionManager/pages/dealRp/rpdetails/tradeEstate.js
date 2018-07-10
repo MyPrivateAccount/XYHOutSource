@@ -153,6 +153,9 @@ class TradeEstate extends Component {
         let cxList = getDicPars(dicKeys.cx, this.props.dic);
 
         let payTypes = getDicPars(dicKeys.fkfs, this.props.dic);;
+
+        const canEdit = this.props.canEdit;
+
         return (
             <Layout>
                 <div>
@@ -176,7 +179,7 @@ class TradeEstate extends Component {
                                     getFieldDecorator('wyCq', {
                                         rules: [{ required: true,message:'请选择城区' }]
                                     })(
-                                        <Select onChange={this.getAreaList} disabled={showBbSelector}  style={{ width: 80 }}>
+                                        <Select onChange={this.getAreaList} disabled={showBbSelector || !canEdit}  style={{ width: 80 }}>
                                             {
                                                 districtList.map(tp => <Option key={tp.code} value={tp.code}>{tp.name}</Option>)
                                             }
@@ -191,7 +194,7 @@ class TradeEstate extends Component {
                                     getFieldDecorator('wyPq', {
                                         rules: [{ required: true,message:'请选择片区' }]
                                     })(
-                                        <Select disabled={showBbSelector}  style={{ width: 80 }}>
+                                        <Select disabled={showBbSelector || !canEdit}  style={{ width: 80 }}>
                                             {
                                                 areaList.map(tp => <Option key={tp.code} value={tp.code}>{tp.name}</Option>)
                                             }
@@ -206,7 +209,7 @@ class TradeEstate extends Component {
                                     getFieldDecorator('wyMc', {
                                         rules: [{ required: true,message:'请填写物业名称'}]
                                     })(
-                                        <Input disabled={showBbSelector} style={{ width: 80 }}></Input>
+                                        <Input disabled={showBbSelector || !canEdit} style={{ width: 80 }}></Input>
                                     )
                                 }
                             </FormItem>
@@ -217,7 +220,7 @@ class TradeEstate extends Component {
                                     getFieldDecorator('wyWz', {
                                         rules: [{ required: true,message:'楼栋'}]
                                     })(
-                                        <Input disabled={showBbSelector} style={{ width: 80 }}></Input>
+                                        <Input disabled={showBbSelector || !canEdit} style={{ width: 80 }}></Input>
                                     )
                                 }
                             </FormItem>
@@ -228,7 +231,7 @@ class TradeEstate extends Component {
                                     getFieldDecorator('wyLc', {
                                         rules: [{ required: true,message:'请填写物业楼层'}]
                                     })(
-                                        <InputNumber disabled={showBbSelector} style={{ width: 80 }}></InputNumber>
+                                        <InputNumber disabled={showBbSelector || !canEdit} style={{ width: 80 }}></InputNumber>
                                     )
                                 }
                             </FormItem>
@@ -239,7 +242,7 @@ class TradeEstate extends Component {
                                     getFieldDecorator('wyFh', {
                                         rules: [{ required: true,message:'请填写房号'}]
                                     })(
-                                        <Input disabled={showBbSelector}  style={{ width: 80 }}></Input>
+                                        <Input disabled={showBbSelector || !canEdit}  style={{ width: 80 }}></Input>
                                     )
                                 }
                             </FormItem>
@@ -250,7 +253,7 @@ class TradeEstate extends Component {
                                     getFieldDecorator('wyZlc', {
                                         rules: [{ required: false }]
                                     })(
-                                        <InputNumber   style={{ width: 80 }}></InputNumber>
+                                        <InputNumber disabled={!canEdit}  style={{ width: 80 }}></InputNumber>
                                     )
                                 }
                             </FormItem>
@@ -263,7 +266,7 @@ class TradeEstate extends Component {
                                     getFieldDecorator('wyCzwydz', {
                                         rules: [{ required: true,message:'请填写产证物业地址'}]
                                     })(
-                                        <Input ></Input>
+                                        <Input disabled={!canEdit} ></Input>
                                     )
                                 }
                             </FormItem>
@@ -276,7 +279,7 @@ class TradeEstate extends Component {
                                     getFieldDecorator('wyF', {
                                         rules: [{ required: false }]
                                     })(
-                                        <InputNumber min={0} style={{ width: '6rem' }}></InputNumber>
+                                        <InputNumber disabled={!canEdit} min={0} style={{ width: '6rem' }}></InputNumber>
                                     )
                                 }
                                
@@ -288,7 +291,7 @@ class TradeEstate extends Component {
                                     getFieldDecorator('wyT', {
                                         rules: [{ required: false }]
                                     })(
-                                        <InputNumber  min={0}></InputNumber>
+                                        <InputNumber  disabled={!canEdit} min={0}></InputNumber>
                                     )
                                 }
                             </FormItem>
@@ -300,7 +303,7 @@ class TradeEstate extends Component {
                                     getFieldDecorator('wyW', {
                                         rules: [{ required: false }]
                                     })(
-                                        <InputNumber min={0}></InputNumber>
+                                        <InputNumber disabled={!canEdit} min={0}></InputNumber>
                                     )
                                 }
                             </FormItem>
@@ -311,7 +314,7 @@ class TradeEstate extends Component {
                                     getFieldDecorator('wyYt', {
                                         rules: [{ required: false }]
                                     })(
-                                        <InputNumber min={0}></InputNumber>
+                                        <InputNumber disabled={!canEdit} min={0}></InputNumber>
                                     )
                                 }
                             </FormItem>
@@ -322,7 +325,7 @@ class TradeEstate extends Component {
                                     getFieldDecorator('wyLt', {
                                         rules: [{ required: false }]
                                     })(
-                                        <InputNumber min={0}></InputNumber>
+                                        <InputNumber disabled={!canEdit} min={0}></InputNumber>
                                     )
                                 }
                             </FormItem>
@@ -333,7 +336,7 @@ class TradeEstate extends Component {
                                     getFieldDecorator('wyJgf', {
                                         rules: [{ required: false }]
                                     })(
-                                        <InputNumber min={0}></InputNumber>
+                                        <InputNumber disabled={!canEdit} min={0}></InputNumber>
                                     )
                                 }
                             </FormItem>
@@ -344,7 +347,7 @@ class TradeEstate extends Component {
                                     getFieldDecorator('wyJgf', {
                                         rules: [{ required: false }]
                                     })(
-                                        <Input></Input>
+                                        <Input disabled={!canEdit} ></Input>
                                     )
                                 }
                             </FormItem>
@@ -357,7 +360,7 @@ class TradeEstate extends Component {
                                     getFieldDecorator('wyWylx', {
                                         rules: [{ required: false }]
                                     })(
-                                        <Select style={{ width: 80 }}>
+                                        <Select style={{ width: 80 }} disabled={!canEdit} >
                                             {
                                                 wyWylxTypes.map(tp => <Option key={tp.key} value={tp.value}>{tp.key}</Option>)
                                             }
@@ -372,7 +375,7 @@ class TradeEstate extends Component {
                                     getFieldDecorator('wyKjlx', {
                                         rules: [{ required: false }]
                                     })(
-                                        <Select style={{ width: 80 }}>
+                                        <Select style={{ width: 80 }} disabled={!canEdit} >
                                             {
                                                 wyKjlxTypes.map(tp => <Option key={tp.key} value={tp.value}>{tp.key}</Option>)
                                             }
@@ -387,7 +390,7 @@ class TradeEstate extends Component {
                                     getFieldDecorator('wyLl', {
                                         rules: [{ required: false }]
                                     })(
-                                        <Select >
+                                        <Select disabled={!canEdit} >
                                             {
                                                 llList.map(tp => <Option key={tp.key} value={tp.value}>{tp.key}</Option>)
                                             }
@@ -405,7 +408,7 @@ class TradeEstate extends Component {
                                     getFieldDecorator('wyJzmj', {
                                         rules: [{ required: true,message:'请填写建筑面积'}]
                                     })(
-                                        <InputNumber min={0} disabled={showBbSelector}  precision={2}  style={{ width: 200 }}></InputNumber>
+                                        <InputNumber min={0} disabled={showBbSelector || !canEdit}  precision={2}  style={{ width: 200 }}></InputNumber>
                                     )
                                 }
                             </FormItem>
@@ -425,7 +428,7 @@ class TradeEstate extends Component {
                             <FormItem {...formItemLayout} label={(<span>实用面积</span>)}>
                                 {
                                     getFieldDecorator('wySymj')(
-                                        <InputNumber min={0} disabled={showBbSelector}  precision={2}  style={{ width: 200 }}></InputNumber>
+                                        <InputNumber min={0} disabled={showBbSelector || !canEdit}  precision={2}  style={{ width: 200 }}></InputNumber>
                                     )
                                 }
                             </FormItem>
@@ -438,7 +441,7 @@ class TradeEstate extends Component {
                                     getFieldDecorator('wyDts', {
                                         rules: [{ required: false }]
                                     })(
-                                        <InputNumber style={{ width: 120 }}></InputNumber>
+                                        <InputNumber disabled={!canEdit} style={{ width: 120 }}></InputNumber>
                                     )
                                 }
                             </FormItem>
@@ -449,7 +452,7 @@ class TradeEstate extends Component {
                                     getFieldDecorator('wyMchs', {
                                         rules: [{ required: false }]
                                     })(
-                                        <InputNumber style={{ width: 120 }}></InputNumber>
+                                        <InputNumber disabled={!canEdit} style={{ width: 120 }}></InputNumber>
                                     )
                                 }
                             </FormItem>
@@ -460,7 +463,7 @@ class TradeEstate extends Component {
                                     getFieldDecorator('wyZxzk', {
                                         rules: [{ required: false }]
                                     })(
-                                        <Select style={{ width: 80 }}>
+                                        <Select disabled={!canEdit} style={{ width: 80 }}>
                                             {
                                                 zxzkList.map(tp => <Option key={tp.key} value={tp.value}>{tp.key}</Option>)
                                             }
@@ -477,7 +480,7 @@ class TradeEstate extends Component {
                                     getFieldDecorator('wyZxnd', {
                                         rules: [{ required: false }]
                                     })(
-                                        <Select style={{ width: 80 }}>
+                                        <Select disabled={!canEdit} style={{ width: 80 }}>
                                             {
                                                 zxndList.map(tp => <Option key={tp.key} value={tp.value}>{tp.key}</Option>)
                                             }
@@ -492,7 +495,7 @@ class TradeEstate extends Component {
                                     getFieldDecorator('wyJj', {
                                         rules: [{ required: false }]
                                     })(
-                                        <Select style={{ width: 80 }}>
+                                        <Select disabled={!canEdit} style={{ width: 80 }}>
                                             {
                                                 wyJjTypes.map(tp => <Option key={tp.key} value={tp.value}>{tp.key}</Option>)
                                             }
@@ -507,7 +510,7 @@ class TradeEstate extends Component {
                                     getFieldDecorator('wyCx', {
                                         rules: [{ required: false }]
                                     })(
-                                        <Select style={{ width: 80 }}>
+                                        <Select disabled={!canEdit} style={{ width: 80 }}>
                                             {
                                                 cxList.map(tp => <Option key={tp.key} value={tp.key}>{tp.key}</Option>)
                                             }
@@ -525,7 +528,7 @@ class TradeEstate extends Component {
                                     getFieldDecorator('wyCqzqdsj', {
                                         rules: [{ required: false, message: '请填写产权取得时间!' }]
                                     })(
-                                        <DatePicker style={{ width: 180 }} ></DatePicker>
+                                        <DatePicker disabled={!canEdit} style={{ width: 180 }} ></DatePicker>
                                     )
                                 }
                             </FormItem>
@@ -536,7 +539,7 @@ class TradeEstate extends Component {
                                     getFieldDecorator('wyFcajhm', {
                                         rules: [{ required: false, message: '请填写房产按揭号码!' }]
                                     })(
-                                        <Input style={{ width: 180 }}></Input>
+                                        <Input disabled={!canEdit} style={{ width: 180 }}></Input>
                                     )
                                 }
                             </FormItem>
@@ -547,7 +550,7 @@ class TradeEstate extends Component {
                                     getFieldDecorator('wySfhz', {
                                         rules: [{ required: false, message: '请选择是否合租' }]
                                     })(
-                                        <RadioGroup style={{ width: 180 }}>
+                                        <RadioGroup disabled={!canEdit} style={{ width: 180 }}>
                                             <Radio key='1' value={true}>是</Radio>
                                             <Radio key='0' value={false}>否</Radio>
                                         </RadioGroup>
@@ -563,7 +566,7 @@ class TradeEstate extends Component {
                                     getFieldDecorator('wyFyfkfs', {
                                         rules: [{ required: false, message: '请选择房源付款方式' }]
                                     })(
-                                        <Select style={{ width: 80 }}>
+                                        <Select disabled={!canEdit} style={{ width: 80 }}>
                                             {
                                                 payTypes.map(tp => <Option key={tp.key} value={tp.value}>{tp.key}</Option>)
                                             }
@@ -578,7 +581,7 @@ class TradeEstate extends Component {
                                     getFieldDecorator('wyFydknx', {
                                         rules: [{ required: false, message: '请填写房源贷款年限!' }]
                                     })(
-                                        <InputNumber style={{ width: 180 }}></InputNumber>
+                                        <InputNumber disabled={!canEdit} style={{ width: 180 }}></InputNumber>
                                     )
                                 }
                             </FormItem>
@@ -589,7 +592,7 @@ class TradeEstate extends Component {
                                     getFieldDecorator('wyFydksynx', {
                                         rules: [{ required: false, message: '请填写房源贷款剩余年限!' }]
                                     })(
-                                        <InputNumber style={{ width: 80 }}></InputNumber>
+                                        <InputNumber disabled={!canEdit}  style={{ width: 80 }}></InputNumber>
                                     )
                                 }
                             </FormItem>
@@ -602,7 +605,7 @@ class TradeEstate extends Component {
                                     getFieldDecorator('wyFydkje', {
                                         rules: [{ required: false }]
                                     })(
-                                        <InputNumber precision={2} style={{ width: 120 }}></InputNumber>
+                                        <InputNumber disabled={!canEdit} precision={2} style={{ width: 120 }}></InputNumber>
                                     )
                                 }
                             </FormItem>
@@ -613,7 +616,7 @@ class TradeEstate extends Component {
                                     getFieldDecorator('wyFyyhje', {
                                         rules: [{ required: false }]
                                     })(
-                                        <InputNumber precision={2} style={{ width: 120 }}></InputNumber>
+                                        <InputNumber disabled={!canEdit} precision={2} style={{ width: 120 }}></InputNumber>
                                     )
                                 }
                             </FormItem>

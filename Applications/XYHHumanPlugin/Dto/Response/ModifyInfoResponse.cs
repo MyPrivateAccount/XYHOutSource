@@ -2,14 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
-
+using XYHHumanPlugin.Models;
 
 public class ModifyInfoResponse
 {
     public string ID { get; set; }
     public string IDCard { get; set; }
     public int? Type { get; set; }
-    public int? ExamineStatus { get; set; }
+    public ExamineStatusEnum ExamineStatus { get; set; } = ExamineStatusEnum.UnSubmit;
     public DateTime? ExamineTime { get; set; }
     public string ModifyPepole { get; set; }
     public DateTime? ModifyStartTime { get; set; }

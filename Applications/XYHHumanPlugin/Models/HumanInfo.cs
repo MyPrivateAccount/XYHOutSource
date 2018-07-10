@@ -29,7 +29,7 @@ namespace XYHHumanPlugin.Models
         /// <summary>
         /// 生日
         /// </summary>
-        public DateTime Birthday { get; set; }
+        public DateTime? Birthday { get; set; }
 
         /// <summary>
         /// 电话
@@ -44,7 +44,7 @@ namespace XYHHumanPlugin.Models
         /// <summary>
         /// 性别
         /// </summary>
-        public Int16 Sex { get; set; }
+        public Int16 Sex { get; set; } = 2;
 
         /// <summary>
         /// 公司
@@ -81,7 +81,10 @@ namespace XYHHumanPlugin.Models
         /// </summary>
         [MaxLength(255)]
         public string NativePlace { get; set; }
-
+        /// <summary>
+        /// 婚姻状况
+        /// </summary>
+        public bool? MaritalStatus { get; set; }
         /// <summary>
         /// 家庭住址
         /// </summary>
@@ -177,12 +180,12 @@ namespace XYHHumanPlugin.Models
         /// 状态
         /// </summary>
         [MaxLength(255)]
-        public StaffStatus StaffStatus { get; set; }
+        public StaffStatus StaffStatus { get; set; } = 0;
 
         /// <summary>
         /// 入职日期
         /// </summary>
-        public DateTime EntryTime { get; set; }
+        public DateTime? EntryTime { get; set; }
 
         /// <summary>
         /// 转正日期？
@@ -216,11 +219,15 @@ namespace XYHHumanPlugin.Models
         /// </summary>
         public int? OtherBack { get; set; }
 
+        /// <summary>
+        /// 审核状态
+        /// </summary>
+        public ExamineStatusEnum ExamineStatus { get; set; } = ExamineStatusEnum.UnSubmit;
 
         /// <summary>
         /// 创建时间
         /// </summary>
-        public DateTime CreateTime { get; set; }
+        public DateTime? CreateTime { get; set; }
         /// <summary>
         /// 创建人
         /// </summary>

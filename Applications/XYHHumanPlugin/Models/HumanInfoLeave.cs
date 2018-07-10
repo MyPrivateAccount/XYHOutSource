@@ -35,7 +35,10 @@ namespace XYHHumanPlugin.Models
         /// 是否办理离职手续
         /// </summary>
         public bool IsProcedure { get; set; }
-
+        /// <summary>
+        /// 审核状态
+        /// </summary>
+        public ExamineStatusEnum ExamineStatus { get; set; } = ExamineStatusEnum.UnSubmit;
         public bool IsCurrent { get; set; }
 
         public DateTime CreateTime { get; set; }

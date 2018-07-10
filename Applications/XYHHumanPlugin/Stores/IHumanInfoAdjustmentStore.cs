@@ -28,6 +28,8 @@ namespace XYHHumanPlugin.Stores
         /// <returns></returns>
         Task<HumanInfoAdjustment> UpdateAsync(UserInfo user, HumanInfoAdjustment humanInfoAdjustment, CancellationToken cancellationToken = default(CancellationToken));
 
+        Task UpdateExamineStatus(string id, ExamineStatusEnum status, CancellationToken cancellationToken = default(CancellationToken));
+
         /// <summary>
         /// 删除
         /// </summary>

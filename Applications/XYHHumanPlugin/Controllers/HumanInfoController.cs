@@ -21,6 +21,8 @@ using SocialInsuranceRequest = XYHHumanPlugin.Dto.Response.SocialInsuranceRespon
 using LeaveInfoRequest = XYHHumanPlugin.Dto.Response.LeaveInfoResponse;
 using ChangeInfoRequest = XYHHumanPlugin.Dto.Response.ChangeInfoResponse;
 using ApplicationCore.Managers;
+using XYHHumanPlugin.Models;
+using GatewayInterface.Dto.Response;
 
 namespace XYHHumanPlugin.Controllers
 {
@@ -37,11 +39,11 @@ namespace XYHHumanPlugin.Controllers
         private int _lastNumber;
 
         //一共俩份
-        private const int CreateNOModifyType = 0;//无
-        private const int CreateHumanModifyType = 1;//未入
-        private const int EntryHumanModifyType = 3;//入职
-        private const int BecomeHumanModifyType = 5;//转正
-        private const int LeaveHumanModifyType = 7;//离职
+        //private const int CreateNOModifyType = 0;//无
+        //private const int CreateHumanModifyType = 1;//未入
+        //private const int EntryHumanModifyType = 3;//入职
+        //private const int BecomeHumanModifyType = 5;//转正
+        //private const int LeaveHumanModifyType = 7;//离职
 
 
         public HumanInfoController(RestClient rsc, HumanInfoManager humanInfoManager, HumanManager human)
@@ -120,17 +122,17 @@ namespace XYHHumanPlugin.Controllers
             return response;
         }
 
-        [HttpPost("searchhumaninfo")]
+        [HttpPost("search")]
         [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
-        public async Task<PagingResponseMessage<HumanInfoSearchResponse>> SearchHumanInfo(UserInfo User, [FromBody]HumanInfoSearchCondition condition)
+        public async Task<PagingResponseMessage<HumanInfoSearchResponse>> Search(UserInfo User, [FromBody]HumanInfoSearchCondition condition)
         {
-            Logger.Trace($"用户{User?.UserName ?? ""}({User?.Id ?? ""})查询人事信息(SearchHumanInfo)，\r\n请求参数为：\r\n" + (condition != null ? JsonHelper.ToJson(condition) : ""));
+            Logger.Trace($"用户{User?.UserName ?? ""}({User?.Id ?? ""})查询人事信息(Search)，\r\n请求参数为：\r\n" + (condition != null ? JsonHelper.ToJson(condition) : ""));
             var pagingResponse = new PagingResponseMessage<HumanInfoSearchResponse>();
             if (!ModelState.IsValid)
             {
                 pagingResponse.Code = ResponseCodeDefines.ModelStateInvalid;
                 pagingResponse.Message = ModelState.GetAllErrors();
-                Logger.Warn($"用户{User?.UserName ?? ""}({User?.Id ?? ""})查询人事信息(SearchHumanInfo)模型验证失败：\r\n{pagingResponse.Message ?? ""}，\r\n请求参数为：\r\n" + (condition != null ? JsonHelper.ToJson(condition) : ""));
+                Logger.Warn($"用户{User?.UserName ?? ""}({User?.Id ?? ""})查询人事信息(Search)模型验证失败：\r\n{pagingResponse.Message ?? ""}，\r\n请求参数为：\r\n" + (condition != null ? JsonHelper.ToJson(condition) : ""));
                 return pagingResponse;
             }
             try
@@ -149,7 +151,7 @@ namespace XYHHumanPlugin.Controllers
             {
                 pagingResponse.Code = ResponseCodeDefines.ServiceError;
                 pagingResponse.Message = "服务器错误:" + e.ToString();
-                Logger.Error($"用户{User?.UserName ?? ""}({User?.Id ?? ""})查询人事信息(SearchHumanInfo)请求失败：\r\n{pagingResponse.Message ?? ""}，\r\n请求参数为：\r\n" + (condition != null ? JsonHelper.ToJson(condition) : ""));
+                Logger.Error($"用户{User?.UserName ?? ""}({User?.Id ?? ""})查询人事信息(Search)请求失败：\r\n{pagingResponse.Message ?? ""}，\r\n请求参数为：\r\n" + (condition != null ? JsonHelper.ToJson(condition) : ""));
             }
             return pagingResponse;
         }
@@ -597,99 +599,63 @@ namespace XYHHumanPlugin.Controllers
             return r;
         }
 
-        #region Flow
-        [HttpPost("audit/updatehumancallback")]
+
+
+        /// <summary>
+        /// 新增人事信息回调
+        /// </summary>
+        /// <param name="examineResponse"></param>
+        /// <returns></returns>
+        [HttpPost("humaninfocallback")]
         [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
-        public async Task<ResponseMessage> UpdateRecordHumanCallback([FromBody] ExamineResponse examineResponse)
+        public async Task<ResponseMessage> HumanInfoCreateCallback([FromBody] ExamineResponse examineResponse)
         {
-            Logger.Warn($"审核回调接口(UpdateRecordSubmitCallback)：\r\n请求参数为：\r\n" + (examineResponse != null ? JsonHelper.ToJson(examineResponse) : ""));
-
-            ResponseMessage response = new ResponseMessage();
-            if (!ModelState.IsValid)
-            {
-                response.Code = ResponseCodeDefines.ModelStateInvalid;
-                response.Message = ModelState.GetAllErrors();
-                Logger.Warn($"房源动态审核回调(UpdateRecordSubmitCallback)报错：\r\n{response.Message ?? ""},\r\n请求参数为：\r\n" + (examineResponse != null ? JsonHelper.ToJson(examineResponse) : ""));
-                return response;
-            }
-
-            try
-            {
-                //await _updateRecordManager.UpdateRecordSubmitCallback(examineResponse);
-
-            }
-            catch (Exception e)
-            {
-                response.Code = ResponseCodeDefines.ServiceError;
-                response.Message = e.ToString();
-                Logger.Error($"房源动态审核回调(UpdateRecordSubmitCallback)报错：\r\n{response.Message ?? ""},\r\n请求参数为：\r\n" + (examineResponse != null ? JsonHelper.ToJson(examineResponse) : ""));
-            }
-            return response;
-        }
-
-        [HttpPost("audit/submithumancallback")]
-        [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
-        public async Task<ResponseMessage> SubmitHumanCallback([FromBody] ExamineResponse examineResponse)
-        {
-            Logger.Trace($"人事提交审核中心回调(SubmitContractCallback)：\r\n请求参数为：\r\n" + (examineResponse != null ? JsonHelper.ToJson(examineResponse) : ""));
+            Logger.Trace($"新增人事信息回调(HumanInfoCreateCallback)：\r\n请求参数为：\r\n" + (examineResponse != null ? JsonHelper.ToJson(examineResponse) : ""));
 
             ResponseMessage response = new ResponseMessage();
 
             if (examineResponse == null)
             {
                 response.Code = ResponseCodeDefines.ModelStateInvalid;
-                Logger.Trace($"人事提交审核中心回调(SubmitContractCallback)模型验证失败：\r\n{response.Message ?? ""}，\r\n请求参数为：\r\n" + (examineResponse != null ? JsonHelper.ToJson(examineResponse) : ""));
+                Logger.Trace($"新增人事信息回调(HumanInfoCreateCallback)模型验证失败：\r\n{response.Message ?? ""}，\r\n请求参数为：\r\n" + (examineResponse != null ? JsonHelper.ToJson(examineResponse) : ""));
                 return response;
             }
             try
             {
                 response.Code = ResponseCodeDefines.SuccessCode;
-
                 if (examineResponse.ExamineStatus == ExamineStatus.Examined)
                 {
-                    var hr = await _humanManage.SubmitAsync(examineResponse.SubmitDefineId, ExamineStatusEnum.Approved);
-                    if (hr != null)
-                    {
-                        switch (hr.Type)
-                        {
-                            case CreateHumanModifyType://入职后要建表
-                                {
-                                    UserInfoRequest user = new UserInfoRequest();
-                                    user.Password = "123456";
-                                    user.UserName = hr.Ext1;
-                                    user.TrueName = hr.Ext2;
-
-                                    NameValueCollection nameValueCollection = new NameValueCollection();
-                                    //nameValueCollection.Add("appToken", "app:nwf");
-
-                                    //string response2 = await _restClient.Post("http://localhost:5000/api/user/", user, "POST", nameValueCollection);
-
-                                    string tokenUrl = $"{ApplicationContext.Current.AuthUrl}/connect/token";
-                                    string userurl = $"{ApplicationContext.Current.AuthUrl}/api/user/";
-                                    var tokenManager = new TokenManager(tokenUrl, ApplicationContext.Current.ClientID, ApplicationContext.Current.ClientSecret);
-                                    var response2 = await tokenManager.Execute(async (token) =>
-                                    {
-                                        return await _restClient.PostWithToken<ResponseMessage>(userurl, user, token);
-                                    });
-                                }
-                                break;
-                            default: break;
-                        }
-                    }
+                    await _humanInfoManager.UpdateExamineStatus(examineResponse.SubmitDefineId, ExamineStatusEnum.Approved);
                 }
                 else if (examineResponse.ExamineStatus == ExamineStatus.Reject)
                 {
-                    await _humanManage.SubmitAsync(examineResponse.SubmitDefineId, ExamineStatusEnum.Reject);
+                    await _humanInfoManager.UpdateExamineStatus(examineResponse.SubmitDefineId, ExamineStatusEnum.Reject);
                 }
             }
             catch (Exception e)
             {
                 response.Code = ResponseCodeDefines.ServiceError;
                 response.Message = e.ToString();
-                Logger.Trace($"人事提交审核中心回调(SubmitBuildingCallback)报错：\r\n{e.ToString()}，\r\n请求参数为：\r\n" + examineResponse != null ? JsonHelper.ToJson(examineResponse) : "");
+                Logger.Trace($"新增人事信息回调(HumanInfoCreateCallback)报错：\r\n{e.ToString()}，\r\n请求参数为：\r\n" + examineResponse != null ? JsonHelper.ToJson(examineResponse) : "");
             }
             return response;
         }
-        #endregion
+
+
+
+        /// <summary>
+        /// 新增人事信息步骤回调
+        /// </summary>
+        /// <param name="examineResponse"></param>
+        /// <returns></returns>
+        [HttpPost("humaninfostepcallback")]
+        [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
+        public async Task<ResponseMessage> HumanInfoCreateStepCallback([FromBody] ExamineStepResponse examineStepResponse)
+        {
+            Logger.Trace($"新增人事信息步骤回调(HumanInfoCreateStepCallback)：\r\n请求参数为：\r\n" + (examineStepResponse != null ? JsonHelper.ToJson(examineStepResponse) : ""));
+
+            ResponseMessage response = new ResponseMessage();
+            return response;
+        }
     }
 }

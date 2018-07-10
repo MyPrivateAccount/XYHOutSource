@@ -1,6 +1,7 @@
 //内部分配表格
 import { connect } from 'react-redux';
 import React, { Component } from 'react';
+import ReactDOM from 'react-dom'
 import { Select, Table, Button, Tooltip, Input, Form, InputNumber, Spin } from 'antd'
 import WebApiConfig from '../../../constants/webApiConfig'
 import ApiClient from '../../../../utils/apiClient'
@@ -45,7 +46,7 @@ class TradeNTable extends Component {
         if(this._lastKeyword===value){
             this._lastKeyword = '';
         }
-        this.setState({fetchingUser:true})
+        this.setState({userList:[], fetchingUser:true})
         var r = await ApiClient.get(url, true, { permissionId: permission.nyftPepole, keyword: value, pageSize: 0, pageIndex: 0 });
         if (r && r.data && r.data.code === '0') {
             this.setState({ userList: r.data.extension || [] })
@@ -63,18 +64,23 @@ class TradeNTable extends Component {
         });
         if (!value || (value && value.length === 0)) {
             this._onRowChanged(row,'uid', null)
-            this.setState({ userList: [] })
+          //  this.setState({ userList: [] })
         } else {
             let ru = value[value.length - 1];
             let ui = this.state.userList.find(x=>x.id === ru.key);
-            this.setState({ userList: [] })
+        //    this.setState({ userList: [] })
             setTimeout(() => {
                 this._onRowChanged(row,'uid', ui)
                 
             }, 0);
 
         }
-       
+      var ele =  ReactDOM.findDOMNode(this._tblElement);
+      if(ele){
+          ele.focus();
+      }
+      //  document.focus();
+    //    this.userSelectElement.blur();
     }
 
     _getTableColums = () => {
@@ -99,6 +105,8 @@ class TradeNTable extends Component {
                             disabled={!canEdit}
                             mode="multiple"
                             maxTagCount={1}
+                            
+                            dropdownStyle={{minWidth: 300}}
                             labelInValue
                             value={record.uid||[]}
                             placeholder="输入姓名、员工编号或手机号码"
@@ -125,7 +133,7 @@ class TradeNTable extends Component {
                 title: '身份', dataIndex: 'type', key: 'type',width:'10rem',
                 render: (text, record) => (
                     <FormItem hasFeedback validateStatus={record.errors['type'] ? 'error' : ''}>
-                        <Select value={text} >
+                        <Select value={record.type}  disabled={!canEdit} onChange={v=>this._onRowChanged(record, 'type', v)}>
                             {
                                 sfItems.map(tp => <Select.Option key={tp.name} value={tp.code}>{tp.name}</Select.Option>)
                             }
@@ -137,7 +145,7 @@ class TradeNTable extends Component {
                 title: '比例', dataIndex: 'percent', key: 'percent',width:'10rem',
                 render: (text, record) => (
                     <FormItem hasFeedback validateStatus={record.errors['percent'] ? 'error' : ''}>
-                        <InputNumber min={0} value={text} precision={2} />%
+                        <InputNumber min={0}  disabled={!canEdit} value={text} precision={2}  onChange={v=>this._onRowChanged(record, 'percent', v)}/>%
                 </FormItem>
                 )
             },
@@ -153,7 +161,7 @@ class TradeNTable extends Component {
                 title: '单数', dataIndex: 'oddNum', key: 'oddNum',width:'10rem',
                 render: (text, record) => (
                     <FormItem hasFeedback validateStatus={record.errors['oddNum'] ? 'error' : ''}>
-                        <InputNumber value={text} />
+                        <InputNumber precision={2} disabled={!canEdit} value={record.oddNum} onChange={v=>this._onRowChanged(record, 'oddNum', v)}/>
                     </FormItem>
                 )
             },
@@ -162,7 +170,7 @@ class TradeNTable extends Component {
                     return canEdit ? <span>
 
                         <Tooltip title='删除'>
-                            &nbsp;<Button type='primary' shape='circle' size='small' icon='team' onClick={(e) => this._onDelRow(recored)} />
+                            &nbsp;<Button type='primary' size='small'  onClick={(e) => this._onDelRow(recored)} >删除</Button>
                         </Tooltip>
                     </span> : null
                 }
@@ -190,7 +198,7 @@ class TradeNTable extends Component {
         const columns = this._getTableColums();
         return (
             <Form>
-                <Table bordered size="small" columns={columns} pagination={false} dataSource={dataSource}></Table>
+                <Table ref={(ins)=>this._tblElement = ins} bordered size="small" columns={columns} pagination={false} dataSource={dataSource}></Table>
             </Form>
         )
     }

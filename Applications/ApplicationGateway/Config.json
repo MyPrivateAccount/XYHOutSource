@@ -13,7 +13,7 @@
   },
   "Redis": {
     "InstanceName": "AC",
-    "Configuration": "localhost:6379,password=xyh@2017"
+    "Configuration": "server-t01:6379,password=xyh@2017"
   },
   "AuthUrl": "https://testauth.xinyaohangdc.com",
   //"AuthUrl": "http://localhost:5000",
@@ -21,7 +21,7 @@
   "ClientSecret": "123456",
   "NWFUrl": "http://172.16.24.92:7100/api/task/nwf",
   "MessageServerUrl": "http://server-d01:9000",
-  "FileServerRoot": "http://server-t01:5100/image",
+  "FileServerRoot": "https://testfile.xinyaohangdc.com/image",
   "ExamineCenterUrl": "http://localhost:6000/api/examines/submit",
   "NWFExamineCallbackUrl": "http://server-t01:7100/examine/callback/ExamineCallback",
   "AppGatewayUrl": "http://172.16.24.92:7000",

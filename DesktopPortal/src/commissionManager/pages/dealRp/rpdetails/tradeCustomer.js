@@ -10,7 +10,7 @@ const Option = Select.Option;
 
 let cjzqList = [];
 for(let i = 1;i<=11;i++){
-  cjzqList.push({key: `${i-1}~${i}周`,value: `${i-1}~${1}`})
+  cjzqList.push({key: `${i-1}~${i}周`,value: `${i-1}~${i}`})
 }
 
 
@@ -59,6 +59,10 @@ class TradeCustomer extends Component {
     //  let yzChtscTypes = this.props.basicData.yzChtscTypes
     let khKhxzTypes = getDicPars(dicKeys.khxz, this.props.dic);
     let khlyList = getDicPars(dicKeys.khly, this.props.dic);
+
+    const canEdit = this.props.canEdit;
+
+
     return (
       <Layout>
         <Spin spinning={this.state.loading} tip={this.state.tip}>
@@ -69,7 +73,7 @@ class TradeCustomer extends Component {
                   getFieldDecorator('khMc', {
                     rules: [{ required: true, message: '请填写客户名称' }]
                   })(
-                    <Input style={{ width: 200 }}></Input>
+                    <Input disabled={!canEdit} style={{ width: 200 }}></Input>
                   )
                 }
               </FormItem>
@@ -80,7 +84,7 @@ class TradeCustomer extends Component {
                   getFieldDecorator('khZjhm', {
                     rules: [{ required: true, message: '请填写客户身份证' }]
                   })(
-                    <Input style={{ width: 200 }}></Input>
+                    <Input disabled={!canEdit}  style={{ width: 200 }}></Input>
                   )
                 }
               </FormItem>
@@ -93,7 +97,7 @@ class TradeCustomer extends Component {
                   getFieldDecorator('khDz', {
                     rules: [{ required: false, message: '请填写地址!' }]
                   })(
-                    <Input style={{ width: 200 }}></Input>
+                    <Input disabled={!canEdit}  style={{ width: 200 }}></Input>
                   )
                 }
               </FormItem>
@@ -104,7 +108,7 @@ class TradeCustomer extends Component {
                   getFieldDecorator('khSj', {
                     rules: [{ required: true, message: '请填写手机号码!' }]
                   })(
-                    <Input style={{ width: 200 }}></Input>
+                    <Input disabled={!canEdit}  style={{ width: 200 }}></Input>
                   )
                 }
               </FormItem>
@@ -115,7 +119,7 @@ class TradeCustomer extends Component {
                   getFieldDecorator('khKhly', {
                     rules: [{ required: true, message: '请选择客户来源!' }]
                   })(
-                    <Select disabled={showBbSelector} style={{ width: 80 }}>
+                    <Select disabled={showBbSelector || !canEdit} style={{ width: 80 }}>
                       {
                         khlyList.map(tp => <Option key={tp.key} value={tp.key}>{tp.key}</Option>)
                       }
@@ -134,7 +138,7 @@ class TradeCustomer extends Component {
                     rules: [{ required: false, message: '请选择客户性质!' }],
                     initialValue: this.state.rpData.khKhxz,
                   })(
-                    <Select style={{ width: 80 }}>
+                    <Select disabled={!canEdit}  style={{ width: 80 }}>
                       {
                         khKhxzTypes.map(tp => <Option key={tp.key} value={tp.key}>{tp.key}</Option>)
                       }
@@ -150,7 +154,7 @@ class TradeCustomer extends Component {
                     rules: [{ required: false, message: '请填写客源号!' }],
                     initialValue: this.state.rpData.khKyh,
                   })(
-                    <Input style={{ width: 200 }}></Input>
+                    <Input disabled={!canEdit}  style={{ width: 200 }}></Input>
                   )
                 }
               </FormItem>
@@ -161,7 +165,7 @@ class TradeCustomer extends Component {
                   getFieldDecorator('khZycs', {
                     rules: [{ required: false, message: '请填写置业次数' }]
                   })(
-                    <InputNumber style={{ width: 200 }}></InputNumber>
+                    <InputNumber disabled={!canEdit}  style={{ width: 200 }}></InputNumber>
                   )
                 }
               </FormItem>
@@ -174,7 +178,7 @@ class TradeCustomer extends Component {
                   getFieldDecorator('khEmail', {
                     rules: [{ required: false }]
                   })(
-                    <Input style={{ width: 200 }}></Input>
+                    <Input disabled={!canEdit}  style={{ width: 200 }}></Input>
                   )
                 }
               </FormItem>
@@ -187,7 +191,7 @@ class TradeCustomer extends Component {
                   getFieldDecorator('khDlr', {
                     rules: [{ required: false, message: '请填写代理人!' }]
                   })(
-                    <Input style={{ width: 200 }}></Input>
+                    <Input disabled={!canEdit}  style={{ width: 200 }}></Input>
                   )
                 }
               </FormItem>
@@ -198,7 +202,7 @@ class TradeCustomer extends Component {
                   getFieldDecorator('khDlrlxfs', {
                     rules: [{ required: false, message: '请填写代理人联系方式!' }]
                   })(
-                    <Input style={{ width: 200 }}></Input>
+                    <Input disabled={!canEdit}  style={{ width: 200 }}></Input>
                   )
                 }
               </FormItem>
@@ -209,7 +213,7 @@ class TradeCustomer extends Component {
                   getFieldDecorator('khDlrzjhm', {
                     rules: [{ required: false, message: '请填写代理人证件号码!' }]
                   })(
-                    <Input style={{ width: 200 }}></Input>
+                    <Input disabled={!canEdit}  style={{ width: 200 }}></Input>
                   )
                 }
               </FormItem>
@@ -223,7 +227,7 @@ class TradeCustomer extends Component {
                     rules: [{ required: false, message: '请填写分行名称!' }],
                     initialValue: this.state.rpData.khCjyy,
                   })(
-                    <Input style={{ width: 200 }}></Input>
+                    <Input disabled={!canEdit}  style={{ width: 200 }}></Input>
                   )
                 }
               </FormItem>
@@ -235,9 +239,9 @@ class TradeCustomer extends Component {
                     rules: [{ required: false, message: '请填写成交人!' }],
                     initialValue: this.state.rpData.khCdjzqhtsc,
                   })(
-                    <Select style={{ width: 80 }}>
+                    <Select disabled={!canEdit}  style={{ width: 80 }}>
                       {
-                        cjzqList.map(tp => <Option key={tp.key} value={tp.key}>{tp.key}</Option>)
+                        cjzqList.map(tp => <Option key={tp.key} value={tp.value}>{tp.key}</Option>)
                       }
                     </Select>
                   )
