@@ -94,7 +94,7 @@ const validations = {
     isPureNumber: function (value) {
         return validations.matchRegexp(value, /^[\d]+$/i);
     },
-    validate: (values, rules) => {
+    validate: (values, rules,...pars) => {
         let errors = {};
         Object.keys(rules).forEach(k => {
             let val = values[k];
@@ -103,7 +103,7 @@ const validations = {
                 for (var i = 0; i < rule.length; i++) {
                     let item = rule[i];
                     let [func, msg, ...args] = item;
-                    if (!func(val, ...args)) {
+                    if (!func(val, ...args,values,...pars)) {
                         errors[k] = msg;
                         break;
                     }

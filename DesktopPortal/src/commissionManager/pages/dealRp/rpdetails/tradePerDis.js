@@ -1,15 +1,12 @@
 //业绩分配组件
 import { connect } from 'react-redux';
 import React, { Component } from 'react';
-import moment from 'moment'
-import { dealFpSave, acmentParamListGet ,searchHuman} from '../../../actions/actionCreator'
-import { DatePicker, notification, Form, Span, Layout, Table, Button, Radio, Popconfirm, Tooltip, Row, Col, Input, Spin, Select, TreeSelect, InputNumber } from 'antd'
+import { DatePicker,  Form, Layout,  Button, Row, Col, Input, Spin, InputNumber } from 'antd'
 import TradeWyTable from './tradeWyTable'
 import TradeNTable from './tradeNTable'
-import WebApiConfig from '../../../constants/webApiConfig'
-import ApiClient from '../../../../utils/apiClient'
-import SearchCondition from '../../../constants/searchCondition'
 import uuid from 'uuid'
+import reportValidation from '../../../constants/reportValidation'
+import validations from '../../../../utils/validations'
 
 const FormItem = Form.Item;
 class TradePerDis extends Component {
@@ -18,8 +15,6 @@ class TradePerDis extends Component {
         super(props);
         this.state = {
             isDataLoading: false,
-            wyItems:[],
-            nyItems:[],
             outsideList:[],
             insideList:[],
             totalyj: 0,
@@ -36,7 +31,6 @@ class TradePerDis extends Component {
     }
     componentDidMount = () => {
       this.initEntity(this.props);
-      this._getFtItems();
     }
     componentWillReceiveProps = (nextProps) => {
       if (this.props.entity !== nextProps.entity && nextProps.entity) {
@@ -55,32 +49,16 @@ class TradePerDis extends Component {
       Object.keys(entity).map(key => {
         mv[key] = entity[key];
       })
+
+      let il =  entity.reportInsides || [];
+      il.forEach(item=>{
+          item.uid = [{key:item.uid, label: item.username}];
+      })
+
+      this.setState({outsideList: entity.reportOutsides||[], insideList: il})
       this.props.form.setFieldsValue(mv);
     }
 
-    _getFtItems = async () => {
-        let report = this.props.report;
-        if(!report.gsmc){
-            return;
-        }  
-        let url = `${WebApiConfig.baseset.acmentlistget}${report.gsmc}`
-        let r = await ApiClient.get(url);
-        r = (r||{}).data ||{};
-        if(r.code==='0'){
-            let list = r.extension ||[];
-            let wyItems =[], nyItems=[];
-            list.forEach(item=>{
-                if(item.type===1){
-                    wyItems.push(item)
-                }else if(item.type === 2){
-                    nyItems.push(item)
-                }
-            })
-            this.setState({wyItems: wyItems, nyItems:nyItems})
-        }else{
-            notification.error({message:'获取分摊项列表失败'})
-        }
-    }
 
     //添加内佣项目
     handleAddNbFp = () => {
@@ -95,6 +73,8 @@ class TradePerDis extends Component {
 
             }
         }
+
+        item.errors = validations.validate(item, reportValidation.nrItem)
 
         let nyList  = [...this.state.insideList, item]
         this.setState({insideList: nyList})
@@ -125,11 +105,39 @@ class TradePerDis extends Component {
             
         }
 
-        
+        let jyj = this.props.form.getFieldValue("yjJyj") || 0;
+        if(key==='type'){
+            
+            let nyItem  = this.props.nyItems.find(x=>x.code === value);
+            if(nyItem){
+                newRow.percent = Math.round((nyItem.percent||0) * 10000)/100;
+                newRow.money = Math.round((newRow.percent) * jyj)/100;
+            }
+        }
+        if(key==='percent'){
+            newRow.money = Math.round((newRow.percent) * jyj)/100;
+        }
+
+        let ny = 0;
+        ol.forEach(item=>{
+            ny  = item.money * 1 + ny;
+        })
+
+        //尾差
+        let diff = Math.abs(ny - jyj)
+        if(diff<=0.2 && diff>0){
+            newRow.money = newRow.money + (jyj - ny);
+        }
 
 
 
         ol[idx] = newRow;
+
+        newRow.errors = validations.validate(newRow, reportValidation.nrItem)
+
+
+
+
         this.setState({insideList: [...ol]},()=>{
           
         })
@@ -159,15 +167,48 @@ class TradePerDis extends Component {
         let jyj = zyj - wyJe
 
         this.props.form.setFieldsValue({yjJyj: jyj})
+
+         
+         let il = this.state.insideList;
+         let nyJe = 0;
+         let lastRow = null;
+        // let nyItems = this.props.nyItems;
+         il.forEach(item=>{
+            // let x = nyItems.find(x=>x.code === item.type);       
+             item.money = Math.round((jyj * (item.percent||0))) / 100;
+             nyJe = nyJe + item.money;
+             lastRow = item;
+         })
+         let diff = Math.abs(nyJe-jyj);
+         if(diff<=0.2 && diff>0){
+            lastRow.money = lastRow.money + (jyj - nyJe);
+         }
+
+         this.setState({insideList: [...il]}, ()=>{
+           
+         })
     }
     calcZyj = ()=>{
        setTimeout(()=>{
             var yj = this.props.form.getFieldsValue(["yjYzys","yjKhys"]);
             var zyj = (yj.yjYzys||0)*1 + (yj.yjKhys||0)*1;
             this.props.form.setFieldsValue({yjZcjyj: zyj})
-            setTimeout(() => {
+
+            //更新外部分摊项
+            let ol = this.state.outsideList;
+            let wyItems = this.props.wyItems;
+            ol.forEach(item=>{
+                let x = wyItems.find(x=>x.code === item.moneyType);
+                if(x && x.isfixed){
+                    item.money = Math.round((zyj * (x.percent||0))*100) / 100;
+                }
+            })
+
+            this.setState({outsideList: [...ol]}, ()=>{
                 this._calcYjJyj()
-            }, 0);
+            })
+
+           
        },0)
       
     }
@@ -184,6 +225,8 @@ class TradePerDis extends Component {
 
             }
         }
+
+        item.errors = validations.validate(item, reportValidation.wyItem)
 
         let wyList  = [...this.state.outsideList, item]
         this.setState({outsideList: wyList})
@@ -203,13 +246,17 @@ class TradePerDis extends Component {
         if(key === 'moneyType'){
             let zyj = (this.props.form.getFieldValue("yjZcjyj") ||'0')*1;
 
-            let item = this.state.wyItems.find(x=>x.code ===value);
+            let item = this.props.wyItems.find(x=>x.code ===value);
             if(item && item.percent){
                 newRow.money = Math.round((zyj * (item.percent||0))*100) / 100;
             }
         }
 
         ol[idx] = newRow;
+
+        newRow.errors = validations.validate(newRow, reportValidation.wyItem)
+
+
         this.setState({outsideList: [...ol]},()=>{
             this._calcYjJyj()
         })
@@ -228,6 +275,17 @@ class TradePerDis extends Component {
         })
     }
     
+    getValues = ()=>{
+        let vals = this.props.form.getFieldsValue();
+        vals.reportInsides = this.state.insideList.map(x=>{
+            let item = {...x}
+            item.uid = x.uid[0].key;
+            item.username = x.uid[0].label;
+            return item;
+        })
+        vals.reportOutsides = this.state.outsideList.map(x=>({...x}))
+        return vals;
+    }
 
     render() {
         const { getFieldDecorator, getFieldValue } = this.props.form;
@@ -244,6 +302,7 @@ class TradePerDis extends Component {
 
         let yjTotal = report.ycjyj;
         let zyj = (getFieldValue("yjZcjyj") ||'0')*1;
+        const canEdit = this.props.canEdit;
 
 
         return (
@@ -254,7 +313,7 @@ class TradePerDis extends Component {
                             <FormItem {...formItemLayout} label={(<span>业主应收</span>)}>
                                 {
                                     getFieldDecorator('yjYzys')(
-                                        <InputNumber style={{ width: 200 }} onChange={this.calcZyj}></InputNumber>
+                                        <InputNumber disabled={!canEdit} style={{ width: 200 }} onChange={this.calcZyj}></InputNumber>
                                     )
                                 }
                             </FormItem>
@@ -276,7 +335,7 @@ class TradePerDis extends Component {
                             <FormItem {...formItemLayout} label={(<span>客户应收</span>)}>
                                 {
                                     getFieldDecorator('yjKhys')(
-                                        <InputNumber style={{ width: 200 }} onChange={this.calcZyj}></InputNumber>
+                                        <InputNumber disabled={!canEdit}  style={{ width: 200 }} onChange={this.calcZyj}></InputNumber>
                                     )
                                 }
                             </FormItem>
@@ -307,10 +366,12 @@ class TradePerDis extends Component {
                     </Row>
 
                     <Row >
-                        <Col span={3}><Button onClick={this.handleAddWy}>新增外佣</Button></Col>
+                        <Col span={3}>
+                            {canEdit?<Button onClick={this.handleAddWy}>新增外佣</Button>:null}
+                        </Col>
                     </Row>
                     <Row>
-                        <TradeWyTable canEdit={this.props.opType=='add' || this.props.opType=='edit'} onRowChanged={this.onWyRowChanged} onDelRow= {this.onWyDelRow} dic={this.props.dic} items={this.state.wyItems} dataSource={this.state.outsideList}/>
+                        <TradeWyTable canEdit={canEdit} onRowChanged={this.onWyRowChanged} onDelRow= {this.onWyDelRow} dic={this.props.dic} items={this.props.wyItems} dataSource={this.state.outsideList}/>
                     </Row>
                     <Row className="form-row" >
                         <Col span={12}>
@@ -326,14 +387,16 @@ class TradePerDis extends Component {
                         </Col>
                     </Row>
                     <Row>
-                        <Col span={3}><Button onClick={this.handleAddNbFp}>新增内部分配</Button></Col>
+                        <Col span={3}>
+                            {canEdit?<Button onClick={this.handleAddNbFp}>新增内部分配</Button>:null}
+                        </Col>
                     </Row>
                      <Row>
-                        <TradeNTable canEdit={this.props.opType=='add' || this.props.opType=='edit'} 
+                        <TradeNTable canEdit={canEdit} 
                             onRowChanged={this.onNyRowChanged} 
                             onDelRow= {this.onNyDelRow} 
                             dic={this.props.dic} 
-                            items={this.state.nyItems} 
+                            items={this.props.nyItems} 
                             dataSource={this.state.insideList}/>
                     </Row> 
                     {/* <Row>

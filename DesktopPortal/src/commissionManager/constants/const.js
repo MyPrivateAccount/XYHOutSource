@@ -53,10 +53,18 @@ export const dicKeys = {
     khxz:'COMMISSION_KH_KHXZ', //客户性质
     khly:'CUSTOMER_SOURCE',
 
-    sfdx:'COMMISSION_FP_SFDX' //收付对象
+    sfdx:'COMMISSION_FP_SFDX', //收付对象
+    yjfj: 'COMMISSION_FJ_TYPES' //附件类型
 
 }
 
 export const branchPar= {
     showBb: 'MUST_SELECT_REPORT_INFO'
+}
+
+export const examineStatusMap = {
+    0: '未提交',
+    1: '审核中',
+    8: '审核通过',
+    16: '驳回'
 }

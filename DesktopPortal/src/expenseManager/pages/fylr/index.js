@@ -146,7 +146,7 @@ class FylrIndex extends Component{
             let url = `${basicDataServiceUrl}/api/chargeinfo/search`;
             let r = await ApiClient.post(url, condition);
             if(r && r.data && r.data.code==='0'){
-                this.setState({list: r.data.extension});
+                this.setState({list: r.data.extension, pagination: {...this.state.pagination, total: r.data.totalCount}});
             }else{
                 notification.error({message:'查询报销单列表失败'});
             }
