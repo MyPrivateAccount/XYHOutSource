@@ -14,7 +14,9 @@ class FormerCompany extends Component {
             if (!err) {
                 if (editInfo.id) {
                     values.id = editInfo.id;
-                } 
+                } else {
+                    values.id = NewGuid();
+                }
                 values.startTime = values.startTime ? values.startTime.format('YYYY-MM-DD') : '';
                 values.endTime = values.endTime ? values.endTime.format('YYYY-MM-DD') : '';
                 console.log('前公司信息: ', values);
