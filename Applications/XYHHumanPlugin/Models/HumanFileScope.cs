@@ -18,7 +18,7 @@ namespace XYHHumanPlugin.Models
         public string From { get; set; }
         [MaxLength(255)]
         public string Group { get; set; }
-        public int? ExamineStatus { get; set; }
+        public ExamineStatusEnum ExamineStatus { get; set; } = ExamineStatusEnum.UnSubmit;
         [MaxLength(127)]
         public string CreateUser { get; set; }
         public DateTime? CreateTime { get; set; }

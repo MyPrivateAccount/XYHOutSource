@@ -162,6 +162,7 @@ namespace XYHHumanPlugin.Stores
                             DomicilePlace = h.DomicilePlace,
                             HouseholdType = h.HouseholdType,
                             Birthday = h.Birthday,
+                            MaritalStatus = h.MaritalStatus,
                             IDCard = h.IDCard,
                             FamilyAddress = h.FamilyAddress,
                             LeaveTime = h.LeaveTime,
@@ -309,6 +310,7 @@ namespace XYHHumanPlugin.Stores
                     humanInfo.IsDeleted = false;
                     humanInfo.CreateTime = DateTime.Now;
                     humanInfo.CreateUser = user.Id;
+                    humanInfo.ExamineStatus = ExamineStatusEnum.Auditing;
                     Context.Add(humanInfo);
                     Context.Add(humanInfo.HumanSalaryStructure);
                     Context.Add(humanInfo.HumanSocialSecurity);
@@ -362,6 +364,7 @@ namespace XYHHumanPlugin.Stores
                     old.EmergencyContactPhone = humanInfo.EmergencyContactPhone;
                     old.EmergencyContactType = humanInfo.EmergencyContactType;
                     old.EntryTime = humanInfo.EntryTime;
+                    old.MaritalStatus = humanInfo.MaritalStatus;
                     old.HighestEducation = humanInfo.HighestEducation;
                     old.HealthCondition = humanInfo.HealthCondition;
                     old.DomicilePlace = humanInfo.DomicilePlace;
@@ -601,6 +604,32 @@ namespace XYHHumanPlugin.Stores
             }
             catch (DbUpdateException) { throw; }
             return humanInfo;
+        }
+
+        /// <summary>
+        /// 更新人事审核状态
+        /// </summary>
+        /// <param name="humanId"></param>
+        /// <param name="status"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task UpdateExamineStatus(string humanId, ExamineStatusEnum status, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            HumanInfo humanInfo = new HumanInfo()
+            {
+                Id = humanId,
+                UpdateTime = DateTime.Now,
+                ExamineStatus = status
+            };
+            Context.Attach(humanInfo);
+            var entry = Context.Entry(humanInfo);
+            entry.Property(x => x.ExamineStatus).IsModified = true;
+            entry.Property(x => x.UpdateTime).IsModified = true;
+            try
+            {
+                await Context.SaveChangesAsync(cancellationToken);
+            }
+            catch (DbUpdateException) { throw; }
         }
 
 

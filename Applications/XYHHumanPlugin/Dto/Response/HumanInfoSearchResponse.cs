@@ -59,12 +59,12 @@ namespace XYHHumanPlugin.Dto.Response
         /// </summary>
         public StaffStatus StaffStatus { get; set; }
 
-        public decimal BaseWages { get; set; } = 0;
+        public decimal? BaseWages { get; set; } = 0;
 
         /// <summary>
         /// 入职日期
         /// </summary>
-        public DateTime EntryTime { get; set; }
+        public DateTime? EntryTime { get; set; }
         /// <summary>
         /// 转正日期？
         /// </summary>
@@ -72,7 +72,7 @@ namespace XYHHumanPlugin.Dto.Response
         /// <summary>
         /// 创建时间
         /// </summary>
-        public DateTime CreateTime { get; set; }
+        public DateTime? CreateTime { get; set; }
         /// <summary>
         /// 是否参加社保
         /// </summary>

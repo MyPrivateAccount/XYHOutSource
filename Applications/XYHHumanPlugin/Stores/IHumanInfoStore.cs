@@ -28,6 +28,7 @@ namespace XYHHumanPlugin.Stores
 
         Task<HumanInfo> SaveAsync(UserInfo user, HumanInfo humanInfo, CancellationToken cancellationToken = default(CancellationToken));
 
+        Task UpdateExamineStatus(string humanId, ExamineStatusEnum status, CancellationToken cancellationToken = default(CancellationToken));
 
 
         /// <summary>

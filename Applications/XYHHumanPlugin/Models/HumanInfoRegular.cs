@@ -95,6 +95,10 @@ namespace XYHHumanPlugin.Models
         [MaxLength(127)]
         public string HousingProvidentFundAccount { get; set; }
         /// <summary>
+        /// 审核状态
+        /// </summary>
+        public ExamineStatusEnum ExamineStatus { get; set; } = ExamineStatusEnum.UnSubmit;
+        /// <summary>
         /// 是否有效
         /// </summary>
         public bool IsCurrent { get; set; }

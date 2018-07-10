@@ -56,6 +56,9 @@ namespace XYHHumanPlugin
             context.Services.AddScoped<HumanInfoManager>();
             context.Services.AddScoped<IHumanInfoStore, HumanInfoStore>();
 
+            context.Services.AddScoped<HumanInfoBlackManager>();
+            context.Services.AddScoped<IHumanInfoBlackStore, HumanInfoBlackStore>();
+
             context.Services.AddScoped<IHumanInfoChangeStore, HumanInfoChangeStore>();
             context.Services.AddScoped<HumanInfoChange>();
             context.Services.AddScoped<IHumanInfoAdjustmentStore, HumanInfoAdjustmentStore>();
@@ -66,6 +69,12 @@ namespace XYHHumanPlugin
             context.Services.AddScoped<HumanInfoPartPositionManager>();
             context.Services.AddScoped<IHumanInfoRegularStore, HumanInfoRegularStore>();
             context.Services.AddScoped<HumanInfoRegularManager>();
+
+            context.Services.AddScoped<IHumanPositionStore, HumanPositionStore>();
+            context.Services.AddScoped<HumanPositionManager>();
+
+            context.Services.AddScoped<IPositionSalaryStore, PositionSalaryStore>();
+            context.Services.AddScoped<PositionSalaryManager>();
 
             return base.Init(context);
         }

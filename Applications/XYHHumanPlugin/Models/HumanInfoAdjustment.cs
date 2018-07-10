@@ -138,7 +138,10 @@ namespace XYHHumanPlugin.Models
         /// 试用期工资
         /// </summary>
         public decimal ProbationaryPay { get; set; } = 0;
-
+        /// <summary>
+        /// 审核状态
+        /// </summary>
+        public ExamineStatusEnum ExamineStatus { get; set; } = ExamineStatusEnum.UnSubmit;
         public bool IsCurrent { get; set; }
 
         public DateTime CreateTime { get; set; }

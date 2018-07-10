@@ -20,150 +20,149 @@ namespace XYHHumanPlugin.Controllers
 {
     [Authorize(AuthenticationSchemes = OAuthValidationDefaults.AuthenticationScheme)]
     [Produces("application/json")]
-    [Route("api/humanadjustment")]
-    public class HumanInfoAdjustmentController : Controller
+    [Route("api/humanposition")]
+    public class HumanPositionController : Controller
     {
-        private readonly HumanInfoAdjustmentManager _humanInfoAdjustmentManager;
-        private readonly PermissionExpansionManager _permissionExpansionManager;
-        private readonly ILogger Logger = LoggerManager.GetLogger("HumanInfoAdjustmentController");
 
-        public HumanInfoAdjustmentController(HumanInfoAdjustmentManager humanInfoAdjustmentManager,
-            PermissionExpansionManager permissionExpansionManager
-            )
+        private readonly HumanPositionManager _humanPositionManager;
+        private readonly ILogger Logger = LoggerManager.GetLogger("HumanInfoLeaveController");
+
+        public HumanPositionController(HumanPositionManager humanPositionManager)
         {
-            _humanInfoAdjustmentManager = humanInfoAdjustmentManager;
-            _permissionExpansionManager = permissionExpansionManager;
+            _humanPositionManager = humanPositionManager;
         }
 
-
         /// <summary>
-        /// 根据Id获取异动调薪信息
+        /// 根据Id获取人事职位信息
         /// </summary>
         /// <param name="user"></param>
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet("{id}")]
         [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
-        public async Task<ResponseMessage<HumanInfoAdjustmentResponse>> GetHumanInfoAdjustment(UserInfo user, [FromRoute] string id)
+        public async Task<ResponseMessage<HumanPositionResponse>> GetHumanPosition(UserInfo user, [FromRoute] string id)
         {
-            Logger.Trace($"用户{user?.UserName ?? ""}({user?.Id ?? ""})根据Id获取异动调薪信息(GetHumanInfoAdjustment)，请求体为：\r\nid:{id ?? ""}");
-            ResponseMessage<HumanInfoAdjustmentResponse> response = new ResponseMessage<HumanInfoAdjustmentResponse>();
+            Logger.Trace($"用户{user?.UserName ?? ""}({user?.Id ?? ""})根据Id获取人事职位信息(GetHumanPosition)，请求体为：\r\nid:{id ?? ""}");
+            ResponseMessage<HumanPositionResponse> response = new ResponseMessage<HumanPositionResponse>();
             if (!ModelState.IsValid)
             {
                 response.Code = ResponseCodeDefines.ModelStateInvalid;
                 response.Message = ModelState.GetAllErrors();
-                Logger.Error($"用户{user?.UserName ?? ""}({user?.Id ?? ""})根据Id获取异动调薪信息(GetHumanInfoAdjustment)模型验证失败：{response.Message}请求体为：\r\nid:{id ?? ""}");
+                Logger.Error($"用户{user?.UserName ?? ""}({user?.Id ?? ""})根据Id获取人事职位信息(GetHumanPosition)模型验证失败：{response.Message}请求体为：\r\nid:{id ?? ""}");
                 return response;
             }
             try
             {
-                return await _humanInfoAdjustmentManager.FindByIdAsync(user, id, HttpContext.RequestAborted);
+                return await _humanPositionManager.FindByIdAsync(user, id, HttpContext.RequestAborted);
             }
             catch (Exception e)
             {
                 response.Code = ResponseCodeDefines.ServiceError;
                 response.Message = e.Message;
-                Logger.Error($"用户{user?.UserName ?? ""}({user?.Id ?? ""})根据Id获取异动调薪信息(GetHumanInfoAdjustment)失败：{e.ToString()}请求体为：\r\nid:{id ?? ""}");
+                Logger.Error($"用户{user?.UserName ?? ""}({user?.Id ?? ""})根据Id获取人事职位信息(GetHumanPosition)失败：{e.ToString()}请求体为：\r\nid:{id ?? ""}");
             }
             return response;
         }
 
         /// <summary>
-        /// 新增异动调薪信息
+        /// 新增人事职位信息
         /// </summary>
         /// <param name="user"></param>
-        /// <param name="humanInfoAdjustmentRequest"></param>
+        /// <param name="humanPositionRequest"></param>
         /// <returns></returns>
         [HttpPost]
         [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
-        public async Task<ResponseMessage<HumanInfoAdjustmentResponse>> CreateHumanInfoAdjustment(UserInfo user, [FromBody] HumanInfoAdjustmentRequest humanInfoAdjustmentRequest)
+        public async Task<ResponseMessage<HumanPositionResponse>> CreateHumanPosition(UserInfo user, [FromBody] HumanPositionRequest humanPositionRequest)
         {
-            Logger.Trace($"用户{user?.UserName ?? ""}({user?.Id ?? ""})新增异动调薪信息(CreateHumanInfoAdjustment)，请求体为：\r\n" + (humanInfoAdjustmentRequest != null ? JsonHelper.ToJson(humanInfoAdjustmentRequest) : ""));
-            ResponseMessage<HumanInfoAdjustmentResponse> response = new ResponseMessage<HumanInfoAdjustmentResponse>();
+            Logger.Trace($"用户{user?.UserName ?? ""}({user?.Id ?? ""})新增人事职位信息(CreateHumanPosition)，请求体为：\r\n" + (humanPositionRequest != null ? JsonHelper.ToJson(humanPositionRequest) : ""));
+            ResponseMessage<HumanPositionResponse> response = new ResponseMessage<HumanPositionResponse>();
             if (!ModelState.IsValid)
             {
                 response.Code = ResponseCodeDefines.ModelStateInvalid;
                 response.Message = ModelState.GetAllErrors();
-                Logger.Error($"用户{user?.UserName ?? ""}({user?.Id ?? ""})新增异动调薪信息(CreateHumanInfoAdjustment)模型验证失败：{response.Message}请求体为：\r\n" + (humanInfoAdjustmentRequest != null ? JsonHelper.ToJson(humanInfoAdjustmentRequest) : ""));
+                Logger.Error($"用户{user?.UserName ?? ""}({user?.Id ?? ""})新增人事职位信息(CreateHumanPosition)模型验证失败：{response.Message}请求体为：\r\n" + (humanPositionRequest != null ? JsonHelper.ToJson(humanPositionRequest) : ""));
                 return response;
             }
             try
             {
-                return await _humanInfoAdjustmentManager.CreateAsync(user, humanInfoAdjustmentRequest, HttpContext.RequestAborted);
+                return await _humanPositionManager.CreateAsync(user, humanPositionRequest, HttpContext.RequestAborted);
             }
             catch (Exception e)
             {
                 response.Code = ResponseCodeDefines.ServiceError;
                 response.Message = e.Message;
-                Logger.Error($"用户{user?.UserName ?? ""}({user?.Id ?? ""})新增异动调薪信息(CreateHumanInfoAdjustment)失败：{response.Message}请求体为：\r\n" + (humanInfoAdjustmentRequest != null ? JsonHelper.ToJson(humanInfoAdjustmentRequest) : ""));
+                Logger.Error($"用户{user?.UserName ?? ""}({user?.Id ?? ""})新增人事职位信息(CreateHumanPosition)失败：{response.Message}请求体为：\r\n" + (humanPositionRequest != null ? JsonHelper.ToJson(humanPositionRequest) : ""));
             }
             return response;
         }
 
         /// <summary>
-        /// 更新异动调薪信息
+        /// 更新人事职位信息
         /// </summary>
         /// <param name="user"></param>
         /// <param name="id"></param>
-        /// <param name="humanInfoAdjustmentRequest"></param>
+        /// <param name="humanPositionRequest"></param>
         /// <returns></returns>
         [HttpPut("{id}")]
         [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
-        public async Task<ResponseMessage<HumanInfoAdjustmentResponse>> PutHumanInfoAdjustment(UserInfo user, [FromRoute]string id, [FromBody] HumanInfoAdjustmentRequest humanInfoAdjustmentRequest)
+        public async Task<ResponseMessage<HumanPositionResponse>> PutHumanPosition(UserInfo user, [FromRoute]string id, [FromBody] HumanPositionRequest humanPositionRequest)
         {
-            Logger.Trace($"用户{user?.UserName ?? ""}({user?.Id ?? ""})更新异动调薪信息(PutHumanInfoAdjustment)，请求体为：\r\n" + (humanInfoAdjustmentRequest != null ? JsonHelper.ToJson(humanInfoAdjustmentRequest) : ""));
-            ResponseMessage<HumanInfoAdjustmentResponse> response = new ResponseMessage<HumanInfoAdjustmentResponse>();
+            Logger.Trace($"用户{user?.UserName ?? ""}({user?.Id ?? ""})更新人事职位信息(PutHumanPosition)，请求体为：\r\n" + (humanPositionRequest != null ? JsonHelper.ToJson(humanPositionRequest) : ""));
+            ResponseMessage<HumanPositionResponse> response = new ResponseMessage<HumanPositionResponse>();
             if (!ModelState.IsValid)
             {
                 response.Code = ResponseCodeDefines.ModelStateInvalid;
                 response.Message = ModelState.GetAllErrors();
-                Logger.Error($"用户{user?.UserName ?? ""}({user?.Id ?? ""})更新异动调薪信息(PutHumanInfoAdjustment)模型验证失败：{response.Message}请求体为：\r\n" + (humanInfoAdjustmentRequest != null ? JsonHelper.ToJson(humanInfoAdjustmentRequest) : ""));
+                Logger.Error($"用户{user?.UserName ?? ""}({user?.Id ?? ""})更新人事职位信息(PutHumanPosition)模型验证失败：{response.Message}请求体为：\r\n" + (humanPositionRequest != null ? JsonHelper.ToJson(humanPositionRequest) : ""));
                 return response;
             }
             try
             {
-                return await _humanInfoAdjustmentManager.UpdateAsync(user, id, humanInfoAdjustmentRequest, HttpContext.RequestAborted);
+                return await _humanPositionManager.UpdateAsync(user, id, humanPositionRequest, HttpContext.RequestAborted);
             }
             catch (Exception e)
             {
                 response.Code = ResponseCodeDefines.ServiceError;
                 response.Message = e.Message;
-                Logger.Error($"用户{user?.UserName ?? ""}({user?.Id ?? ""})更新异动调薪信息(PutHumanInfoAdjustment)失败：{response.Message}请求体为：\r\n" + (humanInfoAdjustmentRequest != null ? JsonHelper.ToJson(humanInfoAdjustmentRequest) : ""));
+                Logger.Error($"用户{user?.UserName ?? ""}({user?.Id ?? ""})更新人事职位信息(PutHumanPosition)失败：{response.Message}请求体为：\r\n" + (humanPositionRequest != null ? JsonHelper.ToJson(humanPositionRequest) : ""));
             }
             return response;
         }
 
         /// <summary>
-        /// 删除异动调薪信息
+        /// 删除人事职位信息
         /// </summary>
         /// <param name="user"></param>
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpDelete("{id}")]
         [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
-        public async Task<ResponseMessage> DeleteHumanInfoAdjustment(UserInfo user, [FromRoute]string id)
+        public async Task<ResponseMessage> DeleteHumanPosition(UserInfo user, [FromRoute]string id)
         {
-            Logger.Trace($"用户{user?.UserName ?? ""}({user?.Id ?? ""})删除异动调薪信息(DeleteHumanInfoAdjustment)，请求参数为：\r\n{id}");
+            Logger.Trace($"用户{user?.UserName ?? ""}({user?.Id ?? ""})删除人事职位信息(DeleteHumanPosition)，请求参数为：\r\n{id}");
             ResponseMessage response = new ResponseMessage();
             if (!ModelState.IsValid)
             {
                 response.Code = ResponseCodeDefines.ModelStateInvalid;
                 response.Message = ModelState.GetAllErrors();
-                Logger.Error($"用户{user?.UserName ?? ""}({user?.Id ?? ""})删除异动调薪信息(DeleteHumanInfoAdjustment)模型验证失败：{response.Message}请求体为：\r\n{id}");
+                Logger.Error($"用户{user?.UserName ?? ""}({user?.Id ?? ""})删除人事职位信息(DeleteHumanPosition)模型验证失败：{response.Message}请求体为：\r\n{id}");
                 return response;
             }
             try
             {
-                return await _humanInfoAdjustmentManager.DeleteAsync(user, id, HttpContext.RequestAborted);
+                return await _humanPositionManager.DeleteAsync(user, id, HttpContext.RequestAborted);
             }
             catch (Exception e)
             {
                 response.Code = ResponseCodeDefines.ServiceError;
                 response.Message = e.Message;
-                Logger.Error($"用户{user?.UserName ?? ""}({user?.Id ?? ""})删除异动调薪信息(DeleteHumanInfoAdjustment)失败：{response.Message}请求体为：\r\n{id}");
+                Logger.Error($"用户{user?.UserName ?? ""}({user?.Id ?? ""})删除人事职位信息(DeleteHumanPosition)失败：{response.Message}请求体为：\r\n{id}");
             }
             return response;
         }
+
+
+
 
 
 
@@ -193,11 +192,11 @@ namespace XYHHumanPlugin.Controllers
                 response.Code = ResponseCodeDefines.SuccessCode;
                 if (examineResponse.ExamineStatus == ExamineStatus.Examined)
                 {
-                    await _humanInfoAdjustmentManager.UpdateExamineStatus(examineResponse.SubmitDefineId, ExamineStatusEnum.Approved);
+                    await _humanPositionManager.UpdateExamineStatus(examineResponse.SubmitDefineId, ExamineStatusEnum.Approved);
                 }
                 else if (examineResponse.ExamineStatus == ExamineStatus.Reject)
                 {
-                    await _humanInfoAdjustmentManager.UpdateExamineStatus(examineResponse.SubmitDefineId, ExamineStatusEnum.Reject);
+                    await _humanPositionManager.UpdateExamineStatus(examineResponse.SubmitDefineId, ExamineStatusEnum.Reject);
                 }
             }
             catch (Exception e)

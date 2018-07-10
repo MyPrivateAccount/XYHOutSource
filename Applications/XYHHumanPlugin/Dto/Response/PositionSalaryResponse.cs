@@ -1,21 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Text;
+using XYHHumanPlugin.Models;
 
-namespace XYHHumanPlugin.Models
+namespace XYHHumanPlugin.Dto.Response
 {
-    /// <summary>
-    /// 薪资构成
-    /// </summary>
-    public class HumanSalaryStructure
+    public class PositionSalaryResponse
     {
         /// <summary>
         /// 主键Id
         /// </summary>
-        [Key]
-        [MaxLength(127)]
         public string Id { get; set; }
+        /// <summary>
+        /// 所属部门
+        /// </summary>
+        public string DepartmentId { get; set; }
+        /// <summary>
+        /// 所属职位
+        /// </summary>
+        public string PositionId { get; set; }
+
         /// <summary>
         /// 基本工资
         /// </summary>
@@ -37,12 +41,8 @@ namespace XYHHumanPlugin.Models
         /// </summary>
         public decimal? OtherAllowance { get; set; } = 0;
         /// <summary>
-        /// 应发工资
+        /// 审核状态
         /// </summary>
-        public decimal? GrossPay { get; set; } = 0;
-        /// <summary>
-        /// 试用期工资
-        /// </summary>
-        public decimal? ProbationaryPay { get; set; } = 0;
+        public ExamineStatusEnum ExamineStatus { get; set; } = ExamineStatusEnum.UnSubmit;
     }
 }

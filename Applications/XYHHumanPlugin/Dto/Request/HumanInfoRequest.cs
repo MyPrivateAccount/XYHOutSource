@@ -78,7 +78,10 @@ namespace XYHHumanPlugin.Dto.Request
         /// </summary>
         [StringLength(255)]
         public string FamilyAddress { get; set; }
-
+        /// <summary>
+        /// 婚姻状况
+        /// </summary>
+        public bool? MaritalStatus { get; set; }
         /// <summary>
         /// 职位名称
         /// </summary>

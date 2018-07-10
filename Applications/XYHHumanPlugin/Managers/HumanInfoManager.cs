@@ -55,9 +55,71 @@ namespace XYHHumanPlugin.Managers
             {
                 throw new ArgumentNullException(nameof(UserInfo) + nameof(HumanInfoRequest));
             }
+            //判断是否新增，则走审核流程
+            if (!string.IsNullOrEmpty(humanInfoRequest.Id))
+            {
+                var result = await GetHumanInfoAsync(user, humanInfoRequest.Id);
+                if (result?.Extension != null && (result.Extension?.ExamineStatus != ExamineStatusEnum.UnSubmit || result.Extension?.ExamineStatus != ExamineStatusEnum.Reject) && !result.Extension.IsDeleted)
+                {
+
+                    var gatwayurl = ApplicationContext.Current.AppGatewayUrl.EndsWith("/") ? ApplicationContext.Current.AppGatewayUrl.TrimEnd('/') : ApplicationContext.Current.AppGatewayUrl;
+                    GatewayInterface.Dto.ExamineSubmitRequest examineSubmitRequest = new GatewayInterface.Dto.ExamineSubmitRequest();
+                    examineSubmitRequest.ContentId = !string.IsNullOrEmpty(humanInfoRequest.Id) ? humanInfoRequest.Id : "";
+                    examineSubmitRequest.ContentType = "HumanInfo";
+                    examineSubmitRequest.ContentName = humanInfoRequest.Name;
+                    examineSubmitRequest.Content = "新增员工人事信息";
+                    examineSubmitRequest.Source = user.FilialeName;
+                    examineSubmitRequest.CallbackUrl = gatwayurl + "/api/humaninfo/humaninfocallback";
+                    examineSubmitRequest.StepCallbackUrl = gatwayurl + "/api/humaninfo/shoponsitestepcallback";
+                    examineSubmitRequest.Action = "ZYWOwnerShopOnSite";
+                    examineSubmitRequest.TaskName = $"新增员工人事信息:{humanInfoRequest.Name}";
+                    examineSubmitRequest.Desc = $"新增员工人事信息";
+
+                    GatewayInterface.Dto.UserInfo userInfo = new GatewayInterface.Dto.UserInfo()
+                    {
+                        Id = user.Id,
+                        KeyWord = user.KeyWord,
+                        OrganizationId = user.OrganizationId,
+                        OrganizationName = user.OrganizationName,
+                        UserName = user.UserName
+                    };
+                    examineSubmitRequest.UserInfo = userInfo;
+
+                    string tokenUrl = $"{ApplicationContext.Current.AuthUrl}/connect/token";
+                    string examineCenterUrl = $"{ApplicationContext.Current.ExamineCenterUrl}";
+                    Logger.Info($"新增员工人事信息提交审核，\r\ntokenUrl:{tokenUrl ?? ""},\r\nexamineCenterUrl:{examineCenterUrl ?? ""},\r\nexamineSubmitRequest:" + (examineSubmitRequest != null ? JsonHelper.ToJson(examineSubmitRequest) : ""));
+                    var tokenManager = new TokenManager(tokenUrl, ApplicationContext.Current.ClientID, ApplicationContext.Current.ClientSecret);
+                    var response2 = await tokenManager.Execute(async (token) =>
+                    {
+                        return await _restClient.PostWithToken<ResponseMessage>(examineCenterUrl, examineSubmitRequest, token);
+                    });
+                    if (response2.Code != ResponseCodeDefines.SuccessCode)
+                    {
+                        response.Code = ResponseCodeDefines.ServiceError;
+                        response.Message = "向审核中心发起审核请求失败：" + response2.Message;
+                        Logger.Info($"新增员工人事信息提交审核失败：" + response2.Message);
+                        return response;
+                    }
+                }
+            }
             response.Extension = _mapper.Map<HumanInfoResponse>(await Store.SaveAsync(user, _mapper.Map<HumanInfo>(humanInfoRequest), cancellationToken));
             return response;
         }
+
+        /// <summary>
+        /// 更新审核状态
+        /// </summary>
+        /// <param name="humanId"></param>
+        /// <param name="status"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task UpdateExamineStatus(string humanId, ExamineStatusEnum status, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            await Store.UpdateExamineStatus(humanId, status, cancellationToken);
+        }
+
+
+
 
         public async Task<PagingResponseMessage<HumanInfoSearchResponse>> SearchHumanInfo(UserInfo user, HumanInfoSearchCondition condition, CancellationToken cancellationToken = default(CancellationToken))
         {
@@ -106,7 +168,7 @@ namespace XYHHumanPlugin.Managers
                 StaffStatus = a.StaffStatus,
                 UserID = a.UserID,
                 IsSignContracInfo = a.HumanContractInfo.ContractSignDate != null ? true : false,
-                IsHaveSocialSecurity = a.HumanSocialSecurity.IsGiveUp ? false : true
+                IsHaveSocialSecurity = a.HumanSocialSecurity.IsHave
             });
             pagingResponse.PageIndex = condition.PageIndex;
             pagingResponse.PageSize = condition.PageSize;

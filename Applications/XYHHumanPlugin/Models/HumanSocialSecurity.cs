@@ -20,7 +20,7 @@ namespace XYHHumanPlugin.Models
         /// <summary>
         /// 是否参加社保
         /// </summary>
-        public bool IsHave { get; set; } = true;
+        public bool? IsHave { get; set; } = true;
 
         /// <summary>
         /// 参保时间
@@ -36,12 +36,12 @@ namespace XYHHumanPlugin.Models
         /// <summary>
         /// 是否放弃购买
         /// </summary>
-        public bool IsGiveUp { get; set; } = false;
+        public bool? IsGiveUp { get; set; } = false;
 
         /// <summary>
         /// 是否签订承诺书
         /// </summary>
-        public bool IsSignCommitment { get; set; } = false;
+        public bool? IsSignCommitment { get; set; } = false;
 
         /// <summary>
         /// 养老保险
@@ -50,23 +50,23 @@ namespace XYHHumanPlugin.Models
         /// <summary>
         /// 医疗保险
         /// </summary>
-        public decimal MedicalInsurance { get; set; } = 0;
+        public decimal? MedicalInsurance { get; set; } = 0;
         /// <summary>
         /// 失业保险
         /// </summary>
-        public decimal UnemploymentInsurance { get; set; } = 0;
+        public decimal? UnemploymentInsurance { get; set; } = 0;
         /// <summary>
         /// 工伤保险
         /// </summary>
-        public decimal EmploymentInjuryInsurance { get; set; } = 0;
+        public decimal? EmploymentInjuryInsurance { get; set; } = 0;
         /// <summary>
         /// 生育保险
         /// </summary>
-        public decimal MaternityInsurance { get; set; } = 0;
+        public decimal? MaternityInsurance { get; set; } = 0;
         /// <summary>
         /// 住房公积金
         /// </summary>
-        public decimal HousingProvidentFund { get; set; } = 0;
+        public decimal? HousingProvidentFund { get; set; } = 0;
 
         /// <summary>
         /// 医保账号

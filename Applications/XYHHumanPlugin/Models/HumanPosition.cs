@@ -1,15 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
 namespace XYHHumanPlugin.Models
 {
-    /// <summary>
-    /// 兼职表
-    /// </summary>
-    public class HumanInfoPartPosition
+    public class HumanPosition
     {
         /// <summary>
         /// 主键Id
@@ -18,44 +14,35 @@ namespace XYHHumanPlugin.Models
         [MaxLength(127)]
         public string Id { get; set; }
         /// <summary>
-        /// 人事Id
+        /// 职位名称
         /// </summary>
-        [MaxLength(127)]
-        public string HumanId { get; set; }
+        [MaxLength(50)]
+        public string Name { get; set; }
+
         /// <summary>
-        /// 部门Id
+        /// 职位类型
+        /// </summary>
+        [MaxLength(255)]
+        public string Type { get; set; }
+
+        /// <summary>
+        /// 所属分公司
         /// </summary>
         [MaxLength(127)]
         public string DepartmentId { get; set; }
         /// <summary>
-        /// 职位
-        /// </summary>
-        [MaxLength(64)]
-        public string Position { get; set; }
-        /// <summary>
-        /// 开始时间
-        /// </summary>
-        public DateTime StartTime { get; set; }
-        /// <summary>
-        /// 结束时间
-        /// </summary>
-        public DateTime? EndTime { get; set; }
-        /// <summary>
-        /// 备注
-        /// </summary>
-        [MaxLength(512)]
-        public string Desc { get; set; }
-        /// <summary>
         /// 审核状态
         /// </summary>
         public ExamineStatusEnum ExamineStatus { get; set; } = ExamineStatusEnum.UnSubmit;
+        [MaxLength(127)]
+        public string ParentID { get; set; }
         /// <summary>
-        /// 是否有效
+        /// 创建时间
         /// </summary>
-        public bool IsCurrent { get; set; }
-
-
-        public DateTime CreateTime { get; set; }
+        public DateTime? CreateTime { get; set; }
+        /// <summary>
+        /// 创建人
+        /// </summary>
         [MaxLength(127)]
         public string CreateUser { get; set; }
         [MaxLength(127)]
@@ -65,8 +52,5 @@ namespace XYHHumanPlugin.Models
         [MaxLength(127)]
         public string DeleteUser { get; set; }
         public DateTime? DeleteTime { get; set; }
-
-        [NotMapped]
-        public string OrganizationId { get; set; }
     }
 }
