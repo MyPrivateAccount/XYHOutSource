@@ -312,8 +312,14 @@ namespace XYHHumanPlugin.Stores
                     humanInfo.CreateUser = user.Id;
                     humanInfo.ExamineStatus = ExamineStatusEnum.Auditing;
                     Context.Add(humanInfo);
-                    Context.Add(humanInfo.HumanSalaryStructure);
-                    Context.Add(humanInfo.HumanSocialSecurity);
+                    if (humanInfo.HumanSalaryStructure != null)
+                    {
+                        Context.Add(humanInfo.HumanSalaryStructure);
+                    }
+                    if (humanInfo.HumanSocialSecurity != null)
+                    {
+                        Context.Add(humanInfo.HumanSocialSecurity);
+                    }
                     var HumanTitleInfos = humanInfo.HumanTitleInfos?.ToList();
                     if (HumanTitleInfos != null)
                     {

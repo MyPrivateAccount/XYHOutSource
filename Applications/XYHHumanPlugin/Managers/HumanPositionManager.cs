@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using XYH.Core.Log;
 using XYHHumanPlugin.Dto.Request;
 using XYHHumanPlugin.Dto.Response;
 using XYHHumanPlugin.Models;
@@ -19,16 +20,19 @@ namespace XYHHumanPlugin.Managers
     {
         public HumanPositionManager(IHumanPositionStore humanPositionStore,
             PermissionExpansionManager permissionExpansionManager,
-            IMapper mapper)
+            IMapper mapper, RestClient restClient)
         {
             Store = humanPositionStore;
             _permissionExpansionManager = permissionExpansionManager;
+            _restClient = restClient;
             _mapper = mapper;
         }
 
         protected IHumanPositionStore Store { get; }
         protected PermissionExpansionManager _permissionExpansionManager;
         protected IMapper _mapper { get; }
+        protected RestClient _restClient { get; }
+        private readonly ILogger Logger = LoggerManager.GetLogger("HumanPositionManager");
 
 
         public async Task<ResponseMessage<HumanPositionResponse>> FindByIdAsync(UserInfo user, string id, CancellationToken cancellationToken = default(CancellationToken))
@@ -71,6 +75,46 @@ namespace XYHHumanPlugin.Managers
                 response.Message = "没有权限";
                 return response;
             }
+
+            var gatwayurl = ApplicationContext.Current.AppGatewayUrl.EndsWith("/") ? ApplicationContext.Current.AppGatewayUrl.TrimEnd('/') : ApplicationContext.Current.AppGatewayUrl;
+            GatewayInterface.Dto.ExamineSubmitRequest examineSubmitRequest = new GatewayInterface.Dto.ExamineSubmitRequest();
+            examineSubmitRequest.ContentId = !string.IsNullOrEmpty(humanPositionRequest.Id) ? humanPositionRequest.Id : "";
+            examineSubmitRequest.ContentType = "HumanPosition";
+            examineSubmitRequest.ContentName = humanPositionRequest.Name;
+            examineSubmitRequest.Content = "新增职位信息";
+            examineSubmitRequest.Source = user.FilialeName;
+            examineSubmitRequest.CallbackUrl = gatwayurl + "/api/humaninfo/humanpositioncallback";
+            examineSubmitRequest.StepCallbackUrl = gatwayurl + "/api/humaninfo/humanpositionstepcallback";
+            examineSubmitRequest.Action = "HumanPosition";
+            examineSubmitRequest.TaskName = $"新增职位信息:{humanPositionRequest.Name}";
+            examineSubmitRequest.Desc = $"新增职位信息";
+
+            GatewayInterface.Dto.UserInfo userInfo = new GatewayInterface.Dto.UserInfo()
+            {
+                Id = user.Id,
+                KeyWord = user.KeyWord,
+                OrganizationId = user.OrganizationId,
+                OrganizationName = user.OrganizationName,
+                UserName = user.UserName
+            };
+            examineSubmitRequest.UserInfo = userInfo;
+
+            string tokenUrl = $"{ApplicationContext.Current.AuthUrl}/connect/token";
+            string examineCenterUrl = $"{ApplicationContext.Current.ExamineCenterUrl}";
+            Logger.Info($"新增员工人事调动信息提交审核，\r\ntokenUrl:{tokenUrl ?? ""},\r\nexamineCenterUrl:{examineCenterUrl ?? ""},\r\nexamineSubmitRequest:" + (examineSubmitRequest != null ? JsonHelper.ToJson(examineSubmitRequest) : ""));
+            var tokenManager = new TokenManager(tokenUrl, ApplicationContext.Current.ClientID, ApplicationContext.Current.ClientSecret);
+            var response2 = await tokenManager.Execute(async (token) =>
+            {
+                return await _restClient.PostWithToken<ResponseMessage>(examineCenterUrl, examineSubmitRequest, token);
+            });
+            if (response2.Code != ResponseCodeDefines.SuccessCode)
+            {
+                response.Code = ResponseCodeDefines.ServiceError;
+                response.Message = "向审核中心发起审核请求失败：" + response2.Message;
+                Logger.Info($"新增职位信息提交审核失败：" + response2.Message);
+                return response;
+            }
+
             response.Extension = _mapper.Map<HumanPositionResponse>(await Store.CreateAsync(user, _mapper.Map<HumanPosition>(humanPositionRequest), cancellationToken));
             return response;
         }

@@ -174,9 +174,9 @@ namespace XYHHumanPlugin.Controllers
         /// </summary>
         /// <param name="examineResponse"></param>
         /// <returns></returns>
-        [HttpPost("humaninfocallback")]
+        [HttpPost("humanadjustmentcallback")]
         [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
-        public async Task<ResponseMessage> HumanInfoCreateCallback([FromBody] ExamineResponse examineResponse)
+        public async Task<ResponseMessage> HumanInfoAdjustmentCreateCallback([FromBody] ExamineResponse examineResponse)
         {
             Logger.Trace($"新增人事信息回调(HumanInfoCreateCallback)：\r\n请求参数为：\r\n" + (examineResponse != null ? JsonHelper.ToJson(examineResponse) : ""));
 
@@ -216,9 +216,9 @@ namespace XYHHumanPlugin.Controllers
         /// </summary>
         /// <param name="examineResponse"></param>
         /// <returns></returns>
-        [HttpPost("humaninfostepcallback")]
+        [HttpPost("humanadjustmentstepcallback")]
         [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
-        public async Task<ResponseMessage> HumanInfoCreateStepCallback([FromBody] ExamineStepResponse examineStepResponse)
+        public async Task<ResponseMessage> HumanInfoAdjustmentStepCallback([FromBody] ExamineStepResponse examineStepResponse)
         {
             Logger.Trace($"新增人事信息步骤回调(HumanInfoCreateStepCallback)：\r\n请求参数为：\r\n" + (examineStepResponse != null ? JsonHelper.ToJson(examineStepResponse) : ""));
 
