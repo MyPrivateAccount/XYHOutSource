@@ -137,8 +137,13 @@ class Staffinfo extends Component {
             condition.departmentId = value;
         }
         else if (fieldName == 'birthdayStart') {
-            condition.birthdayStart = value[0];
-            condition.birthdayEnd = value[1];
+            if (value[0] == 0 && value[1] == 0) {
+                condition.birthdayStart = null;
+                condition.birthdayEnd = null;
+            } else {
+                condition.birthdayStart = moment().subtract(value[1], 'years').format('YYYY-01-01');
+                condition.birthdayEnd = moment().subtract(value[0], 'years').format('YYYY-12-31');
+            }
         }
         this.setState({condition: condition});
     }

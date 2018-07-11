@@ -146,7 +146,7 @@ class BorrowingIndex extends Component{
             let url = `${basicDataServiceUrl}/api/borrowing/search`;
             let r = await ApiClient.post(url, condition);
             if(r && r.data && r.data.code==='0'){
-                this.setState({list: r.data.extension});
+                this.setState({list: r.data.extension, pagination: {...this.state.pagination, total: r.data.totalCount}});
             }else{
                 notification.error({message:'查询预借款列表失败'});
             }

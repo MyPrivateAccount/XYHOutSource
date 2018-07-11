@@ -58,6 +58,8 @@ class TradeBnsOwner extends Component {
     };
     //  let yzChtscTypes = this.props.basicData.yzChtscTypes
     let khlyList = getDicPars(dicKeys.khly, this.props.dic);
+    const canEdit = this.props.canEdit;
+
     return (
       <Layout>
         <Spin spinning={this.state.loading} tip={this.state.tip}>
@@ -68,7 +70,7 @@ class TradeBnsOwner extends Component {
                   getFieldDecorator('yzMc', {
                     rules: [{ required: true, message: '请填写业主名称' }]
                   })(
-                    <Input style={{ width: 200 }}></Input>
+                    <Input disabled={!canEdit} style={{ width: 200 }}></Input>
                   )
                 }
               </FormItem>
@@ -79,7 +81,7 @@ class TradeBnsOwner extends Component {
                   getFieldDecorator('yzZjhm', {
                     rules: [{ required: false }],
                   })(
-                    <Input style={{ width: 200 }}></Input>
+                    <Input disabled={!canEdit}  style={{ width: 200 }}></Input>
                   )
                 }
               </FormItem>
@@ -92,7 +94,7 @@ class TradeBnsOwner extends Component {
                   getFieldDecorator('yzDz', {
                     rules: [{ required: false, message: '请填写地址!' }]
                   })(
-                    <Input style={{ width: 200 }}></Input>
+                    <Input disabled={!canEdit}  style={{ width: 200 }}></Input>
                   )
                 }
               </FormItem>
@@ -103,7 +105,7 @@ class TradeBnsOwner extends Component {
                   getFieldDecorator('yzSj', {
                     rules: [{ required: false, message: '请填写客户手机!' }]
                   })(
-                    <Input style={{ width: 200 }}></Input>
+                    <Input disabled={!canEdit}  style={{ width: 200 }}></Input>
                   )
                 }
               </FormItem>
@@ -114,7 +116,7 @@ class TradeBnsOwner extends Component {
                   getFieldDecorator('yzYzly', {
                     rules: [{ required: false, message: '请填写客户来源!' }]
                   })(
-                    <Select disabled={showBbSelector} >
+                    <Select disabled={showBbSelector || !canEdit} >
                         {
                             khlyList.map(u => (<Select.Option key={u.key} value={u.key}>{u.key}</Select.Option>))
                         }
@@ -132,7 +134,7 @@ class TradeBnsOwner extends Component {
                   getFieldDecorator('yzEmail', {
                     rules: [{ required: false }]
                   })(
-                    <Input style={{ width: 200 }}></Input>
+                    <Input disabled={!canEdit}  style={{ width: 200 }}></Input>
                   )
                 }
               </FormItem>
@@ -145,7 +147,7 @@ class TradeBnsOwner extends Component {
                   getFieldDecorator('yzDlr', {
                     rules: [{ required: false, message: '请填写代理人' }]
                   })(
-                    <Input style={{ width: 200 }}></Input>
+                    <Input disabled={!canEdit}  style={{ width: 200 }}></Input>
                   )
                 }
               </FormItem>
@@ -156,7 +158,7 @@ class TradeBnsOwner extends Component {
                   getFieldDecorator('yzDlrlxfs', {
                     rules: [{ required: false, message: '请填写代理人联系方式!' }]
                   })(
-                    <Input style={{ width: 200 }}></Input>
+                    <Input disabled={!canEdit}  style={{ width: 200 }}></Input>
                   )
                 }
               </FormItem>
@@ -167,7 +169,7 @@ class TradeBnsOwner extends Component {
                   getFieldDecorator('yzDlrzjhm', {
                     rules: [{ required: false, message: '请填写代理人证件号码!' }]
                   })(
-                    <Input style={{ width: 200 }}></Input>
+                    <Input disabled={!canEdit}  style={{ width: 200 }}></Input>
                   )
                 }
               </FormItem>
@@ -180,7 +182,7 @@ class TradeBnsOwner extends Component {
                   getFieldDecorator('yzCjyy', {
                     rules: [{ required: false, message: '请填写成交原因!' }]
                   })(
-                    <Input style={{ width: 200 }}></Input>
+                    <Input disabled={!canEdit}  style={{ width: 200 }}></Input>
                   )
                 }
               </FormItem>
@@ -191,7 +193,7 @@ class TradeBnsOwner extends Component {
                   getFieldDecorator('yzCdjzqhtsc', {
                     rules: [{ required: false, message: '请填写从登记至签合同时长!' }]
                   })(
-                    <Select style={{ width: 80 }}>
+                    <Select disabled={!canEdit}  style={{ width: 80 }}>
                       {
                         cjzqList.map(tp => <Select.Option key={tp.key} value={tp.value}>{tp.key}</Select.Option>)
                       }

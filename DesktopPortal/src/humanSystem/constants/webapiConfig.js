@@ -27,7 +27,7 @@ const WebApiConfig = {
         editSalary: basicDataBaseApiUrl + 'positionsalary/',
         deleteSalary: basicDataBaseApiUrl + "humansalary/deletestation",
         getHumanImage: basicDataBaseApiUrl + "humanfile/getfileinfo",
-        setSocialInsure: basicDataBaseApiUrl + "humaninfo/becomehuman",
+        setSocialInsure: basicDataBaseApiUrl + "humanregular",//转正
         leavePositon: basicDataBaseApiUrl + "humanleave",
         postAttendenceSettingList: basicDataBaseApiUrl + 'humanattendance/setattendancesetting',
         importAttendenceList: basicDataBaseApiUrl + 'humanattendance/importattendancelst',

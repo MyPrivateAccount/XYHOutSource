@@ -1,31 +1,26 @@
 //合同列表
 import { connect } from 'react-redux';
 import React, { Component } from 'react';
-import { Layout, notification, Button, Checkbox, Popconfirm, Tooltip, Row, Col, Input, Spin, Select, TreeSelect } from 'antd'
+import {notification, Button, Tooltip } from 'antd'
 import TradeManager from './rpdetails/tradeManager'
 import DealRpTable from './dealRpTable'
-import SearchCondition from '../../constants/searchCondition'
-import { rpClear,syncRp,syncWy,syncYz,syncKh,syncFp } from '../../actions/actionCreator'
 import Layer, { LayerRouter } from '../../../components/Layer'
 import {Route } from 'react-router'
 import uuid from 'uuid'
+import {getDicParList} from '../../../actions/actionCreators'
+import {dicKeys} from '../../constants/const'
+import WebApiConfig from '../../constants/webApiConfig'
+import ApiClient from '../../../utils/apiClient'
+import {convertReport} from '../../constants/utils'
 
-const { Header, Content } = Layout;
-const Option = Select.Option;
 
 class MyDealRp extends Component {
     state = {
-        isShowManager: false,
-        cd: SearchCondition.rpListCondition,
-        rpId: '',
-        editReport: false
+        list:[],
+        loading: false,
+        pagination:{pageSize:1, pageIndex: 1, total:0}
     }
-    handleDelClick = (info) => {
 
-    }
-    handleModClick = (info) => {
-
-    }
     handleNew = (info) => {
         if(!this.props.user.Filiale){
             notification.error({message:'您没有归属于任何分公司，无法录入成交报告'})
@@ -65,41 +60,100 @@ class MyDealRp extends Component {
             reportKh:{
                 khKhxz:'本地居民',
                 khCdjzqhtsc: '0~1'
+            },
+            distribute:{
+                id: uuid.v1()
             }
         }
         this.props.history.push(`${this.props.match.url}/reportInfo`, {entity: newEntity, op: 'add', pagePar: this.state.pagePar})
-
-      //  this.setState({ isShowManager: true, rpId: '', editReport: false })
-      //  this.clearRp()
     }
-    //清除数据
-    // clearRp = (e) => {
-    //     this.props.dispatch(syncRp({}))
-    //     this.props.dispatch(syncWy({}))
-    //     this.props.dispatch(syncYz({}))
-    //     this.props.dispatch(syncKh({}))
-    //     this.props.dispatch(syncFp({}))
-    // }
-    // handleBack = (e) => {
-    //     this.setState({ isShowManager: false })
-    //     this.rptb.handleMySearch()
-    // }
+
     componentWillMount = () => {
 
     }
     componentDidMount = () => {
+        this.props.getDicParList([
+            dicKeys.jylx
+        ]);
 
+        this.search();
     }
-    componentWillReceiveProps = (newProps) => {
 
-        // if (newProps.operInfo.operType === 'DEALRP_OPEN_RP_DETAIL') {
-        //     this.setState({ isShowManager: true, rpId: newProps.rpOpenParam.id, editReport: true })
-        //     newProps.operInfo.operType = ''
-        // }
+    search =async ()=>{
+        let condition = {};
+
+        condition.pageSize = this.state.pagination.pageSize;
+        condition.pageIndex = this.state.pagination.pageIndex;
+        this.setState({loading:true})
+        try{
+            let url = `${WebApiConfig.rp.myrpGet}`;
+            let r = await ApiClient.post(url, condition);
+            r = (r||{}).data;
+            if(r.code==='0'){
+                this.setState({list: r.extension, pagination: {...this.state.pagination, total: r.totalCount}});
+            }else{
+                notification.error({message:'查询成交报告列表失败'});
+            }
+        }catch(e){
+            notification.error({message:'查询成交报告列表失败'})
+        }
+        this.setState({loading:false})
     }
-    onRpTable = (ref) => {
-        this.rptb = ref
+
+    pageChanged = (pagination, filters, sorter)=>{
+        this.setState({
+            pagination:{...this.state.pagination,...{pageIndex:pagination.current}}
+        },()=>{
+            this.search();
+        })
     }
+
+    viewReport =async (report, action)=>{
+        if(!report || !report.id)
+            return;
+       
+        this.setState({loading:true})
+        try{
+            let url = `${WebApiConfig.rp.rpGet}${report.id}`;
+            let r = await ApiClient.get(url);
+            r = (r||{}).data;
+            if(r.code==='0' ){
+                if(r.extension){
+                    let es = r.extension.examineStatus
+                    let report = convertReport(r.extension);
+                    let op =action || ((es===0 || es === 16)? 'edit':'view')
+                    this.props.history.push(`${this.props.match.url}/reportInfo`, {entity: report, op: op, pagePar: this.state.pagePar})
+                }else{
+                    notification.error({message:'成交报告不存在'});
+                }
+            }else{
+                notification.error({message:'获取成交报告详情失败', description: r.message||''});
+            }
+        }catch(e){
+            notification.error({message:'获取成交报告详情失败'})
+        }
+        this.setState({loading:false})
+    }
+
+    reportChanged = (report, action)=>{
+        if(action==='DEL'){
+            let rl = this.state.list;
+            let idx = rl.findIndex(r=>r.id === report.id);
+            if(idx>=0){
+                rl.splice(idx,1)
+                this.setState({list: [...rl]})
+            }
+        }else{
+            let rl = this.state.list;
+            let idx = rl.findIndex(r=>r.id === report.id);
+            if(idx>=0){
+                rl[idx] = {...rl[idx],...report}
+                this.setState({list: [...rl]})
+            }
+        }
+    }
+  
+   
     render() {
         
         return (
@@ -108,10 +162,18 @@ class MyDealRp extends Component {
                     <Tooltip title="新增">
                         <Button type='primary'  onClick={this.handleNew} style={{ 'margin': '10' }} >录入成交报告</Button>
                     </Tooltip>
-                    <DealRpTable SearchCondition={this.state.cd} onRpTable={this.onRpTable} type={'myget'}/>
+                    <DealRpTable 
+                        loading={this.state.loading}
+                        viewReport={this.viewReport}
+                        dic = {this.props.dic} 
+                        dataSource={this.state.list} 
+                        pagination={this.state.pagination} 
+                        pageChanged={this.pageChanged} 
+                        reportChanged = {this.reportChanged}
+                        type={'myget'}/>
                 </div>
                 <LayerRouter>
-                    <Route path={`${this.props.match.url}/reportInfo`}  render={(props)=> <TradeManager {...props} vs={this.state.isShowManager} handleback={this.handleBack} rpId={this.state.rpId} isEdit={this.state.editReport} />}/>
+                    <Route path={`${this.props.match.url}/reportInfo`}  render={(props)=> <TradeManager {...props} reportChanged={this.reportChanged}  />}/>
                 </LayerRouter>
                
             </Layer>
@@ -130,7 +192,8 @@ function MapStateToProps(state) {
 
 function MapDispatchToProps(dispatch) {
     return {
-        dispatch
+        dispatch,
+        getDicParList: (...args) => dispatch(getDicParList(...args))
     };
 }
 export default connect(MapStateToProps, MapDispatchToProps)(MyDealRp);
