@@ -16,6 +16,7 @@ import Salary from '../../../businessComponents/humanSystem/salary'
 import Layer from '../../../components/Layer'
 import {formerCompanyColumns, educationColumns} from '../../constants/tools'
 import {getHumanDetail, postHumanInfo, getPosition} from '../../serviceAPI/staffService'
+import Contract from '../../../businessComponents/humanSystem/contract'
 const Option = Select.Option;
 const FormItem = Form.Item;
 const {TextArea} = Input;
@@ -74,6 +75,7 @@ class OnBoarding extends Component {
         SocialSecurityForm: null,
         Salary: {},//薪资构成信息
         SalaryForm: null,
+        humanContractForm: null,
         humenNewId: NewGuid(),
         ismodify: false,//是否未修改模式
         isReadOnly: false,//预览模式
@@ -399,6 +401,30 @@ class OnBoarding extends Component {
                         values = {...values, humanSalaryStructure: null}
                     }
                 }
+                if (this.state.humanContractForm) {
+                    this.state.humanContractForm.validateFields();
+                    let errs = this.state.humanContractForm.getFieldsError();
+                    console.log("errs::", errs);
+                    for (let err in errs) {
+                        if (errs[err]) {
+                            return;
+                        }
+                    }
+                    let contractValues = this.state.humanContractForm.getFieldsValue();
+                    let hasValue = false;
+                    for (let prop in contractValues) {
+                        if (contractValues[prop] != undefined) {
+                            hasValue = true;
+                            break;
+                        }
+                    }
+                    if (hasValue) {
+                        contractValues.id = this.state.humenNewId;
+                        values = {...values, humanContractInfo: contractValues}
+                    } else {
+                        values = {...values, humanContractInfo: null}
+                    }
+                }
                 values.id = this.state.humenNewId;
                 values.humanTitleInfos = this.state.positionalTitleList || []
                 values.humanWorkHistories = this.state.formerCompanyList || []
@@ -407,10 +433,10 @@ class OnBoarding extends Component {
                 values.maritalStatus = (values.maritalStatus == '0' ? false : true);
                 values.picture = this.state.picture;
                 console.log("提交内容", JSON.stringify(values));
-                this.setState({showLoading: true});
-                postHumanInfo(values).then(res => {
-                    this.setState({showLoading: false});
-                });
+                // this.setState({showLoading: true});
+                // postHumanInfo(values).then(res => {
+                //     this.setState({showLoading: false});
+                // });
             }
         });
     }
@@ -476,6 +502,8 @@ class OnBoarding extends Component {
             this.setState({SocialSecurityForm: formObj});
         } else if (pageName == "salary") {
             this.setState({SalaryForm: formObj});
+        } else if (pageName == 'humanContractInfo') {
+            this.setState({humanContractForm: formObj});
         }
     }
     onIdCardBlur = (e) => {
@@ -491,9 +519,7 @@ class OnBoarding extends Component {
     render() {
         let fileList = this.state.fileList;
         const {previewVisible, previewImage, formerCompanyColumns, educationColumns, titleColumns, positionList} = this.state;
-        const {getFieldDecorator, getFieldsError, getFieldsValue, isFieldTouched} = this.props.form;
-
-        let psition = this.props.selHumanList.length > 0 ? this.props.selHumanList[this.props.selHumanList.length - 1].position : 0;
+        const {getFieldDecorator, getFieldsValue} = this.props.form;
 
         if (this.props.ismodify == 1) {
             fileList = this.props.humanImage;
@@ -528,7 +554,7 @@ class OnBoarding extends Component {
                                             initialValue: humanInfo.userID,
                                             rules: [{
                                                 required: true,
-                                                message: 'please entry Worknumber',
+                                                message: '请填写工号',
                                             }]
                                         })(
                                             <Input disabled={disabled} />
@@ -580,7 +606,7 @@ class OnBoarding extends Component {
                                 <Col span={12}>
                                     <FormItem {...formItemLayout} label="性别">
                                         {getFieldDecorator('sex', {
-                                            initialValue: humanInfo.sex + '',
+                                            initialValue: humanInfo.sex ? (humanInfo.sex + '') : null,
                                             rules: [{
                                                 required: true, message: '请选择性别',
                                             }]
@@ -660,7 +686,7 @@ class OnBoarding extends Component {
                                 {getFieldDecorator('age', {
                                     initialValue: humanInfo.age,
                                     rules: [{
-                                        required: true, message: 'please entry Age',
+                                        required: true, message: '请填写年龄',
                                     }]
                                 })(
                                     <InputNumber disabled style={{width: '100%'}} />
@@ -675,7 +701,7 @@ class OnBoarding extends Component {
                                     initialValue: humanInfo.position,
                                     rules: [{
                                         required: true,
-                                        message: 'please entry Position',
+                                        message: '请选择职位',
                                     }],
 
                                 })(
@@ -966,87 +992,8 @@ class OnBoarding extends Component {
 
                     </Row>
 
-                    <h3 style={styles.subHeader}><Icon type="tags-o" className='content-icon' />合同信息</h3>
-                    <Row>
-                        <Col span={7}>
-                            <FormItem {...formItemLayout} label="合同编号" >
-                                {getFieldDecorator('contractNo', {
-                                    initialValue: humanInfo.humanContractInfo.contractNo,
-                                    rules: [{
-                                        required: true, message: '请输入合同编号',
-                                    }]
-                                })(
-                                    <Input disabled={disabled} placeholder="请输入合同编号" />
-                                )}
-                            </FormItem>
-                        </Col>
-                        <Col span={7}>
-                            <FormItem {...formItemLayout} label="签订单位" >
-                                {getFieldDecorator('contractCompany', {
-                                    initialValue: humanInfo.humanContractInfo.contractCompany,
-                                    rules: [{
-                                        required: true, message: '请输入签订单位',
-                                    }]
-                                })(
-                                    <Input disabled={disabled} placeholder="请输入签订单位" />
-                                )}
-                            </FormItem>
-                        </Col>
-                        <Col span={7}>
-                            <FormItem {...formItemLayout} label="合同类型">
-                                {getFieldDecorator('contractType', {
-                                    initialValue: humanInfo.humanContractInfo.contractType,
-                                })(
-                                    <Select disabled={disabled} onChange={this.handleSelectChange} placeholder="选择职位">
-                                        {
-                                            (this.state.dicContractCategories || []).map(item => <Option key={item.value} value={item.value}>{item.key}</Option>)
-                                        }
-                                    </Select>
-                                )}
-                            </FormItem>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col span={7}>
-                            <FormItem {...formItemLayout} label="合同签订日期">
-                                {getFieldDecorator('contractSignDate', {
-                                    // initialValue: empInfo.humanContractInfo.contractSignDate,
-                                    rules: [{
-                                        required: true,
-                                        message: '请选择合同签订日期'
-                                    }]
-                                })(
-                                    <DatePicker disabled={disabled} format='YYYY-MM-DD' style={{width: '100%'}} />
-                                )}
-                            </FormItem>
-                        </Col>
-                        <Col span={7}>
-                            <FormItem {...formItemLayout} label="合同有效期">
-                                {getFieldDecorator('contractStartDate', {
-                                    initialValue: humanInfo.humanContractInfo.contractStartDate ? moment(humanInfo.humanContractInfo.contractStartDate) : '',
-                                    rules: [{
-                                        required: true,
-                                        message: '请选择合同有效期'
-                                    }]
-                                })(
-                                    <DatePicker disabled={disabled} format='YYYY-MM-DD' style={{width: '100%'}} />
-                                )}
-                            </FormItem>
-                        </Col>
-                        <Col span={7}>
-                            <FormItem {...formItemLayout} label="合同到期日">
-                                {getFieldDecorator('contractEndDate', {
-                                    initialValue: humanInfo.humanContractInfo.contractEndDate ? moment(humanInfo.humanContractInfo.contractEndDate) : '',
-                                    rules: [{
-                                        required: true,
-                                        message: '请选择合同到期日'
-                                    }]
-                                })(
-                                    <DatePicker disabled={disabled} format='YYYY-MM-DD' style={{width: '100%'}} />
-                                )}
-                            </FormItem>
-                        </Col>
-                    </Row>
+                    <Contract subPageLoadCallback={(formObj, pageName) => this.subPageLoadCallback(formObj, pageName)} isReadOnly={disabled} dicContractCategories={this.state.dicContractCategories} entityInfo={humanInfo.humanContractInfo} />
+
                     <h3 style={styles.subHeader}><Icon type="tags-o" className='content-icon' />上单位职位信息 <Button type="primary" size='small' shape="circle" icon="plus" onClick={() => this.setState({formerCompanyDgShow: true})} /></h3>
                     <Row>
                         <Col span={2}></Col>
@@ -1075,8 +1022,8 @@ class OnBoarding extends Component {
                         </Col>
                         <Col span={2}></Col>
                     </Row>
-                    {judgePermissions.includes('SOCIAL_SECURITY_VIEW') || this.props.ismodify != 1 ? <SocialSecurity subPageLoadCallback={(formObj, pageName) => this.subPageLoadCallback(formObj, pageName)} isReadOnly={disabled} /> : null}
-                    {judgePermissions.includes('SALARY_VIEW') || this.props.ismodify != 1 ? <Salary subPageLoadCallback={(formObj, pageName) => this.subPageLoadCallback(formObj, pageName)} isReadOnly={disabled} /> : null}
+                    {judgePermissions.includes('SOCIAL_SECURITY_VIEW') || this.props.ismodify != 1 ? <SocialSecurity subPageLoadCallback={(formObj, pageName) => this.subPageLoadCallback(formObj, pageName)} isReadOnly={disabled} entityInfo={humanInfo.humanSocialSecurity} /> : null}
+                    {judgePermissions.includes('SALARY_VIEW') || this.props.ismodify != 1 ? <Salary subPageLoadCallback={(formObj, pageName) => this.subPageLoadCallback(formObj, pageName)} isReadOnly={disabled} entityInfo={humanInfo.humanSalaryStructure} /> : null}
                     <Row style={{textAlign: 'center', display: disabled ? 'none' : 'block'}}>
                         <Col>
                             <Button type="primary" htmlType="submit" style={{marginRight: '20px'}} disabled={this.hasErrors(getFieldsValue())} onClick={(e) => this.handleSubmit(e)}>提交</Button>
