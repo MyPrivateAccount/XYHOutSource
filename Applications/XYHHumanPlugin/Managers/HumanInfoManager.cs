@@ -71,7 +71,7 @@ namespace XYHHumanPlugin.Managers
                     examineSubmitRequest.Source = user.FilialeName;
                     examineSubmitRequest.CallbackUrl = gatwayurl + "/api/humaninfo/humaninfocallback";
                     examineSubmitRequest.StepCallbackUrl = gatwayurl + "/api/humaninfo/shoponsitestepcallback";
-                    examineSubmitRequest.Action = "ZYWOwnerShopOnSite";
+                    examineSubmitRequest.Action = "HumanInfo";
                     examineSubmitRequest.TaskName = $"新增员工人事信息:{humanInfoRequest.Name}";
                     examineSubmitRequest.Desc = $"新增员工人事信息";
 

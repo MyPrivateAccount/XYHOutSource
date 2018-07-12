@@ -1,10 +1,10 @@
-import { notification } from 'antd';
+import {notification} from 'antd';
 import ApiClient from '../../utils/apiClient'
 import WebApiConfig from '../constants/webapiConfig';
 
 //获取员工列表
 export function getHumanList(entity) {
-    let result = { isOk: false, extension: [], msg: '员工查询失败！' };
+    let result = {isOk: false, extension: [], msg: '员工查询失败！'};
     let url = WebApiConfig.search.searchHumanList;
     if (entity.staffStatuses && entity.staffStatuses.includes('0')) {
         entity.staffStatuses = [];
@@ -35,7 +35,7 @@ export function getHumanList(entity) {
 }
 //获取员工详情
 export function getHumanDetail(humenId) {
-    let result = { isOk: false, extension: {}, msg: '获取员工详情失败!' };
+    let result = {isOk: false, extension: {}, msg: '获取员工详情失败!'};
     let url = WebApiConfig.search.getHumanDetail + humenId;
     return ApiClient.get(url).then(res => {
         if (res.data.code == 0) {
@@ -61,7 +61,7 @@ export function getHumanDetail(humenId) {
 //移动调薪保存接口
 export function adjustHuman(entity) {
     let url = WebApiConfig.server.adjustHuman;
-    let huResult = { isOk: false, msg: '异动调薪失败！' };
+    let huResult = {isOk: false, msg: '异动调薪失败！'};
     return ApiClient.post(url, entity).then(res => {
         console.log("移动调薪结果:", res);
         if (res.data.code == 0) {
@@ -83,7 +83,7 @@ export function adjustHuman(entity) {
 //保存人事信息
 export function postHumanInfo(entity) {
     let urlhuman = WebApiConfig.server.PostHumaninfo;
-    let humanResult = { isOk: false, msg: '人事信息提交失败！' };
+    let humanResult = {isOk: false, msg: '人事信息提交失败！'};
     return ApiClient.post(urlhuman, entity, null, 'PUT').then(res => {
         console.log("人事信息提交结果:", res);
         if (res.data.code == 0) {
@@ -105,7 +105,7 @@ export function postHumanInfo(entity) {
 //获取职位列表
 export function getPosition(departmentId) {
     let url = WebApiConfig.search.getStationList + "/" + departmentId;
-    let huResult = { isOk: false, extension: [], msg: '获取职位失败！' };
+    let huResult = {isOk: false, extension: [], msg: '获取职位失败！'};
     return ApiClient.get(url).then(res => {
         console.log("请求结果:", res);
         if (res.data.code == 0) {
@@ -130,7 +130,7 @@ export function getPosition(departmentId) {
 //离职操作
 export function leavePosition(entity) {
     let url = WebApiConfig.server.leavePositon;
-    let huResult = { isOk: false, msg: '离职失败！' };
+    let huResult = {isOk: false, msg: '离职失败！'};
     return ApiClient.post(url, entity).then(res => {
         if (res.data.code == 0) {
             huResult.isOk = true;
@@ -152,7 +152,7 @@ export function leavePosition(entity) {
 //保存兼职信息
 export function savePartTimeJob(entity) {
     let url = WebApiConfig.server.savePartTimeJob;
-    let huResult = { isOk: false, msg: '保存兼职信息失败!' };
+    let huResult = {isOk: false, msg: '保存兼职信息失败!'};
     return ApiClient.post(url, entity).then(res => {
         if (res.data.code == 0) {
             huResult.isOk = true;
@@ -176,7 +176,7 @@ export function savePartTimeJob(entity) {
 //获取兼职列表
 export function getPartTimeJobList(humanId) {
     let url = WebApiConfig.server.getPartTimeJobList + humanId;
-    let huResult = { isOk: false, msg: '获取兼职列表失败!' };
+    let huResult = {isOk: false, msg: '获取兼职列表失败!'};
     return ApiClient.get(url).then(res => {
         if (res.data.code == 0) {
             huResult.isOk = true;
@@ -202,7 +202,7 @@ export function getPartTimeJobList(humanId) {
 //删除兼职信息
 export function removePartTimeJob(jobId) {
     let url = WebApiConfig.server.removePartTimeJob + jobId;
-    let huResult = { isOk: false, msg: '删除兼职信息失败!' };
+    let huResult = {isOk: false, msg: '删除兼职信息失败!'};
     return ApiClient.post(url, null, null, 'DELETE').then(res => {
         if (res.data.code == 0) {
             huResult.isOk = true;
@@ -221,26 +221,25 @@ export function removePartTimeJob(jobId) {
         return huResult;
     });
 }
-
-//获取兼职列表
-// export function getPartTimeJobList(humanId) {
-//     let url = WebApiConfig.server.removePartTimeJob + humanId;
-//     let huResult = { isOk: false, msg: '删除兼职信息失败!' };
-//     return ApiClient.post(url, null, null, 'DELETE').then(res => {
-//         if (res.data.code == 0) {
-//             huResult.isOk = true;
-//             huResult.msg = '删除兼职信息成功';
-//         }
-//         else {
-//             huResult.msg = res.data.message;
-//         }
-//     }).catch(e => {
-//         huResult.msg = "删除兼职信息接口调用异常!";
-//     }).then(res => {
-//         notification[huResult.isOk ? "success" : "error"]({
-//             message: huResult.msg,
-//             duration: 3
-//         });
-//         return huResult;
-//     });
-// }
+//转正
+export function becomeStaff(entity) {
+    let url = WebApiConfig.server.setSocialInsure;
+    let huResult = {isOk: false, msg: '转正失败！'};
+    return ApiClient.post(url, entity).then(res => {
+        if (res.data.code == 0) {
+            huResult.isOk = true;
+            huResult.msg = '转正成功';
+            huResult.extension = res.data.extension || {};
+        } else {
+            huResult.msg = res.data.message;
+        }
+    }).catch(e => {
+        huResult.msg = "转正接口调用异常:" + e.message;
+    }).then(res => {
+        notification[huResult.isOk ? 'success' : 'error']({
+            message: huResult.msg,
+            duration: 3
+        });
+        return huResult;
+    });
+}

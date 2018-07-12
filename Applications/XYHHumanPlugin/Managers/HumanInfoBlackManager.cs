@@ -1,5 +1,6 @@
 ﻿using ApplicationCore;
 using ApplicationCore.Dto;
+using ApplicationCore.Managers;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -39,6 +40,49 @@ namespace XYHHumanPlugin.Managers
             {
                 throw new ArgumentNullException(nameof(UserInfo) + nameof(HumanInfoRequest));
             }
+
+
+
+            var gatwayurl = ApplicationContext.Current.AppGatewayUrl.EndsWith("/") ? ApplicationContext.Current.AppGatewayUrl.TrimEnd('/') : ApplicationContext.Current.AppGatewayUrl;
+            GatewayInterface.Dto.ExamineSubmitRequest examineSubmitRequest = new GatewayInterface.Dto.ExamineSubmitRequest();
+            examineSubmitRequest.ContentId = !string.IsNullOrEmpty(humanInfoBlackRequest.Id) ? humanInfoBlackRequest.Id : "";
+            examineSubmitRequest.ContentType = "HumanBlack";
+            examineSubmitRequest.ContentName = humanInfoBlackRequest.Name;
+            examineSubmitRequest.Content = "新增员工人事黑名单信息";
+            examineSubmitRequest.Source = user.FilialeName;
+            examineSubmitRequest.CallbackUrl = gatwayurl + "/api/humaninfo/humanblackcallback";
+            examineSubmitRequest.StepCallbackUrl = gatwayurl + "/api/humaninfo/humanblackstepcallback";
+            examineSubmitRequest.Action = "HumanBlack";
+            examineSubmitRequest.TaskName = $"新增员工人事黑名单信息:{humanInfoBlackRequest.Name}";
+            examineSubmitRequest.Desc = $"新增员工人事黑名单信息";
+
+            GatewayInterface.Dto.UserInfo userInfo = new GatewayInterface.Dto.UserInfo()
+            {
+                Id = user.Id,
+                KeyWord = user.KeyWord,
+                OrganizationId = user.OrganizationId,
+                OrganizationName = user.OrganizationName,
+                UserName = user.UserName
+            };
+            examineSubmitRequest.UserInfo = userInfo;
+
+            string tokenUrl = $"{ApplicationContext.Current.AuthUrl}/connect/token";
+            string examineCenterUrl = $"{ApplicationContext.Current.ExamineCenterUrl}";
+            Logger.Info($"新增员工人事黑名单信息提交审核，\r\ntokenUrl:{tokenUrl ?? ""},\r\nexamineCenterUrl:{examineCenterUrl ?? ""},\r\nexamineSubmitRequest:" + (examineSubmitRequest != null ? JsonHelper.ToJson(examineSubmitRequest) : ""));
+            var tokenManager = new TokenManager(tokenUrl, ApplicationContext.Current.ClientID, ApplicationContext.Current.ClientSecret);
+            var response2 = await tokenManager.Execute(async (token) =>
+            {
+                return await _restClient.PostWithToken<ResponseMessage>(examineCenterUrl, examineSubmitRequest, token);
+            });
+            if (response2.Code != ResponseCodeDefines.SuccessCode)
+            {
+                response.Code = ResponseCodeDefines.ServiceError;
+                response.Message = "向审核中心发起审核请求失败：" + response2.Message;
+                Logger.Info($"新增员工人事黑名单信息提交审核失败：" + response2.Message);
+                return response;
+            }
+
+
             response.Extension = _mapper.Map<HumanInfoBlackResponse>(await Store.SaveAsync(user, _mapper.Map<HumanInfoBlack>(humanInfoBlackRequest), cancellationToken));
             return response;
         }

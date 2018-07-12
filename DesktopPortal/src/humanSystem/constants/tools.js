@@ -39,12 +39,12 @@ export const formerCompanyColumns = [{
     key: 'endTime',
 }, {
     title: '证明人',
-    dataIndex: 'Witness',
-    key: 'Witness',
+    dataIndex: 'witness',
+    key: 'witness',
 }, {
     title: '证明人联系电话',
-    dataIndex: 'WitnessPhone',
-    key: 'WitnessPhone',
+    dataIndex: 'witnessPhone',
+    key: 'witnessPhone',
 }];
 //学历信息
 export const educationColumns = [

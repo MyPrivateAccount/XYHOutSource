@@ -137,18 +137,18 @@ namespace XYHHumanPlugin.Controllers
         /// </summary>
         /// <param name="examineResponse"></param>
         /// <returns></returns>
-        [HttpPost("humaninfocallback")]
+        [HttpPost("humanblackcallback")]
         [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
-        public async Task<ResponseMessage> HumanInfoCreateCallback([FromBody] ExamineResponse examineResponse)
+        public async Task<ResponseMessage> HumanBlackCallback([FromBody] ExamineResponse examineResponse)
         {
-            Logger.Trace($"新增人事信息回调(HumanInfoCreateCallback)：\r\n请求参数为：\r\n" + (examineResponse != null ? JsonHelper.ToJson(examineResponse) : ""));
+            Logger.Trace($"新增人事信息回调(HumanBlackCallback)：\r\n请求参数为：\r\n" + (examineResponse != null ? JsonHelper.ToJson(examineResponse) : ""));
 
             ResponseMessage response = new ResponseMessage();
 
             if (examineResponse == null)
             {
                 response.Code = ResponseCodeDefines.ModelStateInvalid;
-                Logger.Trace($"新增人事信息回调(HumanInfoCreateCallback)模型验证失败：\r\n{response.Message ?? ""}，\r\n请求参数为：\r\n" + (examineResponse != null ? JsonHelper.ToJson(examineResponse) : ""));
+                Logger.Trace($"新增人事信息回调(HumanBlackCallback)模型验证失败：\r\n{response.Message ?? ""}，\r\n请求参数为：\r\n" + (examineResponse != null ? JsonHelper.ToJson(examineResponse) : ""));
                 return response;
             }
             try
@@ -167,7 +167,7 @@ namespace XYHHumanPlugin.Controllers
             {
                 response.Code = ResponseCodeDefines.ServiceError;
                 response.Message = e.ToString();
-                Logger.Trace($"新增人事信息回调(HumanInfoCreateCallback)报错：\r\n{e.ToString()}，\r\n请求参数为：\r\n" + examineResponse != null ? JsonHelper.ToJson(examineResponse) : "");
+                Logger.Trace($"新增人事信息回调(HumanBlackCallback)报错：\r\n{e.ToString()}，\r\n请求参数为：\r\n" + examineResponse != null ? JsonHelper.ToJson(examineResponse) : "");
             }
             return response;
         }
@@ -177,13 +177,13 @@ namespace XYHHumanPlugin.Controllers
         /// <summary>
         /// 新增人事信息步骤回调
         /// </summary>
-        /// <param name="examineResponse"></param>
+        /// <param name="examineStepResponse"></param>
         /// <returns></returns>
-        [HttpPost("humaninfostepcallback")]
+        [HttpPost("humanblackstepcallback")]
         [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
-        public async Task<ResponseMessage> HumanInfoCreateStepCallback([FromBody] ExamineStepResponse examineStepResponse)
+        public async Task<ResponseMessage> HumanBlackStepCallback([FromBody] ExamineStepResponse examineStepResponse)
         {
-            Logger.Trace($"新增人事信息步骤回调(HumanInfoCreateStepCallback)：\r\n请求参数为：\r\n" + (examineStepResponse != null ? JsonHelper.ToJson(examineStepResponse) : ""));
+            Logger.Trace($"新增人事信息步骤回调(HumanBlackStepCallback)：\r\n请求参数为：\r\n" + (examineStepResponse != null ? JsonHelper.ToJson(examineStepResponse) : ""));
 
             ResponseMessage response = new ResponseMessage();
             return response;

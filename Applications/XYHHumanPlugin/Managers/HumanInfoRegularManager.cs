@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using XYH.Core.Log;
 using XYHHumanPlugin.Dto.Request;
 using XYHHumanPlugin.Dto.Response;
 using XYHHumanPlugin.Models;
@@ -21,11 +22,14 @@ namespace XYHHumanPlugin.Managers
         public HumanInfoRegularManager(IHumanInfoRegularStore humanInfoRegularStore,
                                     PermissionExpansionManager permissionExpansionManager,
                                     IHumanInfoStore humanInfoStore,
-                                    IMapper mapper)
+                                    IHumanInfoChangeStore humanInfoChangeStore,
+                                    IMapper mapper, RestClient restClient)
         {
             Store = humanInfoRegularStore;
             _permissionExpansionManager = permissionExpansionManager;
             _humanInfoStore = humanInfoStore;
+            _restClient = restClient;
+            _humanInfoChangeStore = humanInfoChangeStore;
             _mapper = mapper;
         }
 
@@ -33,6 +37,10 @@ namespace XYHHumanPlugin.Managers
         protected PermissionExpansionManager _permissionExpansionManager;
         protected IHumanInfoStore _humanInfoStore;
         protected IMapper _mapper { get; }
+        protected IHumanInfoChangeStore _humanInfoChangeStore { get; }
+
+        protected RestClient _restClient { get; }
+        private readonly ILogger Logger = LoggerManager.GetLogger("HumanInfoRegularManager");
 
 
         public async Task<ResponseMessage<HumanInfoRegularResponse>> FindByIdAsync(UserInfo user, string id, CancellationToken cancellationToken = default(CancellationToken))
@@ -82,6 +90,46 @@ namespace XYHHumanPlugin.Managers
                 response.Message = "没有权限";
                 return response;
             }
+
+            var gatwayurl = ApplicationContext.Current.AppGatewayUrl.EndsWith("/") ? ApplicationContext.Current.AppGatewayUrl.TrimEnd('/') : ApplicationContext.Current.AppGatewayUrl;
+            GatewayInterface.Dto.ExamineSubmitRequest examineSubmitRequest = new GatewayInterface.Dto.ExamineSubmitRequest();
+            examineSubmitRequest.ContentId = !string.IsNullOrEmpty(humanInfoRegularRequest.Id) ? humanInfoRegularRequest.Id : "";
+            examineSubmitRequest.ContentType = "HumanRegular";
+            examineSubmitRequest.ContentName = humaninfo.Name;
+            examineSubmitRequest.Content = "新增员工人事转正信息";
+            examineSubmitRequest.Source = user.FilialeName;
+            examineSubmitRequest.CallbackUrl = gatwayurl + "/api/humaninfo/humanregularcallback";
+            examineSubmitRequest.StepCallbackUrl = gatwayurl + "/api/humaninfo/humanregularstepcallback";
+            examineSubmitRequest.Action = "HumanRegular";
+            examineSubmitRequest.TaskName = $"新增员工人事转正信息:{humaninfo.Name}";
+            examineSubmitRequest.Desc = $"新增员工人事转正信息";
+
+            GatewayInterface.Dto.UserInfo userInfo = new GatewayInterface.Dto.UserInfo()
+            {
+                Id = user.Id,
+                KeyWord = user.KeyWord,
+                OrganizationId = user.OrganizationId,
+                OrganizationName = user.OrganizationName,
+                UserName = user.UserName
+            };
+            examineSubmitRequest.UserInfo = userInfo;
+
+            string tokenUrl = $"{ApplicationContext.Current.AuthUrl}/connect/token";
+            string examineCenterUrl = $"{ApplicationContext.Current.ExamineCenterUrl}";
+            Logger.Info($"新增员工人事转正信息提交审核，\r\ntokenUrl:{tokenUrl ?? ""},\r\nexamineCenterUrl:{examineCenterUrl ?? ""},\r\nexamineSubmitRequest:" + (examineSubmitRequest != null ? JsonHelper.ToJson(examineSubmitRequest) : ""));
+            var tokenManager = new TokenManager(tokenUrl, ApplicationContext.Current.ClientID, ApplicationContext.Current.ClientSecret);
+            var response2 = await tokenManager.Execute(async (token) =>
+            {
+                return await _restClient.PostWithToken<ResponseMessage>(examineCenterUrl, examineSubmitRequest, token);
+            });
+            if (response2.Code != ResponseCodeDefines.SuccessCode)
+            {
+                response.Code = ResponseCodeDefines.ServiceError;
+                response.Message = "向审核中心发起审核请求失败：" + response2.Message;
+                Logger.Info($"新增员工人事转正信息提交审核失败：" + response2.Message);
+                return response;
+            }
+
             response.Extension = _mapper.Map<HumanInfoRegularResponse>(await Store.CreateAsync(user, _mapper.Map<HumanInfoRegular>(humanInfoRegularRequest), cancellationToken));
             return response;
         }
@@ -93,9 +141,34 @@ namespace XYHHumanPlugin.Managers
         /// <param name="status"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task UpdateExamineStatus(string humanId, ExamineStatusEnum status, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task UpdateExamineStatus(string id, ExamineStatusEnum status, CancellationToken cancellationToken = default(CancellationToken))
         {
-            await Store.UpdateExamineStatus(humanId, status, cancellationToken);
+            var model = await Store.GetAsync(a => a.Where(b => b.Id == id));
+            if (model == null)
+            {
+                throw new Exception("未找到更新对象");
+            }
+            UserInfo userInfo = new UserInfo
+            {
+                Id = model.CreateUser
+            };
+            HumanInfoChange humanInfoChange = new HumanInfoChange
+            {
+                ChangeContent = "",
+                ChangeId = model.Id,
+                ChangeReason = "",
+                ChangeTime = DateTime.Now,
+                ChangeType = HumanChangeType.Regular,
+                CreateTime = DateTime.Now,
+                CreateUser = model.CreateUser,
+                Id = Guid.NewGuid().ToString(),
+                IsDeleted = false,
+                HumanId = model.HumanId,
+                UserId = model.CreateUser
+            };
+            await _humanInfoChangeStore.CreateAsync(userInfo, humanInfoChange);
+
+            await Store.UpdateExamineStatus(id, status, cancellationToken);
         }
 
 

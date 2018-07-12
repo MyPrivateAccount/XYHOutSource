@@ -44,6 +44,7 @@ class Change extends Component {
     }
 
     handleSubmit = (e) => {
+        let humanInfo = this.props.location.state;
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
             let {salaryForm, socialSecurityForm} = this.state;
@@ -67,6 +68,7 @@ class Change extends Component {
             if (!err && !hasErr) {
                 // this.props.dispatch(postChangeHuman(values));
                 this.setState({showLoading: true});
+                values.humanId = humanInfo.id;
                 adjustHuman(values).then(res => {
                     this.setState({showLoading: false});
                 })

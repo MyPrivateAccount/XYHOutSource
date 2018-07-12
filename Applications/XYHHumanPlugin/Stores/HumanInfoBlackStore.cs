@@ -61,6 +61,7 @@ namespace XYHHumanPlugin.Stores
                 humanInfoBlack.CreateTime = DateTime.Now;
                 humanInfoBlack.CreateUser = user.Id;
                 humanInfoBlack.IsDeleted = false;
+                humanInfoBlack.ExamineStatus = ExamineStatusEnum.Auditing;
                 Context.Add(humanInfoBlack);
             }
             else if (!HumanInfoBlacks.Any(a => a.Id == humanInfoBlack.Id))

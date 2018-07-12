@@ -6,10 +6,6 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugins", "Plugins", "{AA8E828A-2B34-44D9-A4FD-4F934989907D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Document", "Document", "{4D5BC8EE-6CCD-42FA-A0B2-9298CC81E498}"
-	ProjectSection(SolutionItems) = preProject
-		DataBaseUpdate-1030sql.txt = DataBaseUpdate-1030sql.txt
-		DataBaseUpdate-1108sql.txt = DataBaseUpdate-1108sql.txt
-	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApplicationCore", "ApplicationCore\ApplicationCore.csproj", "{41F23D46-0208-40D9-8EB6-B285697243AF}"
 EndProject
@@ -37,9 +33,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XYHCustomerPlugin", "XYHCus
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XYHHumanInterfacePlugin", "XYHHumanInterfacePlugin\XYHHumanInterfacePlugin.csproj", "{07DA135D-4ED4-4F17-A088-A00A34AC2182}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XYHChargePlugin", "XYHChargePlugin\XYHChargePlugin.csproj", "{CD15E80C-5969-4511-A28F-6FC473F1A0C4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XYHChargePlugin", "XYHChargePlugin\XYHChargePlugin.csproj", "{CD15E80C-5969-4511-A28F-6FC473F1A0C4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XYHChargeInterfacePlugin", "XYHChargeInterfacePlugin\XYHChargeInterfacePlugin.csproj", "{5A3FA5EE-0B69-452C-BA1B-2E22F24DBDD6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XYHChargeInterfacePlugin", "XYHChargeInterfacePlugin\XYHChargeInterfacePlugin.csproj", "{5A3FA5EE-0B69-452C-BA1B-2E22F24DBDD6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

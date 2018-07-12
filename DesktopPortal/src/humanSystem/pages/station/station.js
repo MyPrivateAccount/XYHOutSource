@@ -1,16 +1,16 @@
-import { connect } from 'react-redux';
-import { createStation, getOrgList, getDicParList, setStation, deleteStation, getcreateStation, setSearchLoadingVisible } from '../../actions/actionCreator';
-import React, { Component } from 'react'
-import { Table, notification, Button, Row, Col, Spin, TreeSelect, Popconfirm, Modal, Tooltip } from 'antd'
+import {connect} from 'react-redux';
+import {createStation, getOrgList, getDicParList, setStation, deleteStation, getcreateStation, setSearchLoadingVisible} from '../../actions/actionCreator';
+import React, {Component} from 'react'
+import {Table, notification, Button, Row, Col, Spin, TreeSelect, Popconfirm, Modal, Tooltip} from 'antd'
 import './station.less';
-import Layer, { LayerRouter } from '../../../components/Layer'
-import { Route } from 'react-router'
+import Layer, {LayerRouter} from '../../../components/Layer'
+import {Route} from 'react-router'
 import AddStation from './addstation'
-import { getDicPars } from '../../../utils/utils';
+import {getDicPars} from '../../../utils/utils';
 import ApiClient from '../../../utils/apiClient'
 import WebApiConfig from '../../constants/webapiConfig';
 import Achievement from './achievementForm'
-import { editSalary, addSalary, getSalaryDetail } from '../../serviceAPI/salaryService'
+import {editSalary, addSalary, getSalaryDetail} from '../../serviceAPI/salaryService'
 const styles = {
     conditionRow: {
         width: '80px',
@@ -51,7 +51,7 @@ class Station extends Component {
     }
 
     gotoSubPage = (path, params) => {
-        this.props.history.push(`${this.props.match.url}/${path}`, { ...params })
+        this.props.history.push(`${this.props.match.url}/${path}`, {...params})
     }
 
     selectChange(key, v) {
@@ -76,11 +76,11 @@ class Station extends Component {
     }
     //职位薪资信息
     salaryEdit = (record) => {
-        this.setState({ showSalaryDetail: true, curAchievementInfo: record, confirmLoading: true });
+        this.setState({showSalaryDetail: true, curAchievementInfo: record, confirmLoading: true});
         getSalaryDetail(record.id).then(res => {
-            this.setState({ confirmLoading: false });
+            this.setState({confirmLoading: false});
             if (res.isOk) {
-                this.setState({ curStation: res.extension });
+                this.setState({curStation: res.extension});
             }
         })
     }
@@ -88,28 +88,28 @@ class Station extends Component {
     //子页面回调
     subPageLoadCallback = (formObj, pageName) => {
         if (pageName == "achievement") {
-            this.setState({ achievementForm: formObj });
+            this.setState({achievementForm: formObj});
         }
     }
 
     submitSalary = () => {
-        let { curStation, curAchievementInfo } = this.state;
+        let {curStation, curAchievementInfo} = this.state;
         if (this.state.achievementForm) {
             this.state.achievementForm.validateFields((err, values) => {
                 if (!err) {
                     values.id = curStation.id ? curStation.id : null;
                     console.log("表单内容:", values);
-                    this.setState({ showLoading: true, confirmLoading: true });
+                    this.setState({showLoading: true, confirmLoading: true});
                     if (values.id) {
                         editSalary(values).then(res => {
-                            this.setState({ showLoading: false, confirmLoading: false });
+                            this.setState({showLoading: false, confirmLoading: false});
                             if (res.isOk) {
                                 this.props.form.resetFields();
                             }
                         });
                     } else {
                         addSalary(values).then(res => {
-                            this.setState({ showLoading: false, confirmLoading: false });
+                            this.setState({showLoading: false, confirmLoading: false});
                             if (res.isOk) {
                                 this.props.form.resetFields();
                             }
@@ -121,7 +121,7 @@ class Station extends Component {
     }
 
     achievementClose = () => {
-        this.setState({ showSalaryDetail: false });
+        this.setState({showSalaryDetail: false});
         if (this.state.achievementForm) {
             this.state.achievementForm.resetFields()
         }
@@ -129,7 +129,7 @@ class Station extends Component {
 
     delete = (record) => {
         let url = WebApiConfig.server.DeleteStation;
-        let huResult = { isOk: false, msg: '删除职位失败！' };
+        let huResult = {isOk: false, msg: '删除职位失败！'};
 
         ApiClient.post(url, record).then(res => {
             if (res.data.code == 0) {
@@ -172,7 +172,7 @@ class Station extends Component {
 
     componentDidMount() {
         let dicPositions = getDicPars("POSITION_TYPE", this.props.rootBasicData);
-        this.setState({ dicPositions: dicPositions }, () => {
+        this.setState({dicPositions: dicPositions}, () => {
             let ListColums = [
                 {
                     title: '职位名称',
@@ -208,22 +208,22 @@ class Station extends Component {
                     title: '操作',
                     dataIndex: 'operation',
                     render: (text, record) => {
-                        const { editable } = record;
+                        const {editable} = record;
                         return (
                             <div className="editable-row-operations">
-                                <Button type="primary" size='small' shape="circle" icon="edit" style={{ marginRight: '10px' }} onClick={() => this.edit(record)}></Button>
+                                <Button type="primary" size='small' shape="circle" icon="edit" style={{marginRight: '10px'}} onClick={() => this.edit(record)}></Button>
                                 <Popconfirm title="确认删除该记录?" onConfirm={() => this.delete(record)} okText="确认" cancelText="取消">
-                                    <Button type="primary" size='small' shape="circle" icon="delete" style={{ marginRight: '10px' }}></Button>
+                                    <Button type="primary" size='small' shape="circle" icon="delete" style={{marginRight: '10px'}}></Button>
                                 </Popconfirm >
                                 <Tooltip title="职位薪酬管理">
-                                    <Button type="primary" size='small' shape="circle" icon="red-envelope" style={{ marginRight: '10px' }} onClick={() => this.salaryEdit(record)}></Button>
+                                    <Button type="primary" size='small' shape="circle" icon="red-envelope" style={{marginRight: '10px'}} onClick={() => this.salaryEdit(record)}></Button>
                                 </Tooltip>
                             </div>
                         );
                     },
                 },
             ]
-            this.setState({ ListColums: ListColums });
+            this.setState({ListColums: ListColums});
         });
 
     }
@@ -231,7 +231,7 @@ class Station extends Component {
     handleChooseDepartmentChange = (e) => {
         let condition = this.state.condition;
         condition.departmentId = e;
-        this.setState({ condition: condition });
+        this.setState({condition: condition});
     }
 
     handleAddNew = (e) => {
@@ -241,7 +241,7 @@ class Station extends Component {
             nkey = +this.props.stationList[this.props.stationList.length - 1].key + 2;
         }
 
-        this.props.stationList.push({ key: nkey + '', stationname: "test", positionType: "", editable: true, isnew: true });
+        this.props.stationList.push({key: nkey + '', stationname: "test", positionType: "", editable: true, isnew: true});
         this.forceUpdate();
         //this.props.dispatch(adduserPage({id: 11, menuID: 'menu_blackaddnew', disname: '新建黑名单', type:'item'}));
         this.gotoSubPage("addStation", {})
@@ -249,19 +249,19 @@ class Station extends Component {
     search = () => {
         let departmentId = this.state.condition.departmentId;
         if (departmentId) {
-            this.setState({ showLoading: true });
+            this.setState({showLoading: true});
             let url = WebApiConfig.search.getStationList + "/" + departmentId;
-            let huResult = { isOk: false, msg: '获取职位失败！' };
+            let huResult = {isOk: false, msg: '获取职位失败！'};
             ApiClient.get(url).then(res => {
                 console.log("请求结果:", res);
-                this.setState({ showLoading: false });
+                this.setState({showLoading: false});
                 if (res.data.code == 0) {
                     huResult.msg = '获取职位成功';
-                    this.setState({ stationList: res.data.extension });
+                    this.setState({stationList: res.data.extension});
                     // yield put({type: actionUtils.getActionType(actionTypes.UPDATE_STATIONLIST), payload: huResult.data.extension});
                 }
             }).catch(e => {
-                this.setState({ showLoading: false });
+                this.setState({showLoading: false});
                 notification.error({
                     message: huResult.msg,
                     duration: 3
@@ -276,9 +276,9 @@ class Station extends Component {
             <Layer showLoading={this.state.showLoading}>
                 <div className="searchBox">
                     <Row>
-                        <Col style={{ marginTop: '10px' }}>
+                        <Col style={{marginTop: '10px'}}>
                             <label style={styles.conditionRow}>选择分公司 ：</label>
-                            <TreeSelect style={{ width: '300px', marginRight: '10px' }}
+                            <TreeSelect style={{width: '300px', marginRight: '10px'}}
                                 allowClear
                                 treeData={this.props.setContractOrgTree}
                                 onChange={this.handleChooseDepartmentChange}
@@ -288,8 +288,8 @@ class Station extends Component {
                         </Col>
                     </Row>
                 </div>
-                <Row className="btnBlock">
-                    <Col style={{ marginBottom: '15px', marginTop: '15px' }}>
+                <Row >
+                    <Col style={{marginBottom: '15px', marginTop: '15px'}}>
                         <Button type="primary" onClick={this.handleAddNew}>新建</Button>
                     </Col>
 
@@ -305,7 +305,7 @@ class Station extends Component {
                     onCancel={() => this.achievementClose()}
                 >
                     <div>
-                        <Achievement location={{ state: this.state.curAchievementInfo }} subPageLoadCallback={(formObj, pageName) => this.subPageLoadCallback(formObj, pageName)} />
+                        <Achievement location={{state: this.state.curAchievementInfo}} subPageLoadCallback={(formObj, pageName) => this.subPageLoadCallback(formObj, pageName)} />
                     </div>
                 </Modal>
 
