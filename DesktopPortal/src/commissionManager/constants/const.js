@@ -29,7 +29,14 @@ export const permission = {
     yjtzmxhzTable:'YJ_BB_YJTZMXHZB',
     tymxTable: 'YJ_BB_TYMXB',
 
-    cjfhxz: 'YJ_CJ_FHXZ'
+    cjfhxz: 'YJ_CJ_FHXZ',
+    op_zf: 'YJ_CJ_OP_ZF', //作废
+    op_sk: 'YJ_CJ_OP_SK', //收款
+    op_fk: 'YJ_CJ_OP_FK', //付款
+    op_ty: 'YJ_CJ_OP_TY', //调佣
+    op_zy: 'YJ_CJ_OP_ZY', //转移
+    op_jy: 'YJ_CJ_OP_JY', //结佣
+
 }
 
 export const dicKeys = {
@@ -67,4 +74,13 @@ export const examineStatusMap = {
     1: '审核中',
     8: '审核通过',
     16: '驳回'
+}
+
+export const reportOperateAction = {
+    zf: {action:'ZF', key:'zf', text: '作废'},
+    sk: {action:'SK', key:'sk',text: '收款'},
+    fk: {action:'FK', key:'fk',text: '付款'},
+    ty: {action:'TY', key:'ty',text: '调佣'},
+    zy: {action:'ZY', key:'zy',text: '转移'},
+    jy: {action:'JY', key:'jy',text: '结佣'}
 }

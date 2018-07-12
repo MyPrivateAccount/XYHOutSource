@@ -51,6 +51,7 @@ const reportValidation = {
                 let wyJe= 0;
                 ri.forEach(item=>{
                     wyJe = wyJe + (item.money*1)
+                    wyJe = Math.round(wyJe*100)/100;
                 })
                 let jyj = yjZcjyj - wyJe
                 
@@ -64,6 +65,7 @@ const reportValidation = {
                 let nyJe= 0;
                 ri.forEach(item=>{
                     nyJe = nyJe + (item.money*1)
+                    nyJe = Math.round(nyJe*100)/100;
                 })
                 
                 
@@ -77,6 +79,7 @@ const reportValidation = {
                 let nyJe= 0;
                 ri.forEach(item=>{
                     nyJe = nyJe + (item.percent*1)
+                    nyJe = Math.round(nyJe*100)/100;
                 })
                 
                 
@@ -145,6 +148,96 @@ const reportValidation = {
                  [validations.isLessThanOrEqual, '比例必须小于等于100', 100]
                 ],
         money:[[validations.isRequired, '金额不可为空']],
+    },
+    distribute:{
+        yjZcjyj: [[(value, values)=>{
+            return value === ((values.ownerMoney||0) + (values.customMoney||0))
+        },'总佣金不等于业主佣金加客户佣金']],
+        updateReason: [[validations.isRequired, '备注不可为空']],
+        jyj: [[(value, values)=>{
+            let ri = (values||{}).reportOutsides || [];
+                let yjZcjyj = (values||{}).yjZcjyj || 0;
+                let wyJe= 0;
+                ri.forEach(item=>{
+                    wyJe = wyJe + (item.money*1)
+                    wyJe = Math.round(wyJe*100)/100;
+                })
+                let jyj = yjZcjyj - wyJe
+                
+                return jyj === value;
+        }, '净佣金不等于总佣金减去外佣扣除'],[
+            (value, values)=>{
+                let ri = (values||{}).reportInsides || [];
+            
+                let nyJe= 0;
+                ri.forEach(item=>{
+                    nyJe = nyJe + (item.percent*1)
+                    nyJe = Math.round(nyJe*100)/100;
+                })
+                
+                
+                return nyJe === 100;
+
+            }, '内部分摊比例合计必须等于100'
+        ],[
+            (value, values)=>{
+                let ri = (values||{}).reportInsides || [];
+            
+                let gl= [];
+                ri.forEach(item=>{
+                    let o = gl.find(x=>x.uid === item.uid && x.type === item.type);
+                    if(o){
+                        o.count=o.count+1;
+                    }else{
+                        o = {uid: item.uid, type: item.type}
+                        o.count = 1;
+                        gl.push(o)
+                    }
+                })
+
+                let idx = gl.findIndex(x=>x.count>1)
+                
+                
+                return idx < 0;
+
+            }, '内部分摊项重复'
+        ],[
+            (value, values)=>{
+                let ri = (values||{}).reportOutsides || [];
+            
+                let gl= [];
+                ri.forEach(item=>{
+                    let o = gl.find(x=>x.object === item.object && x.moneyType === item.moneyType);
+                    if(o){
+                        o.count=o.count+1;
+                    }else{
+                        o={object: item.object, moneyType: item.moneyType}
+                        o.count = 1;
+                        gl.push(o)
+                    }
+                })
+
+                let idx = gl.findIndex(x=>x.count>1)
+                
+                
+                return idx < 0;
+
+            }, '外部分摊项重复'
+        ],[
+            (value, values)=>{
+                let ri = (values||{}).reportInsides || [];
+            
+                let nyJe= 0;
+                ri.forEach(item=>{
+                    nyJe = nyJe + (item.money*1)
+                    nyJe = Math.round(nyJe*100)/100;
+                })
+                
+                
+                return nyJe === value;
+
+            }, '内部分摊金额合计不等于净佣金'
+        ]]
     }
 }
 

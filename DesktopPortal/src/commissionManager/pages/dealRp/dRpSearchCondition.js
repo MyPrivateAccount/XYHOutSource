@@ -1,326 +1,468 @@
 import React, { Component } from 'react';
-import { Row, Col, Button, Icon, DatePicker, Input, Select, Tooltip ,Spin} from 'antd';
+import { notification, Row, Col, Button, Icon, DatePicker, Input, Select, Tooltip, Spin, Form, TreeSelect } from 'antd';
 import './search.less'
 import { connect } from 'react-redux';
-import { getDicParList } from '../../actions/actionCreator'
+import { getDicParList } from '../../../actions/actionCreators'
+import { dicKeys, permission, examineStatusMap } from '../../constants/const'
+import { getDicPars, getOrganizationTree } from '../../../utils/utils'
+import WebApiConfig from '../../constants/webApiConfig'
+import ApiClient from '../../../utils/apiClient'
+
+const FormItem = Form.Item;
+const Option = Select.Option;
 
 class DRpSearchCondition extends Component {
 
     state = {
-        expandSearchCondition: false,
-        isDataLoading: false
+        expandSearchCondition: true,
+        isDataLoading: false,
+        nodes: [],
+        spZtList: [
+            { key: '全部', value: null },
+            { key: examineStatusMap[0], value: 0 },
+            { key: examineStatusMap[1], value: 1 },
+            { key: examineStatusMap[8], value: 8 },
+            { key: examineStatusMap[16], value: 16 }
+        ]
     }
 
     componentWillMount() {
-        this.setState({ isDataLoading: true, tip: '信息初始化中...' })
-        this.props.dispatch(getDicParList(['COMMISSION_BSWY_CATEGORIES', 'COMMISSION_CJBG_TYPE', 'COMMISSION_JY_TYPE', 'COMMISSION_PAY_TYPE', 'COMMISSION_PROJECT_TYPE', 'COMMISSION_CONTRACT_TYPE', 'COMMISSION_OWN_TYPE', 'COMMISSION_TRADEDETAIL_TYPE', 'COMMISSION_SFZJJG_TYPE','COMMISSION_DEAL_STATS','COMMISSION_GH_TYPES','COMMISSION_KHINFO_SOURCE','COMMISSION_RP_STATE','COMMISSION_WY_WYLX']));
-    }
-    componentWillReceiveProps(newProps){
-        this.setState({isDataLoading:false})
+        this.props.getDicParList([
+            dicKeys.wyfl,
+            dicKeys.cjbglx,
+            dicKeys.jylx,
+
+            dicKeys.fkfs,
+            dicKeys.wylx,
+            dicKeys.khly,
+        ]);
+        this.getNodes();
     }
 
+    componentDidMount = () => {
+        this.props.form.setFieldsValue({
+            type: null,
+            jylx: null,
+            bswlfl: null,
+            fkfs: null,
+            kgxxly: null,
+            wylx: null,
+            examineStatus: null
+        })
+    }
+
+
     handleSearch = (e) => {
-        this.props.searchCondition.pageSize = 10
-        this.props.searchCondition.pageIndex = 0
-        this.props.handleSearch(this.props.searchCondition)
+        let condition = this.props.form.getFieldsValue();
+        if (this.props.search) {
+            this.props.search(condition);
+        }
+    }
+    handleExport = (e)=>{
+        let condition = this.props.form.getFieldsValue();
+        if (this.props.export) {
+            this.props.export(condition);
+        }
     }
     handleReset = (e) => {
-        this.props.searchCondition.examineStartTime = '';
-        this.props.searchCondition.cjbh='';
+        this.props.form.resetFields()
+        this.props.form.setFieldsValue({
+            type: null,
+            jylx: null,
+            bswlfl: null,
+            fkfs: null,
+            kgxxly: null,
+            wylx: null,
+            examineStatus: null
+        })
     }
 
     handleSearchBoxToggle = (e) => {//筛选条件展开、收缩
         let visible = !this.state.expandSearchCondition;
         this.setState({ expandSearchCondition: visible });
     }
-    handleCreateTime = (e, field) => {
-        if (field === 'createDateStart') {
-            this.props.searchCondition.examineStartTime = e
-        }
-        else if (field === 'createDateEnd') {
-            this.props.searchCondition.examineEndTime = e
-        }
-        else if (field === 'syjrqStartTime') {
-            this.props.searchCondition.syjrqStartTime = e
-        }
-        else if (field === 'syjrqEndTime') {
-            this.props.searchCondition.syjrqEndTime = e
-        }
-    }
-    handleInput = (e, field) => {
-        if (field === 'cjbh') {
-            this.props.searchCondition.cjbh = e.target.value
-        }
-        else if (field === 'djbh') {
-            this.props.searchCondition.djbh = e.target.value
-        }
-        else if (field === 'customerName') {
-            this.props.searchCondition.customerName = e.target.value
-        }
-        else if (field === 'htbh') {
-            this.props.searchCondition.htbh = e.target.value
-        }
-        else if (field === 'pq') {
-            this.props.searchCondition.pq = e.target.value
-        }
-        else if (field === 'lpmc') {
-            this.props.searchCondition.lpmc = e.target.value
-        }
-        else if (field === 'dz') {
-            this.props.searchCondition.dz = e.target.value
-        }
-        else if (field === 'fh') {
-            this.props.searchCondition.fh = e.target.value
-        }
-        else if (field === 'lrr') {
-            this.props.searchCondition.lrr = e.target.value
-        }
-    }
-    handleSelect = (e, field) => {
 
-        if (field === 'organizationId') {
-            this.props.searchCondition.organizationId = e
+    getNodes = async () => {
+        let url = `${WebApiConfig.org.permissionOrg}${permission.reportQuery}`;
+        let r = await ApiClient.get(url, true);
+        if (r && r.data && r.data.code === '0') {
+            var nodes = getOrganizationTree(r.data.extension);
+            this.setState({ nodes: nodes });
+        } else {
+            notification.error(`获取组织失败:${((r || {}).data || {}).message || ''}`);
         }
-        else if (field === 'type') {
-            this.props.searchCondition.type = e
-        }
-        else if (field === 'jylx') {
-            this.props.searchCondition.jylx = e
-        }
-        else if (field === 'cjzt') {
-            this.props.searchCondition.cjzt = e
-        }
-        else if (field === 'bswlfl') {
-            this.props.searchCondition.bswlfl = e
-        }
-        else if (field === 'fkfs') {
-            this.props.searchCondition.fkfs = e
-        }
-        else if (field === 'ghzt') {
-            this.props.searchCondition.ghzt = e
-        }
-        else if (field === 'kgxxly') {
-            this.props.searchCondition.kgxxly = e
-        }
-        else if (field === 'wylx') {
-            this.props.searchCondition.wylx = e
-        }
-        else if (field === 'examineStatus') {
-            this.props.searchCondition.examineStatus = e
-        }
+        this.getNoded = true;
     }
+
+
     render() {
-        let expandSearchCondition = this.state.expandSearchCondition;
-        let bswyTypes = this.props.basicData.bswyTypes;
-        let cjbgTypes = this.props.basicData.cjbgTypes;
-        let tradeTypes = this.props.basicData.tradeTypes;
-        let payTypes = this.props.basicData.payTypes;
-        let wyWylxTypes = this.props.basicData.wyWylxTypes;
-        let cjTypes = this.props.basicData.cjTypes;
-        let ghTypes = this.props.basicData.ghTypes;
-        let khTypes = this.props.basicData.khTypes;
-        let spTypes = this.props.basicData.spTypes;
+        const { getFieldDecorator } = this.props.form;
+        const { expandSearchCondition } = this.state;
+        const allItem = { key: '全部', value: null };
+
+        let bswyTypes = [...getDicPars(dicKeys.wyfl, this.props.dic)]; //报数物业类型
+        bswyTypes.splice(0, 0, allItem)
+        let cjbgTypes = [...getDicPars(dicKeys.cjbglx, this.props.dic)]; //成交报告类型
+        cjbgTypes.splice(0, 0, allItem)
+        let tradeTypes = [...getDicPars(dicKeys.jylx, this.props.dic)]; //交易类型
+        tradeTypes.splice(0, 0, allItem)
+        let payTypes = [...getDicPars(dicKeys.fkfs, this.props.dic)];  //付款方式
+        payTypes.splice(0, 0, allItem)
+        let wyWylxTypes = [...getDicPars(dicKeys.wylx, this.props.dic)]; //物业类型
+        wyWylxTypes.splice(0, 0, allItem)
+        // let cjTypes = getDicPars(dicKeys.wylx, this.props.dic);
+        //let ghTypes = this.props.basicData.ghTypes;
+        let khTypes = [...getDicPars(dicKeys.khly, this.props.dic)]; //客户类型
+        khTypes.splice(0, 0, allItem)
+        const spTypes = this.state.spZtList;
         return (
             <div className='searchCondition'>
                 <Spin spinning={this.state.isDataLoading} tip={this.state.tip}>
-                <Row>
-                    <Col span={12}>
-                        <span>所有报告></span>
-                    </Col>
-                    <Col span={4}>
-                        <Button onClick={this.handleSearchBoxToggle}>{expandSearchCondition ? "收起筛选" : "展开筛选"}<Icon type={expandSearchCondition ? "up-square-o" : "down-square-o"} /></Button>
-                    </Col>
-                </Row>
-                <div style={{ display: expandSearchCondition ? "block" : "none" }}>
-                    <Row className="normalInfo">
+                    <Row>
                         <Col span={12}>
-                            <label><span style={{ marginRight: '10px' }}>审批通过日期：</span>
-                                <DatePicker  disabledDate={this.disabledDate} onChange={(e, dateString) => this.handleCreateTime(dateString, 'createDateStart')} />- <DatePicker disabledDate={this.disabledDate} onChange={(e, dateString) => this.handleCreateTime(dateString, 'createDateEnd')} />
-                            </label>
+
                         </Col>
                         <Col span={4}>
-                            <label>
-                                <span style={{ marginRight: '10px' }}>成交编号</span>
-                                <Input style={{ width: 80 }} onChange={(e) => this.handleInput(e, 'cjbh')}></Input>
-                            </label>
-                        </Col>
-                        <Col span={4}>
-                            <label>
-                                <span style={{ marginRight: '10px' }} >定金编号</span>
-                                <Input style={{ width: 80 }} onChange={(e) => this.handleInput(e, 'djbh')}></Input>
-                            </label>
-                        </Col>
-                        <Col span={4}>
-                            <label>
-                                <span style={{ marginRight: '10px' }}>片区</span>
-                                <Input style={{ width: 80 }} onChange={(e) => this.handleInput(e, 'pq')}></Input>
-                            </label>
+                            <Button onClick={this.handleSearchBoxToggle}>{expandSearchCondition ? "收起筛选" : "展开筛选"}<Icon type={expandSearchCondition ? "up-square-o" : "down-square-o"} /></Button>
                         </Col>
                     </Row>
-                    <Row className="normalInfo">
-                        <Col span={4}>
-                            <label>
-                                <span style={{ marginRight: '10px' }}>所属部门</span>
-                                <Select style={{ width: 80 }} onChange={(e) => this.handleSelect(e, 'organizationId')}></Select>
-                            </label>
-                        </Col>
-                        <Col span={4}>
-                            <label>
-                                <span style={{ marginRight: '10px' }}>客户名称</span>
-                                <Input style={{ width: 80 }} onChange={(e) => this.handleInput(e, 'customerName')}></Input>
-                            </label>
-                        </Col>
-                        <Col span={4}>
-                        </Col>
-                        <Col span={12}>
-                            <label><span style={{ marginRight: '10px' }}>上业绩日期：</span>
-                                <DatePicker disabledDate={this.disabledDate} onChange={(e, dateString) => this.handleCreateTime(dateString, 'syjrqStartTime')} />- <DatePicker disabledDate={this.disabledDate} onChange={(e, dateString) => this.handleCreateTime(dateString, 'syjrqEndTime')} />
-                            </label>
-                        </Col>
-                    </Row>
-                    <Row className="normalInfo">
-                        <Col span={6}>
-                            <label>
-                                <span style={{ marginRight: '10px' }}>报告类型</span>
-                                <Select style={{ width: 80 }} onChange={(e) => this.handleSelect(e, 'type')}>
+                    <div style={{ display: expandSearchCondition ? "block" : "none" }}>
+                        <Row className="form-row" >
+                            <Col span={12} style={{ display: 'flex' }}>
+                                <FormItem label="审批通过日期">
                                     {
-                                        cjbgTypes.map(tp => <Select.Option key={tp.key} value={tp.value}>{tp.key}</Select.Option>)
+                                        getFieldDecorator('examineStartTime')(
+                                            <DatePicker />
+                                        )
                                     }
-                                </Select>
-                            </label>
-                        </Col>
-                        <Col span={6}>
-                            <label>
-                                <span style={{ marginRight: '10px' }}>交易类型</span>
-                                <Select style={{ width: 80 }} onChange={(e) => this.handleSelect(e, 'jylx')}>
+
+                                </FormItem>
+                                -
+                    <FormItem>
                                     {
-                                        tradeTypes.map(tp => <Select.Option key={tp.key} value={tp.value}>{tp.key}</Select.Option>)
+                                        getFieldDecorator('examineEndTime')(
+                                            <DatePicker />
+                                        )
                                     }
-                                </Select>
-                            </label>
-                        </Col>
-                        <Col span={6}>
-                            <label>
-                                <span style={{ marginRight: '10px' }}>成交状态</span>
-                                <Select style={{ width: 80 }} onChange={(e) => this.handleSelect(e, 'cjzt')}>
+
+                                </FormItem>
+                            </Col>
+                            <Col span={6}>
+                                <FormItem label="成交编号">
                                     {
-                                        cjTypes.map(tp => <Select.Option key={tp.key} value={tp.value}>{tp.key}</Select.Option>)
+                                        getFieldDecorator('cJBH')(
+                                            <Input />
+                                        )
                                     }
-                                </Select>
-                            </label>
-                        </Col>
-                        <Col span={6}>
-                            <label>
-                                <span style={{ marginRight: '10px' }}>报数物业分类</span>
-                                <Select style={{ width: 80 }} onChange={(e) => this.handleSelect(e, 'bswlfl')}>
+
+                                </FormItem>
+                            </Col>
+                            <Col span={6}>
+                                <FormItem label="定金编号">
                                     {
-                                        bswyTypes.map(tp => <Select.Option key={tp.key} value={tp.value}>{tp.key}</Select.Option>)
+                                        getFieldDecorator('dJBH')(
+                                            <Input />
+                                        )
                                     }
-                                </Select>
-                            </label>
-                        </Col>
-                    </Row>
-                    <Row className="normalInfo">
-                        <Col span={6}>
-                            <label>
-                                <span style={{ marginRight: '10px' }}>付款方式</span>
-                                <Select style={{ width: 80 }} onChange={(e) => this.handleSelect(e, 'fkfs')}>
+
+                                </FormItem>
+
+                            </Col>
+                            {/* <Col span={4}>
+                                <label>
+                                    <span style={{ marginRight: '10px' }}>片区</span>
+                                    <Input style={{ width: 80 }} onChange={(e) => this.handleInput(e, 'pq')}></Input>
+                                </label>
+                            </Col> */}
+                        </Row>
+                        <Row className="form-row">
+                            <Col span={12} style={{ display: 'flex' }}>
+                                <FormItem label="上业绩日期">
                                     {
-                                        payTypes.map(tp => <Select.Option key={tp.key} value={tp.value}>{tp.key}</Select.Option>)
+                                        getFieldDecorator('sYJRQStartTime')(
+                                            <DatePicker />
+                                        )
                                     }
-                                </Select>
-                            </label>
-                        </Col>
-                        <Col span={6}>
-                            <label>
-                                <span style={{ marginRight: '10px' }}>合同编号</span>
-                                <Input style={{ width: 80 }} onChange={(e) => this.handleInput(e, 'htbh')}></Input>
-                            </label>
-                        </Col>
-                        <Col span={6}>
-                            <label>
-                                <span style={{ marginRight: '10px' }}>过户状态</span>
-                                <Select style={{ width: 80 }} onChange={(e) => this.handleSelect(e, 'ghzt')}>
+
+                                </FormItem>
+                                -
+                    <FormItem>
                                     {
-                                        ghTypes.map(tp => <Select.Option key={tp.key} value={tp.value}>{tp.key}</Select.Option>)
+                                        getFieldDecorator('sYJRQEndTime')(
+                                            <DatePicker />
+                                        )
                                     }
-                                </Select>
-                            </label>
-                        </Col>
-                        <Col span={6}>
-                            <label>
-                                <span style={{ marginRight: '10px' }}>客户信息来源</span>
-                                <Select style={{ width: 80 }} onChange={(e) => this.handleSelect(e, 'kgxxly')}>
+
+                                </FormItem>
+
+
+                            </Col>
+                            <Col span={6}>
+                                <FormItem label="所属部门">
+                                    {getFieldDecorator('organizationId')(
+                                        <TreeSelect
+                                            dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+                                            treeData={this.state.nodes}
+                                            placeholder="请选择所属部门"
+                                        />
+                                    )}
+                                </FormItem>
+
+                            </Col>
+                            <Col span={6}>
+                                <FormItem label="客户名称">
                                     {
-                                        khTypes.map(tp => <Select.Option key={tp.key} value={tp.value}>{tp.key}</Select.Option>)
+                                        getFieldDecorator('customerName')(
+                                            <Input />
+                                        )
                                     }
-                                </Select>
-                            </label>
-                        </Col>
-                    </Row>
-                    <Row className="normalInfo">
-                        <Col span={6}>
-                            <label>
-                                <span style={{ marginRight: '10px' }}>楼盘名称</span>
-                                <Input style={{ width: 80 }} onChange={(e) => this.handleInput(e, 'lpmc')}></Input>
-                            </label>
-                        </Col>
-                        <Col span={6}>
-                            <label>
-                                <span style={{ marginRight: '10px' }}>楼盘栋数</span>
-                                <Input style={{ width: 80 }} onChange={(e) => this.handleInput(e, 'dz')}></Input>
-                            </label>
-                        </Col>
-                        <Col span={6}>
-                            <label>
-                                <span style={{ marginRight: '10px' }}>楼盘房号</span>
-                                <Input style={{ width: 80 }} onChange={(e) => this.handleInput(e, 'fh')}></Input>
-                            </label>
-                        </Col>
-                        <Col span={6}>
-                            <label>
-                                <span style={{ marginRight: '10px' }}>物业类型</span>
-                                <Select style={{ width: 80 }} onChange={(e) => this.handleSelect(e, 'wylx')}>
+
+                                </FormItem>
+
+                            </Col>
+                            {/* <Col span={4}>
+                            </Col> */}
+
+                        </Row>
+                        <Row className="form-row">
+                            <Col span={6}>
+                                <FormItem label="报告类型">
                                     {
-                                        wyWylxTypes.map(tp => <Select.Option key={tp.key} value={tp.value}>{tp.key}</Select.Option>)
+                                        getFieldDecorator('type')(
+
+                                            <Select>
+                                                {
+                                                    cjbgTypes.map(x => (
+                                                        <Option key={x.value} value={x.value}>{x.key}</Option>
+                                                    ))
+                                                }
+                                            </Select>
+                                        )
                                     }
-                                </Select>
-                            </label>
-                        </Col>
-                    </Row>
-                    <Row className="normalInfo">
-                        <Col span={6} style={{ marginLeft: 10 }}>
-                            <label>
-                                <span style={{ marginRight: '10px' }}>录入人</span>
-                                <Input style={{ width: 80 }} onChange={(e) => this.handleInput(e, 'lrr')}></Input>
-                            </label>
-                        </Col>
-                        <Col span={6}>
-                            <label>
-                                <span style={{ marginRight: '10px' }}>成交人</span>
-                                <Input style={{ width: 80 }} onChange={(e) => this.handleInput(e, 'cjr')}></Input>
-                            </label>
-                        </Col>
-                        <Col span={6} style={{ marginLeft: -10 }}>
-                            <label>
-                                <span style={{ marginRight: '10px' }}>审批状态</span>
-                                <Select style={{ width: 80 }} onChange={(e) => this.handleSelect(e, 'examineStatus')}>
+
+                                </FormItem>
+
+                            </Col>
+                            <Col span={6}>
+                                <FormItem label="交易类型">
                                     {
-                                        spTypes.map(tp => <Select.Option key={tp.key} value={tp.value}>{tp.key}</Select.Option>)
+                                        getFieldDecorator('jylx')(
+
+                                            <Select>
+                                                {
+                                                    tradeTypes.map(x => (
+                                                        <Option key={x.value} value={x.value}>{x.key}</Option>
+                                                    ))
+                                                }
+                                            </Select>
+                                        )
                                     }
-                                </Select>
-                            </label>
-                        </Col>
-                        <Col span={6}>
-                        </Col>
-                    </Row>
-                    <Tooltip title="查询">
-                        <Button type='primary' onClick={this.handleSearch} style={{ 'margin': '10' }} >查询</Button>
-                    </Tooltip>
-                    <Tooltip title="重置">
-                        <Button type='primary' onClick={this.handleReset} style={{ 'margin': '10' }} >重置</Button>
-                    </Tooltip>
-                </div>
+
+                                </FormItem>
+
+                            </Col>
+                            {/* <Col span={6}>
+
+                                <label>
+                                    <span style={{ marginRight: '10px' }}>成交状态</span>
+                                    <Select style={{ width: 80 }} onChange={(e) => this.handleSelect(e, 'cjzt')}>
+                                        {
+                                            cjTypes.map(tp => <Select.Option key={tp.key} value={tp.value}>{tp.key}</Select.Option>)
+                                        }
+                                    </Select>
+                                </label>
+                            </Col> */}
+                            <Col span={6}>
+                                <FormItem label="报数物业分类">
+                                    {
+                                        getFieldDecorator('bswlfl')(
+
+                                            <Select>
+                                                {
+                                                    bswyTypes.map(x => (
+                                                        <Option key={x.value} value={x.value}>{x.key}</Option>
+                                                    ))
+                                                }
+                                            </Select>
+                                        )
+                                    }
+
+                                </FormItem>
+
+                            </Col>
+                        </Row>
+                        <Row className="form-row">
+
+                            <Col span={6}>
+                                <FormItem label="付款方式">
+                                    {
+                                        getFieldDecorator('fkfs')(
+
+                                            <Select>
+                                                {
+                                                    payTypes.map(x => (
+                                                        <Option key={x.value} value={x.value}>{x.key}</Option>
+                                                    ))
+                                                }
+                                            </Select>
+                                        )
+                                    }
+
+                                </FormItem>
+
+
+                            </Col>
+                            <Col span={6}>
+                                <FormItem label="合同编号" style={{ flex: 1 }}>
+                                    {
+                                        getFieldDecorator('htbh')(
+                                            <Input placeholder="合同编号" />
+                                        )
+                                    }
+
+                                </FormItem>
+
+                            </Col>
+                            {/* <Col span={6}>
+
+                                <label>
+                                    <span style={{ marginRight: '10px' }}>过户状态</span>
+                                    <Select style={{ width: 80 }} onChange={(e) => this.handleSelect(e, 'ghzt')}>
+                                        {
+                                            ghTypes.map(tp => <Select.Option key={tp.key} value={tp.value}>{tp.key}</Select.Option>)
+                                        }
+                                    </Select>
+                                </label>
+                            </Col> */}
+                            <Col span={6}>
+                                <FormItem label="客户信息来源">
+                                    {
+                                        getFieldDecorator('kgxxly')(
+
+                                            <Select>
+                                                {
+                                                    khTypes.map(x => (
+                                                        <Option key={x.value} value={x.value}>{x.key}</Option>
+                                                    ))
+                                                }
+                                            </Select>
+                                        )
+                                    }
+
+                                </FormItem>
+
+                            </Col>
+                        </Row>
+                        <Row className="form-row">
+                            <Col span={6}>
+                                <FormItem label="楼盘名称" style={{ flex: 1 }}>
+                                    {
+                                        getFieldDecorator('lpmc')(
+                                            <Input placeholder="楼盘名称" />
+                                        )
+                                    }
+
+                                </FormItem>
+
+                            </Col>
+                            <Col span={6}>
+                                <FormItem label="楼盘栋数" style={{ flex: 1 }}>
+                                    {
+                                        getFieldDecorator('dz')(
+                                            <Input placeholder="楼盘栋数" />
+                                        )
+                                    }
+
+                                </FormItem>
+
+                            </Col>
+                            <Col span={6}>
+                                <FormItem label="楼盘房号" style={{ flex: 1 }}>
+                                    {
+                                        getFieldDecorator('fh')(
+                                            <Input placeholder="楼盘房号" />
+                                        )
+                                    }
+
+                                </FormItem>
+
+
+                            </Col>
+                            <Col span={6}>
+                                <FormItem label="物业类型">
+                                    {
+                                        getFieldDecorator('wylx')(
+
+                                            <Select>
+                                                {
+                                                    wyWylxTypes.map(x => (
+                                                        <Option key={x.value} value={x.value}>{x.key}</Option>
+                                                    ))
+                                                }
+                                            </Select>
+                                        )
+                                    }
+
+                                </FormItem>
+
+                            </Col>
+                        </Row>
+                        <Row className="form-row">
+                            <Col span={6} >
+                                <FormItem label="录入人" >
+                                    {
+                                        getFieldDecorator('lrr')(
+                                            <Input placeholder="录入人" />
+                                        )
+                                    }
+
+                                </FormItem>
+
+                            </Col>
+                            <Col span={6}>
+                                <FormItem label="成交人" >
+                                    {
+                                        getFieldDecorator('cjr')(
+                                            <Input placeholder="成交人" />
+                                        )
+                                    }
+
+                                </FormItem>
+
+                            </Col>
+                            <Col span={6}>
+                                <FormItem label="审批状态">
+                                    {
+                                        getFieldDecorator('examineStatus')(
+
+                                            <Select>
+                                                {
+                                                    spTypes.map(x => (
+                                                        <Option key={x.value} value={x.value}>{x.key}</Option>
+                                                    ))
+                                                }
+                                            </Select>
+                                        )
+                                    }
+
+                                </FormItem>
+
+                            </Col>
+                            <Col span={6}>
+                            </Col>
+                        </Row>
+                        <Row style={{display:'flex', justifyContent:'flex-end'}}>
+                            <Tooltip title="查询">
+                                <Button type='primary' onClick={this.handleSearch} style={{ 'margin': '5' }} >查询</Button>
+                            </Tooltip>
+                            <Tooltip title="重置">
+                                <Button type='primary' onClick={this.handleReset} style={{ 'margin': '5' }} >重置</Button>
+                            </Tooltip>
+                            <Tooltip title="导出">
+                                <Button type='primary' onClick={this.handleExport} style={{ 'margin': '5' }} >导出</Button>
+                            </Tooltip>
+                        </Row>
+                    </div>
                 </Spin>
             </div>
         )
@@ -329,16 +471,22 @@ class DRpSearchCondition extends Component {
 function MapStateToProps(state) {
 
     return {
-        basicData: state.base,
-        operInfo: state.rp.operInfo,
-        ext: state.rp.ext,
-        searchCondition:state.rp.searchCondition
+
+        dic: state.basicData.dicList,
+        // basicData: state.base,
+        // operInfo: state.rp.operInfo,
+        // ext: state.rp.ext,
+        // searchCondition:state.rp.searchCondition
     }
 }
 
 function MapDispatchToProps(dispatch) {
     return {
-        dispatch
+        dispatch,
+        getDicParList: (...args) => dispatch(getDicParList(...args))
     };
 }
-export default connect(MapStateToProps, MapDispatchToProps)(DRpSearchCondition);
+
+
+const WrapDRpSearchCondition = Form.create()(DRpSearchCondition)
+export default connect(MapStateToProps, MapDispatchToProps)(WrapDRpSearchCondition);
