@@ -75,16 +75,20 @@ namespace XYHHumanPlugin.Managers
                 response.Message = "没有权限";
                 return response;
             }
-
+            if (string.IsNullOrEmpty(humanPositionRequest.Id))
+            {
+                humanPositionRequest.Id = Guid.NewGuid().ToString();
+            }
             var gatwayurl = ApplicationContext.Current.AppGatewayUrl.EndsWith("/") ? ApplicationContext.Current.AppGatewayUrl.TrimEnd('/') : ApplicationContext.Current.AppGatewayUrl;
             GatewayInterface.Dto.ExamineSubmitRequest examineSubmitRequest = new GatewayInterface.Dto.ExamineSubmitRequest();
-            examineSubmitRequest.ContentId = !string.IsNullOrEmpty(humanPositionRequest.Id) ? humanPositionRequest.Id : "";
+            examineSubmitRequest.ContentId = humanPositionRequest.Id;
             examineSubmitRequest.ContentType = "HumanPosition";
             examineSubmitRequest.ContentName = humanPositionRequest.Name;
             examineSubmitRequest.Content = "新增职位信息";
             examineSubmitRequest.Source = user.FilialeName;
-            examineSubmitRequest.CallbackUrl = gatwayurl + "/api/humaninfo/humanpositioncallback";
-            examineSubmitRequest.StepCallbackUrl = gatwayurl + "/api/humaninfo/humanpositionstepcallback";
+            examineSubmitRequest.SubmitDefineId = humanPositionRequest.Id;
+            examineSubmitRequest.CallbackUrl = gatwayurl + "/api/humanposition/humanpositioncallback";
+            examineSubmitRequest.StepCallbackUrl = gatwayurl + "/api/humanposition/humanpositionstepcallback";
             examineSubmitRequest.Action = "HumanPosition";
             examineSubmitRequest.TaskName = $"新增职位信息:{humanPositionRequest.Name}";
             examineSubmitRequest.Desc = $"新增职位信息";

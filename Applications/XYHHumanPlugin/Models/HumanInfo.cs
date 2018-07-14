@@ -90,7 +90,11 @@ namespace XYHHumanPlugin.Models
         /// </summary>
         [MaxLength(255)]
         public string FamilyAddress { get; set; }
-
+        /// <summary>
+        /// 入职类型
+        /// </summary>
+        [MaxLength(255)]
+        public string PositionType { get; set; }
         /// <summary>
         /// 职位名称
         /// </summary>
@@ -241,6 +245,11 @@ namespace XYHHumanPlugin.Models
         public string DeleteUser { get; set; }
         public DateTime? DeleteTime { get; set; }
 
+        /// <summary>
+        /// 职位名称
+        /// </summary>
+        [NotMapped]
+        public string PositionName { get; set; }
 
         [NotMapped]
         public Organizations Organizations { get; set; }

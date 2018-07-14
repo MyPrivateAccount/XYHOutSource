@@ -40,5 +40,16 @@ namespace XYHHumanPlugin.Dto.Request
         /// 离职时间
         /// </summary>
         public DateTime EndTime { get; set; }
+
+        /// <summary>
+        /// 证明人
+        /// </summary>
+        [StringLength(50)]
+        public string Witness { get; set; }
+        /// <summary>
+        /// 证明人电话
+        /// </summary>
+        [StringLength(50)]
+        public string WitnessPhone { get; set; }
     }
 }

@@ -36,7 +36,11 @@ namespace XYHHumanPlugin.Stores
         /// </summary>
         /// <returns></returns>
         Task<HumanInfo> CreateAsync(HumanInfo humanInfo, CancellationToken cancellationToken = default(CancellationToken));
+        Task<HumanInfo> UpdateAsync(UserInfo user, HumanInfo humanInfo, CancellationToken cancellationToken = default(CancellationToken));
 
+        Task<HumanSocialSecurity> UpdateHumanSocialSecurityAsync(UserInfo user, HumanSocialSecurity humanSocialSecurity, CancellationToken cancellationToken = default(CancellationToken));
+
+        Task<HumanSalaryStructure> UpdateHumanSalaryStructureAsync(UserInfo user, HumanSalaryStructure humanSalaryStructure, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// 删除

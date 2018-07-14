@@ -35,6 +35,11 @@ namespace XYHHumanPlugin.Models
         public DateTime? ContractSignDate { get; set; }
 
         /// <summary>
+        /// 签订合同单位
+        /// </summary>
+        [MaxLength(255)]
+        public string ContractCompany { get; set; }
+        /// <summary>
         /// 合同有效日期
         /// </summary>
         public DateTime? ContractStartDate { get; set; }

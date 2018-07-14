@@ -29,8 +29,15 @@ namespace XYHHumanPlugin.Dto.Response
         /// </summary>
         public Int16 Sex { get; set; }
 
-        public DateTime Birthday { get; set; }
-
+        public DateTime? Birthday { get; set; }
+        /// <summary>
+        /// 入职类型
+        /// </summary>
+        public string PositionType { get; set; }
+        /// <summary>
+        /// 电话
+        /// </summary>
+        public string Phone { get; set; }
         /// <summary>
         /// 公司
         /// </summary>
@@ -138,6 +145,11 @@ namespace XYHHumanPlugin.Dto.Response
         public string Picture { get; set; }
 
         public string OrganizationFullName { get; set; }
+
+        /// <summary>
+        /// 职位名称
+        /// </summary>
+        public string PositionName { get; set; }
 
         public PositionInfoResponse PositionInfo { get; set; }
 

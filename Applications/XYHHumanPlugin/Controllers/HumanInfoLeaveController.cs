@@ -167,6 +167,7 @@ namespace XYHHumanPlugin.Controllers
         /// </summary>
         /// <param name="examineResponse"></param>
         /// <returns></returns>
+        [AllowAnonymous]
         [HttpPost("humanleavecallback")]
         [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
         public async Task<ResponseMessage> HumanLeaveCallback([FromBody] ExamineResponse examineResponse)
@@ -197,7 +198,7 @@ namespace XYHHumanPlugin.Controllers
             {
                 response.Code = ResponseCodeDefines.ServiceError;
                 response.Message = e.ToString();
-                Logger.Trace($"新增人事信息回调(HumanLeaveCallback)报错：\r\n{e.ToString()}，\r\n请求参数为：\r\n" + examineResponse != null ? JsonHelper.ToJson(examineResponse) : "");
+                Logger.Trace($"新增人事信息回调(HumanLeaveCallback)报错：\r\n{e.ToString()}，\r\n请求参数为：\r\n" + (examineResponse != null ? JsonHelper.ToJson(examineResponse) : ""));
             }
             return response;
         }
@@ -209,6 +210,7 @@ namespace XYHHumanPlugin.Controllers
         /// </summary>
         /// <param name="examineResponse"></param>
         /// <returns></returns>
+        [AllowAnonymous]
         [HttpPost("humanleavestepcallback")]
         [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
         public async Task<ResponseMessage> HumanLeaveStepCallback([FromBody] ExamineStepResponse examineStepResponse)

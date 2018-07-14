@@ -41,7 +41,7 @@ namespace XYHHumanPlugin.Managers
         {
             ResponseMessage<HumanInfoResponse> response = new ResponseMessage<HumanInfoResponse>();
 
-            var q = await Store.GetDetailQuery().Where(a => !a.IsDeleted && a.Id == id).SingleOrDefaultAsync(cancellationToken);
+            var q = Store.GetDetailQuery().Where(a => !a.IsDeleted && a.Id == id).SingleOrDefault();
 
             response.Extension = _mapper.Map<HumanInfoResponse>(q);
 
@@ -89,17 +89,17 @@ namespace XYHHumanPlugin.Managers
                     string examineCenterUrl = $"{ApplicationContext.Current.ExamineCenterUrl}";
                     Logger.Info($"新增员工人事信息提交审核，\r\ntokenUrl:{tokenUrl ?? ""},\r\nexamineCenterUrl:{examineCenterUrl ?? ""},\r\nexamineSubmitRequest:" + (examineSubmitRequest != null ? JsonHelper.ToJson(examineSubmitRequest) : ""));
                     var tokenManager = new TokenManager(tokenUrl, ApplicationContext.Current.ClientID, ApplicationContext.Current.ClientSecret);
-                    var response2 = await tokenManager.Execute(async (token) =>
-                    {
-                        return await _restClient.PostWithToken<ResponseMessage>(examineCenterUrl, examineSubmitRequest, token);
-                    });
-                    if (response2.Code != ResponseCodeDefines.SuccessCode)
-                    {
-                        response.Code = ResponseCodeDefines.ServiceError;
-                        response.Message = "向审核中心发起审核请求失败：" + response2.Message;
-                        Logger.Info($"新增员工人事信息提交审核失败：" + response2.Message);
-                        return response;
-                    }
+                    //var response2 = await tokenManager.Execute(async (token) =>
+                    //{
+                    //    return await _restClient.PostWithToken<ResponseMessage>(examineCenterUrl, examineSubmitRequest, token);
+                    //});
+                    //if (response2.Code != ResponseCodeDefines.SuccessCode)
+                    //{
+                    //    response.Code = ResponseCodeDefines.ServiceError;
+                    //    response.Message = "向审核中心发起审核请求失败：" + response2.Message;
+                    //    Logger.Info($"新增员工人事信息提交审核失败：" + response2.Message);
+                    //    return response;
+                    //}
                 }
             }
             response.Extension = _mapper.Map<HumanInfoResponse>(await Store.SaveAsync(user, _mapper.Map<HumanInfo>(humanInfoRequest), cancellationToken));
@@ -166,6 +166,7 @@ namespace XYHHumanPlugin.Managers
                 Position = a.Position,
                 Sex = a.Sex,
                 StaffStatus = a.StaffStatus,
+                PositionName = a.PositionName,
                 UserID = a.UserID,
                 IsSignContracInfo = a.HumanContractInfo.ContractSignDate != null ? true : false,
                 IsHaveSocialSecurity = a.HumanSocialSecurity.IsHave

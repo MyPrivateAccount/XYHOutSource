@@ -42,16 +42,20 @@ namespace XYHHumanPlugin.Managers
             }
 
 
-
+            if (string.IsNullOrEmpty(humanInfoBlackRequest.Id))
+            {
+                humanInfoBlackRequest.Id = Guid.NewGuid().ToString();
+            }
             var gatwayurl = ApplicationContext.Current.AppGatewayUrl.EndsWith("/") ? ApplicationContext.Current.AppGatewayUrl.TrimEnd('/') : ApplicationContext.Current.AppGatewayUrl;
             GatewayInterface.Dto.ExamineSubmitRequest examineSubmitRequest = new GatewayInterface.Dto.ExamineSubmitRequest();
-            examineSubmitRequest.ContentId = !string.IsNullOrEmpty(humanInfoBlackRequest.Id) ? humanInfoBlackRequest.Id : "";
+            examineSubmitRequest.ContentId = humanInfoBlackRequest.Id;
             examineSubmitRequest.ContentType = "HumanBlack";
             examineSubmitRequest.ContentName = humanInfoBlackRequest.Name;
             examineSubmitRequest.Content = "新增员工人事黑名单信息";
             examineSubmitRequest.Source = user.FilialeName;
-            examineSubmitRequest.CallbackUrl = gatwayurl + "/api/humaninfo/humanblackcallback";
-            examineSubmitRequest.StepCallbackUrl = gatwayurl + "/api/humaninfo/humanblackstepcallback";
+            examineSubmitRequest.SubmitDefineId = humanInfoBlackRequest.Id;
+            examineSubmitRequest.CallbackUrl = gatwayurl + "/api/humaninfoblack/humanblackcallback";
+            examineSubmitRequest.StepCallbackUrl = gatwayurl + "/api/humaninfoblack/humanblackstepcallback";
             examineSubmitRequest.Action = "HumanBlack";
             examineSubmitRequest.TaskName = $"新增员工人事黑名单信息:{humanInfoBlackRequest.Name}";
             examineSubmitRequest.Desc = $"新增员工人事黑名单信息";

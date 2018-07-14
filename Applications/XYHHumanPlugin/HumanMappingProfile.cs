@@ -91,24 +91,43 @@ namespace XYHHumanPlugin
             CreateMap<HumanContractInfoResponse, HumanContractInfo>();
 
 
-            CreateMap<IEnumerable<HumanEducationInfo>, IEnumerable<HumanEducationInfoRequest>>().ReverseMap();
-            CreateMap<IEnumerable<HumanEducationInfo>, IEnumerable<HumanEducationInfoResponse>>().ReverseMap();
-            CreateMap<IEnumerable<HumanEducationInfo>, IEnumerable<HumanTitleInfoRequest>>().ReverseMap();
-            CreateMap<IEnumerable<HumanEducationInfo>, IEnumerable<HumanTitleInfoResponse>>().ReverseMap();
-            CreateMap<IEnumerable<HumanEducationInfo>, IEnumerable<HumanWorkHistoryRequest>>().ReverseMap();
-            CreateMap<IEnumerable<HumanEducationInfo>, IEnumerable<HumanWorkHistoryResponse>>().ReverseMap();
+            CreateMap<HumanInfo, HumanInfoResponse>()
+                .ForMember(a => a.HumanSocialSecurityResponse, (map) => map.MapFrom(b => b.HumanSocialSecurity))
+                .ForMember(a => a.HumanTitleInfosResponse, (map) => map.MapFrom(b => b.HumanTitleInfos))
+                .ForMember(a => a.HumanWorkHistoriesResponse, (map) => map.MapFrom(b => b.HumanWorkHistories))
+                .ForMember(a => a.HumanEducationInfosResponse, (map) => map.MapFrom(b => b.HumanEducationInfos))
+                .ForMember(a => a.HumanSalaryStructureResponse, (map) => map.MapFrom(b => b.HumanSalaryStructure))
+                    .ForMember(a => a.HumanContractInfoResponse, (map) => map.MapFrom(b => b.HumanContractInfo));
 
-            CreateMap<HumanInfo, HumanInfoResponse>().ReverseMap();
-            CreateMap<HumanInfo, HumanInfoRequest>();
-            CreateMap<HumanInfoRequest, HumanInfo>();
+            CreateMap<HumanInfoResponse, HumanInfo>()
+                    .ForMember(a => a.HumanContractInfo, (map) => map.MapFrom(b => b.HumanContractInfoResponse))
+            .ForMember(a => a.HumanEducationInfos, (map) => map.MapFrom(b => b.HumanEducationInfosResponse))
+            .ForMember(a => a.HumanSalaryStructure, (map) => map.MapFrom(b => b.HumanSalaryStructureResponse))
+            .ForMember(a => a.HumanTitleInfos, (map) => map.MapFrom(b => b.HumanTitleInfosResponse))
+            .ForMember(a => a.HumanWorkHistories, (map) => map.MapFrom(b => b.HumanWorkHistoriesResponse))
+            .ForMember(a => a.HumanSocialSecurity, (map) => map.MapFrom(b => b.HumanSocialSecurityResponse));
+
+            CreateMap<HumanInfo, HumanInfoRequest>()
+                .ForMember(a => a.HumanSocialSecurityRequest, (map) => map.MapFrom(b => b.HumanSocialSecurity))
+                .ForMember(a => a.HumanTitleInfosRequest, (map) => map.MapFrom(b => b.HumanTitleInfos))
+                .ForMember(a => a.HumanWorkHistoriesRequest, (map) => map.MapFrom(b => b.HumanWorkHistories))
+                .ForMember(a => a.HumanEducationInfosRequest, (map) => map.MapFrom(b => b.HumanEducationInfos))
+                .ForMember(a => a.HumanSalaryStructureRequest, (map) => map.MapFrom(b => b.HumanSalaryStructure))
+                    .ForMember(a => a.HumanContractInfoRequest, (map) => map.MapFrom(b => b.HumanContractInfo));
+            CreateMap<HumanInfoRequest, HumanInfo>()
+                 .ForMember(a => a.HumanContractInfo, (map) => map.MapFrom(b => b.HumanContractInfoRequest))
+            .ForMember(a => a.HumanEducationInfos, (map) => map.MapFrom(b => b.HumanEducationInfosRequest))
+            .ForMember(a => a.HumanSalaryStructure, (map) => map.MapFrom(b => b.HumanSalaryStructureRequest))
+            .ForMember(a => a.HumanTitleInfos, (map) => map.MapFrom(b => b.HumanTitleInfosRequest))
+            .ForMember(a => a.HumanWorkHistories, (map) => map.MapFrom(b => b.HumanWorkHistoriesRequest))
+            .ForMember(a => a.HumanSocialSecurity, (map) => map.MapFrom(b => b.HumanSocialSecurityRequest));
 
             CreateMap<SimpleUser, UserInfo>().ReverseMap();
-            CreateMap<SimpleUser, UserInfo>();
 
             CreateMap<RewardPunishmentInfo, RewardPunishmentResponse>();
             CreateMap<RewardPunishmentResponse, RewardPunishmentInfo>();
 
-            CreateMap<HumanInfoAdjustment, HumanInfoAdjustmentResponse>().ReverseMap();
+            CreateMap<HumanInfoAdjustment, HumanInfoAdjustmentRequest>().ReverseMap();
             CreateMap<HumanInfoAdjustment, HumanInfoAdjustmentResponse>().ReverseMap();
 
             CreateMap<HumanInfoChange, HumanInfoChangeRequest>().ReverseMap();

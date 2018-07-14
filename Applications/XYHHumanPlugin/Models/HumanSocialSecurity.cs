@@ -46,7 +46,7 @@ namespace XYHHumanPlugin.Models
         /// <summary>
         /// 养老保险
         /// </summary>
-        public decimal EndowmentInsurance { get; set; } = 0;
+        public decimal? EndowmentInsurance { get; set; } = 0;
         /// <summary>
         /// 医疗保险
         /// </summary>

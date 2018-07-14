@@ -90,18 +90,22 @@ namespace XYHHumanPlugin.Managers
                 return response;
             }
 
-
+            if (string.IsNullOrEmpty(humanInfoAdjustmentRequest.Id))
+            {
+                humanInfoAdjustmentRequest.Id = Guid.NewGuid().ToString();
+            }
             var gatwayurl = ApplicationContext.Current.AppGatewayUrl.EndsWith("/") ? ApplicationContext.Current.AppGatewayUrl.TrimEnd('/') : ApplicationContext.Current.AppGatewayUrl;
             GatewayInterface.Dto.ExamineSubmitRequest examineSubmitRequest = new GatewayInterface.Dto.ExamineSubmitRequest();
-            examineSubmitRequest.ContentId = !string.IsNullOrEmpty(humanInfoAdjustmentRequest.Id) ? humanInfoAdjustmentRequest.Id : "";
+            examineSubmitRequest.ContentId = humanInfoAdjustmentRequest.Id;
             examineSubmitRequest.ContentType = "HumanAdjustment";
             examineSubmitRequest.ContentName = humaninfo.Name;
             examineSubmitRequest.Content = "新增员工人事调动信息";
             examineSubmitRequest.Source = user.FilialeName;
-            examineSubmitRequest.CallbackUrl = gatwayurl + "/api/humaninfo/humanadjustmentcallback";
-            examineSubmitRequest.StepCallbackUrl = gatwayurl + "/api/humaninfo/humanadjustmentstepcallback";
+            examineSubmitRequest.SubmitDefineId = humanInfoAdjustmentRequest.Id;
+            examineSubmitRequest.CallbackUrl = gatwayurl + "/api/humanadjustment/humanadjustmentcallback";
+            examineSubmitRequest.StepCallbackUrl = gatwayurl + "/api/humanadjustment/humanadjustmentstepcallback";
             examineSubmitRequest.Action = "HumanAdjustment";
-            examineSubmitRequest.TaskName = $"新增员工人事信息:{humaninfo.Name}";
+            examineSubmitRequest.TaskName = $"新增员工人事调动信息:{humaninfo.Name}";
             examineSubmitRequest.Desc = $"新增员工人事调动信息";
 
             GatewayInterface.Dto.UserInfo userInfo = new GatewayInterface.Dto.UserInfo()
@@ -185,6 +189,49 @@ namespace XYHHumanPlugin.Managers
             {
                 Id = model.CreateUser
             };
+            var human = await _humanInfoStore.GetAsync(a => a.Where(b => b.Id == model.HumanId));
+            if (human == null)
+            {
+                throw new Exception("未找到操作的人事信息");
+            }
+            human.Position = model.Position;
+            human.DepartmentId = model.DepartmentId;
+            human.UpdateTime = DateTime.Now;
+            human.UpdateUser = model.CreateUser;
+
+            HumanSocialSecurity humanSocialSecurity = new HumanSocialSecurity
+            {
+                EmploymentInjuryInsurance = model.EmploymentInjuryInsurance,
+                HousingProvidentFundAccount = model.HousingProvidentFundAccount,
+                InsuredAddress = model.InsuredAddress,
+                MedicalInsuranceAccount = model.MedicalInsuranceAccount,
+                SocialSecurityAccount = model.SocialSecurityAccount,
+                EndowmentInsurance = model.EndowmentInsurance,
+                HousingProvidentFund = model.HousingProvidentFund,
+                Id = model.HumanId,
+                InsuredTime = model.InsuredTime,
+                IsGiveUp = model.IsGiveUp,
+                IsHave = model.IsHave,
+                IsSignCommitment = model.IsSignCommitment,
+                MaternityInsurance = model.MaternityInsurance,
+                MedicalInsurance = model.MedicalInsurance,
+                UnemploymentInsurance = model.UnemploymentInsurance
+            };
+
+
+            HumanSalaryStructure humanSalaryStructure = new HumanSalaryStructure
+            {
+                BaseWages = model.BaseWages,
+                CommunicationAllowance = model.CommunicationAllowance,
+                OtherAllowance = model.OtherAllowance,
+                TrafficAllowance = model.TrafficAllowance,
+                GrossPay = model.GrossPay,
+                Id = model.HumanId,
+                PostWages = model.PostWages,
+                ProbationaryPay = model.ProbationaryPay
+            };
+
+
             HumanInfoChange humanInfoChange = new HumanInfoChange
             {
                 ChangeContent = "",
@@ -199,8 +246,11 @@ namespace XYHHumanPlugin.Managers
                 HumanId = model.HumanId,
                 UserId = model.CreateUser
             };
-            await _humanInfoChangeStore.CreateAsync(userInfo, humanInfoChange);
 
+            await _humanInfoStore.UpdateAsync(userInfo, human);
+            await _humanInfoStore.UpdateHumanSalaryStructureAsync(userInfo, humanSalaryStructure);
+            await _humanInfoStore.UpdateHumanSocialSecurityAsync(userInfo, humanSocialSecurity);
+            await _humanInfoChangeStore.CreateAsync(userInfo, humanInfoChange);
             await Store.UpdateExamineStatus(id, status, cancellationToken);
         }
 

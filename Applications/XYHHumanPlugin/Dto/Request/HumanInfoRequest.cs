@@ -18,12 +18,21 @@ namespace XYHHumanPlugin.Dto.Request
         /// </summary>
         [StringLength(127)]
         public string Name { get; set; }
-
+        /// <summary>
+        /// 生日
+        /// </summary>
+        public DateTime? Birthday { get; set; }
         /// <summary>
         /// 工号
         /// </summary>
-        [MaxLength(127)]
+        [StringLength(127)]
         public string UserID { get; set; }
+
+        /// <summary>
+        /// 入职类型
+        /// </summary>
+        [StringLength(255)]
+        public string PositionType { get; set; }
         /// <summary>
         /// 身份证号码
         /// </summary>
@@ -152,15 +161,15 @@ namespace XYHHumanPlugin.Dto.Request
         public DateTime EntryTime { get; set; }
 
 
-        public HumanSalaryStructureRequest HumanSalaryStructure { get; set; }
+        public HumanSalaryStructureRequest HumanSalaryStructureRequest { get; set; }
 
-        public HumanSocialSecurityRequest HumanSocialSecurity { get; set; }
+        public HumanSocialSecurityRequest HumanSocialSecurityRequest { get; set; }
 
-        public HumanContractInfoRequest HumanContractInfo { get; set; }
+        public HumanContractInfoRequest HumanContractInfoRequest { get; set; }
 
-        public IEnumerable<HumanTitleInfoRequest> HumanTitleInfos { get; set; }
-        public IEnumerable<HumanWorkHistoryRequest> HumanWorkHistories { get; set; }
+        public IEnumerable<HumanTitleInfoRequest> HumanTitleInfosRequest { get; set; }
+        public IEnumerable<HumanWorkHistoryRequest> HumanWorkHistoriesRequest { get; set; }
 
-        public IEnumerable<HumanEducationInfoRequest> HumanEducationInfos { get; set; }
+        public IEnumerable<HumanEducationInfoRequest> HumanEducationInfosRequest { get; set; }
     }
 }

@@ -71,16 +71,20 @@ namespace XYHHumanPlugin.Managers
                 response.Message = "没有权限";
                 return response;
             }
-
+            if (string.IsNullOrEmpty(positionSalaryRequest.Id))
+            {
+                positionSalaryRequest.Id = Guid.NewGuid().ToString();
+            }
             var gatwayurl = ApplicationContext.Current.AppGatewayUrl.EndsWith("/") ? ApplicationContext.Current.AppGatewayUrl.TrimEnd('/') : ApplicationContext.Current.AppGatewayUrl;
             GatewayInterface.Dto.ExamineSubmitRequest examineSubmitRequest = new GatewayInterface.Dto.ExamineSubmitRequest();
-            examineSubmitRequest.ContentId = !string.IsNullOrEmpty(positionSalaryRequest.Id) ? positionSalaryRequest.Id : "";
+            examineSubmitRequest.ContentId = positionSalaryRequest.Id;
             examineSubmitRequest.ContentType = "HumanPositionSalary";
             examineSubmitRequest.ContentName = "职位薪酬信息";
             examineSubmitRequest.Content = "新增职位薪酬信息";
             examineSubmitRequest.Source = user.FilialeName;
-            examineSubmitRequest.CallbackUrl = gatwayurl + "/api/humaninfo/humanpositionsalarycallback";
-            examineSubmitRequest.StepCallbackUrl = gatwayurl + "/api/humaninfo/humanpositionsalarystepcallback";
+            examineSubmitRequest.SubmitDefineId = positionSalaryRequest.Id;
+            examineSubmitRequest.CallbackUrl = gatwayurl + "/api/positionsalary/humanpositionsalarycallback";
+            examineSubmitRequest.StepCallbackUrl = gatwayurl + "/api/positionsalary/humanpositionsalarystepcallback";
             examineSubmitRequest.Action = "HumanPositionSalary";
             examineSubmitRequest.TaskName = $"新增职位薪酬信息";
             examineSubmitRequest.Desc = $"新增职位薪酬信息";

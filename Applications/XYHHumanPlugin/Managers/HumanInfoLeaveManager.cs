@@ -90,16 +90,20 @@ namespace XYHHumanPlugin.Managers
                 response.Message = "没有权限";
                 return response;
             }
-
+            if (string.IsNullOrEmpty(humanInfoLeaveRequest.Id))
+            {
+                humanInfoLeaveRequest.Id = Guid.NewGuid().ToString();
+            }
             var gatwayurl = ApplicationContext.Current.AppGatewayUrl.EndsWith("/") ? ApplicationContext.Current.AppGatewayUrl.TrimEnd('/') : ApplicationContext.Current.AppGatewayUrl;
             GatewayInterface.Dto.ExamineSubmitRequest examineSubmitRequest = new GatewayInterface.Dto.ExamineSubmitRequest();
-            examineSubmitRequest.ContentId = !string.IsNullOrEmpty(humanInfoLeaveRequest.Id) ? humanInfoLeaveRequest.Id : "";
+            examineSubmitRequest.ContentId = humanInfoLeaveRequest.Id;
             examineSubmitRequest.ContentType = "HumanLeave";
             examineSubmitRequest.ContentName = humaninfo.Name;
             examineSubmitRequest.Content = "新增员工人事离职信息";
             examineSubmitRequest.Source = user.FilialeName;
-            examineSubmitRequest.CallbackUrl = gatwayurl + "/api/humaninfo/humanleavecallback";
-            examineSubmitRequest.StepCallbackUrl = gatwayurl + "/api/humaninfo/humanleavestepcallback";
+            examineSubmitRequest.SubmitDefineId = humanInfoLeaveRequest.Id;
+            examineSubmitRequest.CallbackUrl = gatwayurl + "/api/humanleave/humanleavecallback";
+            examineSubmitRequest.StepCallbackUrl = gatwayurl + "/api/humanleave/humanleavestepcallback";
             examineSubmitRequest.Action = "HumanLeave";
             examineSubmitRequest.TaskName = $"新增员工人事离职信息:{humaninfo.Name}";
             examineSubmitRequest.Desc = $"新增员工人事离职调动信息";
@@ -129,8 +133,6 @@ namespace XYHHumanPlugin.Managers
                 Logger.Info($"新增员工人事离职信息提交审核失败：" + response2.Message);
                 return response;
             }
-
-
             response.Extension = _mapper.Map<HumanInfoLeaveResponse>(await Store.CreateAsync(user, _mapper.Map<HumanInfoLeave>(humanInfoLeaveRequest), cancellationToken));
             return response;
         }
@@ -182,6 +184,13 @@ namespace XYHHumanPlugin.Managers
             {
                 throw new Exception("未找到更新对象");
             }
+
+            var human = await _humanInfoStore.GetAsync(a => a.Where(b => b.Id == model.HumanId));
+            if (human == null)
+            {
+                throw new Exception("未找到操作的人事信息");
+            }
+
             UserInfo userInfo = new UserInfo
             {
                 Id = model.CreateUser
@@ -200,8 +209,10 @@ namespace XYHHumanPlugin.Managers
                 HumanId = model.HumanId,
                 UserId = model.CreateUser
             };
-            await _humanInfoChangeStore.CreateAsync(userInfo, humanInfoChange);
+            human.StaffStatus = StaffStatus.Leave;
 
+            await _humanInfoStore.UpdateAsync(userInfo, human);
+            await _humanInfoChangeStore.CreateAsync(userInfo, humanInfoChange);
             await Store.UpdateExamineStatus(id, status, cancellationToken);
         }
 

@@ -83,11 +83,11 @@ namespace XYHHumanPlugin.Models
 
         [MaxLength(127)]
         public string CreateUser { get; set; }
-        public DateTime? CreateTime { get; set; }
+        public DateTime CreateTime { get; set; }
         [MaxLength(127)]
         public string UpdateUser { get; set; }
         public DateTime? UpdateTime { get; set; }
-        public bool? IsDeleted { get; set; }
+        public bool IsDeleted { get; set; }
         [MaxLength(127)]
         public string DeleteUser { get; set; }
         public DateTime? DeleteTime { get; set; }

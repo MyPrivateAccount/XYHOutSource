@@ -90,16 +90,20 @@ namespace XYHHumanPlugin.Managers
                 response.Message = "没有权限";
                 return response;
             }
-
+            if (string.IsNullOrEmpty(humanInfoRegularRequest.Id))
+            {
+                humanInfoRegularRequest.Id = Guid.NewGuid().ToString();
+            }
             var gatwayurl = ApplicationContext.Current.AppGatewayUrl.EndsWith("/") ? ApplicationContext.Current.AppGatewayUrl.TrimEnd('/') : ApplicationContext.Current.AppGatewayUrl;
             GatewayInterface.Dto.ExamineSubmitRequest examineSubmitRequest = new GatewayInterface.Dto.ExamineSubmitRequest();
-            examineSubmitRequest.ContentId = !string.IsNullOrEmpty(humanInfoRegularRequest.Id) ? humanInfoRegularRequest.Id : "";
+            examineSubmitRequest.ContentId = humanInfoRegularRequest.Id;
             examineSubmitRequest.ContentType = "HumanRegular";
             examineSubmitRequest.ContentName = humaninfo.Name;
             examineSubmitRequest.Content = "新增员工人事转正信息";
             examineSubmitRequest.Source = user.FilialeName;
-            examineSubmitRequest.CallbackUrl = gatwayurl + "/api/humaninfo/humanregularcallback";
-            examineSubmitRequest.StepCallbackUrl = gatwayurl + "/api/humaninfo/humanregularstepcallback";
+            examineSubmitRequest.SubmitDefineId = humanInfoRegularRequest.Id;
+            examineSubmitRequest.CallbackUrl = gatwayurl + "/api/humanregular/humanregularcallback";
+            examineSubmitRequest.StepCallbackUrl = gatwayurl + "/api/humanregular/humanregularstepcallback";
             examineSubmitRequest.Action = "HumanRegular";
             examineSubmitRequest.TaskName = $"新增员工人事转正信息:{humaninfo.Name}";
             examineSubmitRequest.Desc = $"新增员工人事转正信息";
@@ -148,6 +152,12 @@ namespace XYHHumanPlugin.Managers
             {
                 throw new Exception("未找到更新对象");
             }
+            var human = await _humanInfoStore.GetAsync(a => a.Where(b => b.Id == model.HumanId));
+            if (human == null)
+            {
+                throw new Exception("未找到操作的人事信息");
+            }
+
             UserInfo userInfo = new UserInfo
             {
                 Id = model.CreateUser
@@ -166,8 +176,10 @@ namespace XYHHumanPlugin.Managers
                 HumanId = model.HumanId,
                 UserId = model.CreateUser
             };
-            await _humanInfoChangeStore.CreateAsync(userInfo, humanInfoChange);
+            human.StaffStatus = StaffStatus.Regular;
 
+            await _humanInfoStore.UpdateAsync(userInfo, human);
+            await _humanInfoChangeStore.CreateAsync(userInfo, humanInfoChange);
             await Store.UpdateExamineStatus(id, status, cancellationToken);
         }
 
