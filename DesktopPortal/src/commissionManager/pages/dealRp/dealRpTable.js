@@ -1,13 +1,15 @@
 //成交报告表格
 import { connect } from 'react-redux';
 import React, { Component } from 'react';
-import { Table, Button, Tooltip, Spin, Popconfirm, notification } from 'antd'
-import { myReportGet, searchReport, openRpDetail, dealRpDelete } from '../../actions/actionCreator'
+import { Dropdown,Icon, Table, Button, Tooltip, Spin, Popconfirm, notification,Menu } from 'antd'
 import { getDicPars } from '../../../utils/utils'
-import { dicKeys, examineStatusMap } from '../../constants/const'
+import { dicKeys, examineStatusMap ,reportOperateAction} from '../../constants/const'
 import { report } from 'import-inspector';
 import WebApiConfig from '../../constants/webApiConfig'
-import ApiClient from '../../../utils/apiClient';
+import ApiClient from '../../../utils/apiClient'
+import moment from 'moment'
+
+const MenuItem = Menu.Item;
 
 class DealRpTable extends Component {
     constructor(props) {
@@ -21,13 +23,53 @@ class DealRpTable extends Component {
         }
 
 
+
     }
 
+    _formatDate = (date)=>{
+        if(!date){
+            return '';
+        }
+        return moment(date).format('YYYY-MM-DD');
+    }
+
+    _getActionMenu = (actions, record)=>{
+        let btns = [];
+        if(actions.length>3){
+            //menu
+            for(let i = 0;i<2;i++){
+                let a = actions[i]
+                btns.push(<a   style={{marginLeft:4}} onClick={()=>this.operate(a, record)} key={a.action}>{a.text}</a>)
+            }
+            let menus = []
+            for(let i = 2;i<actions.length;i++){
+                let a = actions[i]
+                menus.push(<MenuItem onClick={()=>this.operate(a, record)} key={a.key}>{a.text}</MenuItem>)
+            }
+            btns.push(<Dropdown overlay={<Menu onClick ={(e)=>this._onMenuClick(e, record)}>{menus}</Menu>}><a style={{marginLeft:4}}  className="ant-dropdown-link" >
+            更多 <Icon type="down" />
+            </a>
+            </Dropdown>
+            )
+        }else{
+            for(let i = 0;i<actions.length;i++){
+                let a = actions[i]
+                btns.push(<a size="small" style={{marginLeft:4}} onClick={()=>this.operate(a, record)} key={a.action}>{a.text}</a>)
+            }
+        }
+        return btns;
+    }
+
+    _onMenuClick = ({key},record)=>{
+        this.operate(reportOperateAction[key], record);
+    }
 
     _getColumns = () => {
-        let jylxList = getDicPars(dicKeys.jylx, this.props.dic)
+        let cjbglxList = getDicPars(dicKeys.cjbglx, this.props.dic)
         let appTableColumns = [
-            { title: '审批通过日期', dataIndex: 'successTime', key: 'successTime' },
+            { title: '审批通过日期', dataIndex: 'successTime', key: 'successTime', render:(text,record)=>{
+                return this._formatDate(text)
+            } },
             {
                 title: '成交编号', dataIndex: 'cjbgbh', key: 'cjbgbh',
                 render: (text, record) => {
@@ -35,11 +77,13 @@ class DealRpTable extends Component {
                 }
             },
             {
-                title: '上业绩日期', dataIndex: 'createTime', key: 'createTime'
+                title: '上业绩日期', dataIndex: 'createTime', key: 'createTime', render:(text,record)=>{
+                    return this._formatDate(text)
+                }
             },
             {
-                title: '类型', dataIndex: 'jylx', key: 'jylx', render: (text, record) => {
-                    let item = jylxList.find(x => x.value === record.jylx);
+                title: '类型', dataIndex: 'cjbglx', key: 'cjbglx', render: (text, record) => {
+                    let item = cjbglxList.find(x => x.value === record.jylx);
                     if (item) {
                         return item.key;
                     }
@@ -61,44 +105,59 @@ class DealRpTable extends Component {
                 }
             },
             {
-                title: '操作', dataIndex: 'edit', key: 'edit', render: (text, record) => (
-                    this.state.type === 'myget' ? (<span>
-                        {
-                            (record.examineStatus===0||record.examineStatus===16)?
-                        <Popconfirm title="是否删除该项?" onConfirm={(e) => this.handleDelClick(record)} onCancel={this.zfcancel} okText="确认" cancelText="取消">
-                            <Button type='primary' shape='circle' size='small' icon='delete' />
-                        </Popconfirm>:null
-                        }
-                        {
-                            (record.examineStatus===0||record.examineStatus===16)?
-                            <Tooltip title='修改'>
-                                <Button type='primary' shape='circle' size='small' icon='edit' onClick={(e) => this.editReport(record)} />
-                            </Tooltip>:null
-                        }
-                        
-                    </span>) : (
-                            <span>
-                                <Popconfirm title="请确认是否要作废成交报告?" onConfirm={(e) => this.zfconfirm(record)} onCancel={this.zfcancel} okText="确认" cancelText="取消">
-                                    <Button type='primary' shape='circle' size='small' icon='delete' />
-                                </Popconfirm>
-                                <Tooltip title='收款'>
-                                    <Button type='primary' shape='circle' size='small' icon='wallet' onClick={(e) => this.handleSKClick(record)} />
-                                </Tooltip>
-                                <Tooltip title='付款'>
-                                    <Button type='primary' shape='circle' size='small' icon='pay-circle-o' onClick={(e) => this.handleFKClick(record)} />
-                                </Tooltip>
-                                <Tooltip title='调佣'>
-                                    <Button type='primary' shape='circle' size='small' icon='setting' onClick={(e) => this.handleTYClick(record)} />
-                                </Tooltip>
-                                <Tooltip title='转移'>
-                                    <Button type='primary' shape='circle' size='small' icon='swap' onClick={(e) => this.handleZYClick(record)} />
-                                </Tooltip>
-                                <Popconfirm title="请确认xxx报告的结佣资料是否已经收齐?" onConfirm={this.jyconfirm} onCancel={this.jycancel} okText="确认" cancelText="取消">
-                                    <Button type='primary' shape='circle' size='small' icon='check' />
-                                </Popconfirm>
-                            </span>)
+                title: '操作', dataIndex: 'edit', key: 'edit', width:'10rem', render: (text, record) => {
+                    if (this.state.type === 'myget') {
+                        return <span>
+                            {
+                                (record.examineStatus === 0 || record.examineStatus === 16) ?
+                                    <Popconfirm title="是否删除该项?" onConfirm={(e) => this.handleDelClick(record)} onCancel={this.zfcancel} okText="确认" cancelText="取消">
+                                        <Button type='primary' shape='circle' size='small' icon='delete' />
+                                    </Popconfirm> : null
+                            }
+                            {
+                                (record.examineStatus === 0 || record.examineStatus === 16) ?
+                                    <Tooltip title='修改'>
+                                        <Button type='primary' shape='circle' size='small' icon='edit' onClick={(e) => this.editReport(record)} />
+                                    </Tooltip> : null
+                            }
 
-                )
+                        </span>;
+                    } else {
+                        let actions = [];
+                        let es = record.examineStatus || 0;
+                        let p = this.props.permission||{};
+                        let isMy = record.uid === this.props.user.sub
+                        if(es === 8){
+                            //审核通过
+                            if(p.sk || isMy){
+                                actions.push(reportOperateAction.sk)
+                            }
+                            if(p.fk || isMy){
+                                actions.push(reportOperateAction.fk)
+                            }
+                            if(p.ty || isMy){
+                                actions.push(reportOperateAction.ty)
+                            }
+                            if(p.zy || isMy){
+                                actions.push(reportOperateAction.zy)
+                            }
+                            if(p.jy){
+                                actions.push(reportOperateAction.jy)
+                            }
+                        }else if(es !==1){
+                            if(p.zf || isMy){
+                                actions.push(reportOperateAction.zf)
+                            }
+                        }
+
+                        let element = this._getActionMenu(actions, record);
+                       
+                        return element.length>0? <div>{element}</div>: null
+                    }
+                }
+
+
+
             }
         ];
         return appTableColumns;
@@ -114,37 +173,21 @@ class DealRpTable extends Component {
     zfcancel = (e) => {
 
     }
-    handleSKClick = (e) => {
-        if (this.props.onOpenDlg !== null) {
-            e.type = 'sk'
-            this.props.onOpenDlg(e)
-        }
-    }
-    handleFKClick = (e) => {
-        if (this.props.onOpenDlg !== null) {
-            e.type = 'fk'
-            this.props.onOpenDlg(e)
-        }
-    }
-    handleTYClick = (e) => {
-        if (this.props.onOpenTy !== null) {
-            this.props.onOpenTy(e)
-        }
-    }
-    handleZYClick = (e) => {
-        if (this.props.onOpenZy !== null) {
-            this.props.onOpenZy(e)
+
+    operate = ( action, report) => {
+        if (this.props.operate) {
+            this.props.operate(action, report)
         }
     }
 
-    
+
     viewReport = (record) => {
         if (this.props.viewReport) {
             this.props.viewReport(record);
         }
     }
 
-    editReport = (record)=>{
+    editReport = (record) => {
         if (this.props.viewReport) {
             this.props.viewReport(record, 'edit');
         }
@@ -161,17 +204,17 @@ class DealRpTable extends Component {
             r = (r || {}).data;
             if (r.code === '0') {
                 notification.success({ message: '成交报告已经作废!' })
-                if(this.props.reportChanged){
+                if (this.props.reportChanged) {
                     this.props.reportChanged(report, 'DEL')
                 }
             } else {
-                notification.error({ message: '作废成交报告失败!', description: r.message||'' })
-                
+                notification.error({ message: '作废成交报告失败!', description: r.message || '' })
+
             }
         } catch (e) {
             notification.error({ message: '作为成交报告失败!', description: e.message })
         }
-        this.setState({loading:false})
+        this.setState({ loading: false })
     }
 
     render() {
@@ -186,7 +229,7 @@ class DealRpTable extends Component {
 function MapStateToProps(state) {
 
     return {
-
+        user: state.oidc.user.profile
     }
 }
 

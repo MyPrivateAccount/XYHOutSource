@@ -86,6 +86,7 @@ class TradeNTable extends Component {
     _getTableColums = () => {
         let sfItems = this.props.items || [];
         let canEdit = this.props.canEdit || false;
+        const isTy = this.props.type==='ty'
         let appTableColumns = [
             {
                 title: '部门', dataIndex: 'sectionId', key: 'sectionId',
@@ -102,7 +103,7 @@ class TradeNTable extends Component {
                 render: (text, record) => (
                     <FormItem hasFeedback validateStatus={record.errors['uid'] ? 'error' : ''}>
                         <Select
-                            disabled={!canEdit}
+                            disabled={!canEdit || isTy}
                             mode="multiple"
                             maxTagCount={1}
                             
@@ -167,7 +168,7 @@ class TradeNTable extends Component {
             },
             {
                 title: '操作', dataIndex: 'edit', key: 'edit', render: (text, recored) => {
-                    return canEdit ? <span>
+                    return (canEdit && !isTy) ? <span>
 
                         <Tooltip title='删除'>
                             &nbsp;<Button type='primary' size='small'  onClick={(e) => this._onDelRow(recored)} >删除</Button>
@@ -196,6 +197,7 @@ class TradeNTable extends Component {
     render() {
         const { dataSource } = this.props
         const columns = this._getTableColums();
+        
         return (
             <Form>
                 <Table ref={(ins)=>this._tblElement = ins} bordered size="small" columns={columns} pagination={false} dataSource={dataSource}></Table>

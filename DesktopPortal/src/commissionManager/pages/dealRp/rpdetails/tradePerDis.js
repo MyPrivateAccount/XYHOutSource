@@ -121,6 +121,7 @@ class TradePerDis extends Component {
         let ny = 0;
         ol.forEach(item=>{
             ny  = item.money * 1 + ny;
+            ny = Math.round(ny*100)/100;
         })
 
         //尾差
@@ -163,6 +164,7 @@ class TradePerDis extends Component {
         let wyJe= 0;
         this.state.outsideList.forEach(item=>{
             wyJe = wyJe + (item.money*1)
+            wyJe = Math.round(wyJe*100)/100;
         })
         let jyj = zyj - wyJe
 
@@ -177,6 +179,7 @@ class TradePerDis extends Component {
             // let x = nyItems.find(x=>x.code === item.type);       
              item.money = Math.round((jyj * (item.percent||0))) / 100;
              nyJe = nyJe + item.money;
+             nyJe = Math.round(nyJe*100)/100;
              lastRow = item;
          })
          let diff = Math.abs(nyJe-jyj);

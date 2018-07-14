@@ -319,6 +319,7 @@ class TradeManager extends Component {
                         item.money = Math.round((zyj * (x.percent || 0)) * 100) / 100;
                     }
                     wyJe = wyJe + item.money;
+                    wyJe = Math.round(wyJe*100)/100;
                 })
                 yjfp.yjJyj = zyj - wyJe;
 
@@ -333,6 +334,7 @@ class TradeManager extends Component {
                     item.money = Math.round((yjfp.yjJyj * (item.percent || 0))) / 100;
 
                     nyJe = nyJe + item.money;
+                    nyJe = Math.round(nyJe*100)/100;
                     lastItem = item;
                 })
                 let diff = Math.abs(nyJe - yjfp.yjJyj)

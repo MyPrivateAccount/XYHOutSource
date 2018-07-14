@@ -21,13 +21,14 @@ class TradeWyTable extends Component {
         let sfdxList = getDicPars(dicKeys.sfdx, this.props.dic);
         let kxItems = this.props.items ||[];
         let canEdit = this.props.canEdit || false;
+        const isTy = this.props.type === 'ty'
 
         let appTableColumns = [
             {
                 title: '款项类型', dataIndex: 'moneyType', key: 'moneyType',
                 render: (text, record) => (
                     <FormItem hasFeedback validateStatus={record.errors['moneyType'] ? 'error' : ''}>
-                        <Select value={record.moneyType} disabled={!canEdit}
+                        <Select value={record.moneyType} disabled={!canEdit || (!record.isNew && isTy) }
                             onChange={v=> this._onRowChanged(record, 'moneyType', v)}>
                             {
                                 kxItems.map(tp => <Select.Option key={tp.name} value={tp.code}>{tp.name}</Select.Option>)
@@ -40,7 +41,7 @@ class TradeWyTable extends Component {
                 title: '收付对象', dataIndex: 'object', key: 'object',
                 render: (text, record) => (
                     <FormItem hasFeedback validateStatus={record.errors['object'] ? 'error' : ''}>
-                        <Select value={record.object} disabled={!canEdit}
+                        <Select value={record.object} disabled={!canEdit || (!record.isNew && isTy)}
                             onChange={v=> this._onRowChanged(record, 'object', v)}>
                             {
                                 sfdxList.map(tp => <Select.Option key={tp.key} value={tp.value}>{tp.key}</Select.Option>)
