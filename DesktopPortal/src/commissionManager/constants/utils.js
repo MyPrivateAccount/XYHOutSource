@@ -13,7 +13,8 @@ const dateFields ={
     ht:['cjrq','yjfksj','yxsqyrq','khlfrq','htqyrq'],
     wy: ['wyCqzqdsj'],
     yj:['yjYzyjdqr','yjKhyjdqr'],
-    gh:['ghFkrq','ghJbrq','ghGhrq']
+    gh:['ghFkrq','ghJbrq','ghGhrq'],
+    factGet:['sjrq','jzrq']
 }
 export function convertReport(report){
     if(!report){
@@ -51,6 +52,16 @@ export function convertReport(report){
     }
 
     return report;
+}
+
+export function convertFactGet(factget){
+    if(!factget){
+        return ;
+    }
+
+    _convertOne(factget,dateFields.factGet);
+   
+    return factget;
 }
 
 function _convertOne(entity, fields){

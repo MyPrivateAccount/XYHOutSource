@@ -101,7 +101,7 @@ class TyPanel extends Component {
         let wyJe = 0;
         this.state.outsideList.forEach(item => {
             wyJe = wyJe + (item.money * 1)
-            wyJe = Math.round(wyJe*100)/100;
+            wyJe = Math.round(wyJe * 100) / 100;
         })
         let jyj = zyj - wyJe
 
@@ -116,7 +116,7 @@ class TyPanel extends Component {
             // let x = nyItems.find(x=>x.code === item.type);       
             item.money = Math.round((jyj * (item.percent || 0))) / 100;
             nyJe = nyJe + item.money;
-            nyJe = Math.round(nyJe*100)/100;
+            nyJe = Math.round(nyJe * 100) / 100;
             lastRow = item;
         })
         let diff = Math.abs(nyJe - jyj);
@@ -258,7 +258,7 @@ class TyPanel extends Component {
         let ny = 0;
         ol.forEach(item => {
             ny = item.money * 1 + ny;
-            ny = Math.round(ny*100)/100;
+            ny = Math.round(ny * 100) / 100;
         })
 
         //尾差
@@ -289,7 +289,7 @@ class TyPanel extends Component {
         let distribute = this.props.form.getFieldsValue();
 
 
-        
+
 
         let ol = this.state.outsideList || [];
         for (let i = 0; i < ol.length; i++) {
@@ -376,7 +376,7 @@ class TyPanel extends Component {
     }
 
     _submit = async (values) => {
-        if(!values){
+        if (!values) {
             return;
         }
 
@@ -387,14 +387,14 @@ class TyPanel extends Component {
         if (r.code === '0') {
             let newDis = r.extension;
             let d = this.state.distribute;
-             d.id = newDis.id;
-             d.status = newDis.status;
-             d.seq = newDis.seq;
-             d.updateNum = newDis.updateNum;
-          
+            d.id = newDis.id;
+            d.status = newDis.status;
+            d.seq = newDis.seq;
+            d.updateNum = newDis.updateNum;
+
             this.setState({ distribute: { ...d } })
             notification.success({ message: '调佣已提交审核' })
-            
+
         } else {
             notification.error({ message: '提交失败', description: r.message || '' })
         }
@@ -412,25 +412,29 @@ class TyPanel extends Component {
         let canEdit = false;
         let s = this.state.distribute.status;
         if (this.props.opType === 'add' || this.props.opType === 'edit') {
-            
+
             if (s === 0 || s === 16) {
                 canEdit = true;
             }
         }
 
-        let statusText = examineStatusMap[s]||''
+        let statusText = examineStatusMap[s] || ''
 
         let realCanEdit = canEdit && !this.state.saving;
 
         return (
             <div>
-                <DistributePanel
-                    nyItems={this.state.nyItems}
-                    wyItems={this.state.wyItems}
-                    dic={this.props.dic}
-                    distribute={this.state.distribute.preDistribute}
-                />
-                <div className="rp-yj-tbl-title" style={{backgroundColor:'#efa8a8', marginBottom:'0.5rem'}}>本次调整后业绩分配<span style={{marginLeft:'1rem'}}>[状态：{statusText}]</span></div>
+                {
+                    this.props.hidePre ? null:
+                        <DistributePanel
+                            nyItems={this.state.nyItems}
+                            wyItems={this.state.wyItems}
+                            dic={this.props.dic}
+                            distribute={this.state.distribute.preDistribute}
+                        /> 
+                }
+
+                <div className="rp-yj-tbl-title" style={{ backgroundColor: '#efa8a8', marginBottom: '0.5rem' }}>本次调整后业绩分配<span style={{ marginLeft: '1rem' }}>[状态：{statusText}]</span></div>
                 <div>
                     <Row className="form-row">
                         <Col span={24} style={{ display: 'flex' }}>
@@ -473,7 +477,7 @@ class TyPanel extends Component {
                         </Col>
                     </Row>
                     <div className="rp-yj-tbl-title">外佣
-                    {realCanEdit ? <Button style={{marginLeft:'1rem'}} onClick={this.handleAddWy}>新增外佣</Button> : null}
+                    {realCanEdit ? <Button style={{ marginLeft: '1rem' }} onClick={this.handleAddWy}>新增外佣</Button> : null}
                     </div>
                     <Row>
                         <TradeWyTable

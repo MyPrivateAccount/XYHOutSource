@@ -109,7 +109,7 @@ class OrgParamEditor extends Component{
                             })(
                                !this.state.isEdit? <Select style={{ width: 200 }} disabled={this.state.isEdit} onChange={(e) => this.handleSelect(e, 'parcode')}>
                                         {
-                                            this.state.paramInfo.items.map(tp => <Select.Option key={tp.key} value={tp.key}>{tp.key}</Select.Option>)
+                                            this.state.paramInfo.items.map(tp => <Select.Option key={tp.value} value={tp.value}>{tp.key}</Select.Option>)
                                         }
                                     </Select>:
                                     <Input style={{float: 'left',width:300}} disabled={true}></Input>

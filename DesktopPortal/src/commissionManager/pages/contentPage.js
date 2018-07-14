@@ -27,6 +27,10 @@ export const LoadableDealRpQueryPage = Loadable({//我录入的成交报告
     loader:()=>import('./dealRp/dealRpQuery'),
     loading:()=><LoadableLoading/>
 });
+export const LoadableYjfpQueryPage = Loadable({//业绩分摊查看
+    loader:()=>import('./dealRp/yjfpQuery'),
+    loading:()=><LoadableLoading/>
+});
 export const LoadableMonthPage = Loadable({//月结
     loader:()=>import('./fina/monthSumary'),
     loading:()=><LoadableLoading/>

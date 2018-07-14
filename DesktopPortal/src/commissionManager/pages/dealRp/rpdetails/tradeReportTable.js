@@ -116,7 +116,7 @@ class TradeReportTable extends Component {
         const {list, pagination} = this.state;
 
         return (
-            <Modal width={900} title={'成交报备列表'} maskClosable={false} visible={this.props.visible}
+            <Modal confirmLoading={this.props.loading} width={900} title={'成交报备列表'} maskClosable={false} visible={this.props.visible}
                 onOk={this.handleOk} onCancel={this.handleCancel} >
                 <Spin spinning={this.state.isDataLoading}>
                     <Form>

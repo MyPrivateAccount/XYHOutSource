@@ -238,6 +238,19 @@ const reportValidation = {
 
             }, '内部分摊金额合计不等于净佣金'
         ]]
+    },
+    sk:{
+        sjrq: [[validations.isRequired, '必须选择收据日期']],
+        jzrq: [[validations.isRequired, '必须选择进账日期']],
+        je: [[validations.isRequired, '必须输入金额'], [validations.isGreaterThan, '金额必须大于0', 0]],
+        jkf: [[validations.isRequired, '必须输入交款方']],
+        jzdrzh: [[validations.isRequired, '必须输入进账单日志号/付款人']],
+        buy: [[validations.isRequired, '必须输入买方/承租方']],
+        sjhm: [[validations.isRequired, '必须输入收据号码']],
+    },
+    fk:{
+        jzrq: [[validations.isRequired, '必须选择付款日期']],
+        je: [[validations.isRequired, '必须输入金额'], [validations.isGreaterThan, '金额必须大于0', 0]],
     }
 }
 

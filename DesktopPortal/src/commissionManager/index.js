@@ -24,6 +24,7 @@ import {
 
     LoadableDealRpPage, //我录入的成交报告
     LoadableDealRpQueryPage, //我录入的成交报告
+    LoadableYjfpQueryPage, //业绩分成明细
 
     LoadableMonthPage, //月结
     LoadablePPFTPage, //人员分摊
@@ -62,7 +63,8 @@ const menuDefine = [
         type: 'subMenu',
         menuItems: [
             { menuID: "menu_myrp",path:'/myreport',  permissionKeys: [permission.myReport], displayName: "我录入的成交报告", menuIcon: 'contacts', type: 'item' },
-            { menuID: "menu_query",path:'/reportquery',  permissionKeys: [permission.reportQuery], displayName: "成交报告综合查询", menuIcon: 'contacts', type: 'item' }
+            { menuID: "menu_query",path:'/reportquery',  permissionKeys: [permission.reportQuery], displayName: "成交报告综合查询", menuIcon: 'contacts', type: 'item' },
+            { menuID: "menu_yjfp_query",path:'/yjfpquery',  permissionKeys: [permission.yjfpQuery], displayName: "业绩分成明细", menuIcon: 'contacts', type: 'item' }
         ]
     },
     {
@@ -338,7 +340,8 @@ class CommissionManagerIndex extends Component {
 
                                 <Route path='/myreport' render={(props) =>  <LoadableDealRpPage user={this.props.user} judgePermissions={this.props.judgePermissions} {...props} />} />
                                 <Route path='/reportquery' render={(props) => <LoadableDealRpQueryPage user={this.props.user} judgePermissions={this.props.judgePermissions} {...props} />} />
-
+                                <Route path='/yjfpquery' render={(props) => <LoadableYjfpQueryPage user={this.props.user} judgePermissions={this.props.judgePermissions} {...props} />} />
+                                
                             </Layer>
                         </ConnectedRouter>
                     </Content>

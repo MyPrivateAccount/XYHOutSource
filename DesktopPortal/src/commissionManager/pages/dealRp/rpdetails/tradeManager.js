@@ -1,10 +1,6 @@
 //交易合同管理页面
 import { connect } from 'react-redux';
 import React, { Component } from 'react';
-import {
-    dealRpGet, dealGhGet, dealFpGet, dealWyGet, dealKhGet, dealYzGet, getShopDetail, getBuildingDetail
-    , syncRp, syncWy, syncYz, syncKh, syncFp
-} from '../../../actions/actionCreator'
 import { Affix, Layout, Modal, Button, Checkbox, Tree, Tabs, Icon, Popconfirm, Spin, Tooltip, notification } from 'antd';
 import TradeContract from './tradeContract'
 import TradeEstate from './tradeEstate'
@@ -23,10 +19,12 @@ import { dicKeys, branchPar } from '../../../constants/const'
 import WebApiConfig from '../../../constants/webApiConfig'
 import ApiClient from '../../../../utils/apiClient'
 import { getDicPars } from '../../../../utils/utils';
+import {convertFactGet} from '../../../constants/utils'
 import reportValidation from '../../../constants/reportValidation'
 import validations from '../../../../utils/validations'
-
-
+import TyPage from '../ty/tyPage'
+import SKPage from '../sfk/SKPage'
+import FKPage from '../sfk/FKPage'
 
 
 const { Header, Sider, Content } = Layout;
@@ -39,17 +37,13 @@ class TradeManager extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            showBbDialog: false,
-            rpId: '',//统一的reportId
             opType: 'view',//控制状态,新增／编辑
             isEdit: false,
             activeTab: 'jyht',
-            isGetShopDetail: false,
-            isGetBuildingDetail: false,
             isDataLoading: false,
 
-
             showBbSelector: false,
+            gettingBb: false,
             report: {},
             wyItems: [],
             nyItems: [],
@@ -102,7 +96,7 @@ class TradeManager extends Component {
             //获取详情
             this.setState({ report: initState.entity || {} })
         }
-
+        await this._getFtItems();
     }
 
     getBranchPar = async () => {
@@ -121,7 +115,7 @@ class TradeManager extends Component {
             }
         }
 
-        await this._getFtItems();
+       
     }
 
     _getFtItems = async () => {
@@ -319,7 +313,7 @@ class TradeManager extends Component {
                         item.money = Math.round((zyj * (x.percent || 0)) * 100) / 100;
                     }
                     wyJe = wyJe + item.money;
-                    wyJe = Math.round(wyJe*100)/100;
+                    wyJe = Math.round(wyJe * 100) / 100;
                 })
                 yjfp.yjJyj = zyj - wyJe;
 
@@ -334,7 +328,7 @@ class TradeManager extends Component {
                     item.money = Math.round((yjfp.yjJyj * (item.percent || 0))) / 100;
 
                     nyJe = nyJe + item.money;
-                    nyJe = Math.round(nyJe*100)/100;
+                    nyJe = Math.round(nyJe * 100) / 100;
                     lastItem = item;
                 })
                 let diff = Math.abs(nyJe - yjfp.yjJyj)
@@ -358,6 +352,7 @@ class TradeManager extends Component {
     }
     bbChanged = async (item) => {
         console.log(item);
+        this.setState({ gettingBb: true })
         let newReport = this._getSubFormValues();
 
         newReport.fyzId = item.departmentId;
@@ -443,6 +438,7 @@ class TradeManager extends Component {
         this.setState({ report: { ...this.state.report, ...newReport } })
 
         this.showBbDialog(false);
+        this.setState({ gettingBb: false })
     }
 
     _getSubFormValues = () => {
@@ -468,6 +464,58 @@ class TradeManager extends Component {
 
         return values;
     }
+    
+    
+    _viewDistribute =async ({id, reportId})=>{
+        if (!id)
+            return;
+
+        this.setState({ isDataLoading: true })
+        try {
+            let url = `${WebApiConfig.rp.rpDis}${reportId}`;
+            let r = await ApiClient.get(url, true, {distributeId: id});
+            r = (r || {}).data;
+            if (r.code === '0') {
+                if (r.extension) {
+                    this.props.history.push(`${this.props.match.url}/ty`, { entity: r.extension, op: 'view', pagePar: this.state.pagePar })
+                } else {
+                    notification.error({ message: '业绩分配表不存在' });
+                }
+            } else {
+                notification.error({ message: '获取业绩分配表详情失败', description: r.message || '' });
+            }
+        } catch (e) {
+            notification.error({ message: '获取业绩分配表详情失败，' + (e.message || '') })
+        }
+        this.setState({ isDataLoading: false })
+    }
+
+    _viewFactGet  = async ({id, reportId})=>{
+        if (!id)
+        return;
+
+    this.setState({ isDataLoading: true })
+    try {
+        let url = `${WebApiConfig.rp.factget}${id}`;
+        let r = await ApiClient.get(url, true);
+        r = (r || {}).data;
+        if (r.code === '0') {
+            if (r.extension) {
+                let fg = convertFactGet(r.extension)
+                let pn = fg.dsdfType===1?'sk':'fk'
+                this.props.history.push(`${this.props.match.url}/${pn}`, { entity: fg, op: 'view', pagePar: this.state.pagePar })
+            } else {
+                notification.error({ message: '获取收付款明细失败' });
+            }
+        } else {
+            notification.error({ message: '获取收付款明细失败', description: r.message || '' });
+        }
+    } catch (e) {
+        notification.error({ message: '获取收付款明细失败' + (e.message || '') })
+    }
+    this.setState({ isDataLoading: false })
+    }
+    
 
     render() {
         let canEdit = this.state.opType == 'edit' || this.state.opType == 'add'
@@ -542,6 +590,7 @@ class TradeManager extends Component {
                                         wrappedComponentRef={(inst) => this.yjForm = inst}
                                         showBbSelector={this.state.showBbSelector}
                                         dic={this.props.dic}
+                                        viewFactGet={this._viewFactGet}
                                         wyItems={this.state.wyItems}
                                         nyItems={this.state.nyItems}
                                         rpId={this.state.rpId}
@@ -570,27 +619,34 @@ class TradeManager extends Component {
                                         opType={this.state.opType} />
                                 </TabPane>
                                 {
-                                    this.state.isEdit ? (<TabPane tab="业绩调整" key="yjtz">
+                                    !canEdit ? (<TabPane tab="业绩调整" key="yjtz">
                                         <TradeAjust
+                                            report={this.state.report}
+                                            entity={this.state.report.distributeList}
                                             canEdit={canEdit}
-                                            rpId={this.state.rpId}
+                                            view = {this._viewDistribute}
                                             opType={this.state.opType} />
                                     </TabPane>) : null
                                 }
                             </Tabs>
                         </Content>
                     </Spin>
-                    <TradeReportTable visible={this.state.showBbDialog} onClose={this.showBbDialog} selectedCallback={this.bbChanged} />
+                    <TradeReportTable loading={this.state.gettingBb} visible={this.state.showBbDialog} onClose={this.showBbDialog} selectedCallback={this.bbChanged} />
                 </div>
+                <LayerRouter>
+                    <Route path={`${this.props.match.url}/ty`} render={(props) => <TyPage hidePre={true} {...props} />} /> 
+                    <Route path={`${this.props.match.url}/sk`} render={(props) => <SKPage {...props} />} />
+                    <Route path={`${this.props.match.url}/fk`} render={(props) => <FKPage {...props} />} />
+                </LayerRouter>
             </Layer>
         )
     }
 }
 function MapStateToProps(state) {
     return {
-        operInfo: state.rp.operInfo,
-        shopInfo: state.rp.shopInfo,
-        buildingInfo: state.rp.buildingInfo,
+        // operInfo: state.rp.operInfo,
+        // shopInfo: state.rp.shopInfo,
+        // buildingInfo: state.rp.buildingInfo,
         dic: state.basicData.dicList,
         user: state.oidc.user.profile || {}
     }

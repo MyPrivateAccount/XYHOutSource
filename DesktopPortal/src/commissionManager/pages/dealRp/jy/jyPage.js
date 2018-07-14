@@ -1,13 +1,12 @@
 import React, {Component} from 'react'
 import Layer from '../../../../components/Layer';
-import TyPanel from './tyPanel'
+import JyPanel from './jyPanel'
 
-
-class TyPage extends Component{
+class JyPage extends Component{
 
     state={
         canEdit:false,
-        distribute:{},
+        report:{},
         opType:'view'
     }
 
@@ -16,22 +15,21 @@ class TyPage extends Component{
         let canEdit  = false;
         let entity = initState.entity || {}
         if(initState.op === 'add' || initState.op=='edit'){
-            let s = entity.status;
-            if(s === 0 || s===16){
-                canEdit = true;
-            }
+            canEdit= true
         }
-        this.setState({ opType: initState.op, canEdit: canEdit,distribute: entity })
+        this.setState({ report: entity, opType: initState.op, list: initState.list||[], canEdit: canEdit })
 
     }
 
+    
+
     render(){
         return (
-            <Layer>
-                <TyPanel {...this.state} hidePre={this.props.hidePre}/>
+            <Layer >
+                <JyPanel  {...this.state}/>
             </Layer>
         )
     }
 }
 
-export default TyPage;
+export default JyPage;

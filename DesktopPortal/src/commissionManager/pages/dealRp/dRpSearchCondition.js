@@ -201,7 +201,7 @@ class DRpSearchCondition extends Component {
                                 <FormItem label="所属部门">
                                     {getFieldDecorator('organizationId')(
                                         <TreeSelect
-                                            dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+                                            dropdownStyle={{ maxHeight: 400, minWidth: 400, overflow: 'auto' }}
                                             treeData={this.state.nodes}
                                             placeholder="请选择所属部门"
                                         />

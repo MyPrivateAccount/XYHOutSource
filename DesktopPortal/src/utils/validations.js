@@ -135,6 +135,20 @@ const validations = {
             }
         }
         return false;
+    },
+    validateForm:(form)=>{
+        let r= {hasError: false,};
+        form.validateFieldsAndScroll();
+        var errors = form.getFieldsError();
+
+        if (validations.checkErrors(errors)) {
+            r.hasError = true;
+            r.errors = errors;
+            return r;
+        }
+        let values = form.getFieldsValue();
+        r.values = values;
+        return r;
     }
 };
 

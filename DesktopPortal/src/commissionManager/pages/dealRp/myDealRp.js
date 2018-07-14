@@ -18,7 +18,7 @@ class MyDealRp extends Component {
     state = {
         list:[],
         loading: false,
-        pagination:{pageSize:1, pageIndex: 1, total:0}
+        pagination:{pageSize:15, pageIndex: 1, total:0}
     }
 
     handleNew = (info) => {
@@ -41,6 +41,7 @@ class MyDealRp extends Component {
             sfzjjg:'1',
             htlx:'3',
             cjzj:0,
+            examineStatus:0,
             ycjyj:0,
             reportWy:{
                 wyWylx:"1",

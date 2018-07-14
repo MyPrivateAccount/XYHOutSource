@@ -1,97 +1,137 @@
 //收款组件
 import { connect } from 'react-redux';
 import React, { Component } from 'react'
-import { Select, Row, Col, Form, Input, Tooltip, Button, Modal, Layout, Tabs, DatePicker } from 'antd'
+import { Select, Row, Col, Form, Input,  Layout,  DatePicker, InputNumber, Radio } from 'antd'
 import moment from 'moment'
+import {getDicPars} from '../../../../utils/utils'
+import { getDicParList } from '../../../../actions/actionCreators'
+import { dicKeys, examineStatusMap } from '../../../constants/const'
+import WebApiConfig from '../../../constants/webApiConfig'
+import ApiClient from '../../../../utils/apiClient';
+import validations from '../../../../utils/validations'
+
 const FormItem = Form.Item;
+const Option = Select.Option;
+const RadioGroup = Radio.Group;
 
 class SKCp extends Component {
 
-    componentDidMount(){
-        this.props.onSKCp(this)
-        this.loadData()
+    state={
+        entity:{},
+        zhList: []
     }
-    //加载数据
-    loadData=()=>{
-        let dt = this.props.sfkinfo;
-        const dateFormat = 'YYYY-MM-DD'
-        let now = moment(moment().format('YYYY-MM-DD'),dateFormat)
-        console.log(now)
-        if(dt!==null){
-            this.props.form.setFieldsValue({'sectionId':dt.sectionId})
-            this.props.form.setFieldsValue({'skr':dt.skr})
-            this.props.form.setFieldsValue({'sjrq':dt.sjrq!==undefined?dt.sjrq:now})
-            this.props.form.setFieldsValue({'jzrq':dt.jzrq!==undefined?dt.sjrq:now})
-            this.props.form.setFieldsValue({'je':dt.je})
-            this.props.form.setFieldsValue({'jkf':dt.jkf})
-            this.props.form.setFieldsValue({'yt':dt.yt})
-            this.props.form.setFieldsValue({'gszh':dt.gszh})
-            this.props.form.setFieldsValue({'skfs':dt.skfs})
-            this.props.form.setFieldsValue({'jzdrzh':dt.jzdrzh})
-            this.props.form.setFieldsValue({'bz':dt.bz})
-            this.props.form.setFieldsValue({'buy':dt.buy})
-            this.props.form.setFieldsValue({'buyCode':dt.buyCode})
-            this.props.form.setFieldsValue({'sell':dt.sell})
-            this.props.form.setFieldsValue({'sellCode':dt.sellCode})
+
+    _lastFgs = '';
+
+    componentWillMount=()=>{
+        this.props.getDicParList([
+            dicKeys.skfs,
+            dicKeys.skyt
+        ])
+    }
+
+    componentDidMount = ()=>{
+        this.initEntity(this.props)
+    }
+
+    componentWillReceiveProps =(nextProps)=>{
+        if(this.props.entity !== nextProps.entity){
+            this.initEntity(nextProps)
         }
     }
-    //获取页面数据
-    getData=()=>{
-        let rs = null
-        this.props.form.validateFields((err, values) => {
-            if (!err) {
-                values.dsdfType = 1
-                values.sjrq = values.sjrq.format('YYYY-MM-DD')
-                values.jzrq = values.jzrq.format('YYYY-MM-DD')
-                rs = values
+
+    _getGszh = async ()=>{
+        let fgs = (this.props.entity||{}).fgs;
+        if(!fgs){
+            fgs = this.props.user.Filiale
+        }
+        if(fgs === this._lastFgs){
+            return;
+        }
+        let url  = `${WebApiConfig.baseset.orgget}${fgs}/GSZH`
+        let r = await ApiClient.get(url);
+        r = (r||{}).data||{};
+        if(r.code==='0'){
+            this._lastFgs = fgs;
+            let pv = (r.extension||{}).parValue||'';
+            let pvs = pv.split('|')
+            if(pvs.length===0){
+                pvs.push('默认账号')
             }
-            else{
-                console.log(err)
+            this.setState({zhList: pvs})
+            let gszh = this.props.form.getFieldValue('gszh');
+            if(!gszh){
+                this.props.form.setFieldsValue({
+                    gszh: pvs[0]
+                })
             }
-          });
-        return rs
+
+        }
     }
+
+    initEntity=(props)=>{
+        let entity = props.entity ||{};
+        this.setState({entity: entity},()=>{
+            this.props.form.setFieldsValue(entity);
+        })
+        this._getGszh();
+
+
+    }
+
+    getValues = ()=>{
+       let r = validations.validateForm(this.props.form)
+       return r;
+    }
+
+   
     render() {
         const { getFieldDecorator } = this.props.form;
         const formItemLayout = {
             labelCol: { span: 6 },
             wrapperCol: { span: 14 },
         };
+
+        let skfsList= getDicPars(dicKeys.skfs, this.props.dic)
+        let skytList = getDicPars(dicKeys.skyt, this.props.dic)
+        let entity = this.state.entity;
+        let canEdit = this.props.canEdit;
+
         return (
             <Layout>
                 <Layout.Content>
-                    <Row style={{ margin: 5 }}>
+                    <Row className="form-row">
                         <Col span={12} >
                             <FormItem {...formItemLayout} label={(<span>部门</span>)}>
                                 {
-                                    getFieldDecorator('sectionId', {
-                                        rules: [{ required: false, message: '' }],
-                                    })(
-                                        <Input style={{ width: 200 }} disabled={true}></Input>
+                                    getFieldDecorator('sectionId')(
+                                        <Select disabled style={{width:'15rem'}}>
+                                            <Option key={entity.sectionId} value={entity.sectionId}>{entity.sectionName}</Option>
+                                        </Select>
                                     )
                                 }
                             </FormItem>
                         </Col>
                         <Col span={12}>
-                            <FormItem {...formItemLayout} label={(<span>收款人</span>)}>
+                            <FormItem {...formItemLayout}  label={(<span>收款人</span>)}>
                                 {
-                                    getFieldDecorator('skr', {
-                                        rules: [{ required: false, message: '' }],
-                                    })(
-                                        <Input style={{ width: 200 }} disabled={true}></Input>
+                                    getFieldDecorator('skrId')(
+                                        <Select disabled style={{width:'15rem'}}>
+                                            <Option key={entity.skrId} value={entity.skrId}>{entity.skr}</Option>
+                                        </Select>
                                     )
                                 }
                             </FormItem>
                         </Col>
                     </Row>
-                    <Row style={{ margin: 5 }}>
+                    <Row className="form-row">
                         <Col span={12}>
                             <FormItem {...formItemLayout} label={(<span>收据日期</span>)}>
                                 {
                                     getFieldDecorator('sjrq', {
-                                        rules: [{ required: false, message: '' }],
+                                        rules: [{ required: true, message: '必须选择收据日期' }],
                                     })(
-                                        <DatePicker style={{ width: 120 }}></DatePicker>
+                                        <DatePicker disabled={!canEdit} style={{ width: 120 }}></DatePicker>
                                     )
                                 }
                             </FormItem>
@@ -100,22 +140,22 @@ class SKCp extends Component {
                             <FormItem {...formItemLayout} label={(<span>进账日期</span>)}>
                                 {
                                     getFieldDecorator('jzrq', {
-                                        rules: [{ required: false, message: '' }],
+                                        rules: [{ required: true, message: '必须选择进账日期' }],
                                     })(
-                                        <DatePicker style={{ width: 120 }}></DatePicker>
+                                        <DatePicker disabled={!canEdit} style={{ width: 120 }}></DatePicker>
                                     )
                                 }
                             </FormItem>
                         </Col>
                     </Row>
-                    <Row style={{ margin: 5 }}>
+                    <Row className="form-row">
                         <Col span={12}>
                             <FormItem {...formItemLayout} label={(<span>金额</span>)}>
                                 {
                                     getFieldDecorator('je', {
                                         rules: [{ required: true, message: '请输入金额' }],
                                     })(
-                                        <Input style={{ width: 200 }}></Input>
+                                        <InputNumber disabled={!canEdit} precision={2} style={{ width: 200 }}></InputNumber>
                                     )
                                 }
                             </FormItem>
@@ -126,93 +166,89 @@ class SKCp extends Component {
                                     getFieldDecorator('jkf', {
                                         rules: [{ required: true, message: '请输入交款方' }],
                                     })(
-                                        <Input style={{ width: 200 }}></Input>
+                                        <Input disabled={!canEdit} style={{ width: 200 }}></Input>
                                     )
                                 }
                             </FormItem>
                         </Col>
                     </Row>
-                    <Row style={{ margin: 5 }}>
+                    <Row className="form-row">
                         <Col span={12}>
                             <FormItem {...formItemLayout} label={(<span>用途</span>)}>
                                 {
-                                    getFieldDecorator('yt', {
-                                        rules: [{ required: false, message: '请输入交款方' }],
-                                    })(
-                                        <Select style={{ width: 80 }}>
-                                         <Select.Option key={'1'} value={'业主佣金'}>业主佣金</Select.Option>
+                                    getFieldDecorator('yt')(
+                                        <Select disabled={!canEdit} >
+                                         {
+                                             skytList.map(x=><Option key={x.value} value={x.value}>{x.key}</Option>)
+                                         }
                                         </Select>
                                     )
                                 }
                             </FormItem>
                         </Col>
-                        <Col span={12}>
+                        <Col className="form-row">
                             <FormItem {...formItemLayout} label={(<span>公司账户</span>)}>
                                 {
-                                    getFieldDecorator('gszh', {
-                                        rules: [{ required: false, message: '请输入交款方' }],
-                                    })(
-                                        <Select style={{ width: 80 }}>
-                                          <Select.Option key={'1'} value={'12345678'}>新耀行</Select.Option>
-                                          <Select.Option key={'2'} value={'45678909'}>龙山行</Select.Option>
+                                    getFieldDecorator('gszh')(
+                                        <Select defaultActiveFirstOption disabled={!canEdit}  style={{width:'15rem'}}>
+                                          {
+                                              this.state.zhList.map(x=><Option key={x} value={x}>{x}</Option>)
+                                          }
                                         </Select>
                                     )
                                 }
                             </FormItem>
                         </Col>
                     </Row>
-                    <Row style={{ margin: 5 }}>
+                    <Row className="form-row">
                         <Col span={12}>
                             <FormItem {...formItemLayout} label={(<span>收款方式</span>)}>
                                 {
-                                    getFieldDecorator('skfs', {
-                                        rules: [{ required: false, message: '请输入交款方' }],
-                                    })(
-                                        <Select style={{ width: 80 }}>
-                                           <Select.Option key={'1'} value={'转账'}>转账</Select.Option>
-                                          <Select.Option key={'2'} value={'现金'}>现金</Select.Option>
-                                          <Select.Option key={'3'} value={'刷卡'}>刷卡</Select.Option>
-                                          <Select.Option key={'4'} value={'支票'}>支票</Select.Option>
-                                        </Select>
+                                    getFieldDecorator('skfs')(
+                                        <RadioGroup disabled={!canEdit} >
+                                            {
+                                                skfsList.map(x=><Radio key={x.value} value={x.value}>{x.key}</Radio>)
+                                            }
+                                        </RadioGroup>
                                     )
                                 }
                             </FormItem>
                         </Col>
                     </Row>
-                    <Row style={{ margin: 5 }}>
+                    <Row className="form-row">
                         <Col span={12} >
-                            <FormItem {...formItemLayout} label={(<span>付款人</span>)}>
+                            <FormItem {...formItemLayout} className="auto-width" label={(<span>进账单日志号/付款人</span>)}>
                                 {
                                     getFieldDecorator('jzdrzh', {
                                         rules: [{ required: true, message: '请输入付款人' }],
                                     })(
-                                        <Input style={{ width: 80 }}></Input>
+                                        <Input disabled={!canEdit} ></Input>
                                     )
                                 }
                             </FormItem>
                         </Col>
                     </Row>
-                    <Row style={{ margin: 5 }}>
+                    <Row className="form-row">
                         <Col span={12} >
                             <FormItem {...formItemLayout} label={(<span>备注</span>)}>
                                 {
                                     getFieldDecorator('bz', {
                                         rules: [{ required: false, message: '' }],
                                     })(
-                                        <Input.TextArea rows={4} style={{ width: 510 }}></Input.TextArea>
+                                        <Input.TextArea disabled={!canEdit} rows={4} style={{ width: 510 }}></Input.TextArea>
                                     )
                                 }
                             </FormItem>
                         </Col>
                     </Row>
-                    <Row style={{ margin: 5 }}>
+                    <Row className="form-row">
                         <Col span={12}>
                             <FormItem {...formItemLayout} label={(<span>买方/承租方</span>)}>
                                 {
                                     getFieldDecorator('buy', {
-                                        rules: [{ required: false, message: '' }],
+                                        rules: [{ required: true, message: '必须输入买方，承租方' }],
                                     })(
-                                        <Input style={{ width: 200 }}></Input>
+                                        <Input disabled={!canEdit}  style={{ width: 200 }}></Input>
                                     )
                                 }
                             </FormItem>
@@ -223,20 +259,20 @@ class SKCp extends Component {
                                     getFieldDecorator('buyCode', {
                                         rules: [{ required: false, message: '' }],
                                     })(
-                                        <Input style={{ width: 200 }}></Input>
+                                        <Input disabled={!canEdit} style={{ width: 200 }}></Input>
                                     )
                                 }
                             </FormItem>
                         </Col>
                     </Row>
-                    <Row style={{ margin: 5 }}>
+                    <Row className="form-row">
                         <Col span={12}>
                             <FormItem {...formItemLayout} label={(<span>卖方/承租方</span>)}>
                                 {
                                     getFieldDecorator('sell', {
                                         rules: [{ required: false, message: '' }],
                                     })(
-                                        <Input style={{ width: 200 }}></Input>
+                                        <Input disabled={!canEdit} style={{ width: 200 }}></Input>
                                     )
                                 }
                             </FormItem>
@@ -247,7 +283,7 @@ class SKCp extends Component {
                                     getFieldDecorator('sellCode', {
                                         rules: [{ required: false, message: '' }],
                                     })(
-                                        <Input style={{ width: 200 }}></Input>
+                                        <Input disabled={!canEdit} style={{ width: 200 }}></Input>
                                     )
                                 }
                             </FormItem>
@@ -261,14 +297,15 @@ class SKCp extends Component {
 function MapStateToProps(state) {
 
     return {
-        ext: state.rp.ext,
-        operInfo: state.rp.operInfo
+        dic: state.basicData.dicList,
+        user: state.oidc.user.profile || {}
     }
 }
 
 function MapDispatchToProps(dispatch) {
     return {
-        dispatch
+        dispatch,
+        getDicParList: (...args) => dispatch(getDicParList(...args))
     };
 }
 const WrappedRegistrationForm = Form.create()(SKCp);

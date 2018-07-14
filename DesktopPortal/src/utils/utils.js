@@ -274,22 +274,73 @@ export function getOrganizationTree(nodes){
     return treeRoot;
 }
 
+const orgTypeMap = {
+    Bloc: {order: 0, topOrder: 0},
+    Subsidiary: {order: 100, topOrder: 100},
+    "Non business": {order: 100, topOrder: 0, ignore: true},
+    Filiale: {order: 200, topOrder: 200},
+    Normal: {order: 300, topOrder: 200, ignore: true},
+    Business: {order: 300, topOrder: 200, ignore: true},
+    Region: {order: 400, topOrder: 400},
+    Area: {order: 500, topOrder: 400},
+    Group: {order: 600, topOrder: 400},
+}
+
 function _getChildren(nodes, parent){
     if(!parent.children){
         parent.children=[];
     }
 
     nodes.forEach(item=>{
-        if(item.parentId == parent.id){
+        if(item.parentId === parent.id){
             var newItem ={
-                label:item.organizationName,
+                name:item.organizationName,
                 value: item.id,
                 key:item.id,
                 id: item.id,
-                data: item
+                data: item,
+                parent: parent
             }
+
+            newItem.label = _getFullName(newItem);
+
+
             parent.children.push(newItem);
             _getChildren(nodes, newItem);
         }
     })
+}
+
+function _getFullName(item){
+    let type = item.data.type;
+    let sortInfo = orgTypeMap[type]
+    if(!sortInfo){
+        return item.data.organizationName;
+    }
+
+    let parents = [];
+    parents.push(item);
+    let cur = item;
+    let curSortInfo = sortInfo;
+    while( curSortInfo && curSortInfo.order> sortInfo.topOrder ){
+        cur = cur.parent
+        if(cur){
+            curSortInfo = orgTypeMap[cur.data.type]
+            if(curSortInfo && !curSortInfo.ignore){
+                parents.splice(0,0, cur)
+            }
+        }else{
+            curSortInfo = null;
+        }
+    }
+
+    let fn = '';
+    parents.forEach(item=>{
+        if(fn){
+            fn = fn + "-"
+        }
+        fn = fn + item.data.organizationName
+    })
+
+    return fn;
 }

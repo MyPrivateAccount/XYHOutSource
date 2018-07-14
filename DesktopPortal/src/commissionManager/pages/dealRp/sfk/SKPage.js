@@ -1,13 +1,13 @@
-import React, {Component} from 'react'
+import React, { Component } from 'react';
 import Layer from '../../../../components/Layer';
-import TyPanel from './tyPanel'
+import SKPanel from './SKPanel'
 
-
-class TyPage extends Component{
+class SKPage extends Component{
 
     state={
         canEdit:false,
-        distribute:{},
+        factGet:{},
+        report: {},
         opType:'view'
     }
 
@@ -16,22 +16,23 @@ class TyPage extends Component{
         let canEdit  = false;
         let entity = initState.entity || {}
         if(initState.op === 'add' || initState.op=='edit'){
-            let s = entity.status;
+            let s = entity.status||0;
             if(s === 0 || s===16){
                 canEdit = true;
             }
         }
-        this.setState({ opType: initState.op, canEdit: canEdit,distribute: entity })
+        this.setState({ opType: initState.op, canEdit: canEdit,factGet: entity, report: entity.report||{} })
 
     }
 
-    render(){
+    render (){
         return (
             <Layer>
-                <TyPanel {...this.state} hidePre={this.props.hidePre}/>
+                <SKPanel {...this.state}/>
             </Layer>
         )
     }
 }
 
-export default TyPage;
+
+export default SKPage;

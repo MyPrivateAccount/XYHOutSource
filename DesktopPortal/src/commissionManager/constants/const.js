@@ -14,7 +14,8 @@ export const permission = {
     
     myReport: 'YJ_CJ_WD',
     nyftPepole:'YJ_CJ_NYFT', //内容分摊人
-    reportQuery: 'YJ_CJ_CX',
+    reportQuery: 'YJ_CJ_GXQ',
+    yjfpQuery:'YJ_CJ_CK',
 
     monthlyClosing: 'YJ_CW_YJ',
     ryftTable: 'YJ_CW_RY_QUERY',
@@ -61,8 +62,11 @@ export const dicKeys = {
     khly:'CUSTOMER_SOURCE',
 
     sfdx:'COMMISSION_FP_SFDX', //收付对象
-    yjfj: 'COMMISSION_FJ_TYPES' //附件类型
+    yjfj: 'COMMISSION_FJ_TYPES', //附件类型,
 
+    skfs: 'COMMISSION_SKFS', //收款方式
+    skyt: 'COMMISSION_SKYT', //收款用途
+    wyfkfs: 'COMMISSION_WY_FKFS', //外佣付款方式
 }
 
 export const branchPar= {

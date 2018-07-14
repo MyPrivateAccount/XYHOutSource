@@ -72,15 +72,20 @@ const WebApiConfig = {
         fpGet:basicDataBaseApiUrl+'yj/reportyjfp/',
         myrpGet:basicDataBaseApiUrl+'yj/report/myreport',
         searchRp:basicDataBaseApiUrl+'yj/report/search',
+        searchYjfp:basicDataBaseApiUrl+'yj/report/search/yjfp',
         getcjbb:basicDataBaseApiUrl+'customerdeal/yj',
+        factgetSave:basicDataBaseApiUrl+'yj/factget',//保存收付款信息
         factget:basicDataBaseApiUrl+'yj/factget/',//获取收付信息
         factgetget:basicDataBaseApiUrl+'yj/factget/get',//收款信息
         factgetpay:basicDataBaseApiUrl+'yj/factget/pay',//付款信息
+        rpFaceget: basicDataBaseApiUrl+'yj/factget/report/',//付款信息
         shopget:basicDataBaseApiUrl+'shops/',
         buildingget:basicDataBaseApiUrl+'buildings/',
         rpDel:basicDataBaseApiUrl+'yj/report/',
 
         rpSubmit :basicDataBaseApiUrl+'yj/report/audit/submit/',
+        rpZy:basicDataBaseApiUrl+'yj/report/uid', //转移
+        rpJy:basicDataBaseApiUrl+'yj/factget/jy/', //结佣
     },
     fina:{
         searchPPFt:basicDataBaseApiUrl+'yj/ppft/search',

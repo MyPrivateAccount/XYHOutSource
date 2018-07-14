@@ -52,7 +52,7 @@ export function* getAllAreaAsync(state) {
 }
 
 export function* watchDicAllAsync() {
-    yield takeLatest(actionTypes.DIC_GET_PARLIST, getParListAsync)
+    yield takeEvery(actionTypes.DIC_GET_PARLIST, getParListAsync)
     yield takeLatest(actionTypes.DIC_GET_AREA, getAllAreaAsync);
 }
 
