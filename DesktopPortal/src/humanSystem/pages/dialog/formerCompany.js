@@ -108,7 +108,7 @@ class FormerCompany extends Component {
                                     message: '请选择起始时间'
                                 }]
                             })(
-                                <DatePicker format='YYYY-MM-DD' style={{width: '100%'}} />
+                                <DatePicker format='YYYY-MM-DD' disabledDate={current=>current && current > moment().endOf('day')} style={{width: '100%'}} />
                             )}
                         </FormItem>
                     </Col>

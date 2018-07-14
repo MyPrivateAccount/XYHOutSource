@@ -110,7 +110,7 @@ class Education extends Component {
                                     message: '请选择入学时间'
                                 }]
                             })(
-                                <DatePicker format='YYYY-MM-DD' style={{width: '100%'}} />
+                                <DatePicker format='YYYY-MM-DD' disabledDate={current=>current && current > moment().endOf('day')} style={{width: '100%'}} />
                             )}
                         </FormItem>
                     </Col>
@@ -148,7 +148,7 @@ class Education extends Component {
                                 initialValue: editInfo.getDegreeTime ? moment(editInfo.getDegreeTime) : null,
                                 rules: []
                             })(
-                                <DatePicker format='YYYY-MM-DD' style={{width: '100%'}} />
+                                <DatePicker format='YYYY-MM-DD' disabledDate={current=>current && current > moment().endOf('day')} style={{width: '100%'}} />
                             )}
                         </FormItem>
                     </Col>

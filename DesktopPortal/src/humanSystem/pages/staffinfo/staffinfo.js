@@ -1,5 +1,5 @@
 import {connect} from 'react-redux';
-import {postBlackLst, setHumanInfo, getHumanImage, exportHumanForm, getHumanDetail} from '../../actions/actionCreator';
+import {getHumanDetail} from '../../actions/actionCreator';
 import React, {Component} from 'react'
 import {Table, Input, Select, Icon, Button, Row, Col, Slider, TreeSelect, Spin, notification, Popconfirm, Modal} from 'antd'
 import '../search.less'
@@ -48,7 +48,8 @@ class Staffinfo extends Component {
             },
             showLoading: false,
             humanList: {extension: [], pageIndex: 0, pageSize: 10, totalCount: 0},
-            checkedList: []//选中列表
+            checkedList: [],//选中列表
+            curRoutePath: null//当前路由地址
         }
     }
     getColumns() {
@@ -58,7 +59,7 @@ class Staffinfo extends Component {
             {title: '用户名', dataIndex: 'name', key: 'name'},
             {title: '性别', dataIndex: 'sex', key: 'sex', render: (text, record) => text == '1' ? '男' : '女'},
             {title: '身份证号', dataIndex: 'idCard', key: 'idCard'},
-            {title: '职位', dataIndex: 'position', key: 'position'},
+            {title: '职位', dataIndex: 'positionName', key: 'positionName'},
             {
                 title: '状态', dataIndex: 'staffStatus', key: 'staffStatus', render: (text, record) => {
                     let statusObj = dicEmpStatus.find(dic => dic.value == text);
@@ -123,6 +124,13 @@ class Staffinfo extends Component {
         if (!this.state.dicEmpStatus || this.state.dicEmpStatus.length == 0) {
             let dicEmpStatus = getDicPars("HUMEN_EMP_STATUS", this.props.rootBasicData);
             this.setState({dicEmpStatus: dicEmpStatus});
+        }
+        if (this.state.curRoutePath != newProps.location.pathname) {
+            this.setState({curRoutePath: newProps.location.pathname}, () => {
+                if (this.state.curRoutePath == '/staff') {
+                    this.handleSearch();
+                }
+            });
         }
     }
 

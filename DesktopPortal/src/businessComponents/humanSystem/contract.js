@@ -82,7 +82,7 @@ class Contract extends Component {
                                     message: '请选择合同签订日期'
                                 }]
                             })(
-                                <DatePicker disabled={disabled} format='YYYY-MM-DD' style={{width: '100%'}} />
+                                <DatePicker disabled={disabled} format='YYYY-MM-DD' disabledDate={current=>current && current > moment().endOf('day')} style={{width: '100%'}} />
                             )}
                         </FormItem>
                     </Col>

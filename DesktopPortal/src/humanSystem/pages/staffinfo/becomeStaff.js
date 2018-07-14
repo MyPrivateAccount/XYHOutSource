@@ -93,7 +93,7 @@ class OnBoarding extends Component {
                                         required: true, message: '请输入转正实际生效时间',
                                     }]
                                 })(
-                                    <DatePicker disabled={this.props.ismodify == 1} format='YYYY-MM-DD' style={{width: '100%'}} />
+                                    <DatePicker disabled={this.props.ismodify == 1} disabledDate={current=>current && current > moment().endOf('day')} format='YYYY-MM-DD' style={{width: '100%'}} />
                                 )}
                             </FormItem>
                         </Col>

@@ -5,7 +5,7 @@ import {TreeSelect, Input, Form, Select, Button, Row, Col} from 'antd'
 import SocialSecurity from '../../../businessComponents/humanSystem/socialSecurity'
 import Salary from '../../../businessComponents/humanSystem/salary'
 import Layer from '../../../components/Layer'
-import {getPosition, adjustHuman} from '../../serviceAPI/staffService'
+import {getHumanDetail, getPosition, adjustHuman} from '../../serviceAPI/staffService'
 const FormItem = Form.Item;
 const Option = Select.Option;
 const formItemLayout = {
@@ -19,7 +19,9 @@ class Change extends Component {
         department: '',
         oldPositionList: [],
         newPositionList: [],
-        showLoading: false
+        showLoading: false,
+        socialSecurityInfo: {},
+        salaryInfo: {}
     }
 
     componentDidMount() {
@@ -35,6 +37,12 @@ class Change extends Component {
         if (humanInfo.departmentId) {
             getPosition(humanInfo.departmentId).then(res => {
                 this.setState({oldPositionList: res.extension || []});
+            });
+            this.setState({showLoading: true});
+            getHumanDetail(humanInfo.id).then(res => {
+                this.setState({showLoading: false});
+                let result = res.extension || {};
+                this.setState({socialSecurityInfo: result.humanSocialSecurityResponse, salaryInfo: result.humanSalaryStructureResponse});
             });
         }
     }
@@ -66,9 +74,10 @@ class Change extends Component {
             }
             console.log("表单:", values, hasErr);
             if (!err && !hasErr) {
-                // this.props.dispatch(postChangeHuman(values));
                 this.setState({showLoading: true});
                 values.humanId = humanInfo.id;
+                values = {...values, ...salaryForm.getFieldsValue(), ...socialSecurityForm.getFieldsValue()}
+                console.log("移动调薪内容:", JSON.stringify(values));
                 adjustHuman(values).then(res => {
                     this.setState({showLoading: false});
                 })
@@ -221,8 +230,8 @@ class Change extends Component {
                         <Col span={7}></Col>
                     </Row>
 
-                    <SocialSecurity subPageLoadCallback={(formObj, pageName) => this.subPageLoadCallback(formObj, pageName)} />
-                    <Salary subPageLoadCallback={(formObj, pageName) => this.subPageLoadCallback(formObj, pageName)} />
+                    <SocialSecurity subPageLoadCallback={(formObj, pageName) => this.subPageLoadCallback(formObj, pageName)} entityInfo={this.state.socialSecurityInfo} />
+                    <Salary subPageLoadCallback={(formObj, pageName) => this.subPageLoadCallback(formObj, pageName)} entityInfo={this.state.salaryInfo} />
 
                     <Row>
                         <Col span={20} style={{textAlign: 'center'}}>

@@ -66,7 +66,7 @@ class PositionalTitle extends Component {
                                     message: '请选择职称取得时间'
                                 }]
                             })(
-                                <DatePicker format='YYYY-MM-DD' style={{width: '100%'}} />
+                                <DatePicker format='YYYY-MM-DD' disabledDate={current=>current && current > moment().endOf('day')} style={{width: '100%'}} />
                             )}
                         </FormItem>
                     </Col>
