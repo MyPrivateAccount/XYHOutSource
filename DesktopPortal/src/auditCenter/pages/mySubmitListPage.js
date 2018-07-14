@@ -1,9 +1,12 @@
 import { connect } from 'react-redux';
-import { setLoadingVisible, getAuditList } from '../actions/actionCreator';
+import { setLoadingVisible, getAuditList, openAuditDetail, getAuditHistory, getActiveDetail, getZywActiveDetail } from '../actions/actionCreator';
 import React, { Component } from 'react';
-import { Icon, Row, Col, Spin, Pagination, Menu } from 'antd';
-import AuditRecordItem, { auditType } from './item/auditRecordItem';
+import { Row, Col, Spin, Pagination, Menu } from 'antd';
+import AuditRecordItem from './item/auditRecordItem';
 import SearchCondition from '../constants/searchCondition';
+import Layer, { LayerRouter } from '../../components/Layer';
+import { Route } from 'react-router'
+import AuditDetail from './auditDetail'
 
 
 class MySubmitListPage extends Component {
@@ -18,26 +21,28 @@ class MySubmitListPage extends Component {
     }
 
     componentWillReceiveProps(newProps) {
-        let paginationInfo = {
-            pageSize: newProps.mySubmit.auditingList.pageSize,
-            current: newProps.mySubmit.auditingList.pageIndex,
-            total: newProps.mySubmit.auditingList.totalCount
-        };
-        if (this.state.activeTab === "passed") {
-            paginationInfo = {
-                pageSize: newProps.mySubmit.auditedList.pageSize,
-                current: newProps.mySubmit.auditedList.pageIndex,
-                total: newProps.mySubmit.auditedList.totalCount
+        if (this.props.auditedList !== newProps.auditedList) {
+            let paginationInfo = {
+                pageSize: newProps.mySubmit.auditingList.pageSize,
+                current: newProps.mySubmit.auditingList.pageIndex,
+                total: newProps.mySubmit.auditingList.totalCount
             };
-        } else if (this.state.activeTab === "rejected") {
-            paginationInfo = {
-                pageSize: newProps.mySubmit.rejectedList.pageSize,
-                current: newProps.mySubmit.rejectedList.pageIndex,
-                total: newProps.mySubmit.rejectedList.totalCount
-            };
+            if (this.state.activeTab === "passed") {
+                paginationInfo = {
+                    pageSize: newProps.mySubmit.auditedList.pageSize,
+                    current: newProps.mySubmit.auditedList.pageIndex,
+                    total: newProps.mySubmit.auditedList.totalCount
+                };
+            } else if (this.state.activeTab === "rejected") {
+                paginationInfo = {
+                    pageSize: newProps.mySubmit.rejectedList.pageSize,
+                    current: newProps.mySubmit.rejectedList.pageIndex,
+                    total: newProps.mySubmit.rejectedList.totalCount
+                };
+            }
+            console.log("分页信息：", newProps);
+            this.setState({ pagination: paginationInfo });
         }
-        console.log("分页信息：", newProps);
-        this.setState({ pagination: paginationInfo });
     }
 
     handleMenuChange = (e) => {
@@ -73,18 +78,26 @@ class MySubmitListPage extends Component {
         this.props.dispatch(getAuditList(condition));
     }
 
-    getAuditPage(auditInfo) {
-        console.log("我发起的:", auditInfo);
-        if (auditType[auditInfo.contentType]) {
-            return auditType[auditInfo.contentType].component;
-        } else {
-            return <div>未知的审核类型</div>
+    onClick = (auditInfo) => {
+        this.props.dispatch(getAuditHistory({
+            id: auditInfo.id, callback: (b, entity) => {
+                if (b) {
+                    this.props.history.push(`${this.props.match.url}/detail`, { entity: entity })
+                }
+            }
+        }));
+        if (auditInfo.submitDefineId && !(auditInfo.contentType || "").includes("Deal")) {
+            if (auditInfo.contentType.startsWith("ZYW")) {
+                this.props.dispatch(getZywActiveDetail(auditInfo.submitDefineId));
+            } else {
+                this.props.dispatch(getActiveDetail(auditInfo.submitDefineId));
+            }
         }
+        this.props.dispatch(openAuditDetail(auditInfo))
     }
 
     render() {
         const showLoading = this.props.showLoading;
-        const navigator = this.props.navigator;
         let auditList = this.props.mySubmit.auditingList.extension || [];
         if (this.state.activeTab === "passed") {
             auditList = this.props.mySubmit.auditedList.extension || [];
@@ -92,42 +105,36 @@ class MySubmitListPage extends Component {
             auditList = this.props.mySubmit.rejectedList.extension || [];
         }
         return (
-            <div>
-                {//首页
-                    navigator.length === 0 ? <div>
-                        <div id='auditList'>
-                            <Spin delay={300} spinning={showLoading}>
-                                <Row>
-                                    <Col>
-                                        <Menu onClick={this.handleMenuChange} selectedKeys={[this.state.activeTab]}
-                                            mode="horizontal">
-                                            <Menu.Item key="auditing">审核中</Menu.Item>
-                                            <Menu.Item key="passed">审核通过</Menu.Item>
-                                            <Menu.Item key="rejected">审核驳回</Menu.Item>
-                                        </Menu>
-                                    </Col>
-                                </Row>
-                                <Row>
-                                    <Col>
-                                        {
-                                            auditList.map(auditItem => <AuditRecordItem key={auditItem.id} auditInfo={auditItem} />)
-                                        }</Col>
-                                    <Col style={{ marginTop: '20px' }}>
-                                        <Pagination {...this.state.pagination} onChange={this.handleChangePage} />
-                                    </Col>
-                                </Row>
-                            </Spin>
-                        </div>
-                    </div> : <div>
-                            {/*** 详细页面*/}
-                            <Spin spinning={showLoading}>
+            <Layer>
+
+                <div id='auditList'>
+                    <Spin spinning={showLoading}>
+                        <Row>
+                            <Col>
+                                <Menu onClick={this.handleMenuChange} selectedKeys={[this.state.activeTab]}
+                                    mode="horizontal">
+                                    <Menu.Item key="auditing">审核中</Menu.Item>
+                                    <Menu.Item key="passed">审核通过</Menu.Item>
+                                    <Menu.Item key="rejected">审核驳回</Menu.Item>
+                                </Menu>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col>
                                 {
-                                    this.getAuditPage(navigator[0])
-                                }
-                            </Spin>
-                        </div>
-                }
-            </div>
+                                    auditList.map(auditItem => <AuditRecordItem key={auditItem.id} auditInfo={auditItem} onClick={this.onClick} />)
+                                }</Col>
+                            <Col style={{ marginTop: '20px' }}>
+                                <Pagination {...this.state.pagination} onChange={this.handleChangePage} />
+                            </Col>
+                        </Row>
+                    </Spin>
+                </div>
+
+                <LayerRouter>
+                    <Route path={`${this.props.match.url}/detail`} render={(props) => <AuditDetail setPageTitle={this.props.setPageTitle}  {...props} />} />
+                </LayerRouter>
+            </Layer>
         )
     }
 }

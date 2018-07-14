@@ -214,17 +214,9 @@ class AuditRecordItem extends Component {
             });
             return;
         }
-        this.props.dispatch(setLoadingVisible(true));
-        this.props.dispatch(getAuditDetail(auditInfo.id));
-        this.props.dispatch(getAuditHistory(auditInfo.id));
-        if (auditInfo.submitDefineId && !(auditInfo.contentType || "").includes("Deal")) {
-            if (auditInfo.contentType.startsWith("ZYW")) {
-                this.props.dispatch(getZywActiveDetail(auditInfo.submitDefineId));
-            } else {
-                this.props.dispatch(getActiveDetail(auditInfo.submitDefineId));
-            }
+        if(this.props.onClick){
+            this.props.onClick(auditInfo);
         }
-        this.props.dispatch(openAuditDetail(auditInfo));
     }
     getAuditTooltip(auditInfo) {
         let tooltip = '';

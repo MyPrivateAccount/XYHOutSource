@@ -3,15 +3,15 @@ import Loadable from 'react-loadable';
 import { connect } from 'react-redux';
 import LoadableLoading from '../../components/LoadableLoading';
 
-const LoadableMyAuditPage = Loadable({//我审核的
+export const LoadableMyAuditPage = Loadable({//我审核的
     loader: () => import('./myAuditListPage'),
     loading: () => <LoadableLoading />,
 });
-const LoadableMySubmitPage = Loadable({//我审核的
+export const LoadableMySubmitPage = Loadable({//我审核的
     loader: () => import('./mySubmitListPage'),
     loading: () => <LoadableLoading />,
 });
-const LoadableCopyToMePage = Loadable({//抄送我的
+export const LoadableCopyToMePage = Loadable({//抄送我的
     loader: () => import('./copyToMeListPage'),
     loading: () => <LoadableLoading />,
 });

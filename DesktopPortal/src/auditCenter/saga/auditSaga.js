@@ -77,17 +77,24 @@ export function* auditAsync(state) {
 //获取审核历史详细
 export function* getAuditHistoryDetailAsync(state) {
     let result = {isOk: false, extension: {}, msg: '获取核列详细失败！'};
-    let url = WebApiConfig.audit.getAuditHistory + state.payload;
+    let url = WebApiConfig.audit.getAuditHistory + state.payload.id;
+    let callback = state.payload.callback;
+    yield put({type: actionTypes.SET_SEARCH_LOADING, payload: true});
     try {
         let res = yield call(ApiClient.get, url)
         getApiResult(res, result);
         console.log(`url:${url},result:${JSON.stringify(res)}`);
         if (result.isOk) {
-            yield put({type: actionTypes.GET_AUDIT_HISTORY_COMPLETE, payload: result.extension});
+            yield put({type: actionTypes.GET_AUDIT_HISTORY_COMPLETE, payload: {entity: result.extension, callback: callback}});
+        }else{
+            if(callback){
+                callback(false)
+            }
         }
         yield put({type: actionTypes.SET_SEARCH_LOADING, payload: false});
     } catch (e) {
         result.msg = "获取核列详细接口调用异常！";
+        yield put({type: actionTypes.SET_SEARCH_LOADING, payload: false});
     }
     if (!result.isOk) {
         notification.error({

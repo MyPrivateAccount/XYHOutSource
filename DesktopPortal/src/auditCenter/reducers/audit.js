@@ -91,7 +91,14 @@ reducerMap[actionTypes.CHANGE_MENU] = function (state, action) {
 }
 //获取当前审核记录的历史
 reducerMap[actionTypes.GET_AUDIT_HISTORY_COMPLETE] = function (state, action) {
-    return Object.assign({}, state, {activeAuditHistory: action.payload});
+    let entity= action.payload.entity;
+    let callback  = action.payload.callback;
+    if(callback){
+        setTimeout(()=>{
+            callback(true, entity);
+        },0)
+    }
+    return Object.assign({}, state, {activeAuditHistory: entity});
 }
 //未读知会数量获取完成
 reducerMap[actionTypes.GET_NO_READ_COUNT_COMPLETE] = function (state, action) {

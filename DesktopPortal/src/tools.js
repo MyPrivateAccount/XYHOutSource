@@ -156,3 +156,38 @@ const auditTools = [{
     cache: null
 },
 ];
+
+
+function defaultDesc(item) {
+    return <span>{item.ext1}  {item.ext2}</span>
+}
+
+//审核重构
+export const reviewTypes = [
+    {
+        contentType: 'building',
+        title: '新增楼盘',
+        icon: <image  alt='...' />,
+        sencordLine: defaultDesc,
+        component:  ()=>createLoadableComponent(import('./expenseManager')),
+    }
+]
+
+export function getReviewDefine(contentType) {
+    let pd = reviewTypes.find(x => x.contentType.toLowerCase() === contentType.toLowerCase());
+
+    return pd;
+}
+
+
+export function getReviewComponent(contentType) {
+    let page = reviewTypes.find(x => x.contentType.toLowerCase() === contentType.toLowerCase());
+    if (page) {
+        if (page.cache) {
+            return page.cache;
+        }
+        page.cache = page.component;
+        return page.cache;
+    }
+    return null;
+}

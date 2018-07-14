@@ -1,9 +1,12 @@
 import { connect } from 'react-redux';
-import { setLoadingVisible, getAuditList } from '../actions/actionCreator';
+import { setLoadingVisible, getAuditList, openAuditDetail,getAuditHistory, getActiveDetail, getZywActiveDetail  } from '../actions/actionCreator';
 import React, { Component } from 'react';
-import { Icon, Row, Col, Spin, Pagination, Menu } from 'antd';
-import AuditRecordItem, { auditType } from './item/auditRecordItem';
+import { Row, Col, Spin, Pagination, Menu } from 'antd';
+import AuditRecordItem from './item/auditRecordItem';
 import SearchCondition from '../constants/searchCondition';
+import Layer, { LayerRouter } from '../../components/Layer';
+import { Route } from 'react-router'
+import AuditDetail from './auditDetail'
 
 class MyAuditListPage extends Component {
     state = {
@@ -16,22 +19,26 @@ class MyAuditListPage extends Component {
     }
 
     componentWillReceiveProps(newProps) {
-        let paginationInfo = {};
-        if (this.state.activeTab === "audited") {
-            paginationInfo = {
-                pageSize: newProps.auditedList.pageSize,
-                current: newProps.auditedList.pageIndex,
-                total: newProps.auditedList.totalCount
-            };
-        } else {
-            paginationInfo = {
-                pageSize: newProps.waitAuditList.pageSize,
-                current: newProps.waitAuditList.pageIndex,
-                total: newProps.waitAuditList.totalCount
-            };
+
+        if(this.props.auditedList!== newProps.auditedList){
+            let paginationInfo = {};
+            if (this.state.activeTab === "audited") {
+                paginationInfo = {
+                    pageSize: newProps.auditedList.pageSize,
+                    current: newProps.auditedList.pageIndex,
+                    total: newProps.auditedList.totalCount
+                };
+            } else {
+                paginationInfo = {
+                    pageSize: newProps.waitAuditList.pageSize,
+                    current: newProps.waitAuditList.pageIndex,
+                    total: newProps.waitAuditList.totalCount
+                };
+            }
+            console.log("分页信息：", paginationInfo);
+            this.setState({ pagination: paginationInfo });
         }
-        console.log("分页信息：", paginationInfo);
-        this.setState({ pagination: paginationInfo });
+        
     }
 
     handleMenuChange = (e) => {
@@ -58,61 +65,63 @@ class MyAuditListPage extends Component {
         this.props.dispatch(getAuditList(searchCondition));
     }
 
-    getAuditPage(auditInfo) {
-        console.log("我发起的:", auditInfo);
-        if (auditType[auditInfo.contentType]) {
-            return auditType[auditInfo.contentType].component;
-        } else {
-            return <div>未知的审核类型</div>
+
+    onClick = (auditInfo) => {
+        this.props.dispatch(getAuditHistory({
+            id: auditInfo.id, callback: (b, entity) => {
+                if (b) {
+                    this.props.history.push(`${this.props.match.url}/detail`, { entity: entity })
+                }
+            }
+        }));
+        if (auditInfo.submitDefineId && !(auditInfo.contentType || "").includes("Deal")) {
+            if (auditInfo.contentType.startsWith("ZYW")) {
+                this.props.dispatch(getZywActiveDetail(auditInfo.submitDefineId));
+            } else {
+                this.props.dispatch(getActiveDetail(auditInfo.submitDefineId));
+            }
         }
+        this.props.dispatch(openAuditDetail(auditInfo))
     }
 
     render() {
         const showLoading = this.props.showLoading;
-        const navigator = this.props.navigator;
         let auditList = [];
         if (this.state.activeTab === "waitAudit") {
             auditList = this.props.waitAuditList.extension || [];
         } else {
             auditList = this.props.auditedList.extension || [];
         }
-        console.log("auditList", auditList);
         return (
-            <div>
-                {//首页
-                    navigator.length === 0 ? <div>
-                        <div id='auditList'>
-                            <Spin delay={300} spinning={showLoading}>
-                                <Row>
-                                    <Col>
-                                        <Menu onClick={this.handleMenuChange} selectedKeys={[this.state.activeTab]}
-                                            mode="horizontal">
-                                            <Menu.Item key="waitAudit">待我审核的</Menu.Item>
-                                            <Menu.Item key="audited">我参与的</Menu.Item>
-                                        </Menu>
-                                    </Col>
-                                </Row>
-                                <Row>
-                                    <Col>
-                                        {
-                                            auditList.map((auditItem, i) => <AuditRecordItem key={auditItem.id + i} auditInfo={auditItem} />)
-                                        }</Col>
-                                    <Col style={{ marginTop: '20px' }}>
-                                        <Pagination {...this.state.pagination} onChange={this.handleChangePage} />
-                                    </Col>
-                                </Row>
-                            </Spin>
-                        </div>
-                    </div> : <div>
-                            <Spin spinning={showLoading}>
-                                {/*** 详细页面*/}
-                                {
-                                    this.getAuditPage(navigator[0])
-                                }
-                            </Spin>
-                        </div>
-                }
-            </div>
+            <Layer>
+               
+                    <div id='auditList'>
+                        <Spin  spinning={showLoading}>
+                            <Row>
+                                <Col>
+                                    <Menu onClick={this.handleMenuChange} selectedKeys={[this.state.activeTab]}
+                                        mode="horizontal">
+                                        <Menu.Item key="waitAudit">待我审核的</Menu.Item>
+                                        <Menu.Item key="audited">我参与的</Menu.Item>
+                                    </Menu>
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col>
+                                    {
+                                        auditList.map((auditItem, i) => <AuditRecordItem key={auditItem.id + i} auditInfo={auditItem} onClick={this.onClick} />)
+                                    }</Col>
+                                <Col style={{ marginTop: '20px' }}>
+                                    <Pagination {...this.state.pagination} onChange={this.handleChangePage} />
+                                </Col>
+                            </Row>
+                        </Spin>
+                    </div>
+                
+                <LayerRouter>
+                    <Route path={`${this.props.match.url}/detail`} render={(props) => <AuditDetail setPageTitle={this.props.setPageTitle}  {...props} />} />
+                </LayerRouter>
+            </Layer>
         )
     }
 }
