@@ -22,7 +22,7 @@ import Attendance from './pages/attendance/attendance'
 import Organization from './pages/organization/organization'
 import Statistics from './pages/statistics/statistics'
 import Set from './pages/set/set'
-import Rewardpunishment  from './pages/rewardpunishment/rewardpunishment'
+import Rewardpunishment from './pages/rewardpunishment/rewardpunishment'
 sagaMiddleware.run(rootSaga);
 
 const {SubMenu} = Menu;
@@ -38,7 +38,7 @@ const menuDefine = [
     {id: 25, menuID: "menu_attendance", displayName: "考勤信息", menuIcon: 'pushpin-o', path: '/attendance'},
     {id: 26, menuID: "menu_organization", displayName: "组织架构管理", menuIcon: 'layout', path: '/organization'},
     // {id: 27, menuID: "menu_statistics", displayName: "统计报表", menuIcon: 'global', path: '/statistics'},
-    {id: 27, menuID: "menu_awpu", displayName: "行政奖惩", menuIcon: 'global',path:'/rewardpunishment'},
+    {id: 27, menuID: "menu_awpu", displayName: "行政奖惩", menuIcon: 'global', path: '/rewardpunishment'},
     {id: 28, menuID: "menu_set", displayName: "设置", menuIcon: 'setting', path: '/set'},
     //{menuID: "menu_app", displayName: "应用管理", menuIcon: 'appstore', requirePermission: ['ApplicationCreate']}
 ];
@@ -63,6 +63,7 @@ const history = createHistory();
 let routeCallback = null;
 
 history.listen((location, action) => {
+    console.log("路由监听:", location, action);
     if (routeCallback) {
         routeCallback(location, action);
     }
@@ -77,7 +78,7 @@ class HumanIndex extends Component {
         menuList: []
     }
     componentDidMount() {
-        const dicArray = ['HUMEN_Nation', 'HUMEN_HOUSE_REGISTER', 'HUMEN_EDUCATION', 'HUMENT_HEALTH', 'HUMEN_POLITICS', 'CONTRACT_CATEGORIES', 'HUMEN_DEGREE','POSITION_TYPE','HUMEN_EMP_STATUS'];
+        const dicArray = ['HUMEN_Nation', 'HUMEN_HOUSE_REGISTER', 'HUMEN_EDUCATION', 'HUMENT_HEALTH', 'HUMEN_POLITICS', 'CONTRACT_CATEGORIES', 'HUMEN_DEGREE', 'POSITION_TYPE', 'HUMEN_EMP_STATUS'];
         this.props.dispatch(globalAction(getDicParList([...dicArray])));
         let ml = [];
         menuDefine.map(menu => {
@@ -274,12 +275,12 @@ class HumanIndex extends Component {
                     collapsed={this.state.collapsed}
                     onCollapse={this.toggle}>
                     <div className="logo" />
-                    <Menu
+                    {/* <Menu
                         theme="dark" key='menu_org_select' mode="vertical" style={{borderBottom: '1px solid #fff'}}>
                         <SubMenu title={"当前部门：" + fullPath}>
                             {orgTree.map(org => this.getChildOrg(org))}
                         </SubMenu>
-                    </Menu>
+                    </Menu> */}
                     <Menu mode="inline"
                         theme="dark"
                         onClick={this.handleMenuClick}
@@ -326,7 +327,7 @@ class HumanIndex extends Component {
                                     <Route path='/organization' component={Organization} />
                                     {/* <Route path='/statistics' component={Statistics} /> 由于前端报错，暂时注释，等界面写了再取消注释 
                                     <Route path='/set' component={Set} />*/}
-                                    <Route path='/rewardpunishment' component={Rewardpunishment}/>
+                                    <Route path='/rewardpunishment' component={Rewardpunishment} />
                                 </Layer>
                             </ConnectedRouter>
                         </Content>

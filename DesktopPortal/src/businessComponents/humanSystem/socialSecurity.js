@@ -35,8 +35,8 @@ class SocialSecurity extends Component {
                 <Row>
                     <Col span={7}>
                         <FormItem {...formItemLayout} label="是否参保" >
-                            {getFieldDecorator('bankName', {
-                                initialValue: socialSecurityInfo.bankName,
+                            {getFieldDecorator('isHave', {
+                                initialValue: socialSecurityInfo.isHave,
                                 rules: []
                             })(
                                 <Checkbox disabled={disabled}>已参保</Checkbox>

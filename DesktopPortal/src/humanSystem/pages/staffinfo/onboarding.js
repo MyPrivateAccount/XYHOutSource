@@ -100,7 +100,15 @@ class OnBoarding extends Component {
             this.setState({showLoading: true})
             getHumanDetail(humenInfo.id).then(res => {
                 console.log("员工详情请求结果:", res);
-                this.setState({humenInfo: res.extension || {}, showLoading: false});
+                let humanDetail = res.extension || {};
+                humanDetail.age = humanDetail.birthday ? moment().diff(humanDetail.birthday, 'year') : null;
+                this.setState({
+                    humenInfo: humanDetail,
+                    formerCompanyList: humanDetail.humanWorkHistoriesResponse || [],
+                    educationList: humanDetail.humanEducationInfosResponse || [],
+                    positionalTitleList: humanDetail.humanTitleInfosResponse || [],
+                    showLoading: false
+                });
             })
         }
 
@@ -380,9 +388,9 @@ class OnBoarding extends Component {
                     }
                     if (hasValue) {
                         socialSecurityValues.id = this.state.humenNewId;
-                        values = {...values, humanSocialSecurity: socialSecurityValues}
+                        values = {...values, humanSocialSecurityRequest: socialSecurityValues}
                     } else {
-                        values = {...values, humanSocialSecurity: null}
+                        values = {...values, humanSocialSecurityRequest: null}
                     }
                 }
                 if (this.state.SalaryForm) {
@@ -396,9 +404,9 @@ class OnBoarding extends Component {
                     }
                     if (hasValue) {
                         salaryValues.id = this.state.humenNewId;
-                        values = {...values, humanSalaryStructure: salaryValues}
+                        values = {...values, humanSalaryStructureRequest: salaryValues}
                     } else {
-                        values = {...values, humanSalaryStructure: null}
+                        values = {...values, humanSalaryStructureRequest: null}
                     }
                 }
                 if (this.state.humanContractForm) {
@@ -420,23 +428,23 @@ class OnBoarding extends Component {
                     }
                     if (hasValue) {
                         contractValues.id = this.state.humenNewId;
-                        values = {...values, humanContractInfo: contractValues}
+                        values = {...values, humanContractInfoRequest: contractValues}
                     } else {
-                        values = {...values, humanContractInfo: null}
+                        values = {...values, humanContractInfoRequest: null}
                     }
                 }
                 values.id = this.state.humenNewId;
-                values.humanTitleInfos = this.state.positionalTitleList || []
-                values.humanWorkHistories = this.state.formerCompanyList || []
-                values.humanEducationInfos = this.state.educationList || []
+                values.humanTitleInfosRequest = this.state.positionalTitleList || []
+                values.humanWorkHistoriesRequest = this.state.formerCompanyList || []
+                values.humanEducationInfosRequest = this.state.educationList || []
                 values.fileinfo = this.state.fileinfo;
                 values.maritalStatus = (values.maritalStatus == '0' ? false : true);
                 values.picture = this.state.picture;
                 console.log("提交内容", JSON.stringify(values));
-                // this.setState({showLoading: true});
-                // postHumanInfo(values).then(res => {
-                //     this.setState({showLoading: false});
-                // });
+                this.setState({showLoading: true});
+                postHumanInfo(values).then(res => {
+                    this.setState({showLoading: false});
+                });
             }
         });
     }
@@ -533,12 +541,12 @@ class OnBoarding extends Component {
         );
         let judgePermissions = this.props.judgePermissions || [];
         let humanInfo = this.state.humenInfo || {};
-        humanInfo.humanContractInfo = humanInfo.humanContractInfo || {};
-        humanInfo.humanSalaryStructure = humanInfo.humanSalaryStructure || {};
-        humanInfo.humanSocialSecurity = humanInfo.humanSocialSecurity || {};
-        humanInfo.humanTitleInfos = humanInfo.humanTitleInfos || [];
-        humanInfo.humanEducationInfos = humanInfo.humanEducationInfos || [];
-        humanInfo.humanWorkHistories = humanInfo.humanWorkHistories || [];
+        humanInfo.humanContractInfoRequest = humanInfo.humanContractInfoResponse || {};
+        humanInfo.humanSalaryStructureRequest = humanInfo.humanSalaryStructureResponse || {};
+        humanInfo.humanSocialSecurityRequest = humanInfo.humanSocialSecurityResponse || {};
+        humanInfo.humanTitleInfosRequest = humanInfo.humanTitleInfosResponse || [];
+        humanInfo.humanEducationInfosRequest = humanInfo.humanEducationInfosResponse || [];
+        humanInfo.humanWorkHistoriesRequest = humanInfo.humanWorkHistoriesResponse || [];
         console.log("formerCompanyColumns详情:", humanInfo);
         return (
             <Layer showLoading={this.state.showLoading}>
@@ -597,7 +605,7 @@ class OnBoarding extends Component {
                                                 required: true, message: '请输入生日',
                                             }]
                                         })(
-                                            <DatePicker disabled={disabled} format='YYYY-MM-DD' style={{width: '100%'}} />
+                                            <DatePicker disabled={disabled} format='YYYY-MM-DD' disabledDate={current => current && current > moment().endOf('day')} style={{width: '100%'}} />
                                         )}
                                     </FormItem>
                                 </Col>
@@ -740,7 +748,7 @@ class OnBoarding extends Component {
                                         message: '请选择入职日期'
                                     }]
                                 })(
-                                    <DatePicker disabled={disabled} format='YYYY-MM-DD' style={{width: '100%'}} />
+                                    <DatePicker disabled={disabled} format='YYYY-MM-DD' disabledDate={current => current && current > moment().endOf('day')} style={{width: '100%'}} />
                                 )}
                             </FormItem>
                         </Col>
@@ -992,7 +1000,7 @@ class OnBoarding extends Component {
 
                     </Row>
 
-                    <Contract subPageLoadCallback={(formObj, pageName) => this.subPageLoadCallback(formObj, pageName)} isReadOnly={disabled} dicContractCategories={this.state.dicContractCategories} entityInfo={humanInfo.humanContractInfo} />
+                    <Contract subPageLoadCallback={(formObj, pageName) => this.subPageLoadCallback(formObj, pageName)} isReadOnly={disabled} dicContractCategories={this.state.dicContractCategories} entityInfo={humanInfo.humanContractInfoRequest} />
 
                     <h3 style={styles.subHeader}><Icon type="tags-o" className='content-icon' />上单位职位信息 <Button type="primary" size='small' shape="circle" icon="plus" onClick={() => this.setState({formerCompanyDgShow: true})} /></h3>
                     <Row>
@@ -1022,8 +1030,8 @@ class OnBoarding extends Component {
                         </Col>
                         <Col span={2}></Col>
                     </Row>
-                    {judgePermissions.includes('SOCIAL_SECURITY_VIEW') || this.props.ismodify != 1 ? <SocialSecurity subPageLoadCallback={(formObj, pageName) => this.subPageLoadCallback(formObj, pageName)} isReadOnly={disabled} entityInfo={humanInfo.humanSocialSecurity} /> : null}
-                    {judgePermissions.includes('SALARY_VIEW') || this.props.ismodify != 1 ? <Salary subPageLoadCallback={(formObj, pageName) => this.subPageLoadCallback(formObj, pageName)} isReadOnly={disabled} entityInfo={humanInfo.humanSalaryStructure} /> : null}
+                    {judgePermissions.includes('SOCIAL_SECURITY_VIEW') || this.props.ismodify != 1 ? <SocialSecurity subPageLoadCallback={(formObj, pageName) => this.subPageLoadCallback(formObj, pageName)} isReadOnly={disabled} entityInfo={humanInfo.humanSocialSecurityRequest} /> : null}
+                    {judgePermissions.includes('SALARY_VIEW') || this.props.ismodify != 1 ? <Salary subPageLoadCallback={(formObj, pageName) => this.subPageLoadCallback(formObj, pageName)} isReadOnly={disabled} entityInfo={humanInfo.humanSalaryStructureRequest} /> : null}
                     <Row style={{textAlign: 'center', display: disabled ? 'none' : 'block'}}>
                         <Col>
                             <Button type="primary" htmlType="submit" style={{marginRight: '20px'}} disabled={this.hasErrors(getFieldsValue())} onClick={(e) => this.handleSubmit(e)}>提交</Button>
@@ -1050,6 +1058,7 @@ function stafftableMapStateToProps(state) {
         humanImage: state.basicData.humanImage,
         rootBasicData: (state.rootBasicData || {}).dicList,
         judgePermissions: state.judgePermissions,
+        pathname: state.router.pathname
     }
 }
 

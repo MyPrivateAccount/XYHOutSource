@@ -1,4 +1,4 @@
-
+import moment from 'moment'
 // export const SearchHumanTypes = [
 //     { value: 0, label: '不限'},
 //     { value: 1, label: '未入职'},
@@ -32,10 +32,12 @@ export const formerCompanyColumns = [{
 }, {
     title: '起始时间',
     dataIndex: 'startTime',
+    render: (text, record) => text ? moment(text).format('YYYY-MM-DD') : null,
     key: 'startTime',
 }, {
     title: '终止时间',
     dataIndex: 'endTime',
+    render: (text, record) => text ? moment(text).format('YYYY-MM-DD') : null,
     key: 'endTime',
 }, {
     title: '证明人',
@@ -71,11 +73,13 @@ export const educationColumns = [
     {
         title: '入学时间',
         dataIndex: 'enrolmentTime',
+        render: (text, record) => text ? moment(text).format('YYYY-MM-DD') : null,
         key: 'enrolmentTime',
     },
     {
         title: '毕业时间',
         dataIndex: 'graduationTime',
+        render: (text, record) => text ? moment(text).format('YYYY-MM-DD') : null,
         key: 'graduationTime',
     },
     {
@@ -86,6 +90,7 @@ export const educationColumns = [
     {
         title: '学位授予时间',
         dataIndex: 'getDegreeTime',
+        render: (text, record) => text ? moment(text).format('YYYY-MM-DD') : null,
         key: 'getDegreeTime',
     },
     {

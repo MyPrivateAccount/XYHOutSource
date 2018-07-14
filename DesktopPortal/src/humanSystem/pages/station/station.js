@@ -277,7 +277,7 @@ class Station extends Component {
                 <div className="searchBox">
                     <Row>
                         <Col style={{marginTop: '10px'}}>
-                            <label style={styles.conditionRow}>选择分公司 ：</label>
+                            <label style={styles.conditionRow}>选择分公司：</label>
                             <TreeSelect style={{width: '300px', marginRight: '10px'}}
                                 allowClear
                                 treeData={this.props.setContractOrgTree}
