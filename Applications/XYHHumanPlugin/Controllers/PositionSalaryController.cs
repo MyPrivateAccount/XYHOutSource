@@ -173,6 +173,7 @@ namespace XYHHumanPlugin.Controllers
         /// </summary>
         /// <param name="examineResponse"></param>
         /// <returns></returns>
+        [AllowAnonymous]
         [HttpPost("humanpositionsalarycallback")]
         [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
         public async Task<ResponseMessage> HumanPositionSalaryCallback([FromBody] ExamineResponse examineResponse)
@@ -203,7 +204,7 @@ namespace XYHHumanPlugin.Controllers
             {
                 response.Code = ResponseCodeDefines.ServiceError;
                 response.Message = e.ToString();
-                Logger.Trace($"新增职位薪酬信息回调(HumanPositionSalaryCallback)报错：\r\n{e.ToString()}，\r\n请求参数为：\r\n" + examineResponse != null ? JsonHelper.ToJson(examineResponse) : "");
+                Logger.Trace($"新增职位薪酬信息回调(HumanPositionSalaryCallback)报错：\r\n{e.ToString()}，\r\n请求参数为：\r\n" + (examineResponse != null ? JsonHelper.ToJson(examineResponse) : ""));
             }
             return response;
         }
@@ -215,6 +216,7 @@ namespace XYHHumanPlugin.Controllers
         /// </summary>
         /// <param name="examineResponse"></param>
         /// <returns></returns>
+        [AllowAnonymous]
         [HttpPost("humanpositionsalarystepcallback")]
         [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
         public async Task<ResponseMessage> HumanPositionSalaryStepCallback([FromBody] ExamineStepResponse examineStepResponse)

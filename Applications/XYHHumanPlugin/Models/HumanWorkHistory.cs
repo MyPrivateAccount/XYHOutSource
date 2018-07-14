@@ -45,7 +45,16 @@ namespace XYHHumanPlugin.Models
         /// 离职时间
         /// </summary>
         public DateTime? EndTime { get; set; }
-
+        /// <summary>
+        /// 证明人
+        /// </summary>
+        [MaxLength(50)]
+        public string Witness { get; set; }
+        /// <summary>
+        /// 证明人电话
+        /// </summary>
+        [MaxLength(50)]
+        public string WitnessPhone { get; set; }
         [MaxLength(127)]
         public string CreateUser { get; set; }
         public DateTime? CreateTime { get; set; }

@@ -74,6 +74,10 @@ namespace XYHHumanPlugin.Dto.Response
         /// </summary>
         public DateTime? CreateTime { get; set; }
         /// <summary>
+        /// 职位名称
+        /// </summary>
+        public string PositionName { get; set; }
+        /// <summary>
         /// 是否参加社保
         /// </summary>
         public bool? IsHaveSocialSecurity { get; set; }

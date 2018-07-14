@@ -27,5 +27,13 @@ namespace XYHHumanPlugin.Dto.Response
         /// 其他补贴
         /// </summary>
         public decimal OtherAllowance { get; set; }
+        /// <summary>
+        /// 应发工资
+        /// </summary>
+        public decimal GrossPay { get; set; } = 0;
+        /// <summary>
+        /// 试用期工资
+        /// </summary>
+        public decimal ProbationaryPay { get; set; } = 0;
     }
 }

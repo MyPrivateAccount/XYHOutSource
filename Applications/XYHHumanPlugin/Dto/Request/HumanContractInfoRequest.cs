@@ -23,7 +23,11 @@ namespace XYHHumanPlugin.Dto.Request
         /// </summary>
         [StringLength(255)]
         public string ContractType { get; set; }
-
+        /// <summary>
+        /// 签订合同单位
+        /// </summary>
+        [StringLength(255)]
+        public string ContractCompany { get; set; }
         /// <summary>
         /// 合同签署日期
         /// </summary>

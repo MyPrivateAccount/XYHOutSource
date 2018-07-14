@@ -173,6 +173,7 @@ namespace XYHHumanPlugin.Controllers
         /// </summary>
         /// <param name="examineResponse"></param>
         /// <returns></returns>
+        [AllowAnonymous]
         [HttpPost("humanpositioncallback")]
         [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
         public async Task<ResponseMessage> HumanPositionCallback([FromBody] ExamineResponse examineResponse)
@@ -203,7 +204,7 @@ namespace XYHHumanPlugin.Controllers
             {
                 response.Code = ResponseCodeDefines.ServiceError;
                 response.Message = e.ToString();
-                Logger.Trace($"新增职位信息回调(HumanPositionCallback)报错：\r\n{e.ToString()}，\r\n请求参数为：\r\n" + examineResponse != null ? JsonHelper.ToJson(examineResponse) : "");
+                Logger.Trace($"新增职位信息回调(HumanPositionCallback)报错：\r\n{e.ToString()}，\r\n请求参数为：\r\n" + (examineResponse != null ? JsonHelper.ToJson(examineResponse) : ""));
             }
             return response;
         }
@@ -215,6 +216,7 @@ namespace XYHHumanPlugin.Controllers
         /// </summary>
         /// <param name="examineResponse"></param>
         /// <returns></returns>
+        [AllowAnonymous]
         [HttpPost("humanpositionstepcallback")]
         [TypeFilter(typeof(CheckPermission), Arguments = new object[] { "" })]
         public async Task<ResponseMessage> HumanPositionStepCallback([FromBody] ExamineStepResponse examineStepResponse)

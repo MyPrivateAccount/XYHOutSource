@@ -66,6 +66,9 @@ namespace XYHHumanPlugin.Stores
                         from hs in hs2.DefaultIfEmpty()
                         join hss1 in Context.HumanSocialSecurities.AsNoTracking() on h.Id equals hss1.Id into hss2
                         from hss in hss2.DefaultIfEmpty()
+                        join p1 in Context.PositionInfos.AsNoTracking() on h.Position equals p1.ID into p2
+                        from p in p2.DefaultIfEmpty()
+
 
                         join oe1 in Context.OrganizationExpansions.AsNoTracking() on new { h.DepartmentId, Type = "Region" } equals new { DepartmentId = oe1.SonId, Type = oe1.Type } into oe2
                         from oe in oe2.DefaultIfEmpty()
@@ -83,6 +86,7 @@ namespace XYHHumanPlugin.Stores
                             Name = h.Name,
                             Picture = h.Picture,
                             Position = h.Position,
+                            PositionName = p.PositionName,
                             Birthday = h.Birthday,
                             Phone = h.Phone,
                             Sex = h.Sex,
@@ -132,6 +136,8 @@ namespace XYHHumanPlugin.Stores
                         from hs in hs2.DefaultIfEmpty()
                         join hss1 in Context.HumanSocialSecurities.AsNoTracking() on h.Id equals hss1.Id into hss2
                         from hss in hss2.DefaultIfEmpty()
+                        join p1 in Context.PositionInfos.AsNoTracking() on h.Position equals p1.ID into p2
+                        from p in p2.DefaultIfEmpty()
 
                         join cu1 in Context.Users.AsNoTracking() on h.CreateUser equals cu1.Id into cu2
                         from cju in cu2.DefaultIfEmpty()
@@ -168,6 +174,8 @@ namespace XYHHumanPlugin.Stores
                             LeaveTime = h.LeaveTime,
                             BecomeTime = h.BecomeTime,
                             Name = h.Name,
+                            ExamineStatus = h.ExamineStatus,
+                            PositionType = h.PositionType,
                             NativePlace = h.NativePlace,
                             Nationality = h.Nationality,
                             Picture = h.Picture,
@@ -176,6 +184,7 @@ namespace XYHHumanPlugin.Stores
                             PolicitalStatus = h.PolicitalStatus,
                             Sex = h.Sex,
                             UserID = h.UserID,
+                            PositionName = p.PositionName,
                             UpdateTime = h.UpdateTime,
                             CreateUser = h.CreateUser,
                             IsDeleted = h.IsDeleted,
@@ -194,9 +203,52 @@ namespace XYHHumanPlugin.Stores
                             DeleteTime = h.DeleteTime,
                             DeleteUser = h.DeleteUser,
 
-                            HumanContractInfo = hc,
-                            HumanSocialSecurity = hss,
-                            HumanSalaryStructure = hs,
+                            PositionInfo = new PositionInfo
+                            {
+                                ID = p.ID,
+                                ParentID = p.ParentID,
+                                PositionName = p.PositionName,
+                                PositionType = p.PositionType
+                            },
+                            HumanContractInfo = new HumanContractInfo
+                            {
+                                ContractEndDate = hc.ContractEndDate,
+                                ContractNo = hc.ContractNo,
+                                ContractSignDate = hc.ContractSignDate,
+                                ContractStartDate = hc.ContractStartDate,
+                                ContractType = hc.ContractType,
+                                ContractCompany = hc.ContractCompany,
+                                Id = hc.Id
+                            },
+                            HumanSocialSecurity = new HumanSocialSecurity
+                            {
+                                HousingProvidentFundAccount = hss.HousingProvidentFundAccount,
+                                InsuredAddress = hss.InsuredAddress,
+                                MedicalInsuranceAccount = hss.MedicalInsuranceAccount,
+                                SocialSecurityAccount = hss.SocialSecurityAccount,
+                                EmploymentInjuryInsurance = hss.EmploymentInjuryInsurance,
+                                EndowmentInsurance = hss.EndowmentInsurance,
+                                HousingProvidentFund = hss.HousingProvidentFund,
+                                IsHave = hss.IsHave,
+                                Id = hss.Id,
+                                InsuredTime = hss.InsuredTime,
+                                IsGiveUp = hss.IsGiveUp,
+                                IsSignCommitment = hss.IsSignCommitment,
+                                MaternityInsurance = hss.MaternityInsurance,
+                                MedicalInsurance = hss.MedicalInsurance,
+                                UnemploymentInsurance = hss.UnemploymentInsurance
+                            },
+                            HumanSalaryStructure = new HumanSalaryStructure
+                            {
+                                CommunicationAllowance = hs.CommunicationAllowance,
+                                OtherAllowance = hs.OtherAllowance,
+                                TrafficAllowance = hs.TrafficAllowance,
+                                BaseWages = hs.BaseWages,
+                                GrossPay = hs.GrossPay,
+                                Id = hs.Id,
+                                PostWages = hs.PostWages,
+                                ProbationaryPay = hs.ProbationaryPay
+                            },
 
                             Organizations = new Organizations()
                             {
@@ -261,6 +313,8 @@ namespace XYHHumanPlugin.Stores
                                                      DeleteUser = hw.DeleteUser,
                                                      EndTime = hw.EndTime,
                                                      HumanId = hw.HumanId,
+                                                     Witness = hw.Witness,
+                                                     WitnessPhone = hw.WitnessPhone,
                                                      Id = hw.Id,
                                                      IsDeleted = hw.IsDeleted,
                                                      Position = hw.Position,
@@ -310,6 +364,7 @@ namespace XYHHumanPlugin.Stores
                     humanInfo.IsDeleted = false;
                     humanInfo.CreateTime = DateTime.Now;
                     humanInfo.CreateUser = user.Id;
+                    humanInfo.StaffStatus = StaffStatus.Entry;
                     humanInfo.ExamineStatus = ExamineStatusEnum.Auditing;
                     Context.Add(humanInfo);
                     if (humanInfo.HumanSalaryStructure != null)
@@ -319,6 +374,10 @@ namespace XYHHumanPlugin.Stores
                     if (humanInfo.HumanSocialSecurity != null)
                     {
                         Context.Add(humanInfo.HumanSocialSecurity);
+                    }
+                    if (humanInfo.HumanContractInfo != null)
+                    {
+                        Context.Add(humanInfo.HumanContractInfo);
                     }
                     var HumanTitleInfos = humanInfo.HumanTitleInfos?.ToList();
                     if (HumanTitleInfos != null)
@@ -366,6 +425,7 @@ namespace XYHHumanPlugin.Stores
                     old.DepartmentId = humanInfo.DepartmentId;
                     old.EmailAddress = humanInfo.EmailAddress;
                     old.Desc = humanInfo.Desc;
+                    old.PositionType = humanInfo.PositionType;
                     old.EmergencyContact = humanInfo.EmergencyContact;
                     old.EmergencyContactPhone = humanInfo.EmergencyContactPhone;
                     old.EmergencyContactType = humanInfo.EmergencyContactType;
@@ -410,6 +470,8 @@ namespace XYHHumanPlugin.Stores
                         old.HumanContractInfo.ContractSignDate = humanInfo.HumanContractInfo.ContractSignDate;
                         old.HumanContractInfo.ContractStartDate = humanInfo.HumanContractInfo.ContractStartDate;
                         old.HumanContractInfo.ContractType = humanInfo.HumanContractInfo.ContractType;
+                        old.HumanContractInfo.Id = humanInfo.HumanContractInfo.Id;
+                        old.HumanContractInfo.ContractCompany = humanInfo.HumanContractInfo.ContractCompany;
 
                         Context.Attach(old.HumanContractInfo);
                         Context.Update(old.HumanContractInfo);
@@ -570,6 +632,8 @@ namespace XYHHumanPlugin.Stores
                                 HumanWorkHistories[i].EndTime = newHumanWorkHistories.EndTime;
                                 HumanWorkHistories[i].Position = newHumanWorkHistories.Position;
                                 HumanWorkHistories[i].StartTime = newHumanWorkHistories.StartTime;
+                                HumanWorkHistories[i].Witness = newHumanWorkHistories.Witness;
+                                HumanWorkHistories[i].WitnessPhone = newHumanWorkHistories.WitnessPhone;
                             }
                             else
                             {
@@ -657,6 +721,141 @@ namespace XYHHumanPlugin.Stores
             catch (DbUpdateException) { throw; }
             return humanInfo;
         }
+
+        /// <summary>
+        /// 更新
+        /// </summary>
+        /// <returns></returns>
+        public async Task<HumanInfo> UpdateAsync(UserInfo user, HumanInfo humanInfo, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (humanInfo == null)
+            {
+                throw new ArgumentNullException(nameof(humanInfo));
+            }
+            var old = HumanInfos.Where(a => a.Id == humanInfo.Id).SingleOrDefault();
+            if (old == null)
+            {
+                throw new Exception("更新的对象不存在");
+            }
+            old.BankAccount = humanInfo.BankAccount;
+            old.BankName = humanInfo.BankName;
+            old.DepartmentId = humanInfo.DepartmentId;
+            old.EmailAddress = humanInfo.EmailAddress;
+            old.Desc = humanInfo.Desc;
+            old.PositionType = humanInfo.PositionType;
+            old.EmergencyContact = humanInfo.EmergencyContact;
+            old.EmergencyContactPhone = humanInfo.EmergencyContactPhone;
+            old.EmergencyContactType = humanInfo.EmergencyContactType;
+            old.EntryTime = humanInfo.EntryTime;
+            old.MaritalStatus = humanInfo.MaritalStatus;
+            old.HighestEducation = humanInfo.HighestEducation;
+            old.HealthCondition = humanInfo.HealthCondition;
+            old.DomicilePlace = humanInfo.DomicilePlace;
+            old.HouseholdType = humanInfo.HouseholdType;
+            old.IDCard = humanInfo.IDCard;
+            old.FamilyAddress = humanInfo.FamilyAddress;
+            old.LeaveTime = humanInfo.LeaveTime;
+            old.BecomeTime = humanInfo.BecomeTime;
+            old.Name = humanInfo.Name;
+            old.NativePlace = humanInfo.NativePlace;
+            old.Nationality = humanInfo.Nationality;
+            old.Picture = humanInfo.Picture;
+            old.Phone = humanInfo.Phone;
+            old.Position = humanInfo.Position;
+            old.PolicitalStatus = humanInfo.PolicitalStatus;
+            old.Sex = humanInfo.Sex;
+            old.UserID = humanInfo.UserID;
+            old.UpdateTime = DateTime.Now;
+            old.UpdateUser = user.Id;
+            old.StaffStatus = humanInfo.StaffStatus;
+            old.Company = humanInfo.Company;
+
+            old.AdministrativeBack = humanInfo.AdministrativeBack;
+            old.ClothesBack = humanInfo.ClothesBack;
+            old.Modify = humanInfo.Modify;
+            old.OtherBack = humanInfo.OtherBack;
+            old.PortBack = humanInfo.PortBack;
+            old.RecentModify = humanInfo.RecentModify;
+            Context.Update(old);
+            try
+            {
+                await Context.SaveChangesAsync(cancellationToken);
+            }
+            catch (DbUpdateException) { throw; }
+            return humanInfo;
+        }
+
+        /// <summary>
+        /// 更新社保信息
+        /// </summary>
+        /// <returns></returns>
+        public async Task<HumanSocialSecurity> UpdateHumanSocialSecurityAsync(UserInfo user, HumanSocialSecurity humanSocialSecurity, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (humanSocialSecurity == null)
+            {
+                throw new ArgumentNullException(nameof(humanSocialSecurity));
+            }
+            var old = Context.HumanSocialSecurities.Where(a => a.Id == humanSocialSecurity.Id).SingleOrDefault();
+            if (old == null)
+            {
+                throw new Exception("更新的对象不存在");
+            }
+            old.EmploymentInjuryInsurance = humanSocialSecurity.EmploymentInjuryInsurance;
+            old.EndowmentInsurance = humanSocialSecurity.EndowmentInsurance;
+            old.HousingProvidentFund = humanSocialSecurity.HousingProvidentFund;
+            old.HousingProvidentFundAccount = humanSocialSecurity.HousingProvidentFundAccount;
+            old.InsuredTime = humanSocialSecurity.InsuredTime;
+            old.InsuredAddress = humanSocialSecurity.InsuredAddress;
+            old.IsGiveUp = humanSocialSecurity.IsGiveUp;
+            old.IsHave = humanSocialSecurity.IsHave;
+            old.IsSignCommitment = humanSocialSecurity.IsSignCommitment;
+            old.MaternityInsurance = humanSocialSecurity.MaternityInsurance;
+            old.MedicalInsurance = humanSocialSecurity.MedicalInsurance;
+            old.MedicalInsuranceAccount = humanSocialSecurity.MedicalInsuranceAccount;
+            old.SocialSecurityAccount = humanSocialSecurity.SocialSecurityAccount;
+            old.UnemploymentInsurance = humanSocialSecurity.UnemploymentInsurance;
+
+            Context.Update(old);
+            try
+            {
+                await Context.SaveChangesAsync(cancellationToken);
+            }
+            catch (DbUpdateException) { throw; }
+            return humanSocialSecurity;
+        }
+
+        /// <summary>
+        /// 更新薪资构成
+        /// </summary>
+        /// <returns></returns>
+        public async Task<HumanSalaryStructure> UpdateHumanSalaryStructureAsync(UserInfo user, HumanSalaryStructure humanSalaryStructure, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (humanSalaryStructure == null)
+            {
+                throw new ArgumentNullException(nameof(humanSalaryStructure));
+            }
+            var old = Context.HumanSalaryStructures.Where(a => a.Id == humanSalaryStructure.Id).SingleOrDefault();
+            if (old == null)
+            {
+                throw new Exception("更新的对象不存在");
+            }
+            old.BaseWages = humanSalaryStructure.BaseWages;
+            old.CommunicationAllowance = humanSalaryStructure.BaseWages;
+            old.GrossPay = humanSalaryStructure.BaseWages;
+            old.OtherAllowance = humanSalaryStructure.BaseWages;
+            old.PostWages = humanSalaryStructure.BaseWages;
+            old.ProbationaryPay = humanSalaryStructure.BaseWages;
+            old.TrafficAllowance = humanSalaryStructure.BaseWages;
+
+            Context.Update(old);
+            try
+            {
+                await Context.SaveChangesAsync(cancellationToken);
+            }
+            catch (DbUpdateException) { throw; }
+            return humanSalaryStructure;
+        }
+
 
         /// <summary>
         /// 删除
