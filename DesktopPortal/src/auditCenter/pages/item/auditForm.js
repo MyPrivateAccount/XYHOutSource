@@ -42,7 +42,8 @@ class AuditForm extends Component {
         console.log("审核结果保存", request);
     }
     handleCancel = (e) => {
-        this.props.dispatch(closeAuditDetail());
+        this.props.history.goBack();
+      //  this.props.dispatch(closeAuditDetail());
     }
 
     render() {

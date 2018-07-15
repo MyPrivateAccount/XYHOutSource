@@ -333,7 +333,7 @@ class TradeEstate extends Component {
                         
                             <FormItem style={{width:'6rem'}} {...formItemLayout2} >
                                 {
-                                    getFieldDecorator('wyJgf', {
+                                    getFieldDecorator('WyJgf', {
                                         rules: [{ required: false }]
                                     })(
                                         <InputNumber disabled={!canEdit} min={0}></InputNumber>
@@ -344,7 +344,7 @@ class TradeEstate extends Component {
                          <Col span={4}>           
                             <FormItem  {...formItemLayout2} label="房源编号">
                                 {
-                                    getFieldDecorator('wyJgf', {
+                                    getFieldDecorator('wyFybh', {
                                         rules: [{ required: false }]
                                     })(
                                         <Input disabled={!canEdit} ></Input>

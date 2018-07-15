@@ -2,6 +2,7 @@ import React from 'react'
 import Loadable from 'react-loadable';
 import LoadableLoading from './components/LoadableLoading';
 import { Icon } from 'antd'
+import {IoAndroidList} from 'react-icons/lib/io';
 import * as Vendor from './vendor'
 
 function createLoadableComponent(loader) {
@@ -165,11 +166,57 @@ function defaultDesc(item) {
 //审核重构
 export const reviewTypes = [
     {
-        contentType: 'building',
-        title: '新增楼盘',
-        icon: <image  alt='...' />,
-        sencordLine: defaultDesc,
-        component:  ()=>createLoadableComponent(import('./expenseManager')),
+        contentType: 'Report',
+        title: '成交报告',
+        icon: <IoAndroidList size={48}  style={{marginTop:10}}/>,
+        sencordLine: (item)=>{
+            return <span>
+                <span>[{item.ext3} . {item.ext4}]</span>
+                <span style={{marginLeft:'1rem'}}>{item.ext1}</span>
+                <span style={{marginLeft:'1rem'}}>[{item.ext2}]</span>
+                <span style={{marginLeft:'1rem'}}>成交日期：{item.ext7}</span>
+            </span>
+        },
+        component:  ()=>createLoadableComponent(import('./commissionManager/pages/dealRp/rpdetails/tradeReview')),
+    },
+    {
+        contentType: 'Distribute',
+        title: '调佣申请',
+        icon: <IoAndroidList size={48}  style={{marginTop:10}}/>,
+        sencordLine: (item)=>{
+            return <span>
+                <span>[{item.ext3} . {item.ext4}]</span>
+                <span style={{marginLeft:'1rem'}}>{item.ext5}</span>
+                <span style={{marginLeft:'1rem'}}>[{item.ext1}]</span>
+            </span>
+        },
+        component:  ()=>createLoadableComponent(import('./commissionManager/pages/dealRp/ty/tyReview')),
+    },
+    {
+        contentType: 'Receipts',
+        title: '收款申请',
+        icon: <IoAndroidList size={48}  style={{marginTop:10}}/>,
+        sencordLine: (item)=>{
+            return <span>
+                <span>[{item.ext3} . {item.ext4}]</span>
+                <span style={{marginLeft:'1rem'}}>{item.ext5}</span>
+                <span style={{marginLeft:'1rem'}}>[{item.ext1}]</span>
+            </span>
+        },
+        component:  ()=>createLoadableComponent(import('./commissionManager/pages/dealRp/sfk/skReview')),
+    },
+    {
+        contentType: 'Payment',
+        title: '付款申请',
+        icon: <IoAndroidList size={48}  style={{marginTop:10}}/>,
+        sencordLine: (item)=>{
+            return <span>
+                <span>[{item.ext3} . {item.ext4}]</span>
+                <span style={{marginLeft:'1rem'}}>{item.ext5}</span>
+                <span style={{marginLeft:'1rem'}}>[{item.ext1}]</span>
+            </span>
+        },
+        component:  ()=>createLoadableComponent(import('./commissionManager/pages/dealRp/sfk/fkReview')),
     }
 ]
 
@@ -186,7 +233,7 @@ export function getReviewComponent(contentType) {
         if (page.cache) {
             return page.cache;
         }
-        page.cache = page.component;
+        page.cache = page.component();
         return page.cache;
     }
     return null;

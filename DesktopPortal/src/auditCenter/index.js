@@ -203,4 +203,4 @@ function mapStateToProps(state, props) {
         navigator: state.audit.navigator
     }
 }
-export default withReducer(reducers, 'AuditIndex', { namespaceActions: false, mapExtraState: (state, rootState) => ({ oidc: rootState.oidc, rootBasicData: rootState.basicData }) })(connect(mapStateToProps)(AuditIndex));
+export default withReducer(reducers, 'AuditIndex', { namespaceActions: false, mapExtraState: (state, rootState) => ({ oidc: rootState.oidc, basicData: rootState.basicData }) })(connect(mapStateToProps)(AuditIndex));

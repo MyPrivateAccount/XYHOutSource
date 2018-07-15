@@ -102,8 +102,6 @@ class SJCp extends Component {
 function MapStateToProps(state) {
 
     return {
-        ext: state.rp.ext,
-        operInfo: state.rp.operInfo
     }
 }
 

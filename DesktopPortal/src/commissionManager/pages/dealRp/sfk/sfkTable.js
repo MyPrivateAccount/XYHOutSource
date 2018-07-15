@@ -1,48 +1,49 @@
-import React, {Component} from 'react'
-import {Table,Tooltip} from 'antd'
+import React, { Component } from 'react'
+import { Table, Tooltip } from 'antd'
 import moment from 'moment'
+import { examineStatusMap } from '../../../constants/const';
 
-class SfkTable extends Component{
+class SfkTable extends Component {
 
-    state={
-        ids:[]
+    state = {
+        ids: []
     }
-    
-    _formatDate = (date)=>{
-        if(!date){
+
+    _formatDate = (date) => {
+        if (!date) {
             return '';
         }
         return moment(date).format('YYYY-MM-DD');
     }
 
-    view = (distribute)=>{
-        if(this.props.view){
+    view = (distribute) => {
+        if (this.props.view) {
             this.props.view(distribute);
         }
     }
 
     _columns = () => {
         let fkytList = this.props.wyItems || [];
-        
-        return [
+
+        let cs = [
             {
                 title: '类型',
                 dataIndex: 'dsdfType',
                 key: 'dsdfType',
                 align: 'center',
                 width: '4rem',
-                render : (text,record)=>{
-                    return record.dsdfType===1?'收款':'付款';
+                render: (text, record) => {
+                    return record.dsdfType === 1 ? '收款' : '付款';
                 }
             },
             {
-                title:'录入日期',
-                dataIndex:'createTime',
-                key:'createTime',
+                title: '录入日期',
+                dataIndex: 'createTime',
+                key: 'createTime',
                 align: 'center',
                 width: '8rem',
-                render : (text,record)=>{
-                    return this._formatDate(text); 
+                render: (text, record) => {
+                    return this._formatDate(text);
                 }
             },
             {
@@ -68,8 +69,8 @@ class SfkTable extends Component{
                 dataIndex: 'jzrq',
                 key: 'jzrq',
                 width: '8rem',
-                render : (text,record)=>{
-                    return this._formatDate(text); 
+                render: (text, record) => {
+                    return this._formatDate(text);
                 }
             },
             {
@@ -77,12 +78,12 @@ class SfkTable extends Component{
                 dataIndex: 'yt',
                 key: 'yt',
                 width: '8rem',
-                render: (text,record)=>{
-                    if(record.dsdfType===1){
+                render: (text, record) => {
+                    if (record.dsdfType === 1) {
                         return text;
                     }
-                    let item = fkytList.find(x=>x.code === text);
-                    return (item||{}).name || '';
+                    let item = fkytList.find(x => x.code === text);
+                    return (item || {}).name || '';
                 }
             },
             {
@@ -93,21 +94,34 @@ class SfkTable extends Component{
                 className: 'column-money'
             },
             {
-            title: '操作', dataIndex: 'edit', key: 'edit', width: '5rem', render: (text, record) => (
-                <span>
-
-                    <Tooltip title='查看'>
-                        <a style={{ marginLeft: 4 }} onClick={(e) => this.view(record)}>查看</a>
-                    </Tooltip>
-                </span>
-            )
-        }
+                title: '审核状态',
+                dataIndex: 'status',
+                key: 'status',
+                width: '6rem',
+                render: (text,record)=>{
+                    return examineStatusMap[record.status]
+                }
+            },
         ];
+
+        if (!this.props.hideSfkCk) {
+            cs.push({
+                title: '操作', dataIndex: 'edit', key: 'edit', width: '5rem', render: (text, record) => (
+                    <span>
+
+                        <Tooltip title='查看'>
+                            <a style={{ marginLeft: 4 }} onClick={(e) => this.view(record)}>查看</a>
+                        </Tooltip>
+                    </span>
+                )
+            })
+        }
+        return cs;
     }
 
-    render(){
+    render() {
         let columns = this._columns();
-        let list= this.props.list ||[];
+        let list = this.props.list || [];
 
         return (
             <div>

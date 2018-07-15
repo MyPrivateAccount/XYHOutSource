@@ -371,7 +371,7 @@ class TradePerDis extends Component {
                     </Row>
 
                     {
-                        canEdit ? null :
+                        (canEdit||this.props.hideYjfp) ? null :
                             <div>
                                 <div className="divider"></div>
                                 <Row>
@@ -387,7 +387,7 @@ class TradePerDis extends Component {
 
                                 </Row>
                                 <div className="rp-yj-tbl-title">收付款明细</div>
-                                <SfkTable view={this.props.viewFactGet} list={factgetList} wyItems = {this.props.wyItems} />
+                                <SfkTable hideSfkCk={this.props.hideSfkCk} view={this.props.viewFactGet} list={factgetList} wyItems = {this.props.wyItems} />
                                 <div className="divider"></div>
                             </div>
                     }

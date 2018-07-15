@@ -211,7 +211,7 @@ class TradeManager extends Component {
         this.setState({ report: values, saving: true })
         let url = `${WebApiConfig.rp.rpAdd}`
         r = await ApiClient.post(url, values, null, 'PUT');
-        r = (r || {}).data;
+        r = (r || {}).data || {};
         if (r.code === '0') {
             let newReport = r.extension;
             let report = this.state.report;
