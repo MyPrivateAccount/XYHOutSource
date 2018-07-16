@@ -1,8 +1,8 @@
 //月结页面
 import React, { Component } from 'react'
-import { Layout, Row, Col, Button, TreeSelect, Input, Modal } from 'antd';
+import { Layout, Row, Col, Button, TreeSelect, Input, Modal, Progress } from 'antd';
 import { connect } from 'react-redux';
-import { orgGetPermissionTree, yjGetMonth, yjStart, yjCheckState, yjCancel, yjRollBack, yjQrQuery, yjYjQrCommit, yjSkQuery, yjSkCommit,yjQrEmpQuery, yjSkEmpQuery} from '../../actions/actionCreator'
+import { orgGetPermissionTree, yjGetMonth, yjStart, yjCheckState, yjCancel, yjRollBack, yjQrQuery, yjYjQrCommit, yjSkQuery, yjSkCommit, yjQrEmpQuery, yjSkEmpQuery } from '../../actions/actionCreator'
 import LZRYTJTable from './lzryYjTable'
 import SFKJQRTable from './sfkjQrTable'
 
@@ -12,9 +12,9 @@ class MonthSum extends Component {
         monthData: { stage: '' },
         btnState: false,//是否禁用
         timer: null,
-        yjqrResult:[],
-        yjskResult:[],
-        oldbranchId:''
+        yjqrResult: [],
+        yjskResult: [],
+        oldbranchId: ''
     }
     componentDidMount() {
         //获取权限组织
@@ -24,7 +24,17 @@ class MonthSum extends Component {
         if (newProps.operInfo.operType === 'YJ_MONTH_GETUPDATE' ||
             newProps.operInfo.operType === 'YJ_MONTH_CHECK_UPDATE' ||
             newProps.operInfo.operType === 'YJ_MONTH_ROLLBACK_UPDATE') {
-            this.setState({ monthData: newProps.result.extension })
+            this.setState({ monthData: newProps.result.extension },()=>{
+                let md = newProps.result.extension||{};
+                if( md.stage==='STAGE_UNSTART' || md.stage === 'STAGE_ERROR' 
+                || md.stage === 'STAGE_ROLLBACK' || md.stage === 'STAGE_CANCEL'
+                || md.stage === 'STAGE_FINISH' ){
+                    if (this.timer) {
+                        clearInterval(this.timer)
+                        this.timer = null;
+                    }
+                }
+            })
             newProps.operInfo.operType = ''
         }
         else if (newProps.operInfo.operType === 'YJ_MONTH_CANCEL_UPDATE') {
@@ -35,22 +45,22 @@ class MonthSum extends Component {
                 this.startCheckTimer()
             }
         }
-        else if(newProps.operInfo.operType === 'YJ_MONTH_YJQR_QUERY_UPDATE'){
-            if(newProps.yjqrResult){
-                this.setState({yjqrResult:newProps.yjqrResult})
+        else if (newProps.operInfo.operType === 'YJ_MONTH_YJQR_QUERY_UPDATE') {
+            if (newProps.yjqrResult) {
+                this.setState({ yjqrResult: newProps.yjqrResult })
             }
-            newProps.operInfo.operType=''
+            newProps.operInfo.operType = ''
         }
-        else if(newProps.operInfo.operType === 'YJ_MONTH_SKQR_QUERY_UPDATE'){
-            if(newProps.yjskResult){
-                this.setState({yjskResult:newProps.yjskResult})
+        else if (newProps.operInfo.operType === 'YJ_MONTH_SKQR_QUERY_UPDATE') {
+            if (newProps.yjskResult) {
+                this.setState({ yjskResult: newProps.yjskResult })
             }
-            newProps.operInfo.operType=''
+            newProps.operInfo.operType = ''
         }
-        else if(newProps.operInfo.operType === 'YJ_MONTH_EMP'){
+        else if (newProps.operInfo.operType === 'YJ_MONTH_EMP') {
             let emps = newProps.emps
             let yjqr = []
-            for(let i=0;i<emps.length;i++){
+            for (let i = 0; i < emps.length; i++) {
                 let emp = {}
                 emp.id = emps[i].id
                 emp.isInclude = emps[i].isInclude
@@ -63,17 +73,17 @@ class MonthSum extends Component {
             this.props.dispatch(yjYjQrCommit(rq))
             newProps.operInfo.operType = ''
         }
-        else if(newProps.operInfo.operType === 'YJ_MONTH_SKQR_EMP'){
+        else if (newProps.operInfo.operType === 'YJ_MONTH_SKQR_EMP') {
             let emps = newProps.emps
             let yjqr = []
-            for(let i=0;i<emps.length;i++){
+            for (let i = 0; i < emps.length; i++) {
                 let emp = {}
                 emp.yyyymm = emps[i].yyyymm
                 emp.branchId = emps[i].branchId
-                emp.userId= emps[i].userId
-                emp.belongId= emps[i].belongId
-                emp.position= emps[i].position
-                emp.byKjJe= emps[i].byKjJe
+                emp.userId = emps[i].userId
+                emp.belongId = emps[i].belongId
+                emp.position = emps[i].position
+                emp.byKjJe = emps[i].byKjJe
                 yjqr.push(emp)
             }
             let rq = {}
@@ -85,12 +95,19 @@ class MonthSum extends Component {
         }
     }
     componentWillUnmount() {
-        if (this.state.timer) {
-            clearInterval(this.state.timer)
+        if (this.timer) {
+            clearInterval(this.timer)
         }
     }
     //组织改变
     handleOrgChange = (e) => {
+        if(!e){
+            if (this.timer) {
+                clearInterval(this.timer)
+                this.timer = null;
+            }
+            return;
+        }
         //查询月结月份
         let searchCondition = {}
         searchCondition.branchId = e
@@ -120,23 +137,23 @@ class MonthSum extends Component {
             }
             else if (stage === 'STAGE_YJQR') {
                 //显示离职人员业绩确认页面
-                if(this.state.oldbranchId!==this.state.monthData.branchId){
+                if (this.state.oldbranchId !== this.state.monthData.branchId) {
                     let info = {}
                     info.yyyymm = this.state.monthData.yyyymm
                     info.branchId = this.state.monthData.branchId
                     this.props.dispatch(yjQrQuery(info))//查询业绩
-                    this.setState({oldbranchId:info.branchId})
+                    this.setState({ oldbranchId: info.branchId })
                 }
                 return null
             }
             else if (stage === 'STAGE_KKQR') {
                 //显示显示实发扣减确认页面
-                if(this.state.oldbranchId!==this.state.monthData.branchId){
-                    let info={}
+                if (this.state.oldbranchId !== this.state.monthData.branchId) {
+                    let info = {}
                     info.yyyymm = this.state.monthData.yyyymm
                     info.branchId = this.state.monthData.branchId
                     this.props.dispatch(yjSkQuery(info))//查询扣减情况
-                    this.setState({oldbranchId:info.branchId})
+                    this.setState({ oldbranchId: info.branchId })
                 }
                 return null
             }
@@ -159,11 +176,11 @@ class MonthSum extends Component {
     //启动状态检查定时器
     startCheckTimer = () => {
         //开启定时器
-        if (this.state.timer) {
+        if (this.timer) {
             clearInterval(this.state.timer)
         }
-        let tm = setInterval(this.checkYjState, 20000)
-        this.setState({ timer: tm })
+        this.timer = setInterval(this.checkYjState, 1500)
+        // this.setState({ timer: tm })
     }
     //检查月结状态
     checkYjState = () => {
@@ -191,13 +208,13 @@ class MonthSum extends Component {
     }
     //提交确认
     handleOk = () => {
-        if(this.state.monthData.stage === 'STAGE_YJQR'){
+        if (this.state.monthData.stage === 'STAGE_YJQR') {
             this.props.dispatch(yjQrEmpQuery())
         }
-        else if(this.state.monthData.stage === 'STAGE_KKQR'){
+        else if (this.state.monthData.stage === 'STAGE_KKQR') {
             this.props.dispatch(yjSkEmpQuery())
         }
-        
+
     }
     //取消
     handleCancel = () => {
@@ -205,25 +222,29 @@ class MonthSum extends Component {
         monthData.stage = ''
         this.setState({ monthData })
     }
-    getBtnColorByState=(state)=>{
-        if(state === this.state.monthData.stage){
+    getBtnColorByState = (state) => {
+        if (state === this.state.monthData.stage) {
             return 'red'
         }
         return 'gray'
     }
     render() {
+        let ps = "";
+        if (this.state.monthData.stage === "STAGE_ERROR") {
+            ps = "exception"
+        }
         return (
             <Layout>
                 <Layout.Content>
                     <Row style={{ margin: 10 }}>
                         <Col span={24} style={{ textAlign: 'center' }}>
-                            <Button style={{backgroundColor:this.getBtnColorByState('STAGE_UNSTART')}} type="primiary">1</Button>
+                            <Button style={{ backgroundColor: this.getBtnColorByState('STAGE_UNSTART') }} type="primiary">1</Button>
                             <span>________</span>
-                            <Button style={{backgroundColor:this.getBtnColorByState('STAGE_YJQR')}} type="primiary">2</Button>
+                            <Button style={{ backgroundColor: this.getBtnColorByState('STAGE_YJQR') }} type="primiary">2</Button>
                             <span>________</span>
-                            <Button style={{backgroundColor:this.getBtnColorByState('STAGE_KKQR')}} type="primiary">3</Button>
+                            <Button style={{ backgroundColor: this.getBtnColorByState('STAGE_KKQR') }} type="primiary">3</Button>
                             <span>________</span>
-                            <Button style={{backgroundColor:this.getBtnColorByState('STAGE_FINISH')}} type="primiary">4</Button>
+                            <Button style={{ backgroundColor: this.getBtnColorByState('STAGE_FINISH') }} type="primiary">4</Button>
                         </Col>
                     </Row>
                     <Row style={{ margin: 10, marginLeft: 360 }}>
@@ -261,6 +282,20 @@ class MonthSum extends Component {
                             </label>
                         </Col>
                     </Row>
+                    <Row>
+                        <Col span={8} />
+                        <Col span={8} >
+                            <Progress percent={(this.state.monthData.progress || 0) * 100} status={ps} />
+                        </Col>
+                        <Col span={8} />
+                    </Row>
+                    <Row>
+
+                        <Col span={24} style={{ textAlign: 'center' }}>
+                            <span>处理状态：</span>
+                            <span>{this.state.monthData.message || ''}</span>
+                        </Col>
+                    </Row>
                     <Row style={{ marginTop: 10 }}>
                         <Col span={24} style={{ textAlign: 'center' }}>
                             {
@@ -268,10 +303,10 @@ class MonthSum extends Component {
                             }
                         </Col>
                     </Row>
-                    <Modal width={800} title={this.state.monthData.stage === 'STAGE_YJQR'?'离职人员业绩确认表':'实发扣减表'} maskClosable={false} visible={(this.state.monthData.stage === 'STAGE_YJQR' || this.state.monthData.stage === 'STAGE_KKQR') ? true : false}
+                    <Modal width={800} title={this.state.monthData.stage === 'STAGE_YJQR' ? '离职人员业绩确认表' : '实发扣减表'} maskClosable={false} visible={(this.state.monthData.stage === 'STAGE_YJQR' || this.state.monthData.stage === 'STAGE_KKQR') ? true : false}
                         onOk={this.handleOk} onCancel={this.handleCancel} >
                         {
-                            this.state.monthData.stage === 'STAGE_YJQR' ? <LZRYTJTable showSearch={false} dataSource={this.state.yjqrResult}/> : <SFKJQRTable showSearch={false} dataSource={this.state.yjskResult}/>
+                            this.state.monthData.stage === 'STAGE_YJQR' ? <LZRYTJTable showSearch={false} dataSource={this.state.yjqrResult} /> : <SFKJQRTable showSearch={false} dataSource={this.state.yjskResult} />
                         }
                     </Modal>
                 </Layout.Content>
@@ -285,9 +320,9 @@ function monthSumaryMapStateToProps(state) {
         result: state.month.result,
         startYjResult: state.month.startYjResult,
         operInfo: state.month.operInfo,
-        yjqrResult:state.month.yjqrResult,
-        yjskResult:state.month.yjskResult,
-        emps:state.month.emps
+        yjqrResult: state.month.yjqrResult,
+        yjskResult: state.month.yjskResult,
+        emps: state.month.emps
     }
 }
 
