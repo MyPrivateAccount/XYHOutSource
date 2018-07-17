@@ -138,7 +138,6 @@ namespace XYHHumanPlugin.Controllers
                 Logger.Warn($"用户{User?.UserName ?? ""}({User?.Id ?? ""})创建月结信息失败：\r\n{pagingResponse.Message ?? ""}，\r\n请求参数为：\r\n");
                 return pagingResponse;
             }
-
             try
             {
                 DateTime now = DateTime.Now;
